@@ -1,0 +1,42 @@
+{
+  "about": {
+    "en": "About",
+    "sv": "Om"
+  },
+  "ctf": {
+    "en": "CTF",
+    "sv": "CTF"
+  },
+  "flag": {
+    "en": "Flag",
+    "sv": "Flagga"
+  },
+  "flag_format": {
+    "en": "Flag format",
+    "sv": "Flaggformat"
+  },
+  "leaderboard": {
+    "en": "Leaderboard",
+    "sv": "Topplista"
+  },
+  "results": {
+    "en": "Results",
+    "sv": "Resultat"
+  },
+  "submit": {
+    "en": "Submit",
+    "sv": "Skicka"
+  },
+  "team": {
+    "en": "Team",
+    "sv": "Lag"
+  },
+  "user": {
+    "en": "User",
+    "sv": "Användare"
+  },
+  "welcome": {
+    "en": "Welcome",
+    "sv": "Välkommen"
+  }
+}
