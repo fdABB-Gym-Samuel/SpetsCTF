@@ -1,1 +1,89 @@
 @import 'tailwindcss';
+/* 
+box-sizing: border-box;
+color: rgb(214, 214, 214);
+font-family: Karelia, sans-serif;
+font-size: 15px;
+font-weight: 400;
+line-height: 23px;
+margin-bottom: 15px;
+margin-top: 5px;
+--abb-beige: #f3f3ec;
+--black: #1d1d1b;
+--dark-grey: #999;
+--dim-beige: #61615e;
+--hitachi-pink: #ffe6e9;
+--light-grey: #d6d6d6;
+--light-orange: #ff9b3d;
+--line-color: #0003;
+--red-light: #ff0026;
+--white: white;
+--white-smoke: whitesmoke;
+--white-smoke-2: whitesmoke */
+
+@theme {
+
+      /*****************************/
+     /**********  COLORS  *********/
+    /*****************************/
+
+    /* dark/light denotes theme, i.e light colors can be dark, but should be used for lightmode*/
+    --color-background-light: #f3f3ec; /* abb-beige*/
+    --color-background-dark: #1d1d1b; /* black*/
+
+    --color-foreground-dark: #f3f3ec;
+    --color-foreground-light: #1d1d1b;
+
+    --color-button-dark: #a60022; /*red-light*/
+    --color-button-light: #ff0026; /*red-light*/
+
+    --color-accent-dark: #a60022; /*red-light*/
+    --color-accent-light: #ff0026;
+
+    --color-hitachi-pink: #ffe6e9;
+    --color-orange-light: #ff9b3d;
+    --color-grey-light: #d6d6d6;
+    --color-grey-dark: #999;
+    --color-dim-beige: #61615e;
+
+    
+    
+    /* --color-abb-beige: oklch(96.22% 0.0093 106.57);  */
+    /* --color-abb-beige: rgb;  */
+    /* --color-abb-beige: rgb(0,0,0);  */
+
+      /*****************************/
+     /**********  TEXTS  **********/
+    /*****************************/
+    --fs-hero: 48px;
+    --fs-h1: 24px;
+    --fs-h3: 18px;
+    --fs-p: 12px;
+    --fs-challenge-categories: 8px;
+
+    --fw-bold: 400;
+
+
+      /*****************************/
+     /*********  BORDERS  *********/
+    /*****************************/
+
+    --button-radius: 0.3rem;
+    --card-radius: 0.5rem;
+
+
+
+      /*****************************/
+     /**********  SIZES  **********/
+    /*****************************/
+
+    --challenge-card-height: clamp(100px, 15hv, 400px);
+    --challenge-card-width: clamp(250px, 25vw, 600px);
+
+    --challenge-dialog-height: clamp(350px, 50vh, 550px);
+    --challenge-dialog-height: clamp(400px, 70vw, 700px);
+}
+
+body{
+    @apply bg-background-dark h-full;
+}
