@@ -8,6 +8,7 @@ declare global {
 		// interface Error {}
 		interface Locals {
 			pgpool: Pool;
+			translations: Record<string, string>;
 		}
 		// interface PageData {}
 		// interface PageState {}
