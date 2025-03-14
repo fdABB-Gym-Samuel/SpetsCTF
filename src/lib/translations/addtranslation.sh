@@ -2,7 +2,7 @@
 
 set -eu
 
-cd $(dirname "$0")
+cd "$(dirname "$0")"
 
 if ! command -v jq > /dev/null ; then
   echo "You need the jq command in path"
@@ -18,9 +18,20 @@ read english
 echo "Enter name of SWEDISH translation: "
 read swedish
 
-echo "$translationkey: sv $swedish, en $english"
-jq -S --arg key "$translationkey" --arg en "$english" --arg sv "$swedish" \
-  '.[$key] = { en: $en, sv: $sv }' translations.json > translations-tmp.json
+echo "Updating translations..."
+echo "$translationkey: sv=$swedish, en=$english"
 
-echo "Moving translations-tmp.json to translations.json..."
-mv translations-tmp.json translations.json
+# Update English translations
+jq -S --arg key "$translationkey" --arg value "$english" \
+  '.[$key] = $value' en.json > en-tmp.json
+
+# Update Swedish translations
+jq -S --arg key "$translationkey" --arg value "$swedish" \
+  '.[$key] = $value' sv.json > sv-tmp.json
+
+# Move temp files back to original
+mv en-tmp.json en.json
+mv sv-tmp.json sv.json
+
+echo "Translations updated successfully!"
+
