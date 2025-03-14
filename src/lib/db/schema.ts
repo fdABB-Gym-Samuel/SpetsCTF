@@ -17,12 +17,15 @@ export enum Category {
 	pwn = 'pwn',
 	reversing = 'reversing',
 	web = 'web'
-};
+}
 
 export type Challenge = {
-	challenge_id: string;
-	points: number;
 	challenge_category: Category | null;
+	challenge_id: string;
+	display_name: string | null;
+	flag_format: string | null;
+	flag: string;
+	points: number;
 };
 
 export type Completion = {
