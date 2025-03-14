@@ -16,7 +16,7 @@ CREATE TYPE category AS ENUM (
     'crypto',
     'forensics',
     'misc',
-    'osint'
+    'osint',
     'pwn',
     'reversing',
     'web'
@@ -29,10 +29,10 @@ CREATE TABLE challenges (
 );
 
 CREATE TABLE completions (
-    challenge_id VARCHAR(256) NOT NULL,
+    challenge VARCHAR(256) NOT NULL,
     user_id UUID NOT NULL,
     when_completed TIMESTAMP DEFAULT now(),
-    FOREIGN KEY (challenge_id) REFERENCES challenges(challenge_id),
+    FOREIGN KEY (challenge) REFERENCES challenges(challenge_id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
