@@ -6,7 +6,8 @@ CREATE TABLE classes (
 );
 
 CREATE TABLE users (
-    github_id INT PRIMARY KEY NOT NULL,
+    id UUID NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
+    github_id INT NOT NULL,
     display_name VARCHAR(64),
     represents_class VARCHAR(16),
     FOREIGN KEY (represents_class) REFERENCES classes(name)
@@ -30,10 +31,10 @@ CREATE TABLE challenges (
 
 CREATE TABLE completions (
     challenge VARCHAR(256) NOT NULL,
-    user_id INT NOT NULL,
+    user_id UUID NOT NULL,
     when_completed TIMESTAMP DEFAULT now(),
     FOREIGN KEY (challenge) REFERENCES challenges(challenge_id),
-    FOREIGN KEY (user_id) REFERENCES users(github_id)
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 INSERT INTO classes (name, school) VALUES
