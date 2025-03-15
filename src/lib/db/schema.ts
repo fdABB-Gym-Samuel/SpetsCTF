@@ -5,6 +5,8 @@ export type Class = {
 
 export type User = {
 	id: string;
+	github_id: number;
+	github_username: string,
 	display_name: string | null;
 	represents_class: string | null;
 };
@@ -32,4 +34,9 @@ export type Completion = {
 	challenge: Challenge;
 	user_id: string;
 	when_completed: Date;
+};
+
+export type ChallengeCreation = {
+	author: string;
+	challenge: string;
 };
