@@ -2,7 +2,7 @@
     export let user_name:string | undefined = undefined;
 </script>
 
-<nav class="h-[var(--nav-height)] flex flex-row bg-background-dark text-foreground-dark sticky justify-between px-4 items-center outline-1 outline-[var(--color-accent-dark)]">
+<nav class="h-[var(--nav-height)] w-full flex flex-row bg-background-dark text-foreground-dark fixed justify-between px-4 items-center outline-1 outline-[var(--color-accent-dark)] top-0">
     <div class="left flex flex-row items-center">
         <ul class="flex flex-row h-full space-x-2 justify-evenly items-center">
             <li class="mr-4"><a href="/"><img src="/logo.svg" alt="" class="logo h-10"></a></li>

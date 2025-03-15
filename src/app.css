@@ -65,6 +65,8 @@ margin-top: 5px;
 
     --fw-bold: 400;
 
+    --font-main: Karelia, sans-serif;
+
 
       /*****************************/
      /*********  BORDERS  *********/
@@ -97,8 +99,13 @@ margin-top: 5px;
     /*****************************/
 
     --challenge-padding-inline: 5%;
+
+
 }
 
 body{
     @apply bg-background-dark h-full;
+    /* @apply font-[var(--font-main)]; */
+    @apply font-mono;
+    /* @apply font-sans-; */
 }

@@ -6,13 +6,8 @@
 
 <Navbar></Navbar>
 
-<main class="flex flex-col items-center bg-background-dark min-h-[var(--main-height)] text-foreground-dark">
+<main class="flex flex-col items-center bg-background-dark min-h-[var(--main-height)] text-foreground-dark static py-[var(--nav-height)]">
 		{@render children()}
 </main>
 
-<style>
-	.screen-nav-height{
-		min-height: calc(100vh - 4em)
-	}
-</style>
-
+<style></style>
