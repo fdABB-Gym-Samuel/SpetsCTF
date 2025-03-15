@@ -37,14 +37,16 @@ margin-top: 5px;
     --color-button-dark: #a60022; /*red-light*/
     --color-button-light: #ff0026; /*red-light*/
 
-    --color-accent-dark: #a60022; /*red-light*/
-    --color-accent-light: #ff0026;
+    --color-accent-light: #a60022; /*red-light*/
+    --color-accent-dark: #ff0026;
 
     --color-hitachi-pink: #ffe6e9;
     --color-orange-light: #ff9b3d;
     --color-grey-light: #d6d6d6;
     --color-grey-dark: #999;
     --color-dim-beige: #61615e;
+
+    --color-backdrop: rgba(0, 0, 0, 0.8);
 
     
     
@@ -77,11 +79,24 @@ margin-top: 5px;
      /**********  SIZES  **********/
     /*****************************/
 
-    --challenge-card-height: clamp(100px, 15hv, 400px);
-    --challenge-card-width: clamp(250px, 25vw, 600px);
+    --nav-height: 4em;
+    --main-height: calc(100vh - var(--nav-height));
+    --hero-height: calc(9/10*var(--main-height));
+    
 
-    --challenge-dialog-height: clamp(350px, 50vh, 550px);
-    --challenge-dialog-height: clamp(400px, 70vw, 700px);
+
+    --challenge-card-height: clamp(100px, 20vh, 200px);
+    --challenge-card-width: clamp(200px, 20vw, 250px);
+
+    --challenge-dialog-height: clamp(350px, 50vh, 5500px);
+    --challenge-dialog-width: clamp(400px, 80vw, 700px);
+
+
+      /*****************************/
+     /********  PADDINGS  *********/
+    /*****************************/
+
+    --challenge-padding-inline: 10%;
 }
 
 body{
