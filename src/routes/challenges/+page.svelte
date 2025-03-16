@@ -43,7 +43,7 @@
         sub_categories: ["crypto", "osint", "pwn", "blockchain"],
         first_solvers: [{username:"ZebrasNotHorses", class:"230S"}]
     }
-    
+
     let challenges = [challenge_data_example, skibidi_challenge_data,challenge_data_example, challenge_data_example,challenge_data_example, challenge_data_example, challenge_data_example2 ,challenge_data_example2, challenge_data_example2, challenge_data_example2, challenge_data_example2]
     let categories = ["Introduction", "Web", "Pwn", "Crypto", "Reversing", "Forensics", "Osint", "Blockchain", "Misc"];
     let modal_data:Challenge_data;
@@ -56,25 +56,26 @@
     
 </script>
 
-<h1 class="route-title text-6xl font-mono mt-4">Challenges</h1>
-<article class="challenge-container w-3/4">
-{#each categories as category}
-    <section class="category-container flex flex-col">
-        <h5 class="category-header text-3xl border-b-2 border-[var(--color-accent-dark)] my-4 pb-1">{category}</h5>
+<div class="content">
+    <h1 class="route-title">Challenges</h1>
+    <article class="challenge-container w-full">
+    {#each categories as category}
+        <section class="category-container flex flex-col">
+            <h3 class="category-header border-b-2 border-[var(--color-accent-dark)] my-4 pb-1">{category}</h3>
 
-        {#if challenges.filter((challenge) => challenge.main_category==category?.toLowerCase()).length > 0}
-        <ul class="grid items-stretch grid-cols-[repeat(auto-fit,minmax(200px,1fr))] grid-auto-rows-[150px] auto-rows-min gap-4">
-            {#each challenges.filter((challenge) => challenge.main_category==category?.toLowerCase()) as challenge_data}
-                <li on:click={() => {open_dialog(challenge_data)}} class="h-38 w-full"><ChallengeCard {challenge_data}></ChallengeCard></li>
-            {/each}
-        </ul>
-        {:else}
-        <p>No challenges yet</p>
-        {/if}
-    </section>
-{/each}
-</article>
-
+            {#if challenges.filter((challenge) => challenge.main_category==category?.toLowerCase()).length > 0}
+            <ul class="grid items-stretch grid-cols-[repeat(auto-fit,minmax(200px,1fr))] grid-auto-rows-[150px] auto-rows-min gap-4">
+                {#each challenges.filter((challenge) => challenge.main_category==category?.toLowerCase()) as challenge_data}
+                    <li on:click={() => {open_dialog(challenge_data)}} class="h-38 w-full"><ChallengeCard {challenge_data}></ChallengeCard></li>
+                {/each}
+            </ul>
+            {:else}
+            <p>No challenges yet</p>
+            {/if}
+        </section>
+    {/each}
+    </article>
+</div>
 <ChallengeDialog on:click={() => {show_challenge_dialog=false}} challenge_data={modal_data} {show_challenge_dialog}></ChallengeDialog>
 <!-- {#each challenges as challenge_data}
     <ChallengeCard challenge_data={challenge_data}></ChallengeCard>

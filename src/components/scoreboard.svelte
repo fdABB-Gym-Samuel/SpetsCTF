@@ -13,6 +13,7 @@
         {username: "Nils Nachname", score:Math.floor(Math.random()*10000), class:"230S", school:"Hitachigymnasiet Västerås"},
     ])
     
+    
 
     const include_schools = $derived([...new Set(players.map(obj => obj.school))]);
     let original_classes = [...new Set(players.map(obj => obj.class))]
@@ -26,16 +27,16 @@
 </script>
 
 
-<div class="scoreboard flex flex-col justify-center w-full flex-shrink-1 pt-4">
+<div class="scoreboard flex flex-col justify-center min-w-fit flex-grow-1 pt-4">
     <div class="flex flex-col justify-between mb-2">
         <h3 class="scoreboard-title text-5xl">{title}:</h3>
         {#if type === "users"}
-        <div class="class-filtering flex flex-row flex-wrap text-center justify-start items-end gap-1">
+        <div class="class-filtering flex flex-row flex-wrap text-center justify-start items-end gap-1 w-full align-middle">
             {#each original_classes as _class}
-            <div class=" break-all bg-neutral-600 text-neutral-200 px-1 text-sm rounded-sm"
+            <div class="bg-neutral-600 text-neutral-200 px-1 text-sm rounded-sm"
             class:bg-neutral-800={!include_classes.includes(_class)} 
             class:text-neutral-400={!include_classes.includes(_class)}>
-                <label class="pr-0.5" for={_class}>{_class}</label><input 
+                <label class="pr-0.5 h-full align-text-bottom" for={_class}>{_class}</label><input 
                     class="rounded-sm peer appearance-none w-3 h-3 bg-dim-beige checked:bg-accent-dark" 
                     type="checkbox" 
                     id={_class} 
@@ -49,24 +50,24 @@
         {/if}
     </div>
     <!-- <ol class="scoreboard flex flex-col list-decimal list-inside"> -->
-     <table class="w-full overflow-scroll">
+    <table class="overflow-scroll">
         <thead>
-            <tr class=" my-10 border-b-1 border-b-[var(--color-accent-dark)]">
-                <th class="px-2 uppercase font-bold text-left w-5">#</th>
-                <th class="px-2 uppercase font-bold text-left w-fit">Username</th>
+            <tr class=" my-10 w-fit border-b-1 border-b-[var(--color-accent-dark)]">
+                <th class="px-2 uppercase font-bold text-left w-1">#</th>
+                <th class="px-2 uppercase font-bold text-left w-1">Username</th>
                 <!-- <th class="px-4 uppercase font-bold text-left w-fit">School</th> -->
-                <th class="px-4 uppercase font-bold text-center w-5">Class</th>
-                <th class="px-2 uppercase font-bold text-right w-5">Score</th>
+                <th class="px-4 uppercase font-bold text-center w-1">Class</th>
+                <th class="px-2 uppercase font-bold text-right w-1">Score</th>
             </tr>
         </thead>
         <tbody>
             {#each sorted_players as player, i}
-            <tr class="border-b-1 border-b-[var(--color-accent-dark)] outline-[var(--color-accent-dark)]">
-                <td class="px-2 h-15 mt-2 text-left">{i+1}</td>
-                <td class="px-2 h-15 mt-2 text-left">{player.username}</td>
+            <tr class="border-b-1 w-fit text-wrap border-b-[var(--color-accent-dark)] outline-[var(--color-accent-dark)]">
+                <td class="px-2 h-12 mt-2 text-left">{i+1}</td>
+                <td class="px-2 h-12 mt-2 text-left truncate">{player.username}</td>
                 <!-- <td class="px-4 h-12 mt-2 text-left">{player.school}</td> -->
-                <td class="px-4 h-15 mt-2 text-center">{player.class}</td>
-                <td class="px-2 h-15 mt-2 text-right">{player.score}</td>
+                <td class="px-4 h-12 mt-2 text-center">{player.class}</td>
+                <td class="px-2 h-12 mt-2 text-right">{player.score}</td>
             </tr>
             {/each}
         </tbody>

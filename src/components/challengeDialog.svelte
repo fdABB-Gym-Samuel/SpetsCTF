@@ -55,11 +55,11 @@
                 <ul class="resources">
                     {#each challenge_data.resources as resource}
                     {#if resource.type === "link"}
-                    <li><i class="fa-solid fa-link"></i> <a href={resource.implied_text}>{resource.displayed_text}</a></li>
+                    <li class="challenge-resource"><i class="fa-solid fa-link"></i> <a href={resource.implied_text}>{resource.displayed_text}</a></li>
                     {:else if resource.type === "file"}
-                    <li><i class="fa-solid fa-file"></i> <a href={resource.implied_text}>{resource.displayed_text}</a></li>
+                    <li class="challenge-resource"><i class="fa-solid fa-file"></i> <a href={resource.implied_text}>{resource.displayed_text}</a></li>
                     {:else}
-                    <li class="flex flex-row gap-1">
+                    <li class="flex flex-row gap-1 challenge-resource">
                         <p><i class="fa-solid fa-terminal"></i> {resource.displayed_text}</p>
                         <button title="Copy to clipboard" class="relative" on:click={() => {copyToClipboard(resource.implied_text)}}><i class="fa-solid fa-copy"></i>
                             {#if show_copied_message}
