@@ -1,1 +1,1 @@
-ALTER TABLE users ADD COLUMN github_username TEXT;
+ALTER TABLE users ADD COLUMN github_username TEXT UNIQUE;

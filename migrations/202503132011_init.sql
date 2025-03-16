@@ -7,7 +7,7 @@ CREATE TABLE classes (
 
 CREATE TABLE users (
     id UUID NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
-    github_id INT NOT NULL,
+    github_id INT NOT NULL UNIQUE,
     display_name VARCHAR(64),
     represents_class VARCHAR(16),
     FOREIGN KEY (represents_class) REFERENCES classes(name)

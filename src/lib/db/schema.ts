@@ -6,7 +6,7 @@ export type Class = {
 export type User = {
 	id: string;
 	github_id: number;
-	github_username: string,
+	github_username: string;
 	display_name: string | null;
 	represents_class: string | null;
 };
@@ -40,3 +40,9 @@ export type ChallengeCreation = {
 	author: string;
 	challenge: string;
 };
+
+export interface Session {
+	id: string;
+	user_id: string;
+	expires_at: Date;
+}
