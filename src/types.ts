@@ -1,6 +1,6 @@
 
 // displayed_text is the text to be shown
-// implied_text is the text to be copied, or the url to go to
+// implied_text is the text to be copied, or the url to go to, this should mostly be the same as displayed_text
 // type is what type the resource is, can be "link", "command", "file", will dictate how it renders
 export interface resource {
     displayed_text: string,
