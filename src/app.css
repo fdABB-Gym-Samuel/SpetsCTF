@@ -103,10 +103,12 @@ margin-top: 5px;
     --challenge-padding-inline: 5%;
     --main-padding-inline: 10%;
 
+
+
 }
 
 body{
-    @apply bg-background-dark h-full;
+    @apply bg-background-dark h-full box-border p-0 m-0 w-screen ;
     /* @apply font-[var(--font-main)]; */
     @apply font-mono;
 
@@ -121,6 +123,10 @@ h3{
     @apply text-2xl md:text-4xl
 }
 
+button:not(.ignore-default) {
+    @apply flex justify-around gap-2 bg-button-dark px-3 py-2 rounded-md border-2 border-foreground-dark active:border-0;
+}
+
 
 .route-title{
     @apply text-4xl mt-4 text-left w-full md:text-6xl;
@@ -131,10 +137,10 @@ h3{
     @apply w-full pt-5 px-[var(--main-padding-inline)];
 }
 
-a:not(.nav-option):not(.challenge-resource){
+/* a:not(.nav-option, .challenge-resource){
     @apply text-accent-dark dark:text-accent-dark underline;
 
-}
+} */
 
 .challenge-resource{
     @apply text-background-dark dark:text-background-light underline font-bold;

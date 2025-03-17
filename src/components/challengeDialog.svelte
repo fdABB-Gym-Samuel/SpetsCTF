@@ -61,7 +61,7 @@
                     {:else}
                     <li class="flex flex-row gap-1 challenge-resource">
                         <p><i class="fa-solid fa-terminal"></i> {resource.displayed_text}</p>
-                        <button title="Copy to clipboard" class="relative" on:click={() => {copyToClipboard(resource.implied_text)}}><i class="fa-solid fa-copy"></i>
+                        <button title="Copy to clipboard" class="relative ignore-default" on:click={() => {copyToClipboard(resource.implied_text)}}><i class="fa-solid fa-copy"></i>
                             {#if show_copied_message}
                             <div class="absolute bottom-6 -translate-x-5 py-2 px-2 text-xs rounded-md bg-background-dark">Copied!</div>
                             {/if}

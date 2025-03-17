@@ -7,9 +7,9 @@
         {username: "Agartha Warriors", score:Math.floor(Math.random()*10000), class:"2301", school:"Hitachigymnasiet Västerås"},
         {username: "ZebrasNotHorses", score:Math.floor(Math.random()*10000), class:"230S", school:"Hitachigymnasiet Västerås"},
         {username: "Black Mesa", score:Math.floor(Math.random()*10000), class:"220S", school:"Hitachigymnasiet Västerås"},
-        {username: "Vår Herres Knektar", score:Math.floor(Math.random()*10000), class:"2202", school:"Hitachigymnasiet Västerås"},
+        {username: "Vår Herres Knektar Vår Herres Knektar", score:Math.floor(Math.random()*10000), class:"2202", school:"Hitachigymnasiet Västerås"},
         {username: "Bra Fråga", score:Math.floor(Math.random()*10000), class:"230S", school:"Hitachigymnasiet Västerås"},
-        {username: "Ian Terzo", score:Math.floor(Math.random()*10000), class:"230S", school:"Hitachigymnasiet Västerås"},
+        {username: "IanTerzo", score:Math.floor(Math.random()*10000), class:"230S", school:"Hitachigymnasiet Västerås"},
         {username: "Nils Nachname", score:Math.floor(Math.random()*10000), class:"230S", school:"Hitachigymnasiet Västerås"},
     ])
     
@@ -27,7 +27,7 @@
 </script>
 
 
-<div class="scoreboard flex flex-col justify-center min-w-fit flex-grow-1 pt-4">
+<div class="scoreboard flex h-full flex-col justify-center min-w-fit flex-grow-1 pt-4">
     <div class="flex flex-col justify-between mb-2">
         <h3 class="scoreboard-title text-5xl">{title}:</h3>
         {#if type === "users"}
@@ -62,9 +62,9 @@
         </thead>
         <tbody>
             {#each sorted_players as player, i}
-            <tr class="border-b-1 w-fit text-wrap border-b-[var(--color-accent-dark)] outline-[var(--color-accent-dark)]">
+            <tr class="border-b-1 break-words w-fit text-wrap border-b-[var(--color-accent-dark)] outline-[var(--color-accent-dark)]">
                 <td class="px-2 h-12 mt-2 text-left">{i+1}</td>
-                <td class="px-2 h-12 mt-2 text-left truncate">{player.username}</td>
+                <td class="px-2 h-12 mt-2 text-left break-words">{player.username}</td>
                 <!-- <td class="px-4 h-12 mt-2 text-left">{player.school}</td> -->
                 <td class="px-4 h-12 mt-2 text-center">{player.class}</td>
                 <td class="px-2 h-12 mt-2 text-right">{player.score}</td>
@@ -72,5 +72,8 @@
             {/each}
         </tbody>
      </table>
+     {#if type === "users"}
+     <div class="h-full"></div>
+     {/if}
 
 </div>

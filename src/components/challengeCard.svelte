@@ -7,7 +7,7 @@
 <!-- <main class="card flex flex-col justify-between bg-button-dark h-[var(--challenge-card-height)] w-[var(--challenge-card-width)] rounded-[var(--card-radius)] px-4 py-2"> -->
 <main class="card flex flex-col justify-between bg-button-dark h-full w-full rounded-[var(--card-radius)] px-4 py-2">
         <section class="top">
-            <h5 class="challenge-name text-2xl">{challenge_data.name}</h5>
+            <h5 class="challenge-name text-2xl max-h-4">{challenge_data.name}</h5>
             <ul class="categroies flex flex-row flex-wrap w-full">
                 {#each challenge_data.categories as category}
                 <li class="text-xs bg-foreground-dark text-background-dark px-1 py-0.5 mr-1.5 mt-1 rounded-md">{category}</li>
