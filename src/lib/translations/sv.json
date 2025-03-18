@@ -1,13 +1,15 @@
 {
-  "about": "Om",
-  "ctf": "CTF",
-  "flag": "Flagga",
-  "flag_format": "Flaggformat",
-  "home": "Hem",
-  "leaderboard": "Topplista",
-  "results": "Resultat",
-  "submit": "Skicka",
-  "team": "Lag",
-  "user": "Användare",
-  "welcome": "Välkommen"
+	"about": "Om",
+	"ctf": "CTF",
+	"flag": "Flagga",
+	"flag_format": "Flaggformat",
+	"home": "Hem",
+	"leaderboard": "Topplista",
+	"login": "Logga in",
+	"loginwithgithub": "Logga in med GitHub",
+	"results": "Resultat",
+	"submit": "Skicka",
+	"team": "Lag",
+	"user": "Användare",
+	"welcome": "Välkommen"
 }
