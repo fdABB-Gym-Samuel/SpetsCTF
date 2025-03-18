@@ -1,10 +1,13 @@
 {
   "about": "Om",
+  "by_students_for_students": "Av elever, för elever",
+  "challenges": "Utmaningar",
   "ctf": "CTF",
   "flag": "Flagga",
   "flag_format": "Flaggformat",
   "home": "Hem",
   "leaderboard": "Topplista",
+  "log_in": "Logga in",
   "results": "Resultat",
   "submit": "Skicka",
   "team": "Lag",

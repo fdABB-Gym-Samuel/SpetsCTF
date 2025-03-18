@@ -1,10 +1,13 @@
 {
   "about": "About",
+  "by_students_for_students": "By students, for students",
+  "challenges": "Challenges",
   "ctf": "CTF",
   "flag": "Flag",
   "flag_format": "Flag format",
   "home": "Home",
   "leaderboard": "Leaderboard",
+  "log_in": "Log in",
   "results": "Results",
   "submit": "Submit",
   "team": "Team",
