@@ -7,12 +7,11 @@ import { validateCategory } from '$lib/db/functions';
 import type { Category, Challenges } from '$lib/db/db';
 import type { Insertable } from 'kysely';
 
-export const load = async ({locals}: ServerLoadEvent) => {
+export const load = async ({ locals }: ServerLoadEvent) => {
 	if (locals.user?.is_admin !== true) {
-		error(400, {message: 'Not authorized'});
+		error(400, { message: 'Not authorized' });
 	}
 
-	
 	const challs = await db.selectFrom('challenges').selectAll().execute();
 
 	console.log(challs);

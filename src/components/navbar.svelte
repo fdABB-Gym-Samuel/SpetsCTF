@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { goto } from "$app/navigation";
-	import type { Users } from "$lib/db/db";
-	import type { Selectable } from "kysely";
+	import { goto } from '$app/navigation';
+	import type { Users } from '$lib/db/db';
+	import type { Selectable } from 'kysely';
 
 	interface Props {
-		user: Selectable<Users> | undefined
-	};
+		user: Selectable<Users> | undefined;
+	}
 
 	let { user }: Props = $props();
 	console.log(user);
@@ -29,9 +29,26 @@
 	</div>
 	<div class="right">
 		{#if user}
-			<a href='/user' class="underline flex flex-row space-x-4 items-center">
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-				{user.display_name || user.github_username}</a>
+			<a href="/user" class="flex flex-row items-center space-x-4 underline">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="lucide lucide-user"
+					><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle
+						cx="12"
+						cy="7"
+						r="4"
+					/></svg
+				>
+				{user.display_name || user.github_username}</a
+			>
 		{:else}
 			<button
 				onclick={() => goto('/login')}

@@ -34,7 +34,7 @@ export async function createSession(token: string, user_id: string) {
 	const session: Insertable<UserSessions> = {
 		id: sessionIdHash,
 		user_id,
-		expires_at: new Date(Date.now() +  1000 * 60 * 60 * 24 * 30)
+		expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30)
 	};
 
 	const res = await db
