@@ -6,8 +6,8 @@
 
 <Navbar></Navbar>
 
+
 <main class="flex flex-col items-stretch bg-background-dark min-h-[var(--main-height)] w-screen text-foreground-dark static py-[var(--nav-height)]">
 		{@render children()}
 </main>
 
-<style></style>
