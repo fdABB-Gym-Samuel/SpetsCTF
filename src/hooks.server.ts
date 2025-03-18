@@ -1,7 +1,11 @@
 import type { Handle } from '@sveltejs/kit';
 import pool from '$lib/db/pgpool';
 import { getTranslations } from '$lib/translations';
-import { deleteSessionTokenCookie, setSessionTokenCookie, validateSessionToken } from '$lib/db/functions';
+import {
+	deleteSessionTokenCookie,
+	setSessionTokenCookie,
+	validateSessionToken
+} from '$lib/db/functions';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const token = event.cookies.get('session') ?? null;
@@ -18,7 +22,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		return response;
 	}
 
-	const {session} = await validateSessionToken(token);
+	const { session } = await validateSessionToken(token);
 	if (session !== null) {
 		setSessionTokenCookie(event, token, session.expires_at);
 	} else {
@@ -26,7 +30,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 
 	event.locals.session = session;
-	
+
 	const response = resolve(event);
 	return response;
 };

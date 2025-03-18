@@ -20,4 +20,3 @@ services:
 
 networks:
   pg-network:
-

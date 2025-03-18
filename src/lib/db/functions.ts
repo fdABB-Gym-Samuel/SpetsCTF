@@ -1,11 +1,23 @@
 import { createHash } from 'node:crypto';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { Category, UserSessions, Users } from './db';
-import { db } from './database'; 
-import type { Session } from 'node:inspector/promises';
+import { db } from './database';
+import type { Insertable, Selectable } from 'kysely';
 
 export function validateCategory(value: any): Category {
-	if (["blockchain", "crypto", "forensics", "introduction", "misc", "osint", "pwn", "reversing", "web"].includes(value)) {
+	if (
+		[
+			'blockchain',
+			'crypto',
+			'forensics',
+			'introduction',
+			'misc',
+			'osint',
+			'pwn',
+			'reversing',
+			'web'
+		].includes(value)
+	) {
 		return value as Category;
 	} else {
 		return 'misc' as Category;
@@ -17,39 +29,31 @@ export function generateSessionToken(): string {
 	return token;
 }
 
-export async function createSession(token: string, user_id: string): Promise<Session> {
+export async function createSession(token: string, user_id: string) {
 	const sessionIdHash = createHash('sha256').update(new TextEncoder().encode(token)).digest('hex');
-	const session: UserSessions = {
+	const session: Insertable<UserSessions> = {
 		id: sessionIdHash,
 		user_id,
-		expires_at: new Date(),
+		expires_at: new Date(Date.now())
 	};
 
-	await db.insertInto('user_sessions')
+	const res = await db
+		.insertInto('user_sessions')
 		.values(session)
-		.execute()
-	
-	return session;
+		.returningAll()
+		.executeTakeFirst();
+
+	return res;
 }
 
 export type SessionValidationResult = { session: UserSessions } | { session: null };
 
-export async function getUserFromUserId(user_id: string): Promise<UserResult> {
-	// const res = await pool.query(
-	// 	'SELECT * FROM users WHERE id = $1 LIMIT 1;',
-	// 	[user_id]
-	// );
-
+export async function getUserFromUserId(user_id: string) {
 	const res = await db.selectFrom('users').where('id', '=', user_id).executeTakeFirst();
-	if (!res) {
-		return null
-	}
-
 	return res;
-
 }
 
-export async function validateSessionToken(token: string): Promise<SessionValidationResult> {
+export async function validateSessionToken(token: string) {
 	const sessionIdHash = createHash('sha256').update(new TextEncoder().encode(token)).digest('hex');
 	// const res = await pool.query(
 	// 	'SELECT user_sessions.id, user_sessions.user_id, user_sessions.expires_at, users.id AS uid, users.display_name, users.github_username, users.github_id, users.represents_class FROM user_sessions INNER JOIN users ON users.id = user_sessions.user_id WHERE user_sessions.id = $1;',
@@ -57,26 +61,26 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 	// );
 
 	const res = await db
-  .selectFrom('user_sessions')
-  .innerJoin('users', 'users.id', 'user_sessions.user_id')
-  .select([
-    'user_sessions.id',
-    'user_sessions.user_id',
-    'user_sessions.expires_at',
-    'users.id as uid',
-    'users.display_name',
-    'users.github_username',
-    'users.github_id',
-    'users.represents_class'
-  ])
-  .where('user_sessions.id', '=', sessionIdHash)
-  .executeTakeFirst();
+		.selectFrom('user_sessions')
+		.innerJoin('users', 'users.id', 'user_sessions.user_id')
+		.select([
+			'user_sessions.id',
+			'user_sessions.user_id',
+			'user_sessions.expires_at',
+			'users.id as uid',
+			'users.display_name',
+			'users.github_username',
+			'users.github_id',
+			'users.represents_class'
+		])
+		.where('user_sessions.id', '=', sessionIdHash)
+		.executeTakeFirst();
 
-  if (!res) {
-  	return {session: null}
-  }
+	if (!res) {
+		return { session: null };
+	}
 
-	const session: UserSessions = {
+	const session: Selectable<UserSessions> = {
 		expires_at: res.expires_at,
 		id: res.uid,
 		user_id: res.user_id
@@ -89,7 +93,10 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 
 	if (Date.now() >= session.expires_at.getTime() - 1000 * 60 * 60 * 24 * 15) {
 		session.expires_at = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
-		db.updateTable('user_sessions').set({expires_at: session.expires_at}).where('id', '=', sessionIdHash).execute();
+		db.updateTable('user_sessions')
+			.set({ expires_at: session.expires_at })
+			.where('id', '=', sessionIdHash)
+			.execute();
 	}
 
 	return { session };
@@ -121,24 +128,12 @@ export function deleteSessionTokenCookie(event: RequestEvent): void {
 	});
 }
 
-type UserResult = Users | null;
-export async function getUserFromGithubId(github_id: number): Promise<UserResult> {
-	// const res = await pool.query('SELECT * FROM users WHERE github_id = $1 LIMIT 1;', [github_id]);
-	const res = await db.selectFrom('users').selectAll().where('github_id', '=', github_id).executeTakeFirst();
+export async function getUserFromGithubId(github_id: number) {
+	const res = await db
+		.selectFrom('users')
+		.selectAll()
+		.where('github_id', '=', github_id)
+		.executeTakeFirst();
 
-	if (!res) {
-		return null;
-	}
-
-	const retUser: Users = {
-		display_name: res.display_name,
-		github_id: res.github_id,
-		github_username: res.github_username,
-		id: res.id,
-		is_admin: res.is_admin,
-		represents_class: res.represents_class,
-	}
-
-	return res
-
+	return res;
 }

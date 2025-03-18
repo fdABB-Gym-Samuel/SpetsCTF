@@ -40,5 +40,4 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		const sessionToken = generateSessionToken();
 		const session = await createSession(sessionToken, existingUser.id);
 	}
-
 }
