@@ -49,7 +49,7 @@
                 <p class="num-solves"><i class="fa-solid fa-flag"></i> {challenge_data.num_solves}</p>
             </div>
         </section>
-        <section class="middle flex flex-row text-foreground-dark justify-between gap-4 h-full w-full overflow-hidden">
+        <section class="middle flex flex-row text-foreground-dark justify-between gap-2 h-full w-full px-4 overflow-hidden">
             <p class="challenge-description w-full overflow-scroll max-h-full">{challenge_data.description}</p>
             <div class="right flex flex-col w-full gap-3">
                 <ul class="resources">
