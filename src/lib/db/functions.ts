@@ -34,14 +34,14 @@ export async function createSession(token: string, user_id: string) {
 	const session: Insertable<UserSessions> = {
 		id: sessionIdHash,
 		user_id,
-		expires_at: new Date(Date.now())
+		expires_at: new Date(Date.now() +  1000 * 60 * 60 * 24 * 30)
 	};
 
 	const res = await db
 		.insertInto('user_sessions')
 		.values(session)
 		.returningAll()
-		.executeTakeFirst();
+		.executeTakeFirstOrThrow();
 
 	return res;
 }
@@ -55,10 +55,6 @@ export async function getUserFromUserId(user_id: string) {
 
 export async function validateSessionToken(token: string) {
 	const sessionIdHash = createHash('sha256').update(new TextEncoder().encode(token)).digest('hex');
-	// const res = await pool.query(
-	// 	'SELECT user_sessions.id, user_sessions.user_id, user_sessions.expires_at, users.id AS uid, users.display_name, users.github_username, users.github_id, users.represents_class FROM user_sessions INNER JOIN users ON users.id = user_sessions.user_id WHERE user_sessions.id = $1;',
-	// 	[sessionIdHash]
-	// );
 
 	const res = await db
 		.selectFrom('user_sessions')
@@ -71,19 +67,29 @@ export async function validateSessionToken(token: string) {
 			'users.display_name',
 			'users.github_username',
 			'users.github_id',
-			'users.represents_class'
+			'users.represents_class',
+			'users.is_admin'
 		])
 		.where('user_sessions.id', '=', sessionIdHash)
 		.executeTakeFirst();
 
 	if (!res) {
-		return { session: null };
+		return { session: null, user: null };
 	}
 
 	const session: Selectable<UserSessions> = {
 		expires_at: res.expires_at,
 		id: res.uid,
 		user_id: res.user_id
+	};
+
+	const user: Selectable<Users> = {
+		display_name: res.display_name,
+		github_id: res.github_id,
+		github_username: res.github_username,
+		id: res.uid,
+		represents_class: res.represents_class,
+		is_admin: res.is_admin
 	};
 
 	if (Date.now() >= session.expires_at.getTime()) {
@@ -99,7 +105,7 @@ export async function validateSessionToken(token: string) {
 			.execute();
 	}
 
-	return { session };
+	return { session, user };
 }
 
 export async function invalidateSession(session_id: string): Promise<void> {
