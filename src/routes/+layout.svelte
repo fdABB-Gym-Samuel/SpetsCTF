@@ -2,7 +2,7 @@
 	import '../app.css';
 	import Navbar from '../components/navbar.svelte';
 	let { children, data } = $props();
-	let { user , translations} = data;
+	let { user, translations } = data;
 </script>
 
 <Navbar {user} {translations}></Navbar>

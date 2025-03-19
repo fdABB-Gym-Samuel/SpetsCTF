@@ -4,13 +4,13 @@
 	import type { Selectable } from 'kysely';
 	import type { Challenges } from '$lib/db/db';
 
-    interface Props {
-        challenge_data: Selectable<Challenges>;
+	interface Props {
+		challenge_data: Selectable<Challenges>;
 		translations: Record<string, string>;
-    }
+	}
 
-    let { challenge_data, translations }: Props = $props();
-	
+	let { challenge_data, translations }: Props = $props();
+
 	// let show_challenge_dialog: boolean = $state(false);
 	let show_copied_message = $state(false);
 
@@ -30,11 +30,17 @@
 </script>
 
 <div
-	onclick={(e) => {if(e.currentTarget === e.target) {goto("/challenges")}}}
-	onkeydown={(e) => {if (e.key === "space") window.location.href="/challenges"}}
+	onclick={(e) => {
+		if (e.currentTarget === e.target) {
+			goto('/challenges');
+		}
+	}}
+	onkeydown={(e) => {
+		if (e.key === 'space') window.location.href = '/challenges';
+	}}
 	role="button"
 	tabindex="0"
-	class="backdrop bg-backdrop fixed top-0 flex h-screen w-screen items-center justify-center prevent-default"
+	class="backdrop bg-backdrop prevent-default fixed top-0 flex h-screen w-screen items-center justify-center"
 >
 	<dialog
 		class="bg-button-dark relative m-auto flex max-h-[calc(100vh-40px)] min-h-[var(--challenge-dialog-height)] w-[var(--challenge-dialog-width)] flex-col items-center gap-5 rounded-md px-[var(--challenge-padding-inline)] py-2 pb-15"
@@ -67,36 +73,36 @@
 				<!-- <ul class="resources">
 					{#each challenge_data.resources as resource}
 						 {#if resource.type === 'link'} -->
-							<!-- <li class="challenge-resource"> -->
-								<!-- <i class="fa-solid fa-link"></i> -->
-								<!-- <a href={resource.implied_text}>{resource.displayed_text}</a> -->
-							<!-- </li> -->
-						<!-- {:else if resource.type === 'file'} -->
-							<!-- <li class="challenge-resource"> -->
-								<!-- <i class="fa-solid fa-file"></i> -->
-								<!-- <a href={resource.implied_text}>{resource.displayed_text}</a> -->
-							<!-- </li> -->
-						<!-- {:else} -->
-							<!-- <li class="challenge-resource flex flex-row gap-1"> -->
-								<!-- <p><i class="fa-solid fa-terminal"></i> {resource.displayed_text}</p> -->
-								<!-- <button -->
-									<!-- title="Copy to clipboard" -->
-									<!-- class="ignore-default relative" -->
-									<!-- onclick={() => { 
+				<!-- <li class="challenge-resource"> -->
+				<!-- <i class="fa-solid fa-link"></i> -->
+				<!-- <a href={resource.implied_text}>{resource.displayed_text}</a> -->
+				<!-- </li> -->
+				<!-- {:else if resource.type === 'file'} -->
+				<!-- <li class="challenge-resource"> -->
+				<!-- <i class="fa-solid fa-file"></i> -->
+				<!-- <a href={resource.implied_text}>{resource.displayed_text}</a> -->
+				<!-- </li> -->
+				<!-- {:else} -->
+				<!-- <li class="challenge-resource flex flex-row gap-1"> -->
+				<!-- <p><i class="fa-solid fa-terminal"></i> {resource.displayed_text}</p> -->
+				<!-- <button -->
+				<!-- title="Copy to clipboard" -->
+				<!-- class="ignore-default relative" -->
+				<!-- onclick={() => { 
 										 // copyToClipboard(resource.implied_text); -->
-									<!-- // }} -->
-									<!-- ><i class="fa-solid fa-copy"></i> -->
-									<!-- {#if show_copied_message} -->
-										<!-- <div -->
-											<!-- class="bg-background-dark absolute bottom-6 -translate-x-5 rounded-md px-2 py-2 text-xs" -->
-										<!-- > -->
-											<!-- Copied! -->
-										<!-- </div> -->
-									<!-- {/if} -->
-								<!-- </button> -->
-							<!-- </li> -->
-						<!-- {/if} -->
-					<!-- {/each} -->
+				<!-- // }} -->
+				<!-- ><i class="fa-solid fa-copy"></i> -->
+				<!-- {#if show_copied_message} -->
+				<!-- <div -->
+				<!-- class="bg-background-dark absolute bottom-6 -translate-x-5 rounded-md px-2 py-2 text-xs" -->
+				<!-- > -->
+				<!-- Copied! -->
+				<!-- </div> -->
+				<!-- {/if} -->
+				<!-- </button> -->
+				<!-- </li> -->
+				<!-- {/if} -->
+				<!-- {/each} -->
 				<!-- </ul>  -->
 				<!-- <p class="author font-bold"><i class="fa-solid fa-pen"></i> {challenge_data.author}</p> -->
 				<div class="first-solvers-wrapper flex flex-col justify-start">
@@ -110,18 +116,21 @@
 			</div>
 		</section>
 		<section class="bottom absolute bottom-2 w-10/12">
-			<form action={`/api/submit/${challenge_data.challenge_id}`} method="POST" class="flag-submission-form flex w-full flex-row gap-1">
+			<form
+				action={`/api/submit/${challenge_data.challenge_id}`}
+				method="POST"
+				class="flag-submission-form flex w-full flex-row gap-1"
+			>
 				<input
 					type="text"
 					name="flag"
 					class="flag bg-foreground-dark w-full rounded-sm px-1"
 					placeholder="SPETSCTF&#123;...&#125;"
 				/>
-				<button type='submit' class="submit-flag bg-foreground-dark h-8 w-8 rounded-sm text-center"
+				<button type="submit" class="submit-flag bg-foreground-dark h-8 w-8 rounded-sm text-center"
 					><i class="fa-solid fa-paper-plane">{translations.submitflag}</i></button
 				>
 			</form>
 		</section>
 	</dialog>
 </div>
-

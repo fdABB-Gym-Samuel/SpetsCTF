@@ -2,16 +2,15 @@
 	import ChallengeCard from '../../components/challengeCard.svelte';
 	import ChallengeDialog from '../../components/challengeDialog.svelte';
 	import type { resource, solver, Challenge_data } from '../../types';
-	import { page } from "$app/state"
+	import { page } from '$app/state';
 	let { data } = $props();
 	let { translations, challenges } = data;
 
-	let challengeId = $derived(page.url.searchParams.get("show"))
-	
+	let challengeId = $derived(page.url.searchParams.get('show'));
 
 	$inspect(challengeId);
 
-	let show_challenge_dialog:boolean = $derived(challengeId !== null);
+	let show_challenge_dialog: boolean = $derived(challengeId !== null);
 
 	let categories = [
 		'Introduction',
@@ -25,18 +24,17 @@
 		'Misc'
 	];
 	let modal_data = $derived.by(() => {
-		if (show_challenge_dialog){
-			return challenges.find((chall) => String(chall.challenge_id) === challengeId)
-		}
-		else{
-			return undefined
+		if (show_challenge_dialog) {
+			return challenges.find((chall) => String(chall.challenge_id) === challengeId);
+		} else {
+			return undefined;
 		}
 	});
 </script>
 
 <div class="content">
 	<h1 class="route-title">{translations.challenges}</h1>
-	<p>Skibidi: {page.url.searchParams.get("show")}</p>
+	<p>Skibidi: {page.url.searchParams.get('show')}</p>
 	<p>Skibidi: {challengeId}</p>
 	<article class="challenge-container w-full">
 		{#each categories as category}
@@ -51,8 +49,11 @@
 					>
 						{#each challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challenge_data}
 							<li>
-								<a href={`challenges?show=${challenge_data.challenge_id}`} data-sveltekit-noscroll class="h-38 w-full"
-									><ChallengeCard data={{challenge_data:challenge_data}}></ChallengeCard></a
+								<a
+									href={`challenges?show=${challenge_data.challenge_id}`}
+									data-sveltekit-noscroll
+									class="h-38 w-full"
+									><ChallengeCard data={{ challenge_data: challenge_data }}></ChallengeCard></a
 								>
 							</li>
 						{/each}
@@ -65,10 +66,7 @@
 	</article>
 </div>
 {#if challengeId}
-	<ChallengeDialog
-		challenge_data={modal_data}
-		{translations}
-	></ChallengeDialog>
+	<ChallengeDialog challenge_data={modal_data} {translations}></ChallengeDialog>
 {/if}
 <!-- {#each challenges as challenge_data}
     <ChallengeCard challenge_data={challenge_data}></ChallengeCard>

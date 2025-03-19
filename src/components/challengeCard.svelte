@@ -1,7 +1,7 @@
 <script lang="ts">
 	// export let challenge_data;
-	let { data } = $props()
-	let { challenge_data } = data
+	let { data } = $props();
+	let { challenge_data } = data;
 </script>
 
 <!-- <main class="card flex flex-col justify-between bg-button-dark h-[var(--challenge-card-height)] w-[var(--challenge-card-width)] rounded-[var(--card-radius)] px-4 py-2"> -->
