@@ -12,7 +12,14 @@ export function validateCategory(value: any): Category {
 export async function insertChallenge(pool: Pool, challenge: Challenge) {
 	const query =
 		'INSERT INTO challenges (challenge_id, points, challenge_category, display_name, flag, flag_format) VALUES ($1, $2, $3, $4, $5, $6) RETURNING challenge_id;';
-	const values = [challenge.challenge_id, challenge.points, challenge.challenge_category, challenge.display_name, challenge.flag, challenge.flag_format];
+	const values = [
+		challenge.challenge_id,
+		challenge.points,
+		challenge.challenge_category,
+		challenge.display_name,
+		challenge.flag,
+		challenge.flag_format
+	];
 
 	const client = await pool.connect();
 
