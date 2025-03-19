@@ -6,3 +6,7 @@ export const load: PageServerLoad = async (_event: ServerLoadEvent) => {
     const rows = await db.selectFrom("challenges").selectAll().execute()
     return { challenges: rows }
 }
+
+
+
+ 
