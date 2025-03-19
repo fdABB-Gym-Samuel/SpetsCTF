@@ -3,9 +3,9 @@ import type { DB } from './db.d.ts';
 import pool from './pgpool';
 
 const dialect = new PostgresDialect({
-  pool
+	pool
 });
 
 export const db = new Kysely<DB>({
-  dialect
+	dialect
 });

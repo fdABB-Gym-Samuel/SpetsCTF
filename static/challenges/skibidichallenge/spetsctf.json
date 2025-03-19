@@ -1,6 +1,5 @@
 {
-    "display_name": "Skibidi Challenge",
-    "flag_format": "ctf{...}",
-    "category": "osint"
-
+	"display_name": "Skibidi Challenge",
+	"flag_format": "ctf{...}",
+	"category": "osint"
 }

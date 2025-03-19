@@ -1,13 +1,14 @@
 <script lang="ts">
 	import '../app.css';
 	import Navbar from '../components/navbar.svelte';
-	let { children } = $props();
+	let { children, data } = $props();
+	let { user } = data;
 </script>
 
-<Navbar></Navbar>
+<Navbar {user}></Navbar>
 
-
-<main class="flex flex-col items-stretch bg-background-dark min-h-[var(--main-height)] w-screen text-foreground-dark static py-[var(--nav-height)]">
-		{@render children()}
+<main
+	class="bg-background-dark text-foreground-dark static flex min-h-[var(--main-height)] w-screen flex-col items-stretch py-[var(--nav-height)]"
+>
+	{@render children()}
 </main>
-
