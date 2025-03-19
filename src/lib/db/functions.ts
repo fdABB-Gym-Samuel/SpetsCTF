@@ -31,6 +31,7 @@ export function generateSessionToken(): string {
 
 export async function createSession(token: string, user_id: string) {
 	const sessionIdHash = createHash('sha256').update(new TextEncoder().encode(token)).digest('hex');
+	console.debug('session id hash in createSession:', sessionIdHash);
 	const session: Insertable<UserSessions> = {
 		id: sessionIdHash,
 		user_id,
@@ -79,7 +80,7 @@ export async function validateSessionToken(token: string) {
 
 	const session: Selectable<UserSessions> = {
 		expires_at: res.expires_at,
-		id: res.uid,
+		id: res.id,
 		user_id: res.user_id
 	};
 
@@ -108,8 +109,8 @@ export async function validateSessionToken(token: string) {
 	return { session, user };
 }
 
-export async function invalidateSession(session_id: string): Promise<void> {
-	db.deleteFrom('user_sessions').where('id', '=', session_id).execute();
+export async function invalidateSession(sessionIdHash: string): Promise<void> {
+	db.deleteFrom('user_sessions').where('id', '=', sessionIdHash).execute();
 }
 
 export async function invalidateAllSessions(user_id: string): Promise<void> {

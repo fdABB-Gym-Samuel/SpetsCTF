@@ -8,7 +8,7 @@ declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
-			session: Selectable<UserSessions> | null;
+			session: Selectable<UserSessions> | undefined;
 			translations: Record<string, string>;
 			user: Selectable<Users> | undefined;
 		}

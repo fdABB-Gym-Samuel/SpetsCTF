@@ -1,7 +1,17 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { goto } from '$app/navigation';
 	let { data, form } = $props();
 	let { translations, user, availableClasses } = data;
+	import { onMount } from 'svelte';
+
+	onMount(async () => {
+		if (form?.justLoggedOut) {
+			await goto('/', {
+				invalidateAll: true
+			});
+		}
+	});
 </script>
 
 <div class="flex flex-col space-y-4 p-4">
