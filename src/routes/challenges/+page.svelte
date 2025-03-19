@@ -9,6 +9,7 @@
 	let challengeId = $derived(page.url.searchParams.get('show'));
 
 	$inspect(challengeId);
+	console.log(challenges);
 
 	let show_challenge_dialog: boolean = $derived(challengeId !== null);
 
@@ -34,8 +35,7 @@
 
 <div class="content">
 	<h1 class="route-title">{translations.challenges}</h1>
-	<p>Skibidi: {page.url.searchParams.get('show')}</p>
-	<p>Skibidi: {challengeId}</p>
+
 	<article class="challenge-container w-full">
 		{#each categories as category}
 			<section class="category-container flex flex-col">

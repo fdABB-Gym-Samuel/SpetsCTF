@@ -13,6 +13,7 @@
 
 	// let show_challenge_dialog: boolean = $state(false);
 	let show_copied_message = $state(false);
+	console.log(challenge_data);
 
 	async function copyToClipboard(text_to_copy: string) {
 		try {
@@ -47,7 +48,7 @@
 	>
 		<section class="top flex w-full flex-col items-center">
 			<h3 class="challenge-title text-foreground-dark pt-5 pb-2 text-5xl">
-				{challenge_data.display_name}
+				{challenge_data.challenge_name}
 			</h3>
 			<ul class="categroies flex w-8/10 flex-row flex-wrap justify-center">
 				{#each [challenge_data.challenge_category] as category}
@@ -60,14 +61,14 @@
 			</ul>
 			<div class="solve-stats text-foreground-dark mt-1 flex flex-row gap-5">
 				<p class="points"><i class="fa-solid fa-circle-plus"></i> {challenge_data.points}</p>
-				<!-- <p class="num-solves"><i class="fa-solid fa-flag"></i> {challenge_data.num_solves}</p> -->
+				<p class="num-solves"><i class="fa-solid fa-flag"></i> {challenge_data.num_solves}</p>
 			</div>
 		</section>
 		<section
 			class="middle text-foreground-dark flex h-full w-full flex-row justify-between gap-2 overflow-hidden px-4"
 		>
 			<p class="challenge-description max-h-full w-full overflow-scroll">
-				{challenge_data.description}
+				{challenge_data.challenge_description}
 			</p>
 			<div class="right flex w-full flex-col gap-3">
 				<!-- <ul class="resources">
@@ -108,9 +109,9 @@
 				<div class="first-solvers-wrapper flex flex-col justify-start">
 					<h5 class="font-bold">First Solvers:</h5>
 					<ol class="first-solvers flex list-inside list-decimal flex-col justify-start">
-						<!-- {#each challenge_data.first_solvers as solver}
-							<li class="solver">{solver.username}</li>
-						{/each} -->
+						{#each challenge_data.first_solvers as solver}
+							<li class="solver">{solver.display_name}</li>
+						{/each}
 					</ol>
 				</div>
 			</div>
@@ -121,14 +122,19 @@
 				method="POST"
 				class="flag-submission-form flex w-full flex-row gap-1"
 			>
+				<label for="flag" class="text-foreground-dark text-xl font-semibold">Flag:</label>
 				<input
 					type="text"
 					name="flag"
 					class="flag bg-foreground-dark w-full rounded-sm px-1"
-					placeholder="SPETSCTF&#123;...&#125;"
+					placeholder={challenge_data.flag_format}
 				/>
-				<button type="submit" class="submit-flag bg-foreground-dark h-8 w-8 rounded-sm text-center"
-					><i class="fa-solid fa-paper-plane">{translations.submitflag}</i></button
+				<button
+					aria-label="Submit flag"
+					type="submit"
+					class="submit-flag bg-foreground-dark h-8 w-8 rounded-sm text-center"
+					><i class="fa-solid fa-paper-plane text-foreground-dark relative right-1.5 bottom-0.5"
+					></i></button
 				>
 			</form>
 		</section>

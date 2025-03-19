@@ -33,7 +33,7 @@ export const POST = async ({ request, locals, params }) => {
 	const _ = await db.insertInto('wargame_submissions').values(submission).executeTakeFirst();
 
 	return json({
-		success: true,
+		success: flag_correct,
 		message: 'Youre a real skibidi sigma!'
 	});
 };

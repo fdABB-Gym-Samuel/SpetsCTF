@@ -46,9 +46,11 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each users_scoreboard.filter((user) => {
-							if (user.represents_class) return include_classes.includes(user.represents_class);
-						}) as player, i}
+						{#each users_scoreboard
+							.filter((user) => {
+								if (user.represents_class) return include_classes.includes(user.represents_class);
+							})
+							.slice(0, 15) as player, i}
 							<tr
 								class="w-fit border-b-1 border-b-[var(--color-accent-dark)] text-wrap break-words outline-[var(--color-accent-dark)]"
 							>
