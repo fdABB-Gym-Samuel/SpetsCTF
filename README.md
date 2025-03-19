@@ -8,6 +8,6 @@ SpetsCTF is a ctf and wargames platform, meant to organize the annual SpetsCTF, 
 
 Things still needed:
 
-- [ ] Api for scoreboard
-- [ ] Api for Challenges
-- [ ] Update challengeCard and challengeDialog to work with api
+- [x] Api for scoreboard
+- [x] Api for Challenges
+- [x] Update challengeCard and challengeDialog to work with api
