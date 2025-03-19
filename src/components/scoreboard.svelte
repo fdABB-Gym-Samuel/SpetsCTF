@@ -88,7 +88,6 @@
 							class="peer bg-dim-beige checked:bg-accent-dark h-3 w-3 appearance-none rounded-sm"
 							type="checkbox"
 							id={_class}
-							on:click={console.log(include_classes)}
 							bind:group={include_classes}
 							value={_class}
 						/>

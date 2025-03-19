@@ -1,24 +1,16 @@
 <script lang="ts">
 	import type { resource, Challenge_data } from '../types';
+	import { goto } from '$app/navigation';
+	import type { Selectable } from 'kysely';
+	import type { Challenges } from '$lib/db/db';
 
     interface Props {
-        challenge_data: Challenge_data|undefined;
+        challenge_data: Selectable<Challenges>;
 		translations: Record<string, string>;
     }
 
-    let { challenge_data = {
-		name: 'Not Found',
-		id: '1',
-		description: '',
-		resources: [],
-		author: '',
-		points: 0,
-		num_solves: 0,
-		main_category: '',
-		sub_categories: [],
-		first_solvers: []
-	}, translations }: Props = $props();
-
+    let { challenge_data, translations }: Props = $props();
+	
 	// let show_challenge_dialog: boolean = $state(false);
 	let show_copied_message = $state(false);
 
@@ -38,7 +30,7 @@
 </script>
 
 <div
-	onclick={() => {window.location.href="/challenges"}}
+	onclick={(e) => {if(e.currentTarget === e.target) {goto("/challenges")}}}
 	onkeydown={(e) => {if (e.key === "space") window.location.href="/challenges"}}
 	role="button"
 	tabindex="0"
@@ -49,10 +41,10 @@
 	>
 		<section class="top flex w-full flex-col items-center">
 			<h3 class="challenge-title text-foreground-dark pt-5 pb-2 text-5xl">
-				{challenge_data.name}
+				{challenge_data.display_name}
 			</h3>
 			<ul class="categroies flex w-8/10 flex-row flex-wrap justify-center">
-				{#each [challenge_data.main_category, ...challenge_data.sub_categories] as category}
+				{#each [challenge_data.challenge_category] as category}
 					<li
 						class="bg-foreground-dark text-background-dark mt-1 mr-1.5 rounded-md px-2 py-1 text-xs"
 					>
@@ -62,7 +54,7 @@
 			</ul>
 			<div class="solve-stats text-foreground-dark mt-1 flex flex-row gap-5">
 				<p class="points"><i class="fa-solid fa-circle-plus"></i> {challenge_data.points}</p>
-				<p class="num-solves"><i class="fa-solid fa-flag"></i> {challenge_data.num_solves}</p>
+				<!-- <p class="num-solves"><i class="fa-solid fa-flag"></i> {challenge_data.num_solves}</p> -->
 			</div>
 		</section>
 		<section
@@ -72,55 +64,56 @@
 				{challenge_data.description}
 			</p>
 			<div class="right flex w-full flex-col gap-3">
-				<ul class="resources">
+				<!-- <ul class="resources">
 					{#each challenge_data.resources as resource}
-						{#if resource.type === 'link'}
-							<li class="challenge-resource">
-								<i class="fa-solid fa-link"></i>
-								<a href={resource.implied_text}>{resource.displayed_text}</a>
-							</li>
-						{:else if resource.type === 'file'}
-							<li class="challenge-resource">
-								<i class="fa-solid fa-file"></i>
-								<a href={resource.implied_text}>{resource.displayed_text}</a>
-							</li>
-						{:else}
-							<li class="challenge-resource flex flex-row gap-1">
-								<p><i class="fa-solid fa-terminal"></i> {resource.displayed_text}</p>
-								<button
-									title="Copy to clipboard"
-									class="ignore-default relative"
-									onclick={() => {
-										copyToClipboard(resource.implied_text);
-									}}
-									><i class="fa-solid fa-copy"></i>
-									{#if show_copied_message}
-										<div
-											class="bg-background-dark absolute bottom-6 -translate-x-5 rounded-md px-2 py-2 text-xs"
-										>
-											Copied!
-										</div>
-									{/if}
-								</button>
-							</li>
-						{/if}
-					{/each}
-				</ul>
-				<p class="author font-bold"><i class="fa-solid fa-pen"></i> {challenge_data.author}</p>
+						 {#if resource.type === 'link'} -->
+							<!-- <li class="challenge-resource"> -->
+								<!-- <i class="fa-solid fa-link"></i> -->
+								<!-- <a href={resource.implied_text}>{resource.displayed_text}</a> -->
+							<!-- </li> -->
+						<!-- {:else if resource.type === 'file'} -->
+							<!-- <li class="challenge-resource"> -->
+								<!-- <i class="fa-solid fa-file"></i> -->
+								<!-- <a href={resource.implied_text}>{resource.displayed_text}</a> -->
+							<!-- </li> -->
+						<!-- {:else} -->
+							<!-- <li class="challenge-resource flex flex-row gap-1"> -->
+								<!-- <p><i class="fa-solid fa-terminal"></i> {resource.displayed_text}</p> -->
+								<!-- <button -->
+									<!-- title="Copy to clipboard" -->
+									<!-- class="ignore-default relative" -->
+									<!-- onclick={() => { 
+										 // copyToClipboard(resource.implied_text); -->
+									<!-- // }} -->
+									<!-- ><i class="fa-solid fa-copy"></i> -->
+									<!-- {#if show_copied_message} -->
+										<!-- <div -->
+											<!-- class="bg-background-dark absolute bottom-6 -translate-x-5 rounded-md px-2 py-2 text-xs" -->
+										<!-- > -->
+											<!-- Copied! -->
+										<!-- </div> -->
+									<!-- {/if} -->
+								<!-- </button> -->
+							<!-- </li> -->
+						<!-- {/if} -->
+					<!-- {/each} -->
+				<!-- </ul>  -->
+				<!-- <p class="author font-bold"><i class="fa-solid fa-pen"></i> {challenge_data.author}</p> -->
 				<div class="first-solvers-wrapper flex flex-col justify-start">
 					<h5 class="font-bold">First Solvers:</h5>
 					<ol class="first-solvers flex list-inside list-decimal flex-col justify-start">
-						{#each challenge_data.first_solvers as solver}
+						<!-- {#each challenge_data.first_solvers as solver}
 							<li class="solver">{solver.username}</li>
-						{/each}
+						{/each} -->
 					</ol>
 				</div>
 			</div>
 		</section>
 		<section class="bottom absolute bottom-2 w-10/12">
-			<form action="" class="flag-submission-form flex w-full flex-row gap-1">
+			<form action={`/api/submit/${challenge_data.challenge_id}`} method="POST" class="flag-submission-form flex w-full flex-row gap-1">
 				<input
 					type="text"
+					name="flag"
 					class="flag bg-foreground-dark w-full rounded-sm px-1"
 					placeholder="SPETSCTF&#123;...&#125;"
 				/>
