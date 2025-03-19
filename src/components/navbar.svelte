@@ -1,11 +1,17 @@
 <script lang="ts">
 	// export let user_name:string | undefined = undefined;
 
+	import { goto } from '$app/navigation';
+	import type { Users } from '$lib/db/db';
+	import type { Selectable } from 'kysely';
+
 	interface Props {
-		user_name?: string | undefined;
+		user: Selectable<Users> | undefined;
 		translations: Record<string, string>;
 	}
-	let { user_name = undefined, translations }: Props = $props();
+
+	let { user, translations }: Props = $props();
+	console.log(user);
 </script>
 
 <nav
@@ -29,13 +35,32 @@
 		<span class="separator bg-accent-dark h-8 w-0.5"></span>
 	</div>
 	<div class="right">
-		{#if user_name}
-			<p>{user_name}</p>
+		{#if user}
+			<a href="/user" class="flex flex-row items-center space-x-4 underline">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="lucide lucide-user"
+					><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle
+						cx="12"
+						cy="7"
+						r="4"
+					/></svg
+				>
+				{user.display_name || user.github_username}</a
+			>
 		{:else}
-			<a
-				href="/login"
+			<button
+				onclick={() => goto('/login')}
 				class="login-btn bg-button-dark rounded-[var(--button-radius)] px-6 py-2 font-semibold"
-				>{translations.log_in}</a
+				>Log In</button
 			>
 		{/if}
 	</div>

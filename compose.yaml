@@ -1,0 +1,22 @@
+services:
+  db:
+    image: 'docker.io/library/postgres:16.8'
+    container_name: db
+    ports:
+      - 5432:5432
+    env_file: .env
+    restart: always
+    networks:
+      - pg-network
+
+  adminer:
+    image: 'docker.io/library/adminer:5.0.6'
+    container_name: adminer
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    networks:
+      - pg-network
+
+networks:
+  pg-network:

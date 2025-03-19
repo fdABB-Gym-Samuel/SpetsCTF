@@ -28,6 +28,7 @@ pkgs.mkShell {
     postgresql
 
     helix
+    just
   ];
 
   shellHook = ''

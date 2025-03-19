@@ -1,14 +1,16 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
 
-import type { Pool } from 'pg';
+import type { Users, UserSessions } from '$lib/db/db';
+import type { Selectable } from 'kysely';
 
 declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
-			pgpool: Pool;
+			session: Selectable<UserSessions> | null;
 			translations: Record<string, string>;
+			user: Selectable<Users> | undefined;
 		}
 		// interface PageData {}
 		// interface PageState {}
