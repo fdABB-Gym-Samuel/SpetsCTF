@@ -42,8 +42,10 @@ export const actions = {
 			return fail(401);
 		} else {
 			await invalidateSession(event.locals.session.id);
+			event.locals.user = undefined;
+			event.locals.session = undefined;
 			deleteSessionTokenCookie(event);
-			return redirect(302, '/login');
+			return { justLoggedOut: true };
 		}
 	}
 } satisfies Actions;

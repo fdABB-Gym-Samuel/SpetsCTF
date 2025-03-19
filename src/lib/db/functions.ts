@@ -79,7 +79,7 @@ export async function validateSessionToken(token: string) {
 
 	const session: Selectable<UserSessions> = {
 		expires_at: res.expires_at,
-		id: res.uid,
+		id: res.id,
 		user_id: res.user_id
 	};
 
@@ -108,8 +108,8 @@ export async function validateSessionToken(token: string) {
 	return { session, user };
 }
 
-export async function invalidateSession(session_id: string): Promise<void> {
-	db.deleteFrom('user_sessions').where('id', '=', session_id).execute();
+export async function invalidateSession(sessionIdHash: string): Promise<void> {
+	db.deleteFrom('user_sessions').where('id', '=', sessionIdHash).execute();
 }
 
 export async function invalidateAllSessions(user_id: string): Promise<void> {

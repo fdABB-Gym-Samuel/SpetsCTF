@@ -1,5 +1,3 @@
-// import { Category, type Challenge } from '$lib/db/schema';
-// import { insertChallenge, validateCategory, selectChallenges } from '$lib/db/functions';
 import type { Actions } from './$types';
 import { fail, error, type ServerLoadEvent } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
@@ -11,14 +9,6 @@ export const load = async ({ locals }: ServerLoadEvent) => {
 	if (locals.user?.is_admin !== true) {
 		error(400, { message: 'Not authorized' });
 	}
-
-	const challs = await db.selectFrom('challenges').selectAll().execute();
-
-	console.log(challs);
-
-	return {
-		challs
-	};
 };
 
 export const actions = {
@@ -28,8 +18,6 @@ export const actions = {
 			const challenge_category: Category = validateCategory(
 				formData.get('challenge_category')?.toString() ?? ''
 			);
-
-			console.log(formData.get('challenge_category'));
 			const challenge_id = formData.get('challenge_id')?.toString() ?? '';
 			if (!challenge_id) {
 				fail(422, { message: 'Cannot insert challenge with no ID!' });

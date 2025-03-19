@@ -15,6 +15,5 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		sameSite: 'lax'
 	});
 
-	console.log('redirecting to', url); // REMOVABLE
 	return redirect(302, url);
 }

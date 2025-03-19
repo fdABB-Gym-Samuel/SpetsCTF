@@ -1,8 +1,8 @@
 import type { LayoutServerLoad } from './$types';
 
-export const load: LayoutServerLoad = ({ locals }) => {
+export const load: LayoutServerLoad = ({ locals, depends }) => {
 	const user = locals.user;
-	console.log(user);
+	depends('data:user');
 	return {
 		translations: locals.translations,
 		user
