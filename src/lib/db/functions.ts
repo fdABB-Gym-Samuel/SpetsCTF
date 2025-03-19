@@ -31,7 +31,6 @@ export function generateSessionToken(): string {
 
 export async function createSession(token: string, user_id: string) {
 	const sessionIdHash = createHash('sha256').update(new TextEncoder().encode(token)).digest('hex');
-	console.debug('session id hash in createSession:', sessionIdHash);
 	const session: Insertable<UserSessions> = {
 		id: sessionIdHash,
 		user_id,

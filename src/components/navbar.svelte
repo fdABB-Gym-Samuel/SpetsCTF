@@ -11,7 +11,6 @@
 	}
 
 	let { user, translations }: Props = $props();
-	console.log(user);
 </script>
 
 <nav

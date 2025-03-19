@@ -1,29 +1,17 @@
 <script lang="ts">
-	import { Category } from '$lib/db/schema';
-
 	let { data, form } = $props();
-	let { challs, translations } = data;
+	let { translations } = data;
 </script>
 
 <div class="mx-auto flex w-1/2 flex-col space-y-2">
 	{#if form && form?.success}
-		<span class="text-green-600">Success</span>
+		<span class="text-green-600">{translations.success}</span>
 	{:else if form && !form?.success}
-		<span class="text-red-600">Failure</span>
+		<span class="text-red-600">{translations.failure}</span>
 	{/if}
-	<h2 class="text-xl font-bold">Challs</h2>
-	<div class="flex flex-col space-y-2">
-		{#each challs as chall}
-			<div class="rounded border border-black p-2">
-				<h3 class="text-lg font-bold">{chall.challenge_id}</h3>
-				<span>{chall.challenge_category}</span>
-				<span>{chall.points}</span>
-			</div>
-		{/each}
-	</div>
-	<h2 class="text-xl font-bold">Add new chall</h2>
+	<h2 class="text-xl font-bold">{translations.addnewchallenge}</h2>
 	<form method="POST" class="flex flex-col">
-		<label for="challenge_id">Challenge ID</label>
+		<label for="challenge_id">{translations.challenge_id}</label>
 		<input
 			class="border border-black"
 			type="text"
@@ -32,7 +20,7 @@
 			required
 			placeholder="Enter the ID."
 		/>
-		<label for="display_name">Challenge Display Name</label>
+		<label for="display_name">{translations.challenge_display_name}</label>
 		<input
 			class="border border-black"
 			type="text"
@@ -40,7 +28,7 @@
 			id="display_name"
 			placeholder="Enter a FIRE 🔥 name."
 		/>
-		<label for="flag">Flag</label>
+		<label for="flag">{translations.flag}</label>
 		<input
 			class="border border-black"
 			type="text"
@@ -49,7 +37,7 @@
 			id="flag"
 			placeholder="Enter the secret flag 🚩..."
 		/>
-		<label for="flag_format">Flag format</label>
+		<label for="flag_format">{translations.flag_format}</label>
 		<input
 			class="border border-black"
 			type="text"
@@ -57,7 +45,7 @@
 			id="flag_format"
 			placeholder="e.g. myctf&#123;...&#125;"
 		/>
-		<label for="points">Points</label>
+		<label for="points">{translations.points}</label>
 		<input
 			type="number"
 			required
@@ -65,9 +53,9 @@
 			name="points"
 			placeholder="Enter the base amount of points."
 		/>
-		<label for="challenge_category">Challenge Category</label>
-		<select id="challenge_category" name="challenge_category" value={Category.misc}>
-			{#each Object.values(Category) as option}
+		<label for="challenge_category">{translations.challenge_category}</label>
+		<select id="challenge_category" name="challenge_category" value='misc'>
+			{#each ['blockchain', 'crypto', 'forensics', 'introduction', 'misc', 'osint', 'pwn', 'reversing', 'web'] as option}
 				<option value={option}>{option}</option>
 			{/each}
 		</select>
