@@ -2,71 +2,16 @@
 	import ChallengeCard from '../../components/challengeCard.svelte';
 	import ChallengeDialog from '../../components/challengeDialog.svelte';
 	import type { resource, solver, Challenge_data } from '../../types';
+	import { page } from '$app/state';
+	let { data } = $props();
+	let { translations, challenges } = data;
 
-	let show_challenge_dialog = false;
+	let challengeId = $derived(page.url.searchParams.get('show'));
 
-	// Test data
-	let challenge_data_example = {
-		name: 'Test',
-		id: `${Math.floor(Math.random() * 10000)}`,
-		description: 'this is a test challenge',
-		resources: [
-			{ displayed_text: 'link_to_webpage', implied_text: '/', type: 'link' },
-			{ displayed_text: 'link_to_sourcecode', implied_text: '/scoreboard', type: 'link' }
-		],
-		author: 'ZebrasNotHorses',
-		points: Math.floor(Math.random() * 500),
-		num_solves: Math.floor(Math.random() * 50),
-		main_category: 'web',
-		sub_categories: ['crypto', 'pwn', 'blockchain'],
-		first_solvers: [{ username: 'ZebrasNotHorses', class: '230S' }]
-	};
-	let challenge_data_example2 = {
-		name: 'Test',
-		id: `${Math.floor(Math.random() * 10000)}`,
-		description:
-			'this is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challengethis is a test challenge',
-		resources: [
-			{ displayed_text: 'link_to_webpage', implied_text: '/', type: 'link' },
-			{ displayed_text: 'link_to_sourcecode', implied_text: '/scoreboard', type: 'command' }
-		],
-		author: 'ZebrasNotHorses',
-		points: Math.floor(Math.random() * 500),
-		num_solves: Math.floor(Math.random() * 50),
-		main_category: 'crypto',
-		sub_categories: ['web', 'pwn', 'blockchain'],
-		first_solvers: [{ username: 'ZebrasNotHorses', class: '230S' }]
-	};
-	let skibidi_challenge_data = {
-		name: 'Skibidi Challenge',
-		id: `${Math.floor(Math.random() * 10000)}`,
-		description:
-			'Sigma, sigma, on the wall, who is the skibidiest of them all. Who thy taxed in the way of the fanum, when thou hath the knowing thy shall be he who skibidi',
-		resources: [
-			{ displayed_text: 'link_to_webpage', implied_text: '/', type: 'command' },
-			{ displayed_text: 'link_to_sourcecode', implied_text: '/scoreboard', type: 'file' }
-		],
-		author: 'ZebrasNotHorses',
-		points: Math.floor(Math.random() * 500),
-		num_solves: Math.floor(Math.random() * 50),
-		main_category: 'web',
-		sub_categories: ['crypto', 'osint', 'pwn', 'blockchain'],
-		first_solvers: [{ username: 'ZebrasNotHorses', class: '230S' }]
-	};
+	$inspect(challengeId);
 
-	let challenges = [
-		challenge_data_example,
-		skibidi_challenge_data,
-		challenge_data_example,
-		challenge_data_example,
-		challenge_data_example,
-		challenge_data_example,
-		challenge_data_example2,
-		challenge_data_example2,
-		challenge_data_example2,
-		challenge_data_example2,
-		challenge_data_example2
-	];
+	let show_challenge_dialog: boolean = $derived(challengeId !== null);
+
 	let categories = [
 		'Introduction',
 		'Web',
@@ -78,16 +23,19 @@
 		'Blockchain',
 		'Misc'
 	];
-	let modal_data: Challenge_data;
-	const open_dialog = (challenge_data: Challenge_data) => {
-		modal_data = challenge_data;
-		show_challenge_dialog = true;
-		console.log(show_challenge_dialog);
-	};
+	let modal_data = $derived.by(() => {
+		if (show_challenge_dialog) {
+			return challenges.find((chall) => String(chall.challenge_id) === challengeId);
+		} else {
+			return undefined;
+		}
+	});
 </script>
 
 <div class="content">
-	<h1 class="route-title">Challenges</h1>
+	<h1 class="route-title">{translations.challenges}</h1>
+	<p>Skibidi: {page.url.searchParams.get('show')}</p>
+	<p>Skibidi: {challengeId}</p>
 	<article class="challenge-container w-full">
 		{#each categories as category}
 			<section class="category-container flex flex-col">
@@ -95,18 +43,18 @@
 					{category}
 				</h3>
 
-				{#if challenges.filter((challenge) => challenge.main_category == category?.toLowerCase()).length > 0}
+				{#if challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()).length > 0}
 					<ul
 						class="grid-auto-rows-[150px] grid auto-rows-min grid-cols-[repeat(auto-fit,minmax(200px,1fr))] items-stretch gap-4"
 					>
-						{#each challenges.filter((challenge) => challenge.main_category == category?.toLowerCase()) as challenge_data}
-							<li
-								on:click={() => {
-									open_dialog(challenge_data);
-								}}
-								class="h-38 w-full"
-							>
-								<ChallengeCard {challenge_data}></ChallengeCard>
+						{#each challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challenge_data}
+							<li>
+								<a
+									href={`challenges?show=${challenge_data.challenge_id}`}
+									data-sveltekit-noscroll
+									class="h-38 w-full"
+									><ChallengeCard data={{ challenge_data: challenge_data }}></ChallengeCard></a
+								>
 							</li>
 						{/each}
 					</ul>
@@ -117,13 +65,9 @@
 		{/each}
 	</article>
 </div>
-<ChallengeDialog
-	on:click={() => {
-		show_challenge_dialog = false;
-	}}
-	challenge_data={modal_data}
-	{show_challenge_dialog}
-></ChallengeDialog>
+{#if challengeId}
+	<ChallengeDialog challenge_data={modal_data} {translations}></ChallengeDialog>
+{/if}
 <!-- {#each challenges as challenge_data}
     <ChallengeCard challenge_data={challenge_data}></ChallengeCard>
 {/each} -->

@@ -1,20 +1,18 @@
 <script lang="ts">
 	import type { resource, Challenge_data } from '../types';
-	export let challenge_data: Challenge_data = {
-		name: 'Not Found',
-		id: '1',
-		description: '',
-		resources: [],
-		author: '',
-		points: 0,
-		num_solves: 0,
-		main_category: '',
-		sub_categories: [],
-		first_solvers: []
-	};
-	export let show_challenge_dialog: boolean = false;
-	let show_copied_message = false;
-	console.log(show_challenge_dialog);
+	import { goto } from '$app/navigation';
+	import type { Selectable } from 'kysely';
+	import type { Challenges } from '$lib/db/db';
+
+	interface Props {
+		challenge_data: Selectable<Challenges>;
+		translations: Record<string, string>;
+	}
+
+	let { challenge_data, translations }: Props = $props();
+
+	// let show_challenge_dialog: boolean = $state(false);
+	let show_copied_message = $state(false);
 
 	async function copyToClipboard(text_to_copy: string) {
 		try {
@@ -31,99 +29,108 @@
 	// show_challenge_dialog = false
 </script>
 
-{#if show_challenge_dialog}
-	<div
-		on:click|self
-		on:keydown|self
-		role="button"
-		tabindex="0"
-		class="backdrop bg-backdrop fixed top-0 flex h-screen w-screen items-center justify-center"
+<div
+	onclick={(e) => {
+		if (e.currentTarget === e.target) {
+			goto('/challenges');
+		}
+	}}
+	onkeydown={(e) => {
+		if (e.key === 'space') window.location.href = '/challenges';
+	}}
+	role="button"
+	tabindex="0"
+	class="backdrop bg-backdrop prevent-default fixed top-0 flex h-screen w-screen items-center justify-center"
+>
+	<dialog
+		class="bg-button-dark relative m-auto flex max-h-[calc(100vh-40px)] min-h-[var(--challenge-dialog-height)] w-[var(--challenge-dialog-width)] flex-col items-center gap-5 rounded-md px-[var(--challenge-padding-inline)] py-2 pb-15"
 	>
-		<dialog
-			class="bg-button-dark relative m-auto flex max-h-[calc(100vh-40px)] min-h-[var(--challenge-dialog-height)] w-[var(--challenge-dialog-width)] flex-col items-center gap-5 rounded-md px-[var(--challenge-padding-inline)] py-2 pb-15"
-		>
-			<section class="top flex w-full flex-col items-center">
-				<h3 class="challenge-title text-foreground-dark pt-5 pb-2 text-5xl">
-					{challenge_data.name}
-				</h3>
-				<ul class="categroies flex w-8/10 flex-row flex-wrap justify-center">
-					{#each [challenge_data.main_category, ...challenge_data.sub_categories] as category}
-						<li
-							class="bg-foreground-dark text-background-dark mt-1 mr-1.5 rounded-md px-2 py-1 text-xs"
-						>
-							{category}
-						</li>
-					{/each}
-				</ul>
-				<div class="solve-stats text-foreground-dark mt-1 flex flex-row gap-5">
-					<p class="points"><i class="fa-solid fa-circle-plus"></i> {challenge_data.points}</p>
-					<p class="num-solves"><i class="fa-solid fa-flag"></i> {challenge_data.num_solves}</p>
-				</div>
-			</section>
-			<section
-				class="middle text-foreground-dark flex h-full w-full flex-row justify-between gap-2 overflow-hidden px-4"
-			>
-				<p class="challenge-description max-h-full w-full overflow-scroll">
-					{challenge_data.description}
-				</p>
-				<div class="right flex w-full flex-col gap-3">
-					<ul class="resources">
-						{#each challenge_data.resources as resource}
-							{#if resource.type === 'link'}
-								<li class="challenge-resource">
-									<i class="fa-solid fa-link"></i>
-									<a href={resource.implied_text}>{resource.displayed_text}</a>
-								</li>
-							{:else if resource.type === 'file'}
-								<li class="challenge-resource">
-									<i class="fa-solid fa-file"></i>
-									<a href={resource.implied_text}>{resource.displayed_text}</a>
-								</li>
-							{:else}
-								<li class="challenge-resource flex flex-row gap-1">
-									<p><i class="fa-solid fa-terminal"></i> {resource.displayed_text}</p>
-									<button
-										title="Copy to clipboard"
-										class="ignore-default relative"
-										on:click={() => {
-											copyToClipboard(resource.implied_text);
-										}}
-										><i class="fa-solid fa-copy"></i>
-										{#if show_copied_message}
-											<div
-												class="bg-background-dark absolute bottom-6 -translate-x-5 rounded-md px-2 py-2 text-xs"
-											>
-												Copied!
-											</div>
-										{/if}
-									</button>
-								</li>
-							{/if}
-						{/each}
-					</ul>
-					<p class="author font-bold"><i class="fa-solid fa-pen"></i> {challenge_data.author}</p>
-					<div class="first-solvers-wrapper flex flex-col justify-start">
-						<h5 class="font-bold">First Solvers:</h5>
-						<ol class="first-solvers flex list-inside list-decimal flex-col justify-start">
-							{#each challenge_data.first_solvers as solver}
-								<li class="solver">{solver.username}</li>
-							{/each}
-						</ol>
-					</div>
-				</div>
-			</section>
-			<section class="bottom absolute bottom-2 w-10/12">
-				<form action="" class="flag-submission-form flex w-full flex-row gap-1">
-					<input
-						type="text"
-						class="flag bg-foreground-dark w-full rounded-sm px-1"
-						placeholder="SPETSCTF&#123;...&#125;"
-					/>
-					<button class="submit-flag bg-foreground-dark h-8 w-8 rounded-sm text-center"
-						><i class="fa-solid fa-paper-plane"></i></button
+		<section class="top flex w-full flex-col items-center">
+			<h3 class="challenge-title text-foreground-dark pt-5 pb-2 text-5xl">
+				{challenge_data.display_name}
+			</h3>
+			<ul class="categroies flex w-8/10 flex-row flex-wrap justify-center">
+				{#each [challenge_data.challenge_category] as category}
+					<li
+						class="bg-foreground-dark text-background-dark mt-1 mr-1.5 rounded-md px-2 py-1 text-xs"
 					>
-				</form>
-			</section>
-		</dialog>
-	</div>
-{/if}
+						{category}
+					</li>
+				{/each}
+			</ul>
+			<div class="solve-stats text-foreground-dark mt-1 flex flex-row gap-5">
+				<p class="points"><i class="fa-solid fa-circle-plus"></i> {challenge_data.points}</p>
+				<!-- <p class="num-solves"><i class="fa-solid fa-flag"></i> {challenge_data.num_solves}</p> -->
+			</div>
+		</section>
+		<section
+			class="middle text-foreground-dark flex h-full w-full flex-row justify-between gap-2 overflow-hidden px-4"
+		>
+			<p class="challenge-description max-h-full w-full overflow-scroll">
+				{challenge_data.description}
+			</p>
+			<div class="right flex w-full flex-col gap-3">
+				<!-- <ul class="resources">
+					{#each challenge_data.resources as resource}
+						 {#if resource.type === 'link'} -->
+				<!-- <li class="challenge-resource"> -->
+				<!-- <i class="fa-solid fa-link"></i> -->
+				<!-- <a href={resource.implied_text}>{resource.displayed_text}</a> -->
+				<!-- </li> -->
+				<!-- {:else if resource.type === 'file'} -->
+				<!-- <li class="challenge-resource"> -->
+				<!-- <i class="fa-solid fa-file"></i> -->
+				<!-- <a href={resource.implied_text}>{resource.displayed_text}</a> -->
+				<!-- </li> -->
+				<!-- {:else} -->
+				<!-- <li class="challenge-resource flex flex-row gap-1"> -->
+				<!-- <p><i class="fa-solid fa-terminal"></i> {resource.displayed_text}</p> -->
+				<!-- <button -->
+				<!-- title="Copy to clipboard" -->
+				<!-- class="ignore-default relative" -->
+				<!-- onclick={() => { 
+										 // copyToClipboard(resource.implied_text); -->
+				<!-- // }} -->
+				<!-- ><i class="fa-solid fa-copy"></i> -->
+				<!-- {#if show_copied_message} -->
+				<!-- <div -->
+				<!-- class="bg-background-dark absolute bottom-6 -translate-x-5 rounded-md px-2 py-2 text-xs" -->
+				<!-- > -->
+				<!-- Copied! -->
+				<!-- </div> -->
+				<!-- {/if} -->
+				<!-- </button> -->
+				<!-- </li> -->
+				<!-- {/if} -->
+				<!-- {/each} -->
+				<!-- </ul>  -->
+				<!-- <p class="author font-bold"><i class="fa-solid fa-pen"></i> {challenge_data.author}</p> -->
+				<div class="first-solvers-wrapper flex flex-col justify-start">
+					<h5 class="font-bold">First Solvers:</h5>
+					<ol class="first-solvers flex list-inside list-decimal flex-col justify-start">
+						<!-- {#each challenge_data.first_solvers as solver}
+							<li class="solver">{solver.username}</li>
+						{/each} -->
+					</ol>
+				</div>
+			</div>
+		</section>
+		<section class="bottom absolute bottom-2 w-10/12">
+			<form
+				action={`/api/submit/${challenge_data.challenge_id}`}
+				method="POST"
+				class="flag-submission-form flex w-full flex-row gap-1"
+			>
+				<input
+					type="text"
+					name="flag"
+					class="flag bg-foreground-dark w-full rounded-sm px-1"
+					placeholder="SPETSCTF&#123;...&#125;"
+				/>
+				<button type="submit" class="submit-flag bg-foreground-dark h-8 w-8 rounded-sm text-center"
+					><i class="fa-solid fa-paper-plane">{translations.submitflag}</i></button
+				>
+			</form>
+		</section>
+	</dialog>
+</div>

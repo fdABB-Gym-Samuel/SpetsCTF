@@ -1,6 +1,8 @@
 {
 	"about": "Om",
-	"altersettings": "�F�Ändra inställningar",
+	"altersettings": "Ändra inställningar",
+	"by_students_for_students": "Av elever, för elever",
+	"challenges": "Utmaningar",
 	"ctf": "CTF",
 	"currently": "nuvarande",
 	"currentlyloggedinas": "Du är nu inloggad som",
@@ -10,6 +12,7 @@
 	"flag_format": "Flaggformat",
 	"home": "Hem",
 	"leaderboard": "Topplista",
+	"log_in": "Logga in",
 	"login": "Logga in",
 	"loginwithgithub": "Logga in med GitHub",
 	"logout": "Logga ut",
@@ -20,6 +23,7 @@
 	"settingsupdated": "INnställningar uppdaterade",
 	"settingsupdatefailed": "Fel vid uppdatering av inställningar",
 	"submit": "Skicka",
+	"submitflag": "Skicka in flagga",
 	"team": "Lag",
 	"user": "Användare",
 	"welcome": "Välkommen"

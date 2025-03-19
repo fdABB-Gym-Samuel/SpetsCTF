@@ -1,6 +1,8 @@
 {
 	"about": "About",
 	"altersettings": "Alter settings",
+	"by_students_for_students": "By students, for students",
+	"challenges": "Challenges",
 	"ctf": "CTF",
 	"currently": "currently",
 	"currentlyloggedinas": "Currently logged in as",
@@ -10,6 +12,7 @@
 	"flag_format": "Flag format",
 	"home": "Home",
 	"leaderboard": "Leaderboard",
+	"log_in": "Log in",
 	"login": "Log in",
 	"loginwithgithub": "Log in with GitHub",
 	"logout": "Log out",
@@ -20,6 +23,7 @@
 	"settingsupdated": "Settings updated successfully",
 	"settingsupdatefailed": "Settings update failed",
 	"submit": "Submit",
+	"submitflag": "Submit flag",
 	"team": "Team",
 	"user": "User",
 	"welcome": "Welcome"
