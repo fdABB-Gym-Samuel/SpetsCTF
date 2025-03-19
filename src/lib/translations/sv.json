@@ -1,6 +1,8 @@
 {
 	"about": "Om",
 	"altersettings": "Ändra inställningar",
+	"by_students_for_students": "Av elever, för elever",
+	"challenges": "Utmaningar",
 	"createchallenge": "Skapa utmaning",
 	"createctf": "Skapa CTF-tävling",
 	"ctf": "CTF",
@@ -19,6 +21,7 @@
 	"flag_format": "Flaggformat",
 	"home": "Hem",
 	"leaderboard": "Topplista",
+	"log_in": "Logga in",
 	"login": "Logga in",
 	"loginwithgithub": "Logga in med GitHub",
 	"logout": "Logga ut",
@@ -31,6 +34,7 @@
 	"shortname": "Kort namn för identifiering, t.ex. min_utmaning",
 	"shortnamectf": "Kort namn för  att identifiera CTF-tävlingen, t.ex. min_ctf_tavling",
 	"submit": "Skicka",
+	"submitflag": "Skicka in flagga",
 	"team": "Lag",
 	"user": "Användare",
 	"welcome": "Välkommen"

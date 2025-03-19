@@ -1,13 +1,16 @@
 <script lang="ts">
+	// export let user_name:string | undefined = undefined;
+
 	import { goto } from '$app/navigation';
 	import type { Users } from '$lib/db/db';
 	import type { Selectable } from 'kysely';
 
 	interface Props {
 		user: Selectable<Users> | undefined;
+		translations: Record<string, string>;
 	}
 
-	let { user }: Props = $props();
+	let { user, translations }: Props = $props();
 	console.log(user);
 </script>
 
@@ -20,10 +23,14 @@
 				<a class="nav-option underline" href="/"><img src="/logo.svg" alt="" class="logo h-10" /></a
 				>
 			</li>
-			<li class="mr-4"><a class="nav-option underline" href="/challenges">Challenges</a></li>
+			<li class="mr-4">
+				<a class="nav-option underline" href="/challenges">{translations.challenges}</a>
+			</li>
 			<!-- <li class="mr-4"><a class="underline nav-option" href="/writeups">Writeups</a></li> -->
-			<li class="mr-4"><a class="nav-option underline" href="/scoreboard">Scoreboard</a></li>
-			<li class="mr-4"><a class="nav-option underline" href="/about">About</a></li>
+			<li class="mr-4">
+				<a class="nav-option underline" href="/scoreboard">{translations.leaderboard}</a>
+			</li>
+			<li class="mr-4"><a class="nav-option underline" href="/about">{translations.about}</a></li>
 		</ul>
 		<span class="separator bg-accent-dark h-8 w-0.5"></span>
 	</div>

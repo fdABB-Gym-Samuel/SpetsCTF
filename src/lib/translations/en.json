@@ -1,6 +1,8 @@
 {
 	"about": "About",
 	"altersettings": "Alter settings",
+	"by_students_for_students": "By students, for students",
+	"challenges": "Challenges",
 	"createchallenge": "Create challenge",
 	"createctf": "Create CTF competition",
 	"ctf": "CTF",
@@ -19,6 +21,7 @@
 	"flag_format": "Flag format",
 	"home": "Home",
 	"leaderboard": "Leaderboard",
+	"log_in": "Log in",
 	"login": "Log in",
 	"loginwithgithub": "Log in with GitHub",
 	"logout": "Log out",
@@ -31,6 +34,7 @@
 	"shortname": "Short ID name, e.g. mychallenge",
 	"shortnamectf": "CTF short name for identification, e.g. my_ctf_competition",
 	"submit": "Submit",
+	"submitflag": "Submit flag",
 	"team": "Team",
 	"user": "User",
 	"welcome": "Welcome"
