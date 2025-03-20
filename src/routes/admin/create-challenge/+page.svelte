@@ -54,7 +54,7 @@
 			placeholder="Enter the base amount of points."
 		/>
 		<label for="challenge_category">{translations.challenge_category}</label>
-		<select id="challenge_category" name="challenge_category" value='misc'>
+		<select id="challenge_category" name="challenge_category" value="misc">
 			{#each ['blockchain', 'crypto', 'forensics', 'introduction', 'misc', 'osint', 'pwn', 'reversing', 'web'] as option}
 				<option value={option}>{option}</option>
 			{/each}
