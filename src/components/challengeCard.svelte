@@ -7,6 +7,7 @@
 <!-- <main class="card flex flex-col justify-between bg-button-dark h-[var(--challenge-card-height)] w-[var(--challenge-card-width)] rounded-[var(--card-radius)] px-4 py-2"> -->
 <main
 	class="card bg-button-dark flex h-full min-h-fit w-full flex-col justify-between rounded-[var(--card-radius)] px-4 py-2"
+	class:bg-challenge-solved={challenge_data.solved}
 >
 	<section class="top h-fit">
 		<h5 class="challenge-name text-2xl">{challenge_data.challenge_name}</h5>

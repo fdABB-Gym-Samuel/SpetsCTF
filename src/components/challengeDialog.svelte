@@ -45,7 +45,8 @@
 >
 	<dialog
 		class="bg-button-dark relative m-auto flex max-h-[calc(100vh-40px)] min-h-[var(--challenge-dialog-height)] w-[var(--challenge-dialog-width)] flex-col items-center gap-5 rounded-md px-[var(--challenge-padding-inline)] py-2 pb-15"
-	>
+		class:bg-challenge-solved={challenge_data.solved}
+		>
 		<section class="top flex w-full flex-col items-center">
 			<h3 class="challenge-title text-foreground-dark pt-5 pb-2 text-5xl">
 				{challenge_data.challenge_name}
@@ -117,6 +118,7 @@
 			</div>
 		</section>
 		<section class="bottom absolute bottom-2 w-10/12">
+			{#if !challenge_data.solved}
 			<form
 				action={`/api/submit/${challenge_data.challenge_id}`}
 				method="POST"
@@ -137,6 +139,9 @@
 					></i></button
 				>
 			</form>
+			{:else}
+			<p class="bg-stone-700 text-stone-300 text-center py-2 font-semibold border-neutral-400 border-4 rounded-lg">Challenge Already Solved</p>
+			{/if}
 		</section>
 	</dialog>
 </div>
