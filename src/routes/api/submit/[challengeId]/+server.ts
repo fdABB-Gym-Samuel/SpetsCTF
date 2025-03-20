@@ -13,6 +13,22 @@ export const POST = async ({ request, locals, params }) => {
 	}
 
 	const { challengeId } = params;
+	const user_id = locals.user?.id;
+
+	const user_successfull_solve = await db
+		.selectFrom("wargame_submissions")
+		.where("challenge", "=", challengeId)
+		.where("success", "=", true)
+		.where("user_id", "=", user_id)
+		.execute()
+
+	if (user_successfull_solve.length > 0){
+		return json({
+			success: false,
+			message: "User already solved challenge"
+		})
+	}
+
 	const flag = await get_flag_of_challenge(challengeId);
 
 	if (!flag) return error(404, { message: 'Flag of challenge not found' });
@@ -21,7 +37,6 @@ export const POST = async ({ request, locals, params }) => {
 	const submitted_flag = (await request.formData()).get('flag')?.toString();
 	if (submitted_flag === flag.flag) flag_correct = true;
 
-	const user_id = locals.user?.id;
 	let submission: Insertable<WargameSubmissions> = {
 		challenge: challengeId,
 		user_id: user_id,

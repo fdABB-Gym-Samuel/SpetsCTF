@@ -5,11 +5,15 @@ import { validateCategory } from '$lib/db/functions';
 import type { Category, Challenges } from '$lib/db/db';
 import type { Insertable } from 'kysely';
 
+
+export const ssr = false
+
 export const load = async ({ locals }: ServerLoadEvent) => {
 	if (locals.user?.is_admin !== true) {
 		error(400, { message: 'Not authorized' });
 	}
 };
+
 
 export const actions = {
 	default: async ({ request }) => {

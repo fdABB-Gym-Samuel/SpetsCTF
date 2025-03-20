@@ -11,7 +11,7 @@ Things still needed:
 - [x] Api for scoreboard
 - [x] Api for Challenges
 - [x] Update challengeCard and challengeDialog to work with api
-- [ ] Check if user has already submitted valid flag on challenge, to avoid cluttering up database more than needed
+- [x] Check if user has already submitted valid flag on challenge, to avoid cluttering up database more than needed
 - [ ] Fix resources in challenge upload
 - [ ] Link resources to challenges in database
 - [ ] Check if challenge belongs to a CTF that has ended before showing in /challenges

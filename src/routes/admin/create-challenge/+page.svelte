@@ -11,6 +11,7 @@
 	{/if}
 	<h2 class="text-xl font-bold">{translations.addnewchallenge}</h2>
 	<form method="POST" class="flex flex-col">
+
 		<label for="challenge_id">{translations.challenge_id}</label>
 		<input
 			class="border border-black"
@@ -60,5 +61,6 @@
 			{/each}
 		</select>
 		<button type="submit">Submit</button>
+		
 	</form>
 </div>
