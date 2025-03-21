@@ -3,8 +3,7 @@ import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { deleteSessionTokenCookie, invalidateSession } from '$lib/db/functions';
 
-
-export const ssr = false
+export const ssr = false;
 
 export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 	if (!locals.user) {

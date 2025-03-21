@@ -46,7 +46,7 @@
 	<dialog
 		class="bg-button-dark relative m-auto flex max-h-[calc(100vh-40px)] min-h-[var(--challenge-dialog-height)] w-[var(--challenge-dialog-width)] flex-col items-center gap-5 rounded-md px-[var(--challenge-padding-inline)] py-2 pb-15"
 		class:bg-challenge-solved={challenge_data.solved}
-		>
+	>
 		<section class="top flex w-full flex-col items-center">
 			<h3 class="challenge-title text-foreground-dark pt-5 pb-2 text-5xl">
 				{challenge_data.challenge_name}
@@ -119,28 +119,32 @@
 		</section>
 		<section class="bottom absolute bottom-2 w-10/12">
 			{#if !challenge_data.solved}
-			<form
-				action={`/api/submit/${challenge_data.challenge_id}`}
-				method="POST"
-				class="flag-submission-form flex w-full flex-row gap-1"
-			>
-				<label for="flag" class="text-foreground-dark text-xl font-semibold">Flag:</label>
-				<input
-					type="text"
-					name="flag"
-					class="flag bg-foreground-dark w-full rounded-sm px-1"
-					placeholder={challenge_data.flag_format}
-				/>
-				<button
-					aria-label="Submit flag"
-					type="submit"
-					class="submit-flag bg-foreground-dark h-8 w-8 rounded-sm text-center"
-					><i class="fa-solid fa-paper-plane text-foreground-dark relative right-1.5 bottom-0.5"
-					></i></button
+				<form
+					action={`/api/submit/${challenge_data.challenge_id}`}
+					method="POST"
+					class="flag-submission-form flex w-full flex-row gap-1"
 				>
-			</form>
+					<label for="flag" class="text-foreground-dark text-xl font-semibold">Flag:</label>
+					<input
+						type="text"
+						name="flag"
+						class="flag bg-foreground-dark w-full rounded-sm px-1"
+						placeholder={challenge_data.flag_format}
+					/>
+					<button
+						aria-label="Submit flag"
+						type="submit"
+						class="submit-flag bg-foreground-dark h-8 w-8 rounded-sm text-center"
+						><i class="fa-solid fa-paper-plane text-foreground-dark relative right-1.5 bottom-0.5"
+						></i></button
+					>
+				</form>
 			{:else}
-			<p class="bg-stone-700 text-stone-300 text-center py-2 font-semibold border-neutral-400 border-4 rounded-lg">Challenge Already Solved</p>
+				<p
+					class="rounded-lg border-4 border-neutral-400 bg-stone-700 py-2 text-center font-semibold text-stone-300"
+				>
+					Challenge Already Solved
+				</p>
 			{/if}
 		</section>
 	</dialog>

@@ -30,24 +30,24 @@
 		<label for="display_name">
 			{translations.displayname}
 			<!-- <input type="text" name="display_name"> -->
-		</label><br>
+		</label><br />
 		<!-- {#if typeof window !== 'undefined'} -->
-  <!-- Client-side only code -->
-		  <input
-		  class="border border-white p-1"
-		  value={user.display_name ?? ""}
-		  name="display_name"
-		  placeholder={translations.enterdisplayname}
-		  id="display_name"
+		<!-- Client-side only code -->
+		<input
+			class="border border-white p-1"
+			value={user.display_name ?? ''}
+			name="display_name"
+			placeholder={translations.enterdisplayname}
+			id="display_name"
 		/>
 
 		<!-- {/if} -->
-		
-		<br>
+
+		<br />
 		<label for="represents_class">
 			{translations.representclass}
 		</label>
-		<br>
+		<br />
 		<select
 			class="border border-white p-1"
 			name="represents_class"
