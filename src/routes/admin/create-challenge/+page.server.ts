@@ -69,12 +69,19 @@ export const actions = {
 			const commands: (string | null)[] = formData.getAll('commands') as string[] | null;
 			const websites: (string | null)[] = formData.getAll('websites') as string[] | null;
 
+			console.log("files", files)
+			console.log("commands", commands)
+			console.log("websites", websites)
+
 			const challenge_dir = path.join(process.cwd(), `files/${challenge_id}`);
 			await mkdir(challenge_dir, { recursive: true });
 			for (let file of files) {
 				let filepath = path.join(challenge_dir, file.name);
 				await writeFile(filepath, Buffer.from(await file.arrayBuffer()));
 			}
+			console.log("files", files)
+			console.log("commands", commands)
+			console.log("websites", websites)
 			// const filepath = path.join(challenge_dir, file.name);
 			const resource_files = files.map((file) => {
 				return {
@@ -83,20 +90,38 @@ export const actions = {
 					type: 'file'
 				};
 			});
+			console.log("files", files)
+			console.log("commands", commands)
+			console.log("websites", websites)
 			const resource_commands = commands.map((command) => {
-				return { challenge: challenge_id, content: command, type: 'cmd' };
+				return {challenge: challenge_id, content: command, type: 'cmd'};
 			});
-			const resource_websites = commands.map((website) => {
+			const resource_websites = websites.map((website) => {
 				return { challenge: challenge_id, content: website, type: 'web' };
 			});
-			const resources = [...resource_files, ...resource_commands, ...resource_websites];
+			console.log("files", files)
+			console.log("commands", commands)
+			console.log("websites", websites)
 
-			if (resources.length > 0) {
-				const _ = await db.insertInto('challenge_resources').values(resources).execute();
-			}
+			console.log("files", resource_files)
+			console.log("commands", resource_commands)
+			console.log("websites", resource_websites)
+
+			const resources = [...resource_files, ...resource_commands, ...resource_websites];
+			console.log("resources", resources)
+			// if (resources.length > 0) {
+				const _ = await db
+					.insertInto('challenge_resources')
+					.values(resources)
+					.execute();
+			// }
 
 			return { success: true };
-		} catch {
+		} catch (err) {
+			console.log("Name", err.name)
+			console.log("Message", err.message)
+			console.log("stack", err.stack)
+
 			return { success: false };
 		}
 	}

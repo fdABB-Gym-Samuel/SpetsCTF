@@ -11,7 +11,7 @@
 	}
 
 	let current_resource: resource = $state({
-		resource_type: 'Command',
+		resource_type: 'Website',
 		resource_content: ''
 	});
 
