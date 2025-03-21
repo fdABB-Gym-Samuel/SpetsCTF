@@ -9,25 +9,39 @@
 		translations: Record<string, string>;
 	}
 
-	let { challenge_data, translations }: Props = $props();
+	let { challenge_data = {
+		challenge_id: '',
+		challenge_name: '',
+		challenge_description: '',
+		challenge_category: null,
+		points: 0,
+		flag_format: '',
+		first_solvers: [],
+		num_solves: '0',
+		solved: false,
+		resources: []}, translations }: Props = $props();
+	
+	// if (challenge_data === undefined){
+	// 	goto()
+	// }
 
-	// let show_challenge_dialog: boolean = $state(false);
+	console.log(challenge_data, "here")
+
+	// Needs to be changed to handle when there are multiple commands that can be copied
 	let show_copied_message = $state(false);
-	console.log(challenge_data);
 
 	async function copyToClipboard(text_to_copy: string) {
 		try {
 			await navigator.clipboard.writeText(text_to_copy).then(() => {
 				show_copied_message = true;
 				setTimeout(() => {
-					show_copied_message = false; // Hide the speech bubble after 2 seconds
+					show_copied_message = false; // Hide the copied message after 1 seconds
 				}, 1000);
 			});
 		} catch (err) {
 			console.error('Failed to copy!', err);
 		}
 	}
-	// show_challenge_dialog = false
 </script>
 
 <div
@@ -37,7 +51,8 @@
 		}
 	}}
 	onkeydown={(e) => {
-		if (e.key === 'space') window.location.href = '/challenges';
+		console.log(e.key)
+		if (e.key === ' ') window.location.href = '/challenges';
 	}}
 	role="button"
 	tabindex="0"
@@ -72,49 +87,54 @@
 				{challenge_data.challenge_description}
 			</p>
 			<div class="right flex w-full flex-col gap-3">
-				<!-- <ul class="resources">
+				<ul class="resources">
 					{#each challenge_data.resources as resource}
-						 {#if resource.type === 'link'} -->
-				<!-- <li class="challenge-resource"> -->
-				<!-- <i class="fa-solid fa-link"></i> -->
-				<!-- <a href={resource.implied_text}>{resource.displayed_text}</a> -->
-				<!-- </li> -->
-				<!-- {:else if resource.type === 'file'} -->
-				<!-- <li class="challenge-resource"> -->
-				<!-- <i class="fa-solid fa-file"></i> -->
-				<!-- <a href={resource.implied_text}>{resource.displayed_text}</a> -->
-				<!-- </li> -->
-				<!-- {:else} -->
-				<!-- <li class="challenge-resource flex flex-row gap-1"> -->
-				<!-- <p><i class="fa-solid fa-terminal"></i> {resource.displayed_text}</p> -->
-				<!-- <button -->
-				<!-- title="Copy to clipboard" -->
-				<!-- class="ignore-default relative" -->
-				<!-- onclick={() => { 
-										 // copyToClipboard(resource.implied_text); -->
-				<!-- // }} -->
-				<!-- ><i class="fa-solid fa-copy"></i> -->
-				<!-- {#if show_copied_message} -->
-				<!-- <div -->
-				<!-- class="bg-background-dark absolute bottom-6 -translate-x-5 rounded-md px-2 py-2 text-xs" -->
-				<!-- > -->
-				<!-- Copied! -->
-				<!-- </div> -->
-				<!-- {/if} -->
-				<!-- </button> -->
-				<!-- </li> -->
-				<!-- {/if} -->
-				<!-- {/each} -->
-				<!-- </ul>  -->
-				<!-- <p class="author font-bold"><i class="fa-solid fa-pen"></i> {challenge_data.author}</p> -->
-				<div class="first-solvers-wrapper flex flex-col justify-start">
-					<h5 class="font-bold">First Solvers:</h5>
-					<ol class="first-solvers flex list-inside list-decimal flex-col justify-start">
-						{#each challenge_data.first_solvers as solver}
-							<li class="solver">{solver.display_name}</li>
-						{/each}
-					</ol>
-				</div>
+						{#if resource.type === 'link'}
+							<li class="challenge-resource">
+								<i class="fa-solid fa-link"></i>
+								<a href={resource.content}>{resource.content}</a>
+							</li>
+						{:else if resource.type === 'file'}
+							<li class="challenge-resource">
+								<i class="fa-solid fa-file"></i>
+								<a href={resource.content}>{resource.content}</a>
+							</li>
+						{:else}
+							<li class="challenge-resource flex flex-row gap-1">
+								<p>
+									<i class="fa-solid fa-terminal"></i>
+									{resource.content}
+								</p>
+								<button
+									title="Copy to clipboard"
+									class="ignore-default relative"
+									onclick={() => {
+										copyToClipboard(resource.content);
+									}}
+								>
+									<i class="fa-solid fa-copy"></i>
+									{#if show_copied_message}
+										<div
+											class="bg-background-dark absolute bottom-6 -translate-x-5 rounded-md px-2 py-2 text-xs"
+										>
+											Copied!
+										</div>
+									{/if}
+								</button>
+							</li>
+						{/if}
+					{/each}
+					<!-- </ul>  -->
+					<!-- <p class="author font-bold"><i class="fa-solid fa-pen"></i> {challenge_data.author}</p> -->
+					<div class="first-solvers-wrapper flex flex-col justify-start">
+						<h5 class="font-bold">First Solvers:</h5>
+						<ol class="first-solvers flex list-inside list-decimal flex-col justify-start">
+							{#each challenge_data.first_solvers as solver}
+								<li class="solver">{solver.display_name}</li>
+							{/each}
+						</ol>
+					</div>
+				</ul>
 			</div>
 		</section>
 		<section class="bottom absolute bottom-2 w-10/12">

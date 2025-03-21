@@ -9,7 +9,6 @@
 	let challengeId = $derived(page.url.searchParams.get('show'));
 
 	$inspect(challengeId);
-	console.log(challenges);
 
 	let show_challenge_dialog: boolean = $derived(challengeId !== null);
 

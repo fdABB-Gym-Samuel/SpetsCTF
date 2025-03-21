@@ -94,7 +94,7 @@
 		<div class="mb-5 flex flex-col">
 			<label for="challenge_id">{translations.challenge_id}</label>
 			<input
-				class="border border-black"
+				class="border border-accent-dark pl-2"
 				type="text"
 				name="challenge_id"
 				id="challenge_id"
@@ -105,7 +105,7 @@
 		<div class="mb-5 flex flex-col">
 			<label for="display_name">{translations.challenge_display_name}</label>
 			<input
-				class="border border-black"
+				class="border border-accent-dark pl-2"
 				type="text"
 				name="display_name"
 				id="display_name"
@@ -117,14 +117,14 @@
 			<textarea
 				name="description"
 				id="challenge-description"
-				class="border border-black"
+				class="border border-accent-dark pl-2"
 				placeholder="Write a description for your challenge"
 			></textarea>
 		</div>
 		<div class="mb-5 flex flex-col">
 			<label for="flag">{translations.flag}</label>
 			<input
-				class="border border-black"
+				class="border border-accent-dark pl-2"
 				type="text"
 				name="flag"
 				required
@@ -135,7 +135,7 @@
 		<div class="mb-5 flex flex-col">
 			<label for="flag_format">{translations.flag_format}</label>
 			<input
-				class="border border-black"
+				class="border border-accent-dark pl-2"
 				type="text"
 				name="flag_format"
 				id="flag_format"
@@ -149,7 +149,7 @@
 				required
 				id="points"
 				name="points"
-				class="border border-black"
+				class="border border-accent-dark pl-2"
 				placeholder="Enter the base amount of points."
 			/>
 		</div>
@@ -158,7 +158,7 @@
 			<select
 				id="challenge_category"
 				name="challenge_category"
-				class="border border-black"
+				class="border border-accent-dark pl-2"
 				value="misc"
 			>
 				{#each ['blockchain', 'crypto', 'forensics', 'introduction', 'misc', 'osint', 'pwn', 'reversing', 'web'] as option}
@@ -179,7 +179,7 @@
 		<select
 			name="resource_type"
 			bind:value={current_resource.resource_type}
-			class="border border-black"
+			class="border border-accent-dark pl-2"
 		>
 			<option class="text-background-dark" value="Command">Command</option>
 			<option class="text-background-dark" value="Website">Website</option>
@@ -190,7 +190,7 @@
 			<input
 				type="text"
 				name={`${current_resource.resource_type.toLocaleLowerCase()}s`}
-				class="border-accent-dark border pl-1"
+				class="border-accent-dark border pl-2"
 				bind:value={current_resource.resource_content}
 				placeholder={`My ${current_resource.resource_type}`}
 			/>
@@ -207,13 +207,13 @@
 		<!-- {#if current_resource.resource_type === "File"} -->
 		<button
 			type="submit"
-			class="ignore-default bg-button-dark border-foreground-dark w-fit rounded-md border-2 px-1.5 py-0.5"
+			class="ignore-default bg-button-dark border-foreground-dark w-fit rounded-md border-2 px-1.5 py-0.5 mt-3"
 			>Add Resource
 		</button>
 	</form>
 
 	{#each Object.entries(challenge_resources) as [type, resource_list]: [resource_type, resource[]]}
-		<h5 class="text-xl">{type}s</h5>
+		<h5 class="text-xl border-b-2 border-accent-dark mb-2">{type}s</h5>
 		<ul>
 			{#each resource_list as resource, i}
 				{#if type !== 'File'}
@@ -242,14 +242,12 @@
 								remove_resource(type, i);
 							}}>X</button
 						>
-						<!-- <input name="files" type="file" form="new_challenge_form" hidden bind:files={challenge_resources.File} > -->
 					</li>
 				{/if}
 			{/each}
-			<!-- <input name="files" type="file" bind:value={file}> -->
 		</ul>
 	{/each}
 
-	<button type="submit" form="new_challenge_form">Submit</button>
+	<button type="submit" form="new_challenge_form" class="mt-5">Submit</button>
 	<!-- </form> -->
 </div>
