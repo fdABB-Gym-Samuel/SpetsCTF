@@ -21,12 +21,6 @@
 		solved: false,
 		resources: []}, translations }: Props = $props();
 	
-	// if (challenge_data === undefined){
-	// 	goto()
-	// }
-
-	console.log(challenge_data, "here")
-
 	// Needs to be changed to handle when there are multiple commands that can be copied
 	let show_copied_message = $state(false);
 
@@ -46,13 +40,13 @@
 
 <div
 	onclick={(e) => {
-		if (e.currentTarget === e.target) {
-			goto('/challenges');
-		}
+		if (e.currentTarget === e.target)
+			goto("/challenges", { replaceState:true, noScroll: true})
+		
 	}}
 	onkeydown={(e) => {
-		console.log(e.key)
-		if (e.key === ' ') window.location.href = '/challenges';
+		if (e.key === ' ' || e.key === "Enter" || e.key === "Escape") 
+			goto("/challenges", { replaceState : true, noScroll: true })
 	}}
 	role="button"
 	tabindex="0"
@@ -92,12 +86,12 @@
 						{#if resource.type === 'link'}
 							<li class="challenge-resource">
 								<i class="fa-solid fa-link"></i>
-								<a href={resource.content}>{resource.content}</a>
+								<a href={resource.content} class="ignore-default">{resource.content}</a>
 							</li>
 						{:else if resource.type === 'file'}
 							<li class="challenge-resource">
 								<i class="fa-solid fa-file"></i>
-								<a href={resource.content}>{resource.content}</a>
+								<a href={resource.content} class="ignore-default">{resource.content}</a>
 							</li>
 						{:else}
 							<li class="challenge-resource flex flex-row gap-1">

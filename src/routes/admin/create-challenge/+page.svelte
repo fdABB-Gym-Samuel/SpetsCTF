@@ -1,8 +1,11 @@
 <script lang="ts">
+	import { fromStore } from 'svelte/store';
+
+
 	let { data, form } = $props();
 	let { translations } = data;
 
-	type resource_type = 'File' | 'Command' | 'Website';
+	type resource_type = 'File' | 'Command' | 'Website'; 
 
 	interface resource {
 		resource_type: resource_type;
@@ -15,11 +18,12 @@
 		resource_content: ''
 	});
 
-	let challenge_resources: Record<resource_type, (File | string)[]> = $state({
-		File: [],
+	let challenge_resources: Record<"Command"|"Website", string[]> = $state({
 		Command: [],
 		Website: []
 	});
+	// It just doenst want to work wihtout a separate array
+	let files: FileList|undefined = $state()
 
 	let new_challenge_form: HTMLFormElement;
 
@@ -34,58 +38,66 @@
 
 		const type: resource_type = formData.get('resource_type') as resource_type;
 		const type_formdata = `${type.toLocaleLowerCase()}s`;
-		const resources: File[] | string[] = formData.getAll(type_formdata) as File[] | string[];
-		challenge_resources[type] = [...challenge_resources[type], ...resources];
-
-		formData_new_challenge = new FormData(new_challenge_form);
-
-		if (formData_new_challenge === undefined) return;
-
-		formData_new_challenge.delete(type_formdata);
-		if (type !== 'File') {
-			challenge_resources[type].forEach((content) => {
-				formData_new_challenge.append(type_formdata, content);
-			});
+		// const resources: File[] | string[] = formData.getAll(type_formdata) as (File | string)[];
+		let resources: File[]|string[];
+		if (type !== "File"){
+			resources = formData.getAll(type_formdata) as string[]
+			challenge_resources[type] = [...challenge_resources[type], ... resources]
 		}
-		// Had **A LOT** of difficulty putting files into hidden input fields
-		// so have to redefine files every time
-		formData_new_challenge.delete('files');
-		challenge_resources['File'].forEach((file) => {
-			formData_new_challenge.append('files', file, file.name);
-		});
+		else {
+			resources = formData.getAll(type_formdata) as File[]
+			if (files !== undefined){
+				console.log(files)
+				resources = [...files, ...resources]
+			}
+			else{
+				resources = resources
+			}
+			if (resources === undefined)
+				return "Fuck"
+
+			let dt = new DataTransfer()
+			resources.forEach((file) => {
+				if(file instanceof File){
+					dt.items.add(file)
+			}
+			});
+			files = dt.files
+		}
 	};
 	const remove_resource = (type: resource_type, index: number) => {
-		challenge_resources[type].splice(index, 1);
-	};
+		if (type !== "File")
+			challenge_resources[type].splice(index, 1);
 
-	const submit_new_challenge = async (e: SubmitEvent) => {
-		if (formData_new_challenge === undefined) {
-			if (e.currentTarget instanceof HTMLFormElement) {
-				formData_new_challenge = new FormData(e.currentTarget);
+		// Files are a little more complicated, needing a DataTransfer (actually the FileList in it),
+		// this is because i want to insert a "hidden" input element conatining all the files
+		// in order to not have to send my own formdata directly to the sveltekit action, which interferes
+		// with small parts of the form implementation (status at the top, which is done through form prop)
+		else{
+			if (files !== undefined){
+				let new_files = Array.from(files).filter((file, i) => i !== index)
+				let dt = new DataTransfer()
+				new_files.forEach((file) => {
+					dt.items.add(file)
+				})
+				files = dt.files
+
 			}
 		}
-
-		const response = await fetch('', {
-			method: 'POST',
-			body: formData_new_challenge
-		});
-		return response;
 	};
+
 </script>
 
 <!-- <div class="mx-auto flex w-1/2 flex-col space-y-2"> -->
 <div class="content">
-	{#if form && form?.success}
-		<span class="text-green-600">{translations.success}</span>
-	{:else if form && !form?.success}
-		<span class="text-red-600">{translations.failure}</span>
-	{/if}
 	<h2 class="text-4xl font-bold">{translations.addnewchallenge}</h2>
+	{#if form && form?.success}
+		<span class="text-green-600">{translations.success}: {form.message}</span>
+	{:else if form && !form?.success}
+		<span class="text-red-600">{translations.failure}: {form.message}</span>
+	{/if}
 	<form
 		method="POST"
-		onsubmit={(e: SubmitEvent) => {
-			submit_new_challenge(e);
-		}}
 		class="flex flex-col"
 		id="new_challenge_form"
 		enctype="multipart/form-data"
@@ -200,7 +212,7 @@
 				type="file"
 				name="files"
 				multiple
-				class="border-accent-dark border"
+				class="border-accent-dark border pl-2"
 				bind:value={current_resource.resource_file}
 			/>
 		{/if}
@@ -212,40 +224,51 @@
 		</button>
 	</form>
 
-	{#each Object.entries(challenge_resources) as [type, resource_list]: [resource_type, resource[]]}
+	<h5 class="text-xl border-b-2 border-accent-dark mb-2">Files</h5>
+		<ul>
+			{#each files !== undefined ? files : [] as file, i}
+				<!-- {#if type !== 'File'} -->
+					<li class="flex flex-row gap-2">
+						<p>{file instanceof File? file.name: file}</p>
+						<button
+							type="button"
+							class="ignore-default bg-button-dark border-foreground-dark h-fit rounded-sm border-1 px-1.5"
+							onclick={() => {
+								remove_resource("File", i);
+							}}>X</button
+						>
+					</li>
+			{/each}
+			{#if files && files?.length > 0}
+				<input type="file" name="files" form="new_challenge_form" bind:files hidden>
+			{/if}
+		</ul>
+	{#each Object.entries(challenge_resources) as [type, resource_list]: ["Website"|"Command", resource[]]}
+		{#if ["Command", "Website", "File"].includes(type)}
 		<h5 class="text-xl border-b-2 border-accent-dark mb-2">{type}s</h5>
 		<ul>
 			{#each resource_list as resource, i}
-				{#if type !== 'File'}
+				<!-- {#if type !== 'File'} -->
 					<li class="flex flex-row gap-2">
 						<p>{resource}</p>
 						<button
 							type="button"
 							class="ignore-default bg-button-dark border-foreground-dark h-fit rounded-sm border-1 px-1.5"
 							onclick={() => {
-								remove_resource(type, i);
+								if (type === "Website" || type === "Command")
+									remove_resource(type, i);
 							}}>X</button
 						>
-						{#if resource.resource_type === 'Command'}
+						{#if type === 'Command'}
 							<input name="commands" type="hidden" form="new_challenge_form" value={resource} />
-						{:else}
+						{:else if type === 'Website'}
 							<input name="websites" type="hidden" form="new_challenge_form" value={resource} />
 						{/if}
 					</li>
-				{:else}
-					<li class="flex flex-row">
-						<p>{resource.name}</p>
-						<button
-							type="button"
-							class="ignore-default bg-button-dark border-foreground-dark rounded-sm border-1 px-1.5"
-							onclick={() => {
-								remove_resource(type, i);
-							}}>X</button
-						>
-					</li>
-				{/if}
+
 			{/each}
 		</ul>
+		{/if}
 	{/each}
 
 	<button type="submit" form="new_challenge_form" class="mt-5">Submit</button>

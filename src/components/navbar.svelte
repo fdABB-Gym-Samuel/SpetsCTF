@@ -47,16 +47,16 @@
 				class="ignore-default flex flex-col gap-1.5" 
 				aria-label="Open Sidebar"
 				onclick={toggle_sidebar}>
-				<span class="bg-button-dark w-6 h-1"></span>
-				<span class="bg-button-dark w-6 h-1"></span>
-				<span class="bg-button-dark w-6 h-1"></span>
+				<span class="bg-foreground-dark w-6 h-1 rounded-sm"></span>
+				<span class="bg-foreground-dark w-6 h-1 rounded-sm"></span>
+				<span class="bg-foreground-dark w-6 h-1 rounded-sm"></span>
 			</button>
 		</div>
 		<span class="separator hidden sm:block bg-accent-dark h-8 w-0.5"></span>
 	</div>
 	<div class="right">
 		{#if user}
-			<a href="/user" class="flex flex-row items-center space-x-4 underline">
+			<a href="/user" class="ignore-default flex flex-row items-center space-x-4 underline">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					width="24"
@@ -118,13 +118,13 @@
 		<div class="w-full pt-4">
 			<ul class="flex h-full flex-col items-stretch text-foreground-dark pr-5 pl-2 text-xl space-x-2 ">
 				<li class="border-stone-400 border-b-2 py-2 pl-1 m-0">
-					<a class="nav-option" href="/challenges">Challenges</a>
+					<a class="ignore-default" href="/challenges">Challenges</a>
 				</li>
 				<li class="border-stone-400 border-b-2 py-2 pl-1 m-0">
-					<a href="/scoreboard">Leaderboard</a>
+					<a class="ignore-default" href="/scoreboard">Leaderboard</a>
 				</li>
 				<li class="border-stone-400 border-b-2 py-2 pl-1 m-0">
-					<a href="/about">About</a>
+					<a class="ignore-default" href="/about">About</a>
 				</li>
 			</ul>
 		</div>

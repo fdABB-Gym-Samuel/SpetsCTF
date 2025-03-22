@@ -8,7 +8,7 @@
 
 <div class="content flex flex-row justify-center items-center">
     <div class="block -rotate-90 absolute left-0">
-        <a href="/what-is-this-a-secret-challenge?" class="text-background-dark cursor-help select-none">or is there</a>
+        <a href="/what-is-this-a-secret-challenge?" class="ignore-default text-background-dark cursor-help select-none">or is there</a>
     </div>
     <div class="flex flex-col justify-center items-center">
         <h1 class="ignore-default text-center text-9xl">{page.status}</h1>

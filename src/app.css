@@ -121,10 +121,10 @@ button:not(.ignore-default) {
 	@apply w-full px-[var(--main-padding-inline)] pt-5;
 }
 
-/* a:not(.nav-option, .challenge-resource){
+a:not(.nav-option, .challenge-resource, .ignore-default){
     @apply text-accent-dark dark:text-accent-dark underline;
 
-} */
+}
 
 .challenge-resource {
 	@apply text-background-dark dark:text-background-light font-bold underline;

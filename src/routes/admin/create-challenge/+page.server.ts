@@ -19,9 +19,7 @@ export const actions = {
 	default: async ({ request }) => {
 		try {
 			const formData = await request.formData();
-			// files =
-			console.log(formData);
-
+			
 			const challenge_category: Category = validateCategory(
 				formData.get('challenge_category')?.toString() ?? ''
 			);
@@ -65,64 +63,57 @@ export const actions = {
 
 			await db.insertInto('challenges').values(challenge).execute();
 
-			const files: (File | null)[] = formData.getAll('files') as File[] | null;
-			const commands: (string | null)[] = formData.getAll('commands') as string[] | null;
-			const websites: (string | null)[] = formData.getAll('websites') as string[] | null;
+			const files: File[] | null = formData.getAll('files') as File[] | null;
+			const commands: string[] | null = formData.getAll('commands') as string[] | null;
+			const websites: string[] | null = formData.getAll('websites') as string[] | null;
 
-			console.log("files", files)
-			console.log("commands", commands)
-			console.log("websites", websites)
+			let resource_files;
+			if (files !== null){
+				const challenge_dir = path.join(process.cwd(), `files/${challenge_id}`);
+				await mkdir(challenge_dir, { recursive: true });
+						
+				for (let file of files) {
+					let filepath = path.join(challenge_dir, file.name);
+					await writeFile(filepath, Buffer.from(await file.arrayBuffer()));
+				}
 
-			const challenge_dir = path.join(process.cwd(), `files/${challenge_id}`);
-			await mkdir(challenge_dir, { recursive: true });
-			for (let file of files) {
-				let filepath = path.join(challenge_dir, file.name);
-				await writeFile(filepath, Buffer.from(await file.arrayBuffer()));
+				// const filepath = path.join(challenge_dir, file.name);
+				resource_files = files.map((file) => {
+					return {
+						challenge: challenge_id,
+						content: path.join(challenge_dir, file?.name),
+						type: 'file'
+					};
+				});
 			}
-			console.log("files", files)
-			console.log("commands", commands)
-			console.log("websites", websites)
-			// const filepath = path.join(challenge_dir, file.name);
-			const resource_files = files.map((file) => {
-				return {
-					challenge: challenge_id,
-					content: path.join(challenge_dir, file?.name),
-					type: 'file'
-				};
-			});
-			console.log("files", files)
-			console.log("commands", commands)
-			console.log("websites", websites)
-			const resource_commands = commands.map((command) => {
-				return {challenge: challenge_id, content: command, type: 'cmd'};
-			});
-			const resource_websites = websites.map((website) => {
-				return { challenge: challenge_id, content: website, type: 'web' };
-			});
-			console.log("files", files)
-			console.log("commands", commands)
-			console.log("websites", websites)
 
-			console.log("files", resource_files)
-			console.log("commands", resource_commands)
-			console.log("websites", resource_websites)
+			let resource_commands;
+			if (commands !== null){
+				resource_commands = commands.map((command) => {
+					return {challenge: challenge_id, content: command, type: 'cmd'};
+				});
+			}
 
-			const resources = [...resource_files, ...resource_commands, ...resource_websites];
-			console.log("resources", resources)
-			// if (resources.length > 0) {
-				const _ = await db
-					.insertInto('challenge_resources')
-					.values(resources)
-					.execute();
-			// }
+			let resource_websites;
+			if (websites !== null){
+				resource_websites = websites.map((website) => {
+					return { challenge: challenge_id, content: website, type: 'web' };
+				});
+			}
 
-			return { success: true };
+			if(resource_files && resource_commands && resource_websites){
+				if (resource_commands?.length > 0 || resource_files?.length > 0 || resource_websites?.length > 0){
+					const resources = [...resource_files, ...resource_commands, ...resource_websites] as Insertable<ChallengeResources>[];
+					const _ = await db
+						.insertInto('challenge_resources')
+						.values(resources)
+						.execute();
+
+				}
+			}
+			return { success: true, message: "Challenge uploaded successfully" };
 		} catch (err) {
-			console.log("Name", err.name)
-			console.log("Message", err.message)
-			console.log("stack", err.stack)
-
-			return { success: false };
+			return { success: false, message: err.message};
 		}
 	}
 } satisfies Actions;

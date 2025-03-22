@@ -8,7 +8,7 @@
 
 	let challengeId = $derived(page.url.searchParams.get('show'));
 
-	$inspect(challengeId);
+	// $inspect(challengeId);
 
 	let show_challenge_dialog: boolean = $derived(challengeId !== null);
 
@@ -51,7 +51,7 @@
 								<a
 									href={`challenges?show=${challenge_data.challenge_id}`}
 									data-sveltekit-noscroll
-									class="h-38 w-full"
+									class="h-38 w-full ignore-default"
 									><ChallengeCard data={{ challenge_data: challenge_data }}></ChallengeCard></a
 								>
 							</li>
