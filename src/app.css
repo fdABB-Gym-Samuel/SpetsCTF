@@ -101,11 +101,11 @@ body {
 	/* @apply font-sans-; */
 }
 
-h1:not(.hero-text) {
+h1:not(.hero-text, .ignore-default) {
 	@apply text-4xl md:text-6xl;
 }
 
-h3 {
+h3:not(.ignore-default) {
 	@apply text-2xl md:text-4xl;
 }
 

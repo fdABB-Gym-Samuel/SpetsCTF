@@ -10,7 +10,7 @@
 		translations: Record<string, string>;
 	}
 
-	let show_sidebar = $state(true)
+	let show_sidebar = $state(false)
 
 	let { user, translations }: Props = $props();
 
@@ -121,7 +121,7 @@
 					<a class="nav-option" href="/challenges">Challenges</a>
 				</li>
 				<li class="border-stone-400 border-b-2 py-2 pl-1 m-0">
-					<a href="/leaderboard">Leaderboard</a>
+					<a href="/scoreboard">Leaderboard</a>
 				</li>
 				<li class="border-stone-400 border-b-2 py-2 pl-1 m-0">
 					<a href="/about">About</a>
