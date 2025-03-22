@@ -17,3 +17,4 @@ Things still needed:
 - [ ] Check if challenge belongs to a CTF that has ended before showing in /challenges
 - [ ] Make functionality to add CTFs
 - [ ] Allow non-admin users to propose challenges before being validate by an admin
+- [ ] Validate filenames and challenge_ids before adding them to resources (prevent pathtraversal)
