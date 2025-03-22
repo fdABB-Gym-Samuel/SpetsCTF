@@ -106,7 +106,7 @@
 		<div class="mb-5 flex flex-col">
 			<label for="challenge_id">{translations.challenge_id}</label>
 			<input
-				class="border border-accent-dark pl-2"
+				class="border border-accent-light dark:border-accent-dark pl-2"
 				type="text"
 				name="challenge_id"
 				id="challenge_id"
@@ -117,7 +117,7 @@
 		<div class="mb-5 flex flex-col">
 			<label for="display_name">{translations.challenge_display_name}</label>
 			<input
-				class="border border-accent-dark pl-2"
+				class="border border-accent-light dark:border-accent-dark pl-2"
 				type="text"
 				name="display_name"
 				id="display_name"
@@ -129,14 +129,14 @@
 			<textarea
 				name="description"
 				id="challenge-description"
-				class="border border-accent-dark pl-2"
+				class="border border-accent-light dark:border-accent-dark pl-2"
 				placeholder="Write a description for your challenge"
 			></textarea>
 		</div>
 		<div class="mb-5 flex flex-col">
 			<label for="flag">{translations.flag}</label>
 			<input
-				class="border border-accent-dark pl-2"
+				class="border border-accent-light dark:border-accent-dark pl-2"
 				type="text"
 				name="flag"
 				required
@@ -147,7 +147,7 @@
 		<div class="mb-5 flex flex-col">
 			<label for="flag_format">{translations.flag_format}</label>
 			<input
-				class="border border-accent-dark pl-2"
+				class="border border-accent-light dark:border-accent-dark pl-2"
 				type="text"
 				name="flag_format"
 				id="flag_format"
@@ -161,7 +161,7 @@
 				required
 				id="points"
 				name="points"
-				class="border border-accent-dark pl-2"
+				class="border border-accent-light dark:border-accent-dark pl-2"
 				placeholder="Enter the base amount of points."
 			/>
 		</div>
@@ -170,7 +170,7 @@
 			<select
 				id="challenge_category"
 				name="challenge_category"
-				class="border border-accent-dark pl-2"
+				class="border border-accent-light dark:border-accent-dark pl-2"
 				value="misc"
 			>
 				{#each ['blockchain', 'crypto', 'forensics', 'introduction', 'misc', 'osint', 'pwn', 'reversing', 'web'] as option}
@@ -185,13 +185,13 @@
 		onsubmit={(e: SubmitEvent) => {
 			add_resource(e);
 		}}
-		class="border-foreground-dark mb-5 flex flex-col border-1 px-5 py-2"
+		class="bprder-foreground-light dark:border-foreground-dark mb-5 flex flex-col border-1 px-5 py-2"
 	>
 		<label for="resource_type">Resource type</label>
 		<select
 			name="resource_type"
 			bind:value={current_resource.resource_type}
-			class="border border-accent-dark pl-2"
+			class="border border-accent-light dark:border-accent-dark pl-2"
 		>
 			<option class="text-background-dark" value="Command">Command</option>
 			<option class="text-background-dark" value="Website">Website</option>
@@ -202,7 +202,7 @@
 			<input
 				type="text"
 				name={`${current_resource.resource_type.toLocaleLowerCase()}s`}
-				class="border-accent-dark border pl-2"
+				class="border-accent-light dark:border-accent-dark border pl-2"
 				bind:value={current_resource.resource_content}
 				placeholder={`My ${current_resource.resource_type}`}
 			/>
@@ -212,19 +212,19 @@
 				type="file"
 				name="files"
 				multiple
-				class="border-accent-dark border pl-2"
+				class="border-accent-light dark:border-accent-dark border pl-2"
 				bind:value={current_resource.resource_file}
 			/>
 		{/if}
 		<!-- {#if current_resource.resource_type === "File"} -->
 		<button
 			type="submit"
-			class="ignore-default bg-button-dark border-foreground-dark w-fit rounded-md border-2 px-1.5 py-0.5 mt-3"
+			class="ignore-default bg-button-light dark:bg-button-dark border-foreground-light dark:border-foreground-dark w-fit rounded-md border-2 px-1.5 py-0.5 mt-3"
 			>Add Resource
 		</button>
 	</form>
 
-	<h5 class="text-xl border-b-2 border-accent-dark mb-2">Files</h5>
+	<h5 class="text-xl border-b-2 border-accent-light dark:border-accent-dark mb-2">Files</h5>
 		<ul>
 			{#each files !== undefined ? files : [] as file, i}
 				<!-- {#if type !== 'File'} -->
@@ -245,15 +245,15 @@
 		</ul>
 	{#each Object.entries(challenge_resources) as [type, resource_list]: ["Website"|"Command", resource[]]}
 		{#if ["Command", "Website", "File"].includes(type)}
-		<h5 class="text-xl border-b-2 border-accent-dark mb-2">{type}s</h5>
-		<ul>
+		<h5 class="text-xl border-b-2 border-accent-light dark:border-accent-dark mb-2">{type}s</h5>
+		<ul class="flex flex-col gap-1">
 			{#each resource_list as resource, i}
 				<!-- {#if type !== 'File'} -->
 					<li class="flex flex-row gap-2">
 						<p>{resource}</p>
 						<button
 							type="button"
-							class="ignore-default bg-button-dark border-foreground-dark h-fit rounded-sm border-1 px-1.5"
+							class="ignore-default bg-button-light dark:bg-button-dark border-foreground-light dark:border-foreground-dark h-fit rounded-sm border-1 px-1.5"
 							onclick={() => {
 								if (type === "Website" || type === "Command")
 									remove_resource(type, i);

@@ -53,38 +53,47 @@
 	class="backdrop bg-backdrop prevent-default fixed top-0 flex h-screen w-screen items-center justify-center"
 >
 	<dialog
-		class="bg-button-dark relative m-auto flex max-h-[calc(100vh-40px)] min-h-[var(--challenge-dialog-height)] w-[var(--challenge-dialog-width)] flex-col items-center gap-5 rounded-md px-[var(--challenge-padding-inline)] py-2 pb-15"
-		class:bg-challenge-solved={challenge_data.solved}
+		class="bg-button-light dark:bg-button-dark relative m-auto flex max-h-[calc(100vh-40px)] min-h-[var(--challenge-dialog-height)] w-[var(--challenge-dialog-width)] flex-col items-center gap-5 rounded-md px-[var(--challenge-padding-inline)] py-2 pb-15"
+		class:dark:bg-challenge-solved-dark={challenge_data.solved}
+		class:bg-challenge-solved-light={challenge_data.solved}
+
 	>
 		<section class="top flex w-full flex-col items-center">
-			<h3 class="challenge-title text-foreground-dark pt-5 pb-2 text-5xl">
+			<h3 
+				class="challenge-title text-foreground-light dark:text-foreground-dark pt-5 pb-2 text-5xl"
+				class:dark:text-background-dark={challenge_data.solved}
+				class:text-background-light={challenge_data.solved}
+				>
 				{challenge_data.challenge_name}
 			</h3>
 			<ul class="categroies flex w-8/10 flex-row flex-wrap justify-center">
 				{#each [challenge_data.challenge_category] as category}
 					<li
-						class="bg-foreground-dark text-background-dark mt-1 mr-1.5 rounded-md px-2 py-1 text-xs"
+						class="bg-foreground-light dark:bg-foreground-dark text-background-light dark:text-background-dark mt-1 mr-1.5 rounded-md px-2 py-1 text-xs"
 					>
 						{category}
 					</li>
 				{/each}
 			</ul>
 			<div class="solve-stats text-foreground-dark mt-1 flex flex-row gap-5">
-				<p class="points"><i class="fa-solid fa-circle-plus"></i> {challenge_data.points}</p>
-				<p class="num-solves"><i class="fa-solid fa-flag"></i> {challenge_data.num_solves}</p>
+				<p class="points text-foreground-light dark:text-foreground-dark"><i class="fa-solid fa-circle-plus"></i> {challenge_data.points}</p>
+				<p class="num-solves text-foreground-light dark:text-foreground-dark"><i class="fa-solid fa-flag"></i> {challenge_data.num_solves}</p>
 			</div>
 		</section>
 		<section
 			class="middle text-foreground-dark flex h-full w-full flex-row justify-between gap-2 overflow-hidden px-4"
 		>
-			<p class="challenge-description max-h-full w-full overflow-scroll">
+			<p 
+				class="challenge-description max-h-full w-full overflow-scroll text-foreground-light dark:text-foreground-dark"
+				class:text-background-light={challenge_data.solved}
+				>
 				{challenge_data.challenge_description}
 			</p>
 			<div class="right flex w-full flex-col gap-3">
 				<ul class="resources">
 					{#each challenge_data.resources as resource}
 						{#if resource.type === 'link'}
-							<li class="challenge-resource">
+							<li class="challenge-resource text-foreground-light dark:text-foreground-dark">
 								<i class="fa-solid fa-link"></i>
 								<a href={resource.content} class="ignore-default">{resource.content}</a>
 							</li>
@@ -109,7 +118,7 @@
 									<i class="fa-solid fa-copy"></i>
 									{#if show_copied_message}
 										<div
-											class="bg-background-dark absolute bottom-6 -translate-x-5 rounded-md px-2 py-2 text-xs"
+											class="bg-background-dark absolute text-background-light bottom-6 -translate-x-5 rounded-md px-2 py-2 text-xs"
 										>
 											Copied!
 										</div>
@@ -120,7 +129,7 @@
 					{/each}
 					<!-- </ul>  -->
 					<!-- <p class="author font-bold"><i class="fa-solid fa-pen"></i> {challenge_data.author}</p> -->
-					<div class="first-solvers-wrapper flex flex-col justify-start">
+					<div class="first-solvers-wrapper flex flex-col justify-start text-foreground-light dark:text-foreground-dark">
 						<h5 class="font-bold">First Solvers:</h5>
 						<ol class="first-solvers flex list-inside list-decimal flex-col justify-start">
 							{#each challenge_data.first_solvers as solver}
@@ -138,18 +147,18 @@
 					method="POST"
 					class="flag-submission-form flex w-full flex-row gap-1"
 				>
-					<label for="flag" class="text-foreground-dark text-xl font-semibold">Flag:</label>
+					<label for="flag" class="text-foreground-light dark:text-foreground-dark text-xl font-semibold">Flag:</label>
 					<input
 						type="text"
 						name="flag"
-						class="flag bg-foreground-dark w-full rounded-sm px-1"
+						class="flag bg-foreground-light dark:bg-foreground-dark text-background-light dark:text-background-dark w-full rounded-sm px-1"
 						placeholder={challenge_data.flag_format}
 					/>
 					<button
 						aria-label="Submit flag"
 						type="submit"
-						class="submit-flag bg-foreground-dark h-8 w-8 rounded-sm text-center"
-						><i class="fa-solid fa-paper-plane text-foreground-dark relative right-1.5 bottom-0.5"
+						class="submit-flag bg-foreground-light dark:bg-foreground-dark h-8 w-8 rounded-sm text-center"
+						><i class="fa-solid fa-paper-plane text-foreground-light dark:text-foreground-dark relative right-1.5 bottom-0.5"
 						></i></button
 					>
 				</form>

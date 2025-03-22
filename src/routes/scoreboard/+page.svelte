@@ -19,12 +19,14 @@
 					>
 						{#each original_classes as _class}
 							<div
-								class="rounded-sm bg-neutral-600 px-1 text-sm text-neutral-200"
+								class="rounded-sm bg-neutral-500 dark:bg-neutral-600 px-1 text-sm text-neutral-100"
 								class:bg-neutral-800={!include_classes.includes(_class)}
-								class:text-neutral-400={!include_classes.includes(_class)}
+								class:text-neutral-300={!include_classes.includes(_class)}
+								class:dark:bg-neutral-200={!include_classes.includes(_class)}
+								class:dark:text-neutral-800={!include_classes.includes(_class)}
 							>
 								<label class="h-full pr-0.5 align-text-bottom" for={_class}>{_class}</label><input
-									class="peer bg-dim-beige checked:bg-accent-dark h-3 w-3 appearance-none rounded-sm"
+									class="peer bg-grey-dark dark:bg-dim-beige checked:bg-accent-light dark:checked:bg-accent-dark h-3 w-3 appearance-none rounded-sm"
 									type="checkbox"
 									id={_class}
 									bind:group={include_classes}
@@ -37,7 +39,7 @@
 				<!-- <ol class="scoreboard flex flex-col list-decimal list-inside"> -->
 				<table class="overflow-scroll">
 					<thead>
-						<tr class=" my-10 w-fit border-b-1 border-b-[var(--color-accent-dark)]">
+						<tr class=" my-10 w-fit border-b-1 border-b-accent-light dark:border-b-accent-dark">
 							<th class="w-1 px-2 text-left font-bold uppercase">#</th>
 							<th class="w-1 px-2 text-left font-bold uppercase">Username</th>
 							<!-- <th class="px-4 uppercase font-bold text-left w-fit">School</th> -->
@@ -52,7 +54,7 @@
 							})
 							.slice(0, 15) as player, i}
 							<tr
-								class="w-fit border-b-1 border-b-[var(--color-accent-dark)] text-wrap break-words outline-[var(--color-accent-dark)]"
+								class="w-fit border-b-1 border-b-accent-light dark:border-b-accent-dark text-wrap break-words outline-accent-dark"
 							>
 								<td class="mt-2 h-12 px-2 text-left">{i + 1}</td>
 								<td class="mt-2 h-12 px-2 text-left break-words">{player.display_name}</td>
@@ -74,7 +76,7 @@
 				<!-- <ol class="scoreboard flex flex-col list-decimal list-inside"> -->
 				<table class="overflow-scroll">
 					<thead>
-						<tr class=" my-10 w-fit border-b-1 border-b-[var(--color-accent-dark)]">
+						<tr class=" my-10 w-fit border-b-1 border-b-accent-light dark:border-b-accent-dark">
 							<th class="w-1 px-2 text-left font-bold uppercase">#</th>
 							<th class="w-1 px-2 text-left font-bold uppercase">Class</th>
 							<!-- <th class="px-4 uppercase font-bold text-left w-fit">School</th> -->
@@ -85,7 +87,7 @@
 					<tbody>
 						{#each classes_scoreboard as curr_class, i}
 							<tr
-								class="w-fit border-b-1 border-b-[var(--color-accent-dark)] text-wrap break-words outline-[var(--color-accent-dark)]"
+								class="w-fit border-b-1 border-b-accent-light dark:border-b-accent-dark text-wrap break-words outline-accent-dark"
 							>
 								<td class="mt-2 h-12 px-2 text-left">{i + 1}</td>
 								<td class="mt-2 h-12 px-2 text-left break-words">{curr_class.class_name}</td>

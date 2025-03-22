@@ -6,6 +6,7 @@ import type { Category, ChallengeResources, Challenges } from '$lib/db/db';
 import type { Insertable } from 'kysely';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
+import sanitize from 'sanitize-filename';
 
 // export const ssr = false
 

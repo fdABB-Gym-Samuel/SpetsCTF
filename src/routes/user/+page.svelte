@@ -34,7 +34,7 @@
 		<!-- {#if typeof window !== 'undefined'} -->
 		<!-- Client-side only code -->
 		<input
-			class="border border-white p-1"
+			class="border border-black dark:border-white p-1"
 			value={user.display_name ?? ''}
 			name="display_name"
 			placeholder={translations.enterdisplayname}
@@ -49,7 +49,7 @@
 		</label>
 		<br />
 		<select
-			class="border border-white p-1"
+			class="border border-black dark:border-white p-1"
 			name="represents_class"
 			id="represents_class"
 			value={user.represents_class ?? ''}

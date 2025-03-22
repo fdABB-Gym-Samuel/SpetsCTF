@@ -20,7 +20,7 @@
 </script>
 
 <nav
-	class="bg-background-dark text-foreground-dark fixed z-15 top-0 flex h-[var(--nav-height)] w-full flex-row items-center justify-between px-4 outline-1 outline-[var(--color-accent-dark)]"
+	class="bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark fixed z-15 top-0 flex h-[var(--nav-height)] w-full flex-row items-center justify-between px-4 outline-2 outline-accent-light dark:outline-[var(--color-accent-dark)]"
 >
 	<div class="left flex flex-row items-center">
 		<div class="logo-continer mr-4">
@@ -47,9 +47,9 @@
 				class="ignore-default flex flex-col gap-1.5" 
 				aria-label="Open Sidebar"
 				onclick={toggle_sidebar}>
-				<span class="bg-foreground-dark w-6 h-1 rounded-sm"></span>
-				<span class="bg-foreground-dark w-6 h-1 rounded-sm"></span>
-				<span class="bg-foreground-dark w-6 h-1 rounded-sm"></span>
+				<span class="bg-foreground-light dark:bg-foreground-dark w-6 h-1 rounded-sm"></span>
+				<span class="bg-foreground-light dark:bg-foreground-dark w-6 h-1 rounded-sm"></span>
+				<span class="bg-foreground-light dark:bg-foreground-dark w-6 h-1 rounded-sm"></span>
 			</button>
 		</div>
 		<span class="separator hidden sm:block bg-accent-dark h-8 w-0.5"></span>
@@ -79,7 +79,7 @@
 		{:else}
 			<button
 				onclick={() => goto('/login')}
-				class="login-btn bg-button-dark rounded-[var(--button-radius)] px-6 py-2 font-semibold"
+				class="login-btn bg-button-light dark:bg-button-dark rounded-[var(--button-radius)] px-6 py-2 font-semibold"
 				>Log In</button
 			>
 		{/if}
@@ -94,7 +94,7 @@
 	aria-label="close-sidebar"
 	role="button"
 	tabindex="0">
-	<nav class="h-full flex flex-row bottom-0 w-120 max-w-9/10 bg-background-dark z-10 border-r-accent-dark border-2 pt-2">
+	<nav class="h-full flex flex-row bottom-0 w-120 max-w-9/10 bg-background-light dark:bg-background-dark z-10 border-r-accent-light dark:border-r-accent-dark border-2 pt-2">
 		<div class="pl-2">
 			<button aria-label="Close sidebar" class="ignore-default">
 				<svg
@@ -107,7 +107,7 @@
 					  stroke-width="2"
 					  stroke-linecap="round"
 					  stroke-linejoin="round"
-					  class="back-arrow w-10 h-10 text-foreground-dark"
+					  class="back-arrow w-10 h-10 text-foreground-light dark:text-foreground-dark"
 					>
 					  <line x1="22" y1="12" x2="5" y2="12" />
 					  <polyline points="12 19 5 12 12 5" />
@@ -116,7 +116,7 @@
 			</button>
 		</div>
 		<div class="w-full pt-4">
-			<ul class="flex h-full flex-col items-stretch text-foreground-dark pr-5 pl-2 text-xl space-x-2 ">
+			<ul class="flex h-full flex-col items-stretch text-foreground-light dark:text-foreground-dark pr-5 pl-2 text-xl space-x-2 ">
 				<li class="border-stone-400 border-b-2 py-2 pl-1 m-0">
 					<a class="ignore-default" href="/challenges">Challenges</a>
 				</li>

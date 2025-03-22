@@ -45,7 +45,8 @@ margin-top: 5px;
 	--color-grey-dark: #999;
 	--color-dim-beige: #61615e;
 
-	--color-challenge-solved: #ef683b;
+	--color-challenge-solved-dark: #ff0026;
+	--color-challenge-solved-light: #a60022;
 
 	--color-backdrop: rgba(0, 0, 0, 0.8);
 
@@ -94,7 +95,7 @@ margin-top: 5px;
 }
 
 body {
-	@apply bg-background-dark m-0 box-border h-full w-screen p-0;
+	@apply bg-background-light dark:bg-background-dark m-0 box-border h-full w-screen p-0;
 	/* @apply font-[var(--font-main)]; */
 	@apply font-mono;
 
@@ -110,7 +111,7 @@ h3:not(.ignore-default) {
 }
 
 button:not(.ignore-default) {
-	@apply bg-button-dark border-foreground-dark flex justify-around gap-2 rounded-md border-2 px-3 py-2 active:border-0;
+	@apply text-foreground-light dark:text-foreground-dark bg-button-light dark:bg-button-dark border-foreground-light dark:border-foreground-dark flex justify-around gap-2 rounded-md border-2 px-3 py-2 active:border-0;
 }
 
 .route-title {
@@ -122,7 +123,7 @@ button:not(.ignore-default) {
 }
 
 a:not(.nav-option, .challenge-resource, .ignore-default){
-    @apply text-accent-dark dark:text-accent-dark underline;
+    @apply text-accent-light dark:text-accent-dark underline;
 
 }
 
