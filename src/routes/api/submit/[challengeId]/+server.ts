@@ -11,6 +11,7 @@ export const POST = async ({ request, locals, params }) => {
 			message: 'User not logged in'
 		});
 	}
+	console.log("here")
 
 	const { challengeId } = params;
 	const user_id = locals.user?.id;
@@ -50,7 +51,7 @@ export const POST = async ({ request, locals, params }) => {
 	return json({
 		success: flag_correct,
 		message: 'Youre a real skibidi sigma!'
-	});
+	})
 };
 
 const get_flag_of_challenge = async (challenge_id: string) => {

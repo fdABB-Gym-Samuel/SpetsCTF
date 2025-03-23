@@ -88,7 +88,7 @@
 
 {#if show_sidebar}
 <div 
-	class="backdrop bg-backdrop absolute w-screen h-[var(--main-height)] bottom-0 sm:hidden"
+	class="backdrop bg-backdrop-light dark:bg-backdrop-dark absolute w-screen h-[var(--main-height)] bottom-0 sm:hidden"
 	onclick={toggle_sidebar}
 	onkeydown={(e) => {if (e.key === " " || e.key === "Enter") toggle_sidebar()}}
 	aria-label="close-sidebar"

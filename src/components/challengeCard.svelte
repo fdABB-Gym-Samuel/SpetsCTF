@@ -6,7 +6,7 @@
 
 <!-- <main class="card flex flex-col justify-between bg-button-dark h-[var(--challenge-card-height)] w-[var(--challenge-card-width)] rounded-[var(--card-radius)] px-4 py-2"> -->
 <main
-	class="card bg-button-light dark:bg-button-dark flex h-full min-h-fit w-full flex-col justify-between rounded-[var(--card-radius)] px-4 py-2"
+	class="card bg-button-light dark:bg-button-dark flex h-full min-h-fit w-full max-w-100 flex-col justify-between rounded-[var(--card-radius)] px-4 py-2"
 	class:dark:bg-challenge-solved-dark={challenge_data.solved}
 	class:bg-challenge-solved-light={challenge_data.solved}
 

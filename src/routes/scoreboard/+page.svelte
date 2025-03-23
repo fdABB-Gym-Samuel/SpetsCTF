@@ -37,9 +37,9 @@
 					</div>
 				</div>
 				<!-- <ol class="scoreboard flex flex-col list-decimal list-inside"> -->
-				<table class="overflow-scroll">
+				<table class="overflow-scroll min-w-20">
 					<thead>
-						<tr class=" my-10 w-fit border-b-1 border-b-accent-light dark:border-b-accent-dark">
+						<tr class=" my-10 min-w-20 w-fit border-b-1 border-b-accent-light dark:border-b-accent-dark">
 							<th class="w-1 px-2 text-left font-bold uppercase">#</th>
 							<th class="w-1 px-2 text-left font-bold uppercase">Username</th>
 							<!-- <th class="px-4 uppercase font-bold text-left w-fit">School</th> -->
@@ -74,9 +74,9 @@
 					<h3 class="scoreboard-title text-5xl">Classes:</h3>
 				</div>
 				<!-- <ol class="scoreboard flex flex-col list-decimal list-inside"> -->
-				<table class="overflow-scroll">
+				<table class="overflow-scroll min-w-20">
 					<thead>
-						<tr class=" my-10 w-fit border-b-1 border-b-accent-light dark:border-b-accent-dark">
+						<tr class=" my-10 w-fit min-w-20 border-b-1 border-b-accent-light dark:border-b-accent-dark">
 							<th class="w-1 px-2 text-left font-bold uppercase">#</th>
 							<th class="w-1 px-2 text-left font-bold uppercase">Class</th>
 							<!-- <th class="px-4 uppercase font-bold text-left w-fit">School</th> -->

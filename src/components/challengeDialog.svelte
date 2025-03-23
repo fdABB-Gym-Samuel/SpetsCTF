@@ -50,7 +50,7 @@
 	}}
 	role="button"
 	tabindex="0"
-	class="backdrop bg-backdrop prevent-default fixed top-0 flex h-screen w-screen items-center justify-center"
+	class="backdrop bg-backdrop-light dark:bg-backdrop-dark prevent-default fixed top-0 flex h-screen w-screen items-center justify-center"
 >
 	<dialog
 		class="bg-button-light dark:bg-button-dark relative m-auto flex max-h-[calc(100vh-40px)] min-h-[var(--challenge-dialog-height)] w-[var(--challenge-dialog-width)] flex-col items-center gap-5 rounded-md px-[var(--challenge-padding-inline)] py-2 pb-15"
@@ -60,7 +60,7 @@
 	>
 		<section class="top flex w-full flex-col items-center">
 			<h3 
-				class="challenge-title text-foreground-light dark:text-foreground-dark pt-5 pb-2 text-5xl"
+				class="challenge-title text-foreground-light dark:text-foreground-dark pt-5 px-4 pb-2 text-5xl"
 				class:dark:text-background-dark={challenge_data.solved}
 				class:text-background-light={challenge_data.solved}
 				>
@@ -84,23 +84,23 @@
 			class="middle text-foreground-dark flex h-full w-full flex-row justify-between gap-2 overflow-hidden px-4"
 		>
 			<p 
-				class="challenge-description max-h-full w-full overflow-scroll text-foreground-light dark:text-foreground-dark"
+				class="challenge-description max-h-full w-1/2 overflow-scroll text-foreground-light dark:text-foreground-dark mr-1"
 				class:text-background-light={challenge_data.solved}
 				>
 				{challenge_data.challenge_description}
 			</p>
-			<div class="right flex w-full flex-col gap-3">
+			<div class="right flex w-1/2 flex-col gap-3 ml-1">
 				<ul class="resources">
 					{#each challenge_data.resources as resource}
 						{#if resource.type === 'link'}
 							<li class="challenge-resource text-foreground-light dark:text-foreground-dark">
 								<i class="fa-solid fa-link"></i>
-								<a href={resource.content} class="ignore-default">{resource.content}</a>
+								<a href={resource.content} class="ignore-default underline">{resource.content}</a>
 							</li>
 						{:else if resource.type === 'file'}
 							<li class="challenge-resource">
 								<i class="fa-solid fa-file"></i>
-								<a href={resource.content} class="ignore-default">{resource.content}</a>
+								<a href={resource.content} class="ignore-default underline">{resource.content.split("/")[7]}</a>
 							</li>
 						{:else}
 							<li class="challenge-resource flex flex-row gap-1">

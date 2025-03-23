@@ -44,10 +44,13 @@
 
 				{#if challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()).length > 0}
 					<ul
-						class="grid-auto-rows-[150px] grid auto-rows-min grid-cols-[repeat(auto-fit,minmax(200px,1fr))] items-stretch gap-4"
+						class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4"
 					>
+					<!-- <ul
+						class="flex flex-row flex-wrap gap-4"
+					> -->
 						{#each challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challenge_data}
-							<li>
+							<li class="min-h-35 min-w-65">
 								<a
 									href={`challenges?show=${challenge_data.challenge_id}`}
 									data-sveltekit-noscroll
