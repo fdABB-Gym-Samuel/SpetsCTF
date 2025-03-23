@@ -14,8 +14,15 @@
 
 	let { user, translations }: Props = $props();
 
-	const toggle_sidebar = () => {
-		show_sidebar = !show_sidebar
+	const toggle_sidebar = (e:MouseEvent|KeyboardEvent, is_backdrop:boolean = false) => {
+		if(is_backdrop){
+			if (e.currentTarget === e.target){	
+				show_sidebar = !show_sidebar
+			}
+		}
+		else{
+			show_sidebar = !show_sidebar
+		}
 	}
 </script>
 
@@ -88,15 +95,19 @@
 
 {#if show_sidebar}
 <div 
-	class="backdrop bg-backdrop-light dark:bg-backdrop-dark absolute w-screen h-[var(--main-height)] bottom-0 sm:hidden"
-	onclick={toggle_sidebar}
-	onkeydown={(e) => {if (e.key === " " || e.key === "Enter") toggle_sidebar()}}
+	class="backdrop bg-backdrop-light dark:bg-backdrop-dark fixed w-screen bottom-0 left-0 h-[var(--main-height)]"
+	onclick={(e:MouseEvent) => toggle_sidebar(e, true)}
+	onkeydown={(e) => {if (e.key === " " || e.key === "Enter") toggle_sidebar(e, true)}}
 	aria-label="close-sidebar"
 	role="button"
 	tabindex="0">
 	<nav class="h-full flex flex-row bottom-0 w-120 max-w-9/10 bg-background-light dark:bg-background-dark z-10 border-r-accent-light dark:border-r-accent-dark border-2 pt-2">
 		<div class="pl-2">
-			<button aria-label="Close sidebar" class="ignore-default">
+			<button 
+				aria-label="Close sidebar" 
+				class="ignore-default"
+				onclick={toggle_sidebar}
+			>
 				<svg
 					  xmlns="http://www.w3.org/2000/svg"
 					  viewBox="0 0 24 24"
