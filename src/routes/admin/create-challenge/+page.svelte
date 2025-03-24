@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { fromStore } from 'svelte/store';
-
 
 	let { data, form } = $props();
 	let { translations } = data;
@@ -232,7 +230,7 @@
 						<p>{file instanceof File? file.name: file}</p>
 						<button
 							type="button"
-							class="ignore-default bg-button-dark border-foreground-dark h-fit rounded-sm border-1 px-1.5"
+							class="ignore-default bg-button-light dark:bg-button-dark border-foreground-light dark:border-foreground-dark h-fit rounded-sm border-1 px-1.5"
 							onclick={() => {
 								remove_resource("File", i);
 							}}>X</button
