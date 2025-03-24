@@ -4,9 +4,9 @@
 </script>
 
 <header class="hero flex h-[var(--hero-height)] w-full flex-col items-center justify-center">
-	<div class="flex flex-row items-center">
+	<div class="flex flex-row items-center gap-2">
 		<img src="/logo.svg" alt="" class="logo w-20" />
 		<h1 class="hero-text h-fit text-center font-mono text-5xl sm:text-6xl md:text-8xl">SpetsCTF</h1>
 	</div>
-	<p class="text-grey-dark">{translations.by_students_for_students}</p>
+	<p class="text-stone-700 dark:text-grey-dark">{translations.by_students_for_students}</p>
 </header>

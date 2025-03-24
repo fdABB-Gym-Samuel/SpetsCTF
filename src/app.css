@@ -45,7 +45,11 @@ margin-top: 5px;
 	--color-grey-dark: #999;
 	--color-dim-beige: #61615e;
 
-	--color-backdrop: rgba(0, 0, 0, 0.8);
+	--color-challenge-solved-dark: #ff0026;
+	--color-challenge-solved-light: #a60022;
+
+	--color-backdrop-light: rgba(255, 255, 255, 0.9);
+	--color-backdrop-dark: rgba(0, 0, 0, 0.8);
 
 	/* --color-abb-beige: oklch(96.22% 0.0093 106.57);  */
 	/* --color-abb-beige: rgb;  */
@@ -92,23 +96,23 @@ margin-top: 5px;
 }
 
 body {
-	@apply bg-background-dark m-0 box-border h-full w-screen p-0;
+	@apply bg-background-light dark:bg-background-dark m-0 box-border h-full w-screen p-0;
 	/* @apply font-[var(--font-main)]; */
 	@apply font-mono;
 
 	/* @apply font-sans-; */
 }
 
-h1:not(.hero-text) {
+h1:not(.hero-text, .ignore-default) {
 	@apply text-4xl md:text-6xl;
 }
 
-h3 {
+h3:not(.ignore-default) {
 	@apply text-2xl md:text-4xl;
 }
 
 button:not(.ignore-default) {
-	@apply bg-button-dark border-foreground-dark flex justify-around gap-2 rounded-md border-2 px-3 py-2 active:border-0;
+	@apply text-foreground-light dark:text-foreground-dark bg-button-light dark:bg-button-dark border-foreground-light dark:border-foreground-dark flex justify-around gap-2 rounded-md border-2 px-3 py-2 active:border-0;
 }
 
 .route-title {
@@ -119,11 +123,11 @@ button:not(.ignore-default) {
 	@apply w-full px-[var(--main-padding-inline)] pt-5;
 }
 
-/* a:not(.nav-option, .challenge-resource){
-    @apply text-accent-dark dark:text-accent-dark underline;
+a:not(.nav-option, .challenge-resource, .ignore-default){
+    @apply text-accent-light dark:text-accent-dark underline;
 
-} */
+}
 
 .challenge-resource {
-	@apply text-background-dark dark:text-background-light font-bold underline;
+	@apply text-background-dark dark:text-background-light font-bold;
 }

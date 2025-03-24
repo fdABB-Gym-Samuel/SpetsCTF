@@ -8,7 +8,7 @@
 
 	let challengeId = $derived(page.url.searchParams.get('show'));
 
-	$inspect(challengeId);
+	// $inspect(challengeId);
 
 	let show_challenge_dialog: boolean = $derived(challengeId !== null);
 
@@ -34,8 +34,7 @@
 
 <div class="content">
 	<h1 class="route-title">{translations.challenges}</h1>
-	<p>Skibidi: {page.url.searchParams.get('show')}</p>
-	<p>Skibidi: {challengeId}</p>
+
 	<article class="challenge-container w-full">
 		{#each categories as category}
 			<section class="category-container flex flex-col">
@@ -45,14 +44,17 @@
 
 				{#if challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()).length > 0}
 					<ul
-						class="grid-auto-rows-[150px] grid auto-rows-min grid-cols-[repeat(auto-fit,minmax(200px,1fr))] items-stretch gap-4"
+						class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4"
 					>
+					<!-- <ul
+						class="flex flex-row flex-wrap gap-4"
+					> -->
 						{#each challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challenge_data}
-							<li>
+							<li class="min-h-35 min-w-65">
 								<a
 									href={`challenges?show=${challenge_data.challenge_id}`}
 									data-sveltekit-noscroll
-									class="h-38 w-full"
+									class="h-38 w-full ignore-default"
 									><ChallengeCard data={{ challenge_data: challenge_data }}></ChallengeCard></a
 								>
 							</li>
