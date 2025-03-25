@@ -43,7 +43,7 @@
 			<li class="mr-4">
 				<a class="nav-option underline" href="/challenges">{translations.challenges}</a>
 			</li>
-			<!-- <li class="mr-4"><a class="underline nav-option" href="/writeups">Writeups</a></li> -->
+			<li class="mr-4"><a class="nav-option underline" href="/ctf">{translations.ctf}</a></li>
 			<li class="mr-4">
 				<a class="nav-option underline" href="/scoreboard">{translations.leaderboard}</a>
 			</li>

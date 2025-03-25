@@ -27,16 +27,21 @@ margin-top: 5px;
 	/*****************************/
 
 	/* dark/light denotes theme, i.e light colors can be dark, but should be used for lightmode*/
-	--color-background-light: #f3f3ec; /* abb-beige*/
-	--color-background-dark: #1d1d1b; /* black*/
+	--color-background-light: #f3f3ec;
+	/* abb-beige*/
+	--color-background-dark: #1d1d1b;
+	/* black*/
 
 	--color-foreground-dark: #f3f3ec;
 	--color-foreground-light: #1d1d1b;
 
-	--color-button-dark: #a60022; /*red-light*/
-	--color-button-light: #ff0026; /*red-light*/
+	--color-button-dark: #a60022;
+	/*red-light*/
+	--color-button-light: #ff0026;
+	/*red-light*/
 
-	--color-accent-light: #a60022; /*red-light*/
+	--color-accent-light: #a60022;
+	/*red-light*/
 	--color-accent-dark: #ff0026;
 
 	--color-hitachi-pink: #ffe6e9;
@@ -98,13 +103,13 @@ margin-top: 5px;
 body {
 	@apply bg-background-light dark:bg-background-dark m-0 box-border h-full w-screen p-0;
 	/* @apply font-[var(--font-main)]; */
-	@apply font-mono;
+	@apply font-sans;
 
 	/* @apply font-sans-; */
 }
 
 h1:not(.hero-text, .ignore-default) {
-	@apply text-4xl md:text-6xl;
+	@apply text-4xl md:text-5xl;
 }
 
 h3:not(.ignore-default) {
