@@ -34,7 +34,6 @@
 
 <div class="content">
 	<h1 class="route-title">{translations.challenges}</h1>
-
 	<article class="challenge-container w-full">
 		{#each categories as category}
 			<section class="category-container flex flex-col">
