@@ -39,7 +39,7 @@
 			id="short_name"
 		/>
 		<label for="max_team_size">{translations.ctf_max_team_size_label}</label>
-		<input type="number" class="border p-1" value={null} name="max_team_size" id="max_team_size" />
+		<input type="number" class="border p-1" value={null} placeholder="3" name="max_team_size" id="max_team_size" />
 		<label for="start_time">{translations.ctf_start_time_label}</label>
 		<input
 			bind:value={start_time}

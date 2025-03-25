@@ -101,7 +101,7 @@
 		enctype="multipart/form-data"
 		bind:this={new_challenge_form}
 	>
-		<div class="mb-5 flex flex-col">
+		<!-- <div class="mb-5 flex flex-col">
 			<label for="challenge_id">{translations.challenge_id}</label>
 			<input
 				class="border border-accent-light dark:border-accent-dark pl-2"
@@ -110,8 +110,9 @@
 				id="challenge_id"
 				required
 				placeholder="Enter the ID."
+				pattern=[A-Za-z0-9_]+
 			/>
-		</div>
+		</div> -->
 		<div class="mb-5 flex flex-col">
 			<label for="display_name">{translations.challenge_display_name}</label>
 			<input
