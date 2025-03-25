@@ -1,5 +1,4 @@
 <script>
-	// import Scoreboard from '../../components/scoreboard.svelte';
 	let { data } = $props();
 	let { users_scoreboard, classes_scoreboard } = data;
 
@@ -59,7 +58,7 @@
 						<td class="mt-2 h-12 px-2 text-left">{i + 1}</td>
 						<td class="mt-2 h-12 px-2 text-left break-words">{player.display_name}</td>
 						<td class="mt-2 h-12 px-4 text-center">{player.represents_class}</td>
-						<td class="mt-2 h-12 px-2 text-right">{player.total_points}</td>
+						<td class="mt-2 h-12 px-2 text-right">{player.total_points == null? 0: player.total_points}</td>
 					</tr>
 				{/each}
 			</tbody>
