@@ -128,9 +128,8 @@ button:not(.ignore-default) {
 	@apply w-full px-[var(--main-padding-inline)] pt-5;
 }
 
-a:not(.nav-option, .challenge-resource, .ignore-default){
-    @apply text-accent-light dark:text-accent-dark underline;
-
+a:not(.nav-option, .challenge-resource, .ignore-default) {
+	@apply text-accent-light dark:text-accent-dark underline;
 }
 
 .challenge-resource {

@@ -8,8 +8,8 @@
 
 <div class="content">
 	<h1 class="route-title">Scoreboards</h1>
-	<div class="scoreboards grid grid-cols-2 grid-rows-[fit_1fr] gap-x-10 items-start">
-	<!-- <div class="scoreboards grid grid-cols-[repeat(auto-fit,minmax(fit,1fr))] gap-x-10 items-start"> -->
+	<div class="scoreboards grid grid-cols-2 grid-rows-[fit_1fr] items-start gap-x-10">
+		<!-- <div class="scoreboards grid grid-cols-[repeat(auto-fit,minmax(fit,1fr))] gap-x-10 items-start"> -->
 		<div class="mb-2 flex flex-col justify-between">
 			<h3 class="scoreboard-title text-5xl">Users:</h3>
 			<div
@@ -17,7 +17,7 @@
 			>
 				{#each original_classes as _class}
 					<div
-						class="rounded-sm bg-neutral-500 dark:bg-neutral-600 px-1 text-sm text-neutral-100"
+						class="rounded-sm bg-neutral-500 px-1 text-sm text-neutral-100 dark:bg-neutral-600"
 						class:bg-neutral-800={!include_classes.includes(_class)}
 						class:text-neutral-300={!include_classes.includes(_class)}
 						class:dark:bg-neutral-200={!include_classes.includes(_class)}
@@ -37,9 +37,11 @@
 		<div class="mb-2 flex flex-col justify-between">
 			<h3 class="scoreboard-title text-5xl">Classes:</h3>
 		</div>
-		<table class="overflow-scroll min-w-20">
+		<table class="min-w-20 overflow-scroll">
 			<thead>
-				<tr class=" my-10 min-w-20 w-fit border-b-1 border-b-accent-light dark:border-b-accent-dark">
+				<tr
+					class=" border-b-accent-light dark:border-b-accent-dark my-10 w-fit min-w-20 border-b-1"
+				>
 					<th class="w-1 px-2 text-left font-bold uppercase">#</th>
 					<th class="w-1 px-2 text-left font-bold uppercase">Username</th>
 					<th class="w-1 px-4 text-center font-bold uppercase">Class</th>
@@ -53,21 +55,24 @@
 					})
 					.slice(0, 15) as player, i}
 					<tr
-						class="w-fit border-b-1 border-b-accent-light dark:border-b-accent-dark text-wrap break-words outline-accent-dark"
+						class="border-b-accent-light dark:border-b-accent-dark outline-accent-dark w-fit border-b-1 text-wrap break-words"
 					>
 						<td class="mt-2 h-12 px-2 text-left">{i + 1}</td>
 						<td class="mt-2 h-12 px-2 text-left break-words">{player.display_name}</td>
 						<td class="mt-2 h-12 px-4 text-center">{player.represents_class}</td>
-						<td class="mt-2 h-12 px-2 text-right">{player.total_points == null? 0: player.total_points}</td>
+						<td class="mt-2 h-12 px-2 text-right"
+							>{player.total_points == null ? 0 : player.total_points}</td
+						>
 					</tr>
 				{/each}
 			</tbody>
 		</table>
 
-
-		<table class="overflow-scroll min-w-20">
+		<table class="min-w-20 overflow-scroll">
 			<thead>
-				<tr class=" my-10 w-fit min-w-20 border-b-1 border-b-accent-light dark:border-b-accent-dark">
+				<tr
+					class=" border-b-accent-light dark:border-b-accent-dark my-10 w-fit min-w-20 border-b-1"
+				>
 					<th class="w-1 px-2 text-left font-bold uppercase">#</th>
 					<th class="w-1 px-2 text-left font-bold uppercase">Class</th>
 					<th class="w-1 px-2 text-right font-bold uppercase">Score</th>
@@ -76,7 +81,7 @@
 			<tbody>
 				{#each classes_scoreboard as curr_class, i}
 					<tr
-						class="w-fit border-b-1 border-b-accent-light dark:border-b-accent-dark text-wrap break-words outline-accent-dark"
+						class="border-b-accent-light dark:border-b-accent-dark outline-accent-dark w-fit border-b-1 text-wrap break-words"
 					>
 						<td class="mt-2 h-12 px-2 text-left">{i + 1}</td>
 						<td class="mt-2 h-12 px-2 text-left break-words">{curr_class.class_name}</td>
@@ -85,10 +90,8 @@
 				{/each}
 			</tbody>
 		</table>
-
 	</div>
 </div>
-
 
 <!-- <div class="mx-[var(--main-padding-inline)] h-fit">
 	<h1 class="route-title">Scoreboards</h1>

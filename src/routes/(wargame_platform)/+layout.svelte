@@ -1,16 +1,15 @@
 <script lang="ts">
 	import '../../app.css';
 	import Navbar from '$lib/components/navbar.svelte';
-	let { children, data, page} = $props();
+	let { children, data, page } = $props();
 	let { user, translations } = data;
 
 	const links = [
-		{display: "Challenges", href:"/challenges"},
-		{display: "CTFs", href:`/ctfs`},
-		{display: "Leaderboard", href:`/scoreboard`},
-		{display: "About", href:`/about`},
-
-	]
+		{ display: 'Challenges', href: '/challenges' },
+		{ display: 'CTFs', href: `/ctfs` },
+		{ display: 'Leaderboard', href: `/scoreboard` },
+		{ display: 'About', href: `/about` }
+	];
 </script>
 
 <Navbar {user} {translations} {links}></Navbar>

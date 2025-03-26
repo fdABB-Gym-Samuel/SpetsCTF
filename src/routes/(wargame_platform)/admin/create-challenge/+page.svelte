@@ -1,9 +1,8 @@
 <script lang="ts">
-
 	let { data, form } = $props();
 	let { translations } = data;
 
-	type resource_type = 'File' | 'Command' | 'Website'; 
+	type resource_type = 'File' | 'Command' | 'Website';
 
 	interface resource {
 		resource_type: resource_type;
@@ -16,12 +15,12 @@
 		resource_content: ''
 	});
 
-	let challenge_resources: Record<"Command"|"Website", string[]> = $state({
+	let challenge_resources: Record<'Command' | 'Website', string[]> = $state({
 		Command: [],
 		Website: []
 	});
 	// It just doenst want to work wihtout a separate array
-	let files: FileList|undefined = $state()
+	let files: FileList | undefined = $state();
 
 	let new_challenge_form: HTMLFormElement;
 
@@ -37,53 +36,46 @@
 		const type: resource_type = formData.get('resource_type') as resource_type;
 		const type_formdata = `${type.toLocaleLowerCase()}s`;
 		// const resources: File[] | string[] = formData.getAll(type_formdata) as (File | string)[];
-		let resources: File[]|string[];
-		if (type !== "File"){
-			resources = formData.getAll(type_formdata) as string[]
-			challenge_resources[type] = [...challenge_resources[type], ... resources]
-		}
-		else {
-			resources = formData.getAll(type_formdata) as File[]
-			if (files !== undefined){
-				console.log(files)
-				resources = [...files, ...resources]
+		let resources: File[] | string[];
+		if (type !== 'File') {
+			resources = formData.getAll(type_formdata) as string[];
+			challenge_resources[type] = [...challenge_resources[type], ...resources];
+		} else {
+			resources = formData.getAll(type_formdata) as File[];
+			if (files !== undefined) {
+				console.log(files);
+				resources = [...files, ...resources];
+			} else {
+				resources = resources;
 			}
-			else{
-				resources = resources
-			}
-			if (resources === undefined)
-				return "Fuck"
+			if (resources === undefined) return 'Fuck';
 
-			let dt = new DataTransfer()
+			let dt = new DataTransfer();
 			resources.forEach((file) => {
-				if(file instanceof File){
-					dt.items.add(file)
-			}
+				if (file instanceof File) {
+					dt.items.add(file);
+				}
 			});
-			files = dt.files
+			files = dt.files;
 		}
 	};
 	const remove_resource = (type: resource_type, index: number) => {
-		if (type !== "File")
-			challenge_resources[type].splice(index, 1);
-
+		if (type !== 'File') challenge_resources[type].splice(index, 1);
 		// Files are a little more complicated, needing a DataTransfer (actually the FileList in it),
 		// this is because i want to insert a "hidden" input element conatining all the files
 		// in order to not have to send my own formdata directly to the sveltekit action, which interferes
 		// with small parts of the form implementation (status at the top, which is done through form prop)
-		else{
-			if (files !== undefined){
-				let new_files = Array.from(files).filter((file, i) => i !== index)
-				let dt = new DataTransfer()
+		else {
+			if (files !== undefined) {
+				let new_files = Array.from(files).filter((file, i) => i !== index);
+				let dt = new DataTransfer();
 				new_files.forEach((file) => {
-					dt.items.add(file)
-				})
-				files = dt.files
-
+					dt.items.add(file);
+				});
+				files = dt.files;
 			}
 		}
 	};
-
 </script>
 
 <!-- <div class="mx-auto flex w-1/2 flex-col space-y-2"> -->
@@ -116,7 +108,7 @@
 		<div class="mb-5 flex flex-col">
 			<label for="display_name">{translations.challenge_display_name}</label>
 			<input
-				class="border border-accent-light dark:border-accent-dark pl-2"
+				class="border-accent-light dark:border-accent-dark border pl-2"
 				type="text"
 				name="display_name"
 				id="display_name"
@@ -128,14 +120,14 @@
 			<textarea
 				name="description"
 				id="challenge-description"
-				class="border border-accent-light dark:border-accent-dark pl-2"
+				class="border-accent-light dark:border-accent-dark border pl-2"
 				placeholder="Write a description for your challenge"
 			></textarea>
 		</div>
 		<div class="mb-5 flex flex-col">
 			<label for="flag">{translations.flag}</label>
 			<input
-				class="border border-accent-light dark:border-accent-dark pl-2"
+				class="border-accent-light dark:border-accent-dark border pl-2"
 				type="text"
 				name="flag"
 				required
@@ -146,7 +138,7 @@
 		<div class="mb-5 flex flex-col">
 			<label for="flag_format">{translations.flag_format}</label>
 			<input
-				class="border border-accent-light dark:border-accent-dark pl-2"
+				class="border-accent-light dark:border-accent-dark border pl-2"
 				type="text"
 				name="flag_format"
 				id="flag_format"
@@ -160,7 +152,7 @@
 				required
 				id="points"
 				name="points"
-				class="border border-accent-light dark:border-accent-dark pl-2"
+				class="border-accent-light dark:border-accent-dark border pl-2"
 				placeholder="Enter the base amount of points."
 			/>
 		</div>
@@ -169,7 +161,7 @@
 			<select
 				id="challenge_category"
 				name="challenge_category"
-				class="border border-accent-light dark:border-accent-dark pl-2"
+				class="border-accent-light dark:border-accent-dark border pl-2"
 				value="misc"
 			>
 				{#each ['blockchain', 'crypto', 'forensics', 'introduction', 'misc', 'osint', 'pwn', 'reversing', 'web'] as option}
@@ -190,7 +182,7 @@
 		<select
 			name="resource_type"
 			bind:value={current_resource.resource_type}
-			class="border border-accent-light dark:border-accent-dark pl-2"
+			class="border-accent-light dark:border-accent-dark border pl-2"
 		>
 			<option class="text-background-dark" value="Command">Command</option>
 			<option class="text-background-dark" value="Website">Website</option>
@@ -218,44 +210,43 @@
 		<!-- {#if current_resource.resource_type === "File"} -->
 		<button
 			type="submit"
-			class="ignore-default bg-button-light dark:bg-button-dark border-foreground-light dark:border-foreground-dark w-fit rounded-md border-2 px-1.5 py-0.5 mt-3"
+			class="ignore-default bg-button-light dark:bg-button-dark border-foreground-light dark:border-foreground-dark mt-3 w-fit rounded-md border-2 px-1.5 py-0.5"
 			>Add Resource
 		</button>
 	</form>
 
-	<h5 class="text-xl border-b-2 border-accent-light dark:border-accent-dark mb-2">Files</h5>
-		<ul>
-			{#each files !== undefined ? files : [] as file, i}
-				<!-- {#if type !== 'File'} -->
-					<li class="flex flex-row gap-2">
-						<p>{file instanceof File? file.name: file}</p>
-						<button
-							type="button"
-							class="ignore-default bg-button-light dark:bg-button-dark border-foreground-light dark:border-foreground-dark h-fit rounded-sm border-1 px-1.5"
-							onclick={() => {
-								remove_resource("File", i);
-							}}>X</button
-						>
-					</li>
-			{/each}
-			{#if files && files?.length > 0}
-				<input type="file" name="files" form="new_challenge_form" bind:files hidden>
-			{/if}
-		</ul>
+	<h5 class="border-accent-light dark:border-accent-dark mb-2 border-b-2 text-xl">Files</h5>
+	<ul>
+		{#each files !== undefined ? files : [] as file, i}
+			<!-- {#if type !== 'File'} -->
+			<li class="flex flex-row gap-2">
+				<p>{file instanceof File ? file.name : file}</p>
+				<button
+					type="button"
+					class="ignore-default bg-button-light dark:bg-button-dark border-foreground-light dark:border-foreground-dark h-fit rounded-sm border-1 px-1.5"
+					onclick={() => {
+						remove_resource('File', i);
+					}}>X</button
+				>
+			</li>
+		{/each}
+		{#if files && files?.length > 0}
+			<input type="file" name="files" form="new_challenge_form" bind:files hidden />
+		{/if}
+	</ul>
 	{#each Object.entries(challenge_resources) as [type, resource_list]: ["Website"|"Command", resource[]]}
-		{#if ["Command", "Website", "File"].includes(type)}
-		<h5 class="text-xl border-b-2 border-accent-light dark:border-accent-dark mb-2">{type}s</h5>
-		<ul class="flex flex-col gap-1">
-			{#each resource_list as resource, i}
-				<!-- {#if type !== 'File'} -->
+		{#if ['Command', 'Website', 'File'].includes(type)}
+			<h5 class="border-accent-light dark:border-accent-dark mb-2 border-b-2 text-xl">{type}s</h5>
+			<ul class="flex flex-col gap-1">
+				{#each resource_list as resource, i}
+					<!-- {#if type !== 'File'} -->
 					<li class="flex flex-row gap-2">
 						<p>{resource}</p>
 						<button
 							type="button"
 							class="ignore-default bg-button-light dark:bg-button-dark border-foreground-light dark:border-foreground-dark h-fit rounded-sm border-1 px-1.5"
 							onclick={() => {
-								if (type === "Website" || type === "Command")
-									remove_resource(type, i);
+								if (type === 'Website' || type === 'Command') remove_resource(type, i);
 							}}>X</button
 						>
 						{#if type === 'Command'}
@@ -264,9 +255,8 @@
 							<input name="websites" type="hidden" form="new_challenge_form" value={resource} />
 						{/if}
 					</li>
-
-			{/each}
-		</ul>
+				{/each}
+			</ul>
 		{/if}
 	{/each}
 

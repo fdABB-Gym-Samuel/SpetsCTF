@@ -41,10 +41,8 @@
 				</h3>
 
 				{#if challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()).length > 0}
-					<ul
-						class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4"
-					>
-					<!-- <ul
+					<ul class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
+						<!-- <ul
 						class="flex flex-row flex-wrap gap-4"
 					> -->
 						{#each challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challenge_data}
@@ -52,7 +50,7 @@
 								<a
 									href={`challenges?show=${challenge_data.challenge_id}`}
 									data-sveltekit-noscroll
-									class="h-38 w-full ignore-default"
+									class="ignore-default h-38 w-full"
 									><ChallengeCard data={{ challenge_data: challenge_data }}></ChallengeCard></a
 								>
 							</li>

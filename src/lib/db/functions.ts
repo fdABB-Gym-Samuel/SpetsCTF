@@ -25,16 +25,16 @@ export function validateCategory(value: any): Category {
 		return 'misc' as Category;
 	}
 }
-export function get_challenge_id_from_display_name(display_name:string){
-	const unsanitzed_challenge_id = display_name.toLowerCase().replace(/ /g, "_")
+export function get_challenge_id_from_display_name(display_name: string) {
+	const unsanitzed_challenge_id = display_name.toLowerCase().replace(/ /g, '_');
 	const query = db
-		.selectFrom("challenges")
-		.where("challenge_id", "=", sanitize(unsanitzed_challenge_id))
+		.selectFrom('challenges')
+		.where('challenge_id', '=', sanitize(unsanitzed_challenge_id));
 
-	if (query.execute.length > 0){
-		return sanitize(unsanitzed_challenge_id + randomUUID())
+	if (query.execute.length > 0) {
+		return sanitize(unsanitzed_challenge_id + randomUUID());
 	}
-	return sanitize(unsanitzed_challenge_id)
+	return sanitize(unsanitzed_challenge_id);
 }
 
 export function generateSessionToken(): string {
