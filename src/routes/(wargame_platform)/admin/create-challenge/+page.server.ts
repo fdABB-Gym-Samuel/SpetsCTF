@@ -1,7 +1,7 @@
 import type { Actions } from './$types';
 import { fail, error, type ServerLoadEvent } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
-import { validateCategory } from '$lib/db/functions';
+import { validateCategory, get_challenge_id_from_display_name } from '$lib/db/functions';
 import type { Category, ChallengeResources, Challenges } from '$lib/db/db';
 import type { Insertable } from 'kysely';
 import { writeFile, mkdir } from 'fs/promises';
@@ -20,14 +20,30 @@ export const actions = {
 	default: async ({ request }) => {
 		try {
 			const formData = await request.formData();
-			
+
+			const display_name = formData.get('display_name')?.toString() ?? null;
+			if (!display_name) {
+				fail(422, { message: 'No display name' });
+				// typescript doesnt know fail means remaining parts arent executed
+				return;
+			}
+			const challenge_id = get_challenge_id_from_display_name(display_name);
+			// return
+
 			const challenge_category: Category = validateCategory(
 				formData.get('challenge_category')?.toString() ?? ''
 			);
-			const challenge_id = formData.get('challenge_id')?.toString() ?? '';
-			if (!challenge_id) {
-				fail(422, { message: 'Cannot insert challenge with no ID!' });
-			}
+			// const challenge_id = formData.get('challenge_id')?.toString() ?? '';
+			// const valid_challenge_id_chars = /^[a-zA-Z0-9_]+/
+			// console.log(sanitize(challenge_id))
+			// if (!challenge_id) {
+			// 	fail(422, { message: 'Cannot insert challenge with no ID!' });
+			// }
+			// if (!valid_challenge_id_chars.test(challenge_id)){
+			// 	console.log("not allowed")
+			// 	fail(422, {message: "Challenge ID includes characters that are not allowed (A-Z, a-z, 0-9, _"})
+			// }
+
 			const points = formData.get('points')?.toString() ?? '';
 			if (!points) {
 				fail(422, { message: 'Cannot insert challenge with no points!' });
@@ -49,8 +65,6 @@ export const actions = {
 				.returning('id')
 				.executeTakeFirstOrThrow();
 
-			const display_name = formData.get('display_name')?.toString() ?? null;
-
 			const description = formData.get('description')?.toString() ?? null;
 
 			const challenge: Insertable<Challenges> = {
@@ -69,12 +83,13 @@ export const actions = {
 			const websites: string[] | null = formData.getAll('websites') as string[] | null;
 
 			let resource_files;
-			if (files !== null){
+			if (files !== null) {
 				const challenge_dir = path.join(process.cwd(), `files/${challenge_id}`);
 				await mkdir(challenge_dir, { recursive: true });
-						
+
 				for (let file of files) {
-					let filepath = path.join(challenge_dir, file.name);
+					let filepath = path.join(challenge_dir, sanitize(file.name));
+
 					await writeFile(filepath, Buffer.from(await file.arrayBuffer()));
 				}
 
@@ -89,32 +104,36 @@ export const actions = {
 			}
 
 			let resource_commands;
-			if (commands !== null){
+			if (commands !== null) {
 				resource_commands = commands.map((command) => {
-					return {challenge: challenge_id, content: command, type: 'cmd'};
+					return { challenge: challenge_id, content: command, type: 'cmd' };
 				});
 			}
 
 			let resource_websites;
-			if (websites !== null){
+			if (websites !== null) {
 				resource_websites = websites.map((website) => {
 					return { challenge: challenge_id, content: website, type: 'web' };
 				});
 			}
 
-			if(resource_files && resource_commands && resource_websites){
-				if (resource_commands?.length > 0 || resource_files?.length > 0 || resource_websites?.length > 0){
-					const resources = [...resource_files, ...resource_commands, ...resource_websites] as Insertable<ChallengeResources>[];
-					const _ = await db
-						.insertInto('challenge_resources')
-						.values(resources)
-						.execute();
-
+			if (resource_files && resource_commands && resource_websites) {
+				if (
+					resource_commands?.length > 0 ||
+					resource_files?.length > 0 ||
+					resource_websites?.length > 0
+				) {
+					const resources = [
+						...resource_files,
+						...resource_commands,
+						...resource_websites
+					] as Insertable<ChallengeResources>[];
+					const _ = await db.insertInto('challenge_resources').values(resources).execute();
 				}
 			}
-			return { success: true, message: "Challenge uploaded successfully" };
+			return { success: true, message: 'Challenge uploaded successfully' };
 		} catch (err) {
-			return { success: false, message: err.message};
+			return { success: false, message: err.message };
 		}
 	}
 } satisfies Actions;

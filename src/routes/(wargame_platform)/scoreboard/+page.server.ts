@@ -64,19 +64,3 @@ const get_top_classes = async () => {
 
 	return result;
 };
-
-// SELECT
-//     u.id,
-//     u.github_username,
-//     u.display_name,
-//     u.represents_class,
-//     COALESCE(SUM(c.points), 0) AS total_points
-// FROM users u
-// LEFT JOIN (
-//     SELECT DISTINCT user_id, challenge
-//     FROM wargame_submissions
-//     WHERE success = TRUE
-// ) ws ON u.id = ws.user_id
-// LEFT JOIN challenges c ON ws.challenge = c.challenge_id
-// GROUP BY u.id, u.github_username, u.display_name, u.represents_class
-// ORDER BY total_points DESC;
