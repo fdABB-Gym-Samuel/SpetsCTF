@@ -7,8 +7,10 @@
 	const links = [
 		{ display: 'Wargames', href: '/challenges' },
 		{ display: 'Challenges', href: `/ctf/${page.params.ctf_id}/challenges` },
-		{ display: 'Leaderboard', href: `/ctf/${page.params.ctf_id}/scoreboard` }
+		{ display: 'Leaderboard', href: `/ctf/${page.params.ctf_id}/scoreboard` },
+		{ display: 'Register Team', href: `/ctf/${page.params.ctf_id}/register_team` },
 	];
+	// const navBtn = {display: "Register Team", href:"/register_team"}
 </script>
 
 <Navbar {translations} {user} {links}></Navbar>
