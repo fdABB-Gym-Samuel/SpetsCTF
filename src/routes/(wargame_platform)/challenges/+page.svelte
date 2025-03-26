@@ -1,7 +1,6 @@
 <script lang="ts">
-	import ChallengeCard from '../../components/challengeCard.svelte';
-	import ChallengeDialog from '../../components/challengeDialog.svelte';
-	import type { resource, solver, Challenge_data } from '../../types';
+	import ChallengeCard from '$lib/components/challengeCard.svelte';
+	import ChallengeDialog from '$lib/components/challengeDialog.svelte';
 	import { page } from '$app/state';
 	let { data } = $props();
 	let { translations, challenges } = data;

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { resource, Challenge_data } from '../types';
 	import { goto } from '$app/navigation';
 	import type { Selectable } from 'kysely';
 	import type { Challenges } from '$lib/db/db';

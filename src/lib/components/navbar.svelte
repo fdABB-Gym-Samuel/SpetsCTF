@@ -5,14 +5,20 @@
 	import type { Users } from '$lib/db/db';
 	import type { Selectable } from 'kysely';
 
+	interface NavLink {
+		display: string,
+		href: string,
+	}
+
 	interface Props {
 		user: Selectable<Users> | undefined;
 		translations: Record<string, string>;
+		links: NavLink[];
 	}
 
 	let show_sidebar = $state(false)
 
-	let { user, translations }: Props = $props();
+	let { user, translations, links }: Props = $props();
 
 	const toggle_sidebar = (e:MouseEvent|KeyboardEvent, is_backdrop:boolean = false) => {
 		if(is_backdrop){
@@ -40,14 +46,19 @@
 				<a class="nav-option underline" href="/"><img src="/logo.svg" alt="" class="logo h-10" /></a
 				>
 			</li> -->
-			<li class="mr-4">
+			{#each links as nav_link}
+				<li class="mr-4">
+					<a class="nav-option underline" href={nav_link.href}>{nav_link.display}</a>
+				</li>
+			{/each}
+			<!-- <li class="mr-4">
 				<a class="nav-option underline" href="/challenges">{translations.challenges}</a>
 			</li>
 			<li class="mr-4"><a class="nav-option underline" href="/ctf">{translations.ctf}</a></li>
 			<li class="mr-4">
 				<a class="nav-option underline" href="/scoreboard">{translations.leaderboard}</a>
 			</li>
-			<li class="mr-4"><a class="nav-option underline" href="/about">{translations.about}</a></li>
+			<li class="mr-4"><a class="nav-option underline" href="/about">{translations.about}</a></li> -->
 		</ul>
 		<div class="mr-4 sm:hidden block">
 			<button 
