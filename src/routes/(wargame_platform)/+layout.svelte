@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '../../app.css';
 	import Navbar from '$lib/components/navbar.svelte';
-	let { children, data, page } = $props();
+	let { children, data } = $props();
 	let { user, translations } = data;
 
 	const links = [

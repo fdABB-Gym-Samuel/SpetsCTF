@@ -1,10 +1,26 @@
 <script lang="ts">
+	import '../app.css';
+	import Navbar from '$lib/components/navbar.svelte';
 	import { page } from '$app/state';
-	let { data } = $props();
-	let { error } = data;
-	console.log(page.status);
+
+	let { children, data } = $props();
+	let { user, translations, error } = data;
+
+	const links = [
+		{ display: 'Challenges', href: '/challenges' },
+		{ display: 'CTFs', href: `/ctfs` },
+		{ display: 'Leaderboard', href: `/scoreboard` },
+		{ display: 'About', href: `/about` }
+	];
+
 </script>
 
+<Navbar {links} {translations} {user}></Navbar>
+
+<main
+class="bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark flex min-h-[var(--main-height)] w-screen flex-col items-stretch py-[var(--nav-height)]"
+
+>
 <div class="content flex flex-row items-center justify-center">
 	<div class="absolute left-0 block -rotate-90">
 		<a
@@ -14,12 +30,12 @@
 		>
 	</div>
 	<div class="flex flex-col items-center justify-center">
-		<h1 class="ignore-default text-center text-9xl">{page.status}</h1>
+		<h1 class="ignore-default text-center text-9xl font-mono">{page.status}</h1>
 		{#if page.status === 404}
 			<h3 class="ignore-default text-center">No flag here, nor is there a page?</h3>
 			<img
 				src="/no_flag_no_page.png"
-				alt="Super cool "No Flag, No Page" image"
+				alt="Super cool 'No Flag, No Page' image"
 				class="max-h-120 object-contain"
 				onclick={() => {
 					window.location.href = '/super_great_artist';
@@ -46,3 +62,4 @@
 		{/if}
 	</div>
 </div>
+</main>
