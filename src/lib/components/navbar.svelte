@@ -96,7 +96,7 @@
 			>
 		{:else}
 			<button
-				onclick={() => goto("/login")}
+				onclick={() => goto('/login')}
 				class="login-btn bg-button-light dark:bg-button-dark rounded-[var(--button-radius)] px-6 py-2 font-semibold"
 				>{translations.login}</button
 			>
@@ -146,7 +146,6 @@
 							<a class="ignore-default" href={link.href}>{link.display}</a>
 						</li>
 					{/each}
-
 				</ul>
 			</div>
 		</nav>

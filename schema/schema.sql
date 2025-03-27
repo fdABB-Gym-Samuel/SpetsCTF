@@ -57,8 +57,10 @@ CREATE TABLE challenges (
     challenge_category category DEFAULT 'misc',
     flag INT,
     ctf INT,
+    author UUID,
     FOREIGN KEY (flag) REFERENCES flag(id),
-    FOREIGN KEY (ctf) REFERENCES ctf_events(id)
+    FOREIGN KEY (ctf) REFERENCES ctf_events(id),
+    FOREIGN KEY (author) REFERENCES users(id)
 );
 
 CREATE TABLE wargame_submissions (
@@ -74,6 +76,8 @@ CREATE TABLE wargame_submissions (
 
 CREATE TABLE ctf_teams (
     id SERIAL PRIMARY KEY,
+    join_code TEXT NOT NULL UNIQUE DEFAULT encode(gen_random_bytes(8), 'base64'),
+    website TEXT,
     name TEXT NOT NULL,
     ctf INT NOT NULL,
     FOREIGN KEY (ctf) REFERENCES ctf_events(id)

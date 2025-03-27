@@ -1,3 +1,3 @@
 <div class="content">
-    <p>Nothing here yet</p>
+	<p>Nothing here yet</p>
 </div>

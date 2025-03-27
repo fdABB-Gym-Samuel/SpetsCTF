@@ -119,8 +119,8 @@ h3:not(.ignore-default) {
 button:not(.ignore-default) {
 	@apply text-foreground-light dark:text-foreground-dark bg-button-light dark:bg-button-dark border-foreground-light dark:border-foreground-dark flex justify-around gap-2 rounded-md border-2 px-3 py-2 active:border-0;
 }
-input:not(.ignore-default){
-	@apply border-accent-light dark:border-accent-dark border pl-2
+input:not(.ignore-default) {
+	@apply border-accent-light dark:border-accent-dark border pl-2;
 }
 
 .route-title {
