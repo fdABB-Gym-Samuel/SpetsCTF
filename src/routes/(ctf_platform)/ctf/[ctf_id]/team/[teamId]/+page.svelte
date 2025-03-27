@@ -1,34 +1,32 @@
 <script lang="ts">
 	import { page } from '$app/state';
 
-    let { data } = $props()
-    let { teamData } = data
+	let { data } = $props();
+	let { teamData } = data;
 </script>
 
-
 <div class="content flex flex-col items-center">
-    <h1 class="text-center">{teamData?.name}</h1>
-    <a href={teamData.website}>{teamData?.website}</a>
-    <div>
-        {#if teamData?.users}
-        <h3>Members:</h3>
+	<h1 class="text-center">{teamData?.name}</h1>
+	<a href={teamData.website}>{teamData?.website}</a>
+	<div>
+		{#if teamData?.users}
+			<h3>Members:</h3>
 
-        <ul class="users flex flex-row items-center">
-            <span class="h-8 w-0.5 bg-accent-dark"></span>
+			<ul class="users flex flex-row items-center">
+				<span class="bg-accent-dark h-8 w-0.5"></span>
 
-            {#each teamData?.users as user}
-            <li class=" w-full text-center">
-                <p>{user}</p>
-            </li>
-            <span class="h-8 w-0.5 bg-accent-dark"></span>
-            {/each}
-            
-        </ul>
-        {/if}
-    </div>
+				{#each teamData?.users as user}
+					<li class=" w-full text-center">
+						<p>{user}</p>
+					</li>
+					<span class="bg-accent-dark h-8 w-0.5"></span>
+				{/each}
+			</ul>
+		{/if}
+	</div>
 
-    <div>
-        <h3>Invite:</h3>
-        <p>{`${page.url.host}/ctf/${page.params.ctf_id}/join_team/${teamData?.join_code}`}</p>
-    </div>
+	<div>
+		<h3>Invite:</h3>
+		<p>{`${page.url.host}/ctf/${page.params.ctf_id}/join_team/${teamData?.join_code}`}</p>
+	</div>
 </div>
