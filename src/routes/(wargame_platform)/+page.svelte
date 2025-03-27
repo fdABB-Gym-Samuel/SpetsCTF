@@ -10,5 +10,5 @@
 	</div>
 	<span class="text-grey-dark">{translations.by_students_for_students}</span>
 	<a href="/challenges">{translations.challenges}</a>
-	<a href="/ctf">{translations.ctf}</a>
+	<a href="/ctfs">{translations.ctf}</a>
 </header>

@@ -4,14 +4,14 @@
 	let { children, data } = $props();
 	let { user, translations, team } = data;
 	import { page } from '$app/state';
-	console.log(team)
+	console.log(team);
 	const links = [
-  		{ display: 'Wargames', href: '/challenges' },
-  		{ display: 'Challenges', href: `/ctf/${page.params.ctf_id}/challenges` },
-  		{ display: 'Leaderboard', href: `/ctf/${page.params.ctf_id}/scoreboard` },
-  		team === undefined 
-    		? { display: 'Register Team', href: `/ctf/${page.params.ctf_id}/register_team` }
-    		: { display: 'Team', href: `/ctf/${page.params.ctf_id}/team/${team.teamId}` }
+		{ display: 'Wargames', href: '/challenges' },
+		{ display: 'Challenges', href: `/ctf/${page.params.ctf_id}/challenges` },
+		{ display: 'Leaderboard', href: `/ctf/${page.params.ctf_id}/scoreboard` },
+		team === undefined
+			? { display: 'Register Team', href: `/ctf/${page.params.ctf_id}/register_team` }
+			: { display: 'Team', href: `/ctf/${page.params.ctf_id}/team/${team.teamId}` }
 	];
 </script>
 
