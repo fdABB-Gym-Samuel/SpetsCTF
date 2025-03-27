@@ -3,8 +3,8 @@ import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
 
-export const load: PageServerLoad = async (_event: ServerLoadEvent) => {
-	const user_id = _event.locals.user?.id;
+export const load: PageServerLoad = async ({locals}: ServerLoadEvent) => {
+	const user_id = locals.user?.id;
 
 	const challenges = await db
 		// First CTE: get each user's earliest successful submission per challenge.

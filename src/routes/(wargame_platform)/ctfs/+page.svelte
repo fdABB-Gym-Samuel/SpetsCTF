@@ -23,20 +23,20 @@
 		})
 	);
 	$inspect(pastCtfs);
-	const months = {
-		0: translations.jan,
-		1: translations.feb,
-		2: translations.mar,
-		3: translations.apr,
-		4: translations.may,
-		5: translations.jun,
-		6: translations.jul,
-		7: translations.aug,
-		8: translations.sep,
-		9: translations.oct,
-		10: translations.nov,
-		11: translations.dec
-	};
+	const months: string[] = [
+		translations.jan,
+		translations.feb,
+		translations.mar,
+		translations.apr,
+		translations.may,
+		translations.jun,
+		translations.jul,
+		translations.aug,
+		translations.sep,
+		translations.oct,
+		translations.nov,
+		translations.dec
+	]; // the index of the month becomes the index of the translation
 </script>
 
 <div class="content flex flex-col gap-5">
