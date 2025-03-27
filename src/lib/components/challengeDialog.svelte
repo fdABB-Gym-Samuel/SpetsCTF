@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import type { Selectable } from 'kysely';
 	import type { Challenges } from '$lib/db/db';
+	import { page } from '$app/state';
 
 	interface Props {
 		challenge_data: Selectable<Challenges>;
@@ -43,7 +44,11 @@
 
 <div
 	onclick={(e) => {
-		if (e.currentTarget === e.target) goto('/challenges', { replaceState: true, noScroll: true });
+		if (e.currentTarget === e.target) {
+			const newUrl = new URL(page.url);
+			newUrl.searchParams.delete('show');
+			goto(newUrl, { replaceState: true, noScroll: true });
+		}
 	}}
 	onkeydown={(e) => {
 		if (e.key === ' ' || e.key === 'Enter' || e.key === 'Escape')
