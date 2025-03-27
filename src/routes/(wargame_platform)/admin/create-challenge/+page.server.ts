@@ -26,7 +26,6 @@ export const actions = {
 				return fail(422, { message: 'No display name' });
 			}
 			const challenge_id = get_challenge_id_from_display_name(display_name);
-			// return
 
 			const challenge_category: Category = validateCategory(
 				formData.get('challenge_category')?.toString() ?? ''
@@ -131,7 +130,8 @@ export const actions = {
 			}
 			return { success: true, message: 'Challenge uploaded successfully' };
 		} catch (err) {
-			return { success: false, message: err.message };
+			const error = err as Error;
+			return { success: false, message: error.message };
 		}
 	}
 } satisfies Actions;

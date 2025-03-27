@@ -4,10 +4,9 @@
 	import { page } from '$app/state';
 	let { data } = $props();
 	let { translations, challenges } = data;
+	$inspect(challenges);
 
 	let challengeId = $derived(page.url.searchParams.get('show'));
-
-	// $inspect(challengeId);
 
 	let show_challenge_dialog: boolean = $derived(challengeId !== null);
 
@@ -22,6 +21,7 @@
 		'Blockchain',
 		'Misc'
 	];
+
 	let modal_data = $derived.by(() => {
 		if (show_challenge_dialog) {
 			return challenges.find((chall) => String(chall.challenge_id) === challengeId);
