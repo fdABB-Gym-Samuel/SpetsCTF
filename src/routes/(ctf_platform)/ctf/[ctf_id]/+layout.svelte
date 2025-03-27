@@ -11,7 +11,7 @@
   		{ display: 'Leaderboard', href: `/ctf/${page.params.ctf_id}/scoreboard` },
   		team === undefined 
     		? { display: 'Register Team', href: `/ctf/${page.params.ctf_id}/register_team` }
-    		: { display: 'Team', href: `/ctf/${page.params.ctf_id}/team` }
+    		: { display: 'Team', href: `/ctf/${page.params.ctf_id}/team/${team.teamId}` }
 	];
 </script>
 
