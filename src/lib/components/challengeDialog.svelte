@@ -1,13 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import type { Selectable } from 'kysely';
-	import type { Challenges } from '$lib/db/db';
-	import { page } from '$app/state';
-
-	interface Props {
-		challenge_data: Selectable<Challenges>;
-		translations: Record<string, string>;
-	}
+	import { enhance } from '$app/forms';
+	import { page } from '$app/state'
 
 	let {
 		challenge_data = {
@@ -23,7 +17,7 @@
 			resources: []
 		},
 		translations
-	}: Props = $props();
+	} = $props();
 
 	// Needs to be changed to handle when there are multiple commands that can be copied
 	let show_copied_message = $state(false);
@@ -161,6 +155,7 @@
 					action={`/api/submit/${challenge_data.challenge_id}`}
 					method="POST"
 					class="flag-submission-form flex w-full flex-row gap-1"
+					use:enhance
 				>
 					<label
 						for="flag"
