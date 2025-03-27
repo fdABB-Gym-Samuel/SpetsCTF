@@ -1,8 +1,12 @@
 import { db } from '$lib/db/database';
 import type { ServerLoadEvent } from '@sveltejs/kit';
 import { sql } from 'kysely';
+import type { PageServerLoad } from './$types';
 
-export const load: PageLoad = async (event: ServerLoadEvent) => {
+export const load: PageServerLoad = async ({ locals, params }: ServerLoadEvent) => {
+	const teamId = parseInt(params.teamId ?? '');
+	const ctfId = parseInt(params.ctf_id ?? '');
+
 	const teamData = await db
 		.selectFrom('ctf_teams as t')
 		.select([
@@ -14,7 +18,7 @@ export const load: PageLoad = async (event: ServerLoadEvent) => {
               SELECT t.join_code
               FROM ctf_teams_members m
               WHERE m.team = t.id
-                AND m.user_id = ${event.locals.user.id}
+                AND m.user_id = ${locals.user?.id}
               LIMIT 1
             )
           `.as('join_code'),
@@ -28,8 +32,8 @@ export const load: PageLoad = async (event: ServerLoadEvent) => {
             )
           `.as('users')
 		])
-		.where('t.id', '=', event.params.teamId)
-		.where('t.ctf', '=', event.params.ctf_id)
+		.where('t.id', '=', teamId)
+		.where('t.ctf', '=', ctfId)
 		.executeTakeFirst();
 
 	return { teamData };

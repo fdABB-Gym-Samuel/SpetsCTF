@@ -2,12 +2,12 @@
 	import { page } from '$app/state';
 
 	let { data } = $props();
-	let { teamData } = data;
+	let { teamData, translations } = data;
 </script>
 
 <div class="content flex flex-col items-center">
 	<h1 class="text-center">{teamData?.name}</h1>
-	<a href={teamData.website}>{teamData?.website}</a>
+	<a href={teamData?.website}>{teamData?.website}</a>
 	<div>
 		{#if teamData?.users}
 			<h3>Members:</h3>
@@ -26,7 +26,7 @@
 	</div>
 
 	<div>
-		<h3>Invite:</h3>
-		<p>{`${page.url.host}/ctf/${page.params.ctf_id}/join_team/${teamData?.join_code}`}</p>
+		<h3>{translations.invite}</h3>
+		<span>{`${page.url.host}/ctf/${page.params.ctf_id}/join_team/${teamData?.join_code}`}</span>
 	</div>
 </div>
