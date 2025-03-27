@@ -12,7 +12,7 @@ import sanitize from 'sanitize-filename';
 
 export const load = async ({ locals }: ServerLoadEvent) => {
 	if (locals.user?.is_admin !== true) {
-		error(400, { message: 'Not authorized' });
+		error(401, { message: 'Not authorized' });
 	}
 };
 
@@ -23,9 +23,7 @@ export const actions = {
 
 			const display_name = formData.get('display_name')?.toString() ?? null;
 			if (!display_name) {
-				fail(422, { message: 'No display name' });
-				// typescript doesnt know fail means remaining parts arent executed
-				return;
+				return fail(422, { message: 'No display name' });
 			}
 			const challenge_id = get_challenge_id_from_display_name(display_name);
 			// return
@@ -46,12 +44,12 @@ export const actions = {
 
 			const points = formData.get('points')?.toString() ?? '';
 			if (!points) {
-				fail(422, { message: 'Cannot insert challenge with no points!' });
+				return fail(422, { message: 'Cannot insert challenge with no points!' });
 			}
 			const pointsInt = parseInt(points);
 			const flag = formData.get('flag')?.toString() ?? '';
 			if (!flag) {
-				fail(422, { message: 'You need to provide flag.' });
+				return fail(422, { message: 'You need to provide flag.' });
 			}
 
 			const flag_format = formData.get('flag_format')?.toString() ?? null;

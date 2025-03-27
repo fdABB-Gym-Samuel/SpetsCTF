@@ -28,7 +28,7 @@ const get_top_users = async () => {
 		.select(['u.id', 'u.github_username', 'u.display_name', 'u.represents_class'])
 		.select(({ fn }) => fn.coalesce(fn.sum('c.points')).as('total_points'))
 		.groupBy(['u.id', 'u.github_username', 'u.display_name', 'u.represents_class'])
-		.orderBy('total_points', 'desc')
+		.orderBy('total_points', 'asc')
 		.execute();
 
 	return result;
