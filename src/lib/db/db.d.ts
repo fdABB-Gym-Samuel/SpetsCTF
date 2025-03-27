@@ -33,6 +33,7 @@ export interface ChallengeResources {
 }
 
 export interface Challenges {
+	author: string | null;
 	challenge_category: Generated<Category | null>;
 	challenge_id: string;
 	ctf: number | null;
@@ -69,7 +70,9 @@ export interface CtfSubmissions {
 export interface CtfTeams {
 	ctf: number;
 	id: Generated<number>;
+	join_code: Generated<string>;
 	name: string;
+	website: string | null;
 }
 
 export interface CtfTeamsMembers {

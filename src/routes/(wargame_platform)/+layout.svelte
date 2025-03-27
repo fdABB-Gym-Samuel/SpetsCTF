@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '../../app.css';
 	import Navbar from '$lib/components/navbar.svelte';
-	let { children, data } = $props(); // Samuel: to get page.*, import it from $app/state
+	let { children, data } = $props();
 	let { user, translations } = data;
 
 	const links = [

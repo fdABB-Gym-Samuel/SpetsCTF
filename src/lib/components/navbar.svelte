@@ -98,7 +98,7 @@
 			<button
 				onclick={() => goto('/login')}
 				class="login-btn bg-button-light dark:bg-button-dark rounded-[var(--button-radius)] px-6 py-2 font-semibold"
-				>Log In</button
+				>{translations.login}</button
 			>
 		{/if}
 	</div>
@@ -141,15 +141,11 @@
 				<ul
 					class="text-foreground-light dark:text-foreground-dark flex h-full flex-col items-stretch space-x-2 pr-5 pl-2 text-xl"
 				>
-					<li class="m-0 border-b-2 border-stone-400 py-2 pl-1">
-						<a class="ignore-default" href="/challenges">Challenges</a>
-					</li>
-					<li class="m-0 border-b-2 border-stone-400 py-2 pl-1">
-						<a class="ignore-default" href="/scoreboard">Leaderboard</a>
-					</li>
-					<li class="m-0 border-b-2 border-stone-400 py-2 pl-1">
-						<a class="ignore-default" href="/about">About</a>
-					</li>
+					{#each links as link}
+						<li class="m-0 border-b-2 border-stone-400 py-2 pl-1">
+							<a class="ignore-default" href={link.href}>{link.display}</a>
+						</li>
+					{/each}
 				</ul>
 			</div>
 		</nav>

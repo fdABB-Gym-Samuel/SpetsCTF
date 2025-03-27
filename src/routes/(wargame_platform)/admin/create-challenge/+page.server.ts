@@ -12,7 +12,7 @@ import sanitize from 'sanitize-filename';
 
 export const load = async ({ locals }: ServerLoadEvent) => {
 	if (locals.user?.is_admin !== true) {
-		error(400, { message: 'Not authorized' });
+		error(401, { message: 'Not authorized' });
 	}
 };
 
@@ -43,12 +43,12 @@ export const actions = {
 
 			const points = formData.get('points')?.toString() ?? '';
 			if (!points) {
-				fail(422, { message: 'Cannot insert challenge with no points!' });
+				return fail(422, { message: 'Cannot insert challenge with no points!' });
 			}
 			const pointsInt = parseInt(points);
 			const flag = formData.get('flag')?.toString() ?? '';
 			if (!flag) {
-				fail(422, { message: 'You need to provide flag.' });
+				return fail(422, { message: 'You need to provide flag.' });
 			}
 
 			const flag_format = formData.get('flag_format')?.toString() ?? null;
