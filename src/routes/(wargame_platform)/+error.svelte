@@ -17,7 +17,7 @@
 		<h1 class="ignore-default text-center text-9xl">{page.status}</h1>
 		{#if page.status === 404}
 			<h3 class="ignore-default text-center">No flag here, nor is there a page?</h3>
-			<a href='/super_great_artist'>
+			<a href="/super_great_artist">
 				<img
 					src="/no_flag_no_page.png"
 					alt="Super cool 'No Flag, No Page'"
