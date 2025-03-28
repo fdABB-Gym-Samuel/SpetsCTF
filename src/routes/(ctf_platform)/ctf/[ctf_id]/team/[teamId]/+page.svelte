@@ -3,6 +3,9 @@
 
 	let { data } = $props();
 	let { teamData, translations } = data;
+
+	let users = teamData?.users;
+	$inspect(users);
 </script>
 
 <div class="content flex flex-col items-center">
@@ -15,7 +18,7 @@
 			<ul class="users flex flex-row items-center">
 				<span class="bg-accent-dark h-8 w-0.5"></span>
 
-				{#each teamData?.users as user}
+				{#each users as user}
 					<li class=" w-full text-center">
 						<p>{user}</p>
 					</li>

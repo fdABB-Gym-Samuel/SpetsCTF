@@ -9,8 +9,8 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 			return { success: false, teamName: '', message: 'Log in to join a team' };
 		}
 
-		const ctfId = event.params.ctf_id;
-		const join_code = event.params.join_code;
+		const ctfId = parseInt(event.params.ctf_id ?? '');
+		const join_code = event.params.join_code ?? '';
 
 		const ctf = await db
 			.selectFrom('ctf_events')
@@ -20,7 +20,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 				'end_time as endTime'
 			])
 			.where('id', '=', ctfId)
-			.executeTakeFirst();
+			.executeTakeFirstOrThrow();
 
 		if (ctf?.endTime.getTime() < new Date().getTime()) {
 			return { success: false, message: 'CTF is over' };
@@ -38,18 +38,24 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 			// .where('ctf_teams.ctf', '=', ctfId)
 			.where('ctf_teams.join_code', '=', join_code)
 			.groupBy('ctf_teams.id')
-			.executeTakeFirst();
+			.executeTakeFirstOrThrow();
 
 		if (!team) {
-			return { success: false, message: 'No team found with join code' };
+			return { success: false, message: 'No team found with join code.' };
 		}
 
+		// The SQL query makes it difficult for kysely to do type inference.
+		// @ts-expect-error
 		if (team?.members.includes(event.locals.user.id)) {
-			return { success: false, message: 'User already part of team' };
+			return { success: false, message: 'User already part of team.' };
 		}
-		if (ctf?.maxTeamSize <= team?.memberCount) {
+
+		// The SQL query makes it difficult for kysely to do type inference.
+		// @ts-expect-error
+		if (ctf?.maxTeamSize <= team.memberCount) {
 			return { success: false, message: 'Team is full' };
 		}
+
 		const userTeam = await db
 			.selectFrom('ctf_teams_members')
 			.innerJoin('ctf_teams', 'ctf_teams_members.team', 'ctf_teams.id')
@@ -62,7 +68,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 			return { success: false, message: 'User is already in a team for this CTF' };
 		}
 
-		const result = await db
+		await db
 			.insertInto('ctf_teams_members')
 			.values({
 				user_id: event.locals.user.id,

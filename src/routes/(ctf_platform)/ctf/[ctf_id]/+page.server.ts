@@ -1,10 +1,10 @@
-import { page } from '$app/state';
 import { db } from '$lib/db/database';
 import type { ServerLoadEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async (_event: ServerLoadEvent) => {
-	if (_event.params.ctf_id === undefined) return { ctf_data: null };
+export const load: PageServerLoad = async ({ params }: ServerLoadEvent) => {
+	if (!params.ctf_id) return { ctf_data: null };
+	const ctfId = parseInt(params.ctf_id);
 
 	const ctf_data = await db
 		.selectFrom('ctf_events')
@@ -14,7 +14,7 @@ export const load: PageServerLoad = async (_event: ServerLoadEvent) => {
 			'ctf_events.end_time',
 			'ctf_events.max_team_size'
 		])
-		.where('id', '=', _event.params.ctf_id)
+		.where('id', '=', ctfId)
 		.executeTakeFirst();
 
 	return { ctf_data };
