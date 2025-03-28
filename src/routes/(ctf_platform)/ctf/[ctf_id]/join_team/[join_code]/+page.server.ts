@@ -22,8 +22,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 			.where('id', '=', ctfId)
 			.executeTakeFirstOrThrow();
 
-		if(!ctf)
-			error(404, {message: "CTF not found"})
+		if (!ctf) error(404, { message: 'CTF not found' });
 
 		if (ctf?.endTime.getTime() < new Date().getTime()) {
 			return { success: false, message: 'CTF is over' };

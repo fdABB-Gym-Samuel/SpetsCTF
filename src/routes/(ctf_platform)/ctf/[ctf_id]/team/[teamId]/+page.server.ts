@@ -3,18 +3,18 @@ import type { ServerLoadEvent } from '@sveltejs/kit';
 import { sql } from 'kysely';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({locals, params}: ServerLoadEvent) => {
-    const userId = locals.user?.id ?? null;
-    const teamId = Number(params.team_id)
-    const ctfId = Number(params.ctf_id)
+export const load: PageServerLoad = async ({ locals, params }: ServerLoadEvent) => {
+	const userId = locals.user?.id ?? null;
+	const teamId = Number(params.team_id);
+	const ctfId = Number(params.ctf_id);
 
-	  const teamData = await db
-		    .selectFrom('ctf_teams as t')
-		    .select([
-			      't.name',
-			      't.website',
-			      // Conditionally select join_code if the current user is a member.
-			      sql<string>`
+	const teamData = await db
+		.selectFrom('ctf_teams as t')
+		.select([
+			't.name',
+			't.website',
+			// Conditionally select join_code if the current user is a member.
+			sql<string>`
                 (
                     SELECT t.join_code
                     FROM ctf_teams_members m
@@ -23,8 +23,8 @@ export const load: PageServerLoad = async ({locals, params}: ServerLoadEvent) =>
                     LIMIT 1
                 )
             `.as('join_code'),
-			      // Aggregate all team members as JSON
-			      sql<string[]>`
+			// Aggregate all team members as JSON
+			sql<string[]>`
                 (
                     SELECT json_agg(u.display_name)
                     FROM ctf_teams_members m
@@ -32,10 +32,10 @@ export const load: PageServerLoad = async ({locals, params}: ServerLoadEvent) =>
                     WHERE m.team = t.id
                 )
             `.as('users')
-		    ])
-		    .where('t.id', '=', teamId)
-		    .where('t.ctf', '=', ctfId)
-		    .executeTakeFirst();
+		])
+		.where('t.id', '=', teamId)
+		.where('t.ctf', '=', ctfId)
+		.executeTakeFirst();
 
-	  return { teamData };
+	return { teamData };
 };
