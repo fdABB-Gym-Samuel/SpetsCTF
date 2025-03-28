@@ -5,7 +5,7 @@ import { sql } from 'kysely';
 
 export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 	const ctfId = Number(event.params.ctf_id);
-	const userId = event.locals.user ? event.locals.user : undefined;
+	const userId = event.locals.user ? event.locals.user.id : undefined;
 
 	const challenges = await db
 		.with('unique_success', (qb) =>
