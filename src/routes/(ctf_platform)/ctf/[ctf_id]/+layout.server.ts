@@ -5,8 +5,8 @@ export const load: LayoutServerLoad = async ({ locals, depends, params }) => {
 	const user = locals.user;
 	const ctfId = Number(params.ctf_id)
 	let team;
-	if (user === undefined){
-		team = undefined
+	if (!user){
+		team = null;
 	}
 	else{
 		team = await db

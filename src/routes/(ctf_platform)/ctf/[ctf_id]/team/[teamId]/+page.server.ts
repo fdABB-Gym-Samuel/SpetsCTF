@@ -1,12 +1,12 @@
 import { db } from '$lib/db/database';
 import type { ServerLoadEvent } from '@sveltejs/kit';
-import type { PageServerLoad } from '../$types';
 import { sql } from 'kysely';
+import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async (event: ServerLoadEvent) => {
-    const userId = event.locals.user ? event.locals.user.id : undefined
-    const teamId = Number(event.params.team_id)
-    const ctfId = Number(event.params.ctf_id)
+export const load: PageServerLoad = async ({locals, params}: ServerLoadEvent) => {
+    const userId = locals.user?.id ?? null;
+    const teamId = Number(params.team_id)
+    const ctfId = Number(params.ctf_id)
 
 	  const teamData = await db
 		    .selectFrom('ctf_teams as t')
