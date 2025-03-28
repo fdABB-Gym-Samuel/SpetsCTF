@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { enhance } from '$app/forms';
-	import { page } from '$app/state'
+	import { page } from '$app/state';
 
 	let {
 		challenge_data = {
