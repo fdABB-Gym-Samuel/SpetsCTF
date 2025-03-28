@@ -83,15 +83,11 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 				'[]'::json
 			  )
 			`.as('resources'),
-			// Check if the CTF event has ended (current time is after ctf.end_time).
-			sql`(NOW() > ctf.end_time)`.as('ctf_ended')
 		])
-
 		.orderBy('ch.points', 'desc')
 		//   .orderBy('rs.first_time')
 		.execute();
 
-	console.log(challenges[0].ctf_ended);
 
 	return { challenges };
 };
