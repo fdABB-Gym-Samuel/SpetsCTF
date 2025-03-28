@@ -29,7 +29,7 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 		.leftJoin('users as u', 'rs.user_id', 'u.id')
 		.leftJoin('flag as f', 'ch.flag', 'f.id')
 		.leftJoin('ctf_events as ctf', 'ch.ctf', 'ctf.id')
-		.where(sql`ctf.end_time IS NULL OR ctf.end_time < NOW()`)
+		.where(sql<boolean>`ctf.end_time IS NULL OR ctf.end_time < NOW()`)
 		.groupBy([
 			'ch.challenge_id',
 			'ch.display_name',
