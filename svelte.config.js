@@ -15,6 +15,7 @@ const config = {
 			directives: {
 				'connect-src': ['none'],
 				'default-src': ['self'],
+				'style-src': ['self'],
 				'font-src': ['none'],
 				'manifest-src': ['none'],
 				'object-src': ['none'],
