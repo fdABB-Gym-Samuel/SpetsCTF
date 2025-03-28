@@ -7,7 +7,7 @@
 
 <div class="content flex flex-col items-center">
 	<h1 class="text-center">{teamData?.name}</h1>
-	<a href={teamData.website}>{teamData?.website}</a>
+	<a href={teamData?.website}>{teamData?.website}</a>
 	<div>
 		{#if teamData?.users}
 			<h3>Members:</h3>

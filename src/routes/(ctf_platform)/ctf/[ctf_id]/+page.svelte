@@ -1,7 +1,6 @@
 <script lang="ts">
 	let { data } = $props();
 	let { ctf_data } = data;
-	console.log(ctf_data);
 </script>
 
 <div class="hero flex h-[var(--hero-height)] w-full flex-col items-center justify-center">

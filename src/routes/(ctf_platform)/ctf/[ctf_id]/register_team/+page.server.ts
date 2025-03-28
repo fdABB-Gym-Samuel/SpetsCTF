@@ -10,8 +10,8 @@ export const actions = {
 
 			const formData = await request.formData();
 			const team_name = formData.get('team_name') as string;
-			const team_website = formData.get('team_website') ? formData.get('team_website') : undefined;
-			const ctf_id = params.ctf_id;
+			const team_website = formData.get('team_website') as string
+			const ctf_id = Number(params.ctf_id);
 
 			const ctf = await db
 				.selectFrom('ctf_events')

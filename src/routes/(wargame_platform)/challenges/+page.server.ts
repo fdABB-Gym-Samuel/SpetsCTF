@@ -2,7 +2,6 @@ import type { ServerLoadEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
-import { encodeBasicCredentials } from 'arctic/dist/request';
 
 export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 	const user_id = locals.user?.id;

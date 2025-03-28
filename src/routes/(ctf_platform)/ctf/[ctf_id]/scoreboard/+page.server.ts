@@ -4,7 +4,7 @@ import { db } from '$lib/db/database';
 import { sql } from 'kysely';
 
 export const load: PageServerLoad = async (event: ServerLoadEvent) => {
-	const ctfId = event.params.ctf_id;
+	const ctfId = Number(event.params.ctf_id);
 	const scores = await db
 		.with('team_challenges', (qb) =>
 			qb

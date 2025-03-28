@@ -5,9 +5,7 @@
 
 <div class="content">
 	<h1 class="route-title">{translations.register_team}</h1>
-	{#if form && form?.success}
-		<span class="text-green-600">{translations.success}: {form.message}</span>
-	{:else if form && !form?.success}
+	{#if form}
 		<span class="text-red-600">{translations.failure}: {form.message}</span>
 	{/if}
 	<form method="POST" class="flex flex-col gap-2">

@@ -4,8 +4,8 @@ import type { PageServerLoad } from '../$types';
 import { sql } from 'kysely';
 
 export const load: PageServerLoad = async (event: ServerLoadEvent) => {
-	const ctfId = event.params.ctf_id;
-	const userId = event.locals.user.id;
+	const ctfId = Number(event.params.ctf_id);
+	const userId = event.locals.user ? event.locals.user : undefined;
 
 	const challenges = await db
 		.with('unique_success', (qb) =>
