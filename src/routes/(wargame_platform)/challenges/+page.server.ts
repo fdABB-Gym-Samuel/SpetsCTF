@@ -82,12 +82,11 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 				),
 				'[]'::json
 			  )
-			`.as('resources'),
+			`.as('resources')
 		])
 		.orderBy('ch.points', 'desc')
 		//   .orderBy('rs.first_time')
 		.execute();
-
 
 	return { challenges };
 };

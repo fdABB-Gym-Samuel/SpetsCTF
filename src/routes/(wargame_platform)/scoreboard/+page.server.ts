@@ -25,7 +25,7 @@ const get_top_users = async () => {
 			'ws.user_id'
 		)
 		.leftJoin('challenges as c', 'ws.challenge', 'c.challenge_id')
-		.leftJoin("ctf_events as ctf", "c.ctf", "ctf.id")
+		.leftJoin('ctf_events as ctf', 'c.ctf', 'ctf.id')
 		.where(sql<boolean>`ctf.end_time IS NULL OR ctf.end_time < NOW()`)
 		.select(['u.id', 'u.display_name', 'u.represents_class'])
 		.select(({ fn }) => fn.coalesce(fn.sum('c.points')).as('total_points'))
@@ -43,7 +43,7 @@ const get_top_classes = async () => {
 				.selectFrom('wargame_submissions as ws')
 				.innerJoin('users as u', 'u.id', 'ws.user_id')
 				.innerJoin('challenges as ch', 'ch.challenge_id', 'ws.challenge')
-				.leftJoin("ctf_events as ctf", "ch.ctf", "ctf.id")
+				.leftJoin('ctf_events as ctf', 'ch.ctf', 'ctf.id')
 				.where(sql<boolean>`ctf.end_time IS NULL OR ctf.end_time < NOW()`)
 				.where('ws.success', '=', true)
 				.select([
