@@ -63,6 +63,14 @@
         npmDepsHash = "sha256-aYn9Fa2ZdtLAVfHs5tXrn5QuCUrWNY9JaoNvMNy0VGk=";
         # npmDepsHash = pkgs.lib.fakeHash;
         src = pkgs.lib.cleanSource ./.;
+
+        dontNpmInstall = true;
+        installPhase = ''
+          NODE_ENV=production npm ci # to generate production dependencies
+          mkdir $out
+          cp -r build/* $out
+          cp -r node_modules $out
+        '';
       };
     });
 }
