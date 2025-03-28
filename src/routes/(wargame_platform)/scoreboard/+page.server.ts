@@ -25,9 +25,9 @@ const get_top_users = async () => {
 			'ws.user_id'
 		)
 		.leftJoin('challenges as c', 'ws.challenge', 'c.challenge_id')
-		.select(['u.id', 'u.github_username', 'u.display_name', 'u.represents_class'])
+		.select(['u.id', 'u.display_name', 'u.represents_class'])
 		.select(({ fn }) => fn.coalesce(fn.sum('c.points')).as('total_points'))
-		.groupBy(['u.id', 'u.github_username', 'u.display_name', 'u.represents_class'])
+		.groupBy(['u.id', 'u.display_name', 'u.represents_class'])
 		.orderBy('total_points', 'asc')
 		.execute();
 

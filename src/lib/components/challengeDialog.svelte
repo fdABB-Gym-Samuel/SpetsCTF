@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { enhance } from '$app/forms';
+	import { page } from '$app/state';
 
 	let {
 		challenge_data = {
@@ -37,7 +38,11 @@
 
 <div
 	onclick={(e) => {
-		if (e.currentTarget === e.target) goto('/challenges', { replaceState: true, noScroll: true });
+		if (e.currentTarget === e.target) {
+			const newUrl = new URL(page.url);
+			newUrl.searchParams.delete('show');
+			goto(newUrl, { replaceState: true, noScroll: true });
+		}
 	}}
 	onkeydown={(e) => {
 		if (e.key === ' ' || e.key === 'Enter' || e.key === 'Escape')

@@ -1,4 +1,4 @@
-import { type ServerLoadEvent } from '@sveltejs/kit';
+import { error, type ServerLoadEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from '../../$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
@@ -9,7 +9,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 			return { success: false, teamName: '', message: 'Log in to join a team' };
 		}
 
-		const ctfId = parseInt(event.params.ctf_id ?? '');
+		const ctfId = Number(event.params.ctf_id);
 		const join_code = event.params.join_code ?? '';
 
 		const ctf = await db
@@ -22,6 +22,8 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 			.where('id', '=', ctfId)
 			.executeTakeFirstOrThrow();
 
+		if (!ctf) error(404, { message: 'CTF not found' });
+
 		if (ctf?.endTime.getTime() < new Date().getTime()) {
 			return { success: false, message: 'CTF is over' };
 		}
@@ -32,8 +34,8 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 			.select([
 				'ctf_teams.name as displayName',
 				'ctf_teams.id as teamId',
-				sql`COUNT(ctf_teams_members.user_id)`.as('memberCount'),
-				sql`ARRAY_AGG(ctf_teams_members.user_id)`.as('members')
+				sql<number>`COUNT(ctf_teams_members.user_id)`.as('memberCount'),
+				sql<string[]>`ARRAY_AGG(ctf_teams_members.user_id)`.as('members')
 			])
 			// .where('ctf_teams.ctf', '=', ctfId)
 			.where('ctf_teams.join_code', '=', join_code)
@@ -45,14 +47,10 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 		}
 
 		// The SQL query makes it difficult for kysely to do type inference.
-		// @ts-expect-error
 		if (team?.members.includes(event.locals.user.id)) {
 			return { success: false, message: 'User already part of team.' };
 		}
-
-		// The SQL query makes it difficult for kysely to do type inference.
-		// @ts-expect-error
-		if (ctf?.maxTeamSize <= team.memberCount) {
+		if (ctf.maxTeamSize !== null && ctf?.maxTeamSize <= team?.memberCount) {
 			return { success: false, message: 'Team is full' };
 		}
 
@@ -75,6 +73,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 				team: team?.teamId
 			})
 			.execute();
+
 		return { success: true, message: `Successfully joined team, ${team?.displayName}` };
 	} catch (err) {
 		console.error(err);

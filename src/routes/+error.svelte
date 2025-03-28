@@ -3,8 +3,8 @@
 	import Navbar from '$lib/components/navbar.svelte';
 	import { page } from '$app/state';
 
-	let { children, data } = $props();
-	let { user, translations, error } = data;
+	let { data } = $props();
+	let { user, translations } = data;
 
 	const links = [
 		{ display: 'Challenges', href: '/challenges' },

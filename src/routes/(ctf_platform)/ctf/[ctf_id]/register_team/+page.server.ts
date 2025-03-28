@@ -10,19 +10,22 @@ export const actions = {
 			}
 
 			const formData = await request.formData();
+			const ctf_id = Number(params.ctf_id);
 			const team_name = formData.get('team_name')?.toString();
 			const team_website = formData.get('team_website')?.toString();
-			const ctf_id = parseInt(params.ctf_id ?? ''); // TODO replace with safer function
 
-			const ctf_exists = await db
+			const ctf = await db
 				.selectFrom('ctf_events')
+				.selectAll()
 				.where('id', '=', ctf_id)
 				.executeTakeFirst();
 
-			console.log(ctf_exists);
-			if (ctf_exists === undefined) {
-				return fail(422, { success: false, message: 'CTF does not exist' });
+			if (!ctf) {
+				return fail(422, { message: 'CTF does not exist' });
 			}
+
+			if (ctf.end_time.getTime() < new Date().getTime())
+				return fail(400, { message: 'CTF is over' });
 
 			const current_user_team = await db
 				.selectFrom('ctf_teams_members')
@@ -60,15 +63,15 @@ export const actions = {
 				return fail(500, { success: false, message: 'Unknown error' });
 			}
 
-			const user_team = await db
+			await db
 				.insertInto('ctf_teams_members')
 				.values({
 					user_id: locals.user.id,
 					team: team_id.id
 				})
-				.executeTakeFirst();
+				.execute();
 
-			redirect(303, `/ctf/${ctf_id}/team`);
+			redirect(303, `/ctf/${ctf_id}/team/${team_id.id}`);
 		} catch (err) {
 			if (err && typeof err === 'object' && 'status' in err && (err as any).status === 303) {
 				throw err;

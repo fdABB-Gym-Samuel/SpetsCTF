@@ -3,8 +3,8 @@ import type { ServerLoadEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }: ServerLoadEvent) => {
+	const ctfId = Number(params.ctf_id);
 	if (!params.ctf_id) return { ctf_data: null };
-	const ctfId = parseInt(params.ctf_id);
 
 	const ctf_data = await db
 		.selectFrom('ctf_events')
