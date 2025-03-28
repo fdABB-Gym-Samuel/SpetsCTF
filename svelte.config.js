@@ -6,7 +6,21 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
-		adapter: adapter()
+		adapter: adapter(),
+		csrf: {
+			checkOrigin: true
+		},
+		csp: {
+			mode: 'auto',
+			directives: {
+				'connect-src': ['none'],
+				'default-src': ['self'],
+				'font-src': ['none'],
+				'manifest-src': ['none'],
+				'object-src': ['none'],
+				'worker-src': ['none']
+			}
+		}
 	}
 };
 
