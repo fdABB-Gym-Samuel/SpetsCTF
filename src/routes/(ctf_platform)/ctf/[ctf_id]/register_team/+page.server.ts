@@ -1,5 +1,6 @@
 import { db } from '$lib/db/database.js';
 import { error, fail, redirect } from '@sveltejs/kit';
+import type { Actions } from '@sveltejs/kit';
 
 export const actions = {
 	default: async ({ request, params, locals }) => {
@@ -9,9 +10,9 @@ export const actions = {
 			}
 
 			const formData = await request.formData();
-			const team_name = formData.get('team_name') as string;
-			const team_website = formData.get('team_website') as string
 			const ctf_id = Number(params.ctf_id);
+			const team_name = formData.get('team_name')?.toString();
+			const team_website = formData.get('team_website')?.toString();
 
 			const ctf = await db
 				.selectFrom('ctf_events')
@@ -19,7 +20,7 @@ export const actions = {
 				.where('id', '=', ctf_id)
 				.executeTakeFirst();
 
-			if (ctf === undefined) {
+			if (!ctf) {
 				return fail(422, { message: 'CTF does not exist' });
 			}
 
@@ -41,11 +42,11 @@ export const actions = {
 				.executeTakeFirst();
 
 			if (current_user_team !== undefined) {
-				return fail(400, { message: 'User is already in team' });
+				return fail(400, { success: false, message: 'User is already in team' });
 			}
 
 			if (!team_name) {
-				return fail(422, { message: 'No team name' });
+				return fail(422, { success: false, message: 'No team name' });
 			}
 
 			const team_id = await db
@@ -59,16 +60,16 @@ export const actions = {
 				.executeTakeFirst();
 
 			if (!team_id) {
-				return fail(500, { message: 'Something went wrong, dont know what' });
+				return fail(500, { success: false, message: 'Unknown error' });
 			}
 
-			const user_team = await db
+			await db
 				.insertInto('ctf_teams_members')
 				.values({
 					user_id: locals.user.id,
 					team: team_id.id
 				})
-				.executeTakeFirst();
+				.execute();
 
 			redirect(303, `/ctf/${ctf_id}/team/${team_id.id}`);
 		} catch (err) {
@@ -79,4 +80,4 @@ export const actions = {
 			return fail(500, { success: false, message: 'Something went wrong' });
 		}
 	}
-};
+} satisfies Actions;
