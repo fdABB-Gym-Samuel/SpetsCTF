@@ -6,8 +6,7 @@ import { sql } from 'kysely';
 export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 	const top_users = await get_top_users();
 	const top_classes = await get_top_classes();
-	// console.log(rows, "here")
-	console.log(top_classes);
+
 	return { users_scoreboard: top_users, classes_scoreboard: top_classes };
 };
 

@@ -27,7 +27,6 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 		if (ctf?.endTime.getTime() < new Date().getTime()) {
 			return { success: false, message: 'CTF is over' };
 		}
-		console.log(join_code);
 		const team = await db
 			.selectFrom('ctf_teams')
 			.leftJoin('ctf_teams_members', 'ctf_teams.id', 'ctf_teams_members.team')
@@ -76,7 +75,6 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 
 		return { success: true, message: `Successfully joined team, ${team?.displayName}` };
 	} catch (err) {
-		console.error(err);
 		return { succes: false, message: 'Something went wrong' };
 	}
 };

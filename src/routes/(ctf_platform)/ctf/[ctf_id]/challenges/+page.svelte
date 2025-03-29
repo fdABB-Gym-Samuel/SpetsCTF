@@ -7,8 +7,6 @@
 
 	let challengeId = $derived(page.url.searchParams.get('show'));
 
-	// $inspect(challengeId);
-
 	let show_challenge_dialog: boolean = $derived(challengeId !== null);
 
 	let categories = [
@@ -66,6 +64,3 @@
 {#if challengeId}
 	<ChallengeDialog challenge_data={modal_data} {translations}></ChallengeDialog>
 {/if}
-<!-- {#each challenges as challenge_data}
-    <ChallengeCard challenge_data={challenge_data}></ChallengeCard>
-{/each} -->

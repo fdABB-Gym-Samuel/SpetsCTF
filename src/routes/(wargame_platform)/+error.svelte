@@ -2,7 +2,6 @@
 	import { page } from '$app/state';
 	let { data } = $props();
 	let { error } = data;
-	console.log(page.status);
 </script>
 
 <div class="content flex flex-row items-center justify-center">

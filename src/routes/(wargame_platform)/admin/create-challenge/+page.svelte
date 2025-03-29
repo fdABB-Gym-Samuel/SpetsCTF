@@ -43,7 +43,6 @@
 		} else {
 			resources = formData.getAll(type_formdata) as File[];
 			if (files !== undefined) {
-				console.log(files);
 				resources = [...files, ...resources];
 			} else {
 				resources = resources;

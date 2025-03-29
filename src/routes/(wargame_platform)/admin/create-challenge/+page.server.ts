@@ -30,16 +30,6 @@ export const actions = {
 			const challenge_category: Category = validateCategory(
 				formData.get('challenge_category')?.toString() ?? ''
 			);
-			// const challenge_id = formData.get('challenge_id')?.toString() ?? '';
-			// const valid_challenge_id_chars = /^[a-zA-Z0-9_]+/
-			// console.log(sanitize(challenge_id))
-			// if (!challenge_id) {
-			// 	fail(422, { message: 'Cannot insert challenge with no ID!' });
-			// }
-			// if (!valid_challenge_id_chars.test(challenge_id)){
-			// 	console.log("not allowed")
-			// 	fail(422, {message: "Challenge ID includes characters that are not allowed (A-Z, a-z, 0-9, _"})
-			// }
 
 			const points = formData.get('points')?.toString() ?? '';
 			if (!points) {
