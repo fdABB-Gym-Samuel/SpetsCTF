@@ -74,17 +74,29 @@ export const actions = {
 				const challenge_dir = path.join(process.cwd(), `files/${challenge_id}`);
 				await mkdir(challenge_dir, { recursive: true });
 
+				files.forEach((file) => {
+					return new File([file], sanitize(file.name), {type: file.type, lastModified: file.lastModified}) 
+				})
+				let currently_used_filenames: string[] = []
+				for(let [index, file] of files.entries()){
+					if (currently_used_filenames.includes(file.name)){
+						files[index] = new File([file], sanitize(`${file.name}_${index}`), {type: file.type, lastModified:file.lastModified})
+					}
+					currently_used_filenames.push(file.name)
+				}
+				
+				console.log(files)
 				for (let file of files) {
 					let filepath = path.join(challenge_dir, sanitize(file.name));
 
 					await writeFile(filepath, Buffer.from(await file.arrayBuffer()));
 				}
 
-				// const filepath = path.join(challenge_dir, file.name);
 				resource_files = files.map((file) => {
 					return {
 						challenge: challenge_id,
-						content: path.join(challenge_dir, file?.name),
+						// content: path.join(challenge_dir, file?.name),
+						content: path.join(`/files/${challenge_id}`, file?.name),
 						type: 'file'
 					};
 				});

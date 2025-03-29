@@ -106,7 +106,7 @@
 							<li class="challenge-resource">
 								<i class="fa-solid fa-file"></i>
 								<a href={resource.content} class="ignore-default underline"
-									>{resource.content.split('/')[7]}</a
+									>{resource.content.split('/')[3]}</a
 								>
 							</li>
 						{:else}
