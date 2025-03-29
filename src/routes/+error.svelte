@@ -2,6 +2,7 @@
 	import '../app.css';
 	import Navbar from '$lib/components/navbar.svelte';
 	import { page } from '$app/state';
+	import { enhance } from '$app/forms';
 
 	let { data } = $props();
 	let { user, translations } = data;
@@ -41,6 +42,7 @@
 				<form
 					class="text-center"
 					action="/api/submit/super_secret_super_flag_challenge_that_no_one_knows_about"
+					use:enhance
 				>
 					<label for="">But one can always try:</label>
 					<input
