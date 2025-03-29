@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { enhance } from "$app/forms";
+	
 	let { data } = $props();
 	let { translations } = data;
 
@@ -21,7 +23,7 @@
 
 <div class="w-screen">
 	<h1>{translations.createctf}</h1>
-	<form method="POST" class="mx-auto flex w-1/2 flex-col space-y-2">
+	<form method="POST" class="mx-auto flex w-1/2 flex-col space-y-2" use:enhance>
 		<label for="display_name">{translations.ctf_display_name_label}</label>
 		<input
 			type="text"

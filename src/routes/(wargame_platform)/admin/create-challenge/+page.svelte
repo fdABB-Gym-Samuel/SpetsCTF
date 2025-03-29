@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from "$app/forms";
 	let { data, form } = $props();
 	let { translations } = data;
 
@@ -92,6 +93,7 @@
 		id="new_challenge_form"
 		enctype="multipart/form-data"
 		bind:this={new_challenge_form}
+		use:enhance
 	>
 		<!-- <div class="mb-5 flex flex-col">
 			<label for="challenge_id">{translations.challenge_id}</label>
