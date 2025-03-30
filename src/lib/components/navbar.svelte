@@ -41,7 +41,6 @@
 			</a>
 		</div>
 		<ul class="hidden h-full flex-row items-center justify-evenly space-x-2 sm:flex">
-
 			{#each links as nav_link}
 				<li class="mr-4">
 					<a class="nav-option underline" href={nav_link.href}>{nav_link.display}</a>
