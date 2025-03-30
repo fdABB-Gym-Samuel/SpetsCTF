@@ -36,28 +36,17 @@
 >
 	<div class="left flex flex-row items-center">
 		<div class="logo-continer mr-4">
-			<a class="nav-option underline" href="/">
-				<img src="/logo.svg" alt="" class="logo h-10" />
+			<a class="nav-option underline" href="/" aria-label="Home">
+				<img src="/logo.svg" alt="" class="logo h-10 w-10 max-w-10" />
 			</a>
 		</div>
 		<ul class="hidden h-full flex-row items-center justify-evenly space-x-2 sm:flex">
-			<!-- <li class="mr-4">
-				<a class="nav-option underline" href="/"><img src="/logo.svg" alt="" class="logo h-10" /></a
-				>
-			</li> -->
+
 			{#each links as nav_link}
 				<li class="mr-4">
 					<a class="nav-option underline" href={nav_link.href}>{nav_link.display}</a>
 				</li>
 			{/each}
-			<!-- <li class="mr-4">
-				<a class="nav-option underline" href="/challenges">{translations.challenges}</a>
-			</li>
-			<li class="mr-4"><a class="nav-option underline" href="/ctf">{translations.ctf}</a></li>
-			<li class="mr-4">
-				<a class="nav-option underline" href="/scoreboard">{translations.leaderboard}</a>
-			</li>
-			<li class="mr-4"><a class="nav-option underline" href="/about">{translations.about}</a></li> -->
 		</ul>
 		<div class="mr-4 block sm:hidden">
 			<button

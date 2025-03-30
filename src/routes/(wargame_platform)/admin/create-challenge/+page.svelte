@@ -162,7 +162,7 @@
 			<select
 				id="challenge_category"
 				name="challenge_category"
-				class="border-accent-light dark:border-accent-dark border pl-2"
+				class="border-accent-light dark:border-accent-dark border pl-2 bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark"
 				value="misc"
 			>
 				{#each ['blockchain', 'crypto', 'forensics', 'introduction', 'misc', 'osint', 'pwn', 'reversing', 'web'] as option}
@@ -183,7 +183,7 @@
 		<select
 			name="resource_type"
 			bind:value={current_resource.resource_type}
-			class="border-accent-light dark:border-accent-dark border pl-2"
+			class="border-accent-light dark:border-accent-dark border pl-2 dark:bg-background-dark bg-background-light text-foreground-light dark:text-foreground-dark "
 		>
 			<option class="text-background-dark" value="Command">Command</option>
 			<option class="text-background-dark" value="Website">Website</option>

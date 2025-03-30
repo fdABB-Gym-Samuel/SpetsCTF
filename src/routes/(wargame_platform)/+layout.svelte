@@ -5,10 +5,10 @@
 	let { user, translations } = data;
 
 	const links = [
-		{ display: 'Challenges', href: '/challenges' },
-		{ display: 'CTFs', href: `/ctfs` },
-		{ display: 'Leaderboard', href: `/scoreboard` },
-		{ display: 'About', href: `/about` }
+		{ display: translations.challenges, href: '/challenges' },
+		{ display: translations.ctfs, href: `/ctfs` },
+		{ display: translations.leaderboard, href: `/scoreboard` },
+		{ display: translations.about, href: `/about` }
 	];
 </script>
 
