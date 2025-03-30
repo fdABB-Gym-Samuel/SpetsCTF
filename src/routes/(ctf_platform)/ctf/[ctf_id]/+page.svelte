@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import { readable } from 'svelte/store';
 
 	let { data } = $props();
@@ -12,10 +13,14 @@
     		return () => clearInterval(interval);
   		});
 
-	let t = $state(new Date().getTime())
   	let timeToStart = $derived.by(() => {
 		if (ctf_data?.start_time !== undefined)
 			return ctf_data?.start_time.getTime() - $time
+		return 0
+	})
+  	let timeToEnd = $derived.by(() => {
+		if (ctf_data?.end_time !== undefined)
+			return ctf_data?.end_time.getTime() - $time
 		return 0
 	})
 
@@ -26,6 +31,7 @@
 		<h1 class="hero-text h-fit text-center max-w-screen font-mono text-4xl sm:text-5xl md:text-7xl">
 			{ctf_data?.display_name}
 		</h1>
+		{#if timeToStart > 0}
 		<h3 >CTF Starts in:</h3>
 
 		<div class="countdown flex flex-row max-w-full items-center justify-center gap-2">
@@ -57,5 +63,13 @@
 				<p class="py-3 px-3 bg-stone-500">{`${Math.floor(timeToStart / (1000)) % 60}`.padStart(2, "0")[1]}</p>
 			</div>
 		</div>
+		{:else if timeToEnd < 0}
+		<h3>CTF has ended!!!</h3>
+		<a href={`${page.params.ctf_id}/scoreboard`}>See Results here</a>
+		{:else}
+		<h3>CTF has started!!!</h3>
+		<a href={`${page.params.ctf_id}/challenges`}>See Challenges here</a>
+		{/if}
+
 	</div>
 </div>
