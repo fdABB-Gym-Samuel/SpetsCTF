@@ -29,12 +29,15 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 		.leftJoin('ranked_submissions as rs', 'ch.challenge_id', 'rs.challenge')
 		.leftJoin('users as u', 'rs.user_id', 'u.id')
 		.leftJoin('flag as f', 'ch.flag', 'f.id')
+		.leftJoin('users as a', 'ch.author', 'a.id')
 		.groupBy([
 			'ch.challenge_id',
 			'ch.display_name',
 			'ch.description',
 			'ch.points',
 			'ch.challenge_category',
+			'a.display_name',
+			'a.id',
 			'f.flag_format'
 		])
 		.select([
@@ -44,7 +47,8 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 			'ch.challenge_category',
 			'ch.points',
 			'f.flag_format',
-			'ch.author',
+			'a.display_name as author',
+			'a.id as author_id',
 			// Aggregate up to the first 5 solver display_names into a JSON array, ordered by submission time.
 			sql`
               COALESCE(

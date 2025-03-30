@@ -49,7 +49,7 @@
 		</label>
 		<br />
 		<select
-			class="border border-black p-1 dark:border-white"
+			class="border-accent-light dark:border-accent-dark bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark border p-1"
 			name="represents_class"
 			id="represents_class"
 			value={user.represents_class ?? ''}

@@ -14,7 +14,8 @@
 			first_solvers: [],
 			num_solves: '0',
 			solved: false,
-			resources: []
+			resources: [],
+			author: null
 		},
 		translations
 	} = $props();
@@ -94,59 +95,65 @@
 			>
 				{challenge_data.challenge_description}
 			</p>
-			<div class="right ml-1 flex w-1/2 flex-col gap-3">
-				<ul class="resources">
-					{#each challenge_data.resources as resource}
-						{#if resource.type === 'link'}
-							<li class="challenge-resource text-foreground-light dark:text-foreground-dark">
-								<i class="fa-solid fa-link"></i>
-								<a href={resource.content} class="ignore-default underline">{resource.content}</a>
-							</li>
-						{:else if resource.type === 'file'}
-							<li class="challenge-resource">
-								<i class="fa-solid fa-file"></i>
-								<a href={resource.content} class="ignore-default underline"
-									>{resource.content.split('/')[3]}</a
+			<div class="right ml-1 flex w-1/2 flex-col gap-1">
+				<div class="flex flex-col">
+					<p class="font-bold">Resources:</p>
+					<ul class="resources flex flex-col gap-0 pl-4">
+						{#each challenge_data.resources as resource}
+							{#if resource.type === 'link'}
+								<li
+									class="challenge-resource text-foreground-light dark:text-foreground-dark h-fit underline"
 								>
-							</li>
-						{:else}
-							<li class="challenge-resource flex flex-row gap-1">
-								<p>
-									<i class="fa-solid fa-terminal"></i>
-									{resource.content}
-								</p>
-								<button
-									title="Copy to clipboard"
-									class="ignore-default relative"
-									onclick={() => {
-										copyToClipboard(resource.content);
-									}}
-								>
-									<i class="fa-solid fa-copy"></i>
-									{#if show_copied_message}
-										<div
-											class="bg-background-dark text-background-light absolute bottom-6 -translate-x-5 rounded-md px-2 py-2 text-xs"
-										>
-											Copied!
-										</div>
-									{/if}
-								</button>
-							</li>
-						{/if}
-					{/each}
-					<!-- </ul>  -->
-					<!-- <p class="author font-bold"><i class="fa-solid fa-pen"></i> {challenge_data.author}</p> -->
-					<div
-						class="first-solvers-wrapper text-foreground-light dark:text-foreground-dark flex flex-col justify-start"
-					>
-						<h5 class="font-bold">First Solvers:</h5>
-						<ol class="first-solvers flex list-inside list-decimal flex-col justify-start">
-							{#each challenge_data.first_solvers as solver}
-								<li class="solver">{solver.display_name}</li>
-							{/each}
-						</ol>
-					</div>
-				</ul>
+									<a href={resource.content} class="ignore-default h-fit">{resource.content}</a>
+								</li>
+							{:else if resource.type === 'file'}
+								<li class="challenge-resource">
+									<a href={resource.content} class="ignore-default h-fit"
+										>{resource.content.split('/')[3]}</a
+									>
+								</li>
+							{:else}
+								<li class="challenge-resource flex flex-row gap-1">
+									<p>
+										<i class="fa-solid fa-terminal"></i>
+										{resource.content}
+									</p>
+									<button
+										title="Copy to clipboard"
+										class="ignore-default relative"
+										onclick={() => {
+											copyToClipboard(resource.content);
+										}}
+									>
+										<i class="fa-solid fa-copy"></i>
+										{#if show_copied_message}
+											<div
+												class="bg-background-dark text-background-light absolute bottom-6 -translate-x-5 rounded-md px-2 py-2 text-xs"
+											>
+												Copied!
+											</div>
+										{/if}
+									</button>
+								</li>
+							{/if}
+						{/each}
+					</ul>
+				</div>
+				<div class="author flex flex-row gap-1">
+					<p class="font-bold">Author:</p>
+					<p>{challenge_data.author ? challenge_data.author : 'Anonymous'}</p>
+				</div>
+				<div
+					class="first-solvers-wrapper text-foreground-light dark:text-foreground-dark flex flex-col justify-start"
+				>
+					<h5 class="font-bold">First Solvers:</h5>
+					<ol class="first-solvers flex list-inside list-decimal flex-col justify-start">
+						{#each challenge_data.first_solvers as solver}
+							<li class="solver">{solver.display_name}</li>
+						{/each}
+					</ol>
+				</div>
+				<!-- </ul> -->
 			</div>
 		</section>
 		<section class="bottom absolute bottom-2 w-10/12">

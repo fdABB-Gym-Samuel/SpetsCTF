@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { enhance } from "$app/forms";
-	
+	import { enhance } from '$app/forms';
+
 	let { data } = $props();
 	let { translations } = data;
 

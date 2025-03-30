@@ -29,6 +29,7 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 		.leftJoin('users as u', 'rs.user_id', 'u.id')
 		.leftJoin('flag as f', 'ch.flag', 'f.id')
 		.leftJoin('ctf_events as ctf', 'ch.ctf', 'ctf.id')
+		.leftJoin('users as a', 'ch.author', 'a.id')
 		.where(sql<boolean>`ctf.end_time IS NULL OR ctf.end_time < NOW()`)
 		.groupBy([
 			'ch.challenge_id',
@@ -36,6 +37,8 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 			'ch.description',
 			'ch.points',
 			'ch.challenge_category',
+			'a.display_name',
+			'a.id',
 			'f.flag_format',
 			'ctf.end_time'
 		])
@@ -45,6 +48,8 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 			'ch.description as challenge_description',
 			'ch.challenge_category',
 			'ch.points',
+			'a.display_name as author',
+			'a.id as author_id',
 			'f.flag_format',
 			// Aggregate up to the first 5 solver display_names into a JSON array, ordered by submission time.
 			sql`
