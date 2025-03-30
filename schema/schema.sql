@@ -76,7 +76,7 @@ CREATE TABLE wargame_submissions (
 
 CREATE TABLE ctf_teams (
     id SERIAL PRIMARY KEY,
-    join_code TEXT NOT NULL UNIQUE DEFAULT encode(gen_random_bytes(8), 'base64'),
+    join_code TEXT NOT NULL UNIQUE DEFAULT encode(gen_random_bytes(8), 'hex'),
     website TEXT,
     name TEXT NOT NULL,
     ctf INT NOT NULL,
