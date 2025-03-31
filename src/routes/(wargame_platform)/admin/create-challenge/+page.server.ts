@@ -91,7 +91,6 @@ export const actions = {
 					currently_used_filenames.push(file.name);
 				}
 
-				console.log(files);
 				for (let file of files) {
 					let filepath = path.join(challenge_dir, sanitize(file.name));
 

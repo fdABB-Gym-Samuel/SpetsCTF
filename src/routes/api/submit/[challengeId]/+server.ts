@@ -11,7 +11,6 @@ export const POST = async ({ request, locals, params }) => {
 			message: 'User not logged in'
 		});
 	}
-	console.log('here');
 
 	const { challengeId } = params;
 	const user_id = locals.user?.id;
