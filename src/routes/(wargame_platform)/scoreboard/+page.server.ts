@@ -27,9 +27,9 @@ const get_top_users = async () => {
 		.leftJoin('ctf_events as ctf', 'c.ctf', 'ctf.id')
 		.where(sql<boolean>`ctf.end_time IS NULL OR ctf.end_time < NOW()`)
 		.select(['u.id', 'u.display_name', 'u.represents_class'])
-		.select(({ fn }) => fn.coalesce(fn.sum('c.points')).as('total_points'))
+		.select(({ fn }) => fn.coalesce(fn.sum('c.points'), sql`0`).as('total_points'))
 		.groupBy(['u.id', 'u.display_name', 'u.represents_class'])
-		.orderBy('total_points', 'asc')
+		.orderBy('total_points', 'desc')
 		.execute();
 
 	return result;
