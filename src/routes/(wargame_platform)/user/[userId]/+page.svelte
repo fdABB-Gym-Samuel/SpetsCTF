@@ -1,5 +1,6 @@
 <script lang="ts">
     import ChallengeCard from "$lib/components/challengeCard.svelte"
+	import { stringify } from "postcss";
     let { data } = $props()
     let { userInfo } = data
 
@@ -30,41 +31,44 @@
             Competed in:
         </h3>
         <ul id="ctfs" class="flex flex-col">
-
-            {#each userInfo?.ctfs as ctf, i}
-                <li 
-                    class="flex flex-row border-b-1 py-2 justify-between items-center"
-                    class:border-t-1={i % 2 === 0}
-                >
-                    <a class="w-full" href={`/ctf/${ctf.ctfId}`}>{ctf.ctfName}</a>
-                    <div class="w-full flex flex-row justify-between gap-2">
-                    <p>With:</p>
-                    <a href={`/ctf/${ctf.ctfId}/team/${ctf.teamId}`}>{ctf.teamName}</a>
-                    </div>
-                </li>
-            {/each}
+            {#if userInfo && userInfo.ctfs}
+                {#each userInfo?.ctfs as ctf, i}
+                    <li 
+                        class="flex flex-row border-b-1 py-2 justify-between items-center"
+                        class:border-t-1={i % 2 === 0}
+                    >
+                        <a class="w-full" href={`/ctf/${ctf.ctfId}`}>{ctf.ctfName}</a>
+                        <div class="w-full flex flex-row justify-between gap-2">
+                        <p>With:</p>
+                        <a href={`/ctf/${ctf.ctfId}/team/${ctf.teamId}`}>{ctf.teamName}</a>
+                        </div>
+                    </li>
+                {/each}
+            {/if}
         </ul>
     </section>
     <section id="solved">
         <h3>Has Solved: </h3>
         <ul class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
-
-            {#each userInfo.solves as solve}
-                <li>
-                    <ChallengeCard data={{ challenge_data: solve }}></ChallengeCard>
-                </li>
-            {/each}
+            {#if userInfo && userInfo.solves}
+                {#each userInfo.solves as solve}
+                    <li>
+                        <ChallengeCard data={{ challenge_data: solve }}></ChallengeCard>
+                    </li>
+                {/each}
+            {/if}
         </ul>
     </section>
     <section id="authored">
         <h3>Has written:</h3>
         <ul class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
-
-            {#each userInfo?.authoredChallenges as authoredChallenge}
-                <li>
-                    <ChallengeCard data={{ challenge_data: authoredChallenge }}></ChallengeCard>
-                </li>
-            {/each}
+            {#if userInfo && userInfo?.authoredChallenges}
+                {#each userInfo?.authoredChallenges as authoredChallenge}
+                    <li>
+                        <ChallengeCard data={{ challenge_data: authoredChallenge }}></ChallengeCard>
+                    </li>
+                {/each}
+            {/if}
         </ul>
     </section>
 </div>

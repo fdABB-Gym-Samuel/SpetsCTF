@@ -2,6 +2,7 @@ import { error, redirect, type ServerLoadEvent } from "@sveltejs/kit";
 import type { PageServerLoad } from "../$types";
 import { db } from "$lib/db/database";
 import { sql } from "kysely";
+import type { Category } from "$lib/db/db";
 
 export const load: PageServerLoad = async(event:ServerLoadEvent) => {
     const session = event.locals.user
@@ -26,7 +27,7 @@ export const load: PageServerLoad = async(event:ServerLoadEvent) => {
                 .selectFrom('wargame_submissions')
                 .innerJoin('challenges', 'wargame_submissions.challenge', 'challenges.challenge_id')
                 .select((eb2) => [
-                  sql<string>`json_agg(json_build_object(
+                  sql<ArrayLike<{id: string, challenge_name: string, points: number, description: string, challenge_category: Category}>>`json_agg(json_build_object(
                     'id', challenges.challenge_id,
                     'challenge_name', challenges.display_name,
                     'points', challenges.points,
@@ -42,7 +43,7 @@ export const load: PageServerLoad = async(event:ServerLoadEvent) => {
               eb
                 .selectFrom('challenges')
                 .select((eb2) => [
-                  sql<string>`json_agg(json_build_object(
+                  sql<ArrayLike<{id: string, challenge_name: string, points: number, description: string, challenge_category: Category}>>`json_agg(json_build_object(
                     'id', challenges.challenge_id,
                     'challenge_name', challenges.display_name,
                     'points', challenges.points,
@@ -59,7 +60,7 @@ export const load: PageServerLoad = async(event:ServerLoadEvent) => {
                 .innerJoin('ctf_teams', 'ctf_teams_members.team', 'ctf_teams.id')
                 .innerJoin('ctf_events', 'ctf_teams.ctf', 'ctf_events.id')
                 .select((eb2) => [
-                  sql<string>`json_agg(json_build_object(
+                  sql<ArrayLike<{ctfId: number, ctfName: string, teamId: number, teamName: string}> | null>`json_agg(json_build_object(
                     'ctfId', ctf_events.id,
                     'ctfName', ctf_events.display_name,
                     'teamId', ctf_teams.id,
