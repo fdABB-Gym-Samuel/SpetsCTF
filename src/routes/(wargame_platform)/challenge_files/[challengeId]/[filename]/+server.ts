@@ -1,12 +1,12 @@
 import { db } from '$lib/db/database.js';
+import type { RequestEvent } from '@sveltejs/kit';
 import fs from 'fs/promises';
 import { sql } from 'kysely';
 import path from 'path';
-import { createFilter } from 'vite';
 
-export async function GET({ params }) {
+export async function GET({ params }: RequestEvent) {
 	// const filepath = path.join(process.cwd(), "files", params.filepath);
-	const challengeId = params.challengeId;
+	const challengeId = params.challengeId ?? '';
 	const filename = params.filename;
 
 	const ctf = await db
