@@ -8,7 +8,9 @@
 	let users = teamData?.users;
 	$inspect(users);
 
-	let inviteLink: string = $derived(`${page.url.protocol}//${page.url.host}/ctf/${page.params.ctf_id}/join_team/${teamData?.join_code}`);
+	let inviteLink: string = $derived(
+		`${page.url.protocol}//${page.url.host}/ctf/${page.params.ctf_id}/join_team/${teamData?.join_code}`
+	);
 	$inspect(inviteLink);
 </script>
 
@@ -36,10 +38,12 @@
 	<div>
 		<h3>{translations.invite}</h3>
 		<a href={inviteLink}>{inviteLink}</a>
-		<button onclick={async () => {
+		<button
+			onclick={async () => {
 				if (browser) {
 					await navigator.clipboard.writeText(inviteLink);
 				}
-			}}>{translations.copy}</button>
+			}}>{translations.copy}</button
+		>
 	</div>
 </div>

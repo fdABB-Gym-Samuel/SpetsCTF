@@ -16,8 +16,11 @@
 		</div>
 		<div class="flex flex-col">
 			<label for="team_website">{translations.team_website}</label>
-			<input type="url" name="team_website" 
-	    placeholder="https://github.com/fdABB-Gym-Samuel/SpetsCTF" />
+			<input
+				type="url"
+				name="team_website"
+				placeholder="https://github.com/fdABB-Gym-Samuel/SpetsCTF"
+			/>
 		</div>
 		<button type="submit">Create Team</button>
 	</form>

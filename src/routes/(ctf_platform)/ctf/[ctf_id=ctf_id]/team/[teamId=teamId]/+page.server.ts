@@ -39,7 +39,7 @@ export const load: PageServerLoad = async ({ locals, params }: ServerLoadEvent) 
 		.executeTakeFirst();
 
 	if (!teamData) {
-		return error(404, {message: 'Team ID does not exist.'})
+		return error(404, { message: 'Team ID does not exist.' });
 	}
 
 	return { teamData };

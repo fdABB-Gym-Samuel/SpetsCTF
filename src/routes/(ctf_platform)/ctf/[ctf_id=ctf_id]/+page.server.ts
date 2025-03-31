@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ params }: ServerLoadEvent) => {
 		.executeTakeFirst();
 
 	if (!ctf_data) {
-		error(404, {message: 'CTF does not exist.'});
+		error(404, { message: 'CTF does not exist.' });
 	}
 
 	return { ctf_data };
