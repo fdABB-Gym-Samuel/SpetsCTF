@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { page } from '$app/state';
 
 	let { data } = $props();
@@ -6,6 +7,9 @@
 
 	let users = teamData?.users;
 	$inspect(users);
+
+	let inviteLink: string = $derived(`${page.url.protocol}//${page.url.host}/ctf/${page.params.ctf_id}/join_team/${teamData?.join_code}`);
+	$inspect(inviteLink);
 </script>
 
 <div class="content flex flex-col items-center">
@@ -31,6 +35,11 @@
 
 	<div>
 		<h3>{translations.invite}</h3>
-		<span>{`${page.url.host}/ctf/${page.params.ctf_id}/join_team/${teamData?.join_code}`}</span>
+		<a href={inviteLink}>{inviteLink}</a>
+		<button onclick={async () => {
+				if (browser) {
+					await navigator.clipboard.writeText(inviteLink);
+				}
+			}}>{translations.copy}</button>
 	</div>
 </div>
