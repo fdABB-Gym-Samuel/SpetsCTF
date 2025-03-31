@@ -2,6 +2,7 @@ import { db } from '$lib/db/database';
 import type { ServerLoadEvent } from '@sveltejs/kit';
 import { sql } from 'kysely';
 import type { PageServerLoad } from './$types';
+import { error } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ locals, params }: ServerLoadEvent) => {
 	const userId = locals.user?.id ?? null;
@@ -36,6 +37,10 @@ export const load: PageServerLoad = async ({ locals, params }: ServerLoadEvent) 
 		.where('t.id', '=', teamId)
 		.where('t.ctf', '=', ctfId)
 		.executeTakeFirst();
+
+	if (!teamData) {
+		return error(404, { message: 'Team ID does not exist.' });
+	}
 
 	return { teamData };
 };

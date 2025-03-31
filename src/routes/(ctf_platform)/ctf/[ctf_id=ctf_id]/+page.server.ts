@@ -1,6 +1,7 @@
 import { db } from '$lib/db/database';
 import type { ServerLoadEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { error } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ params }: ServerLoadEvent) => {
 	const ctfId = Number(params.ctf_id);
@@ -16,6 +17,10 @@ export const load: PageServerLoad = async ({ params }: ServerLoadEvent) => {
 		])
 		.where('id', '=', ctfId)
 		.executeTakeFirst();
+
+	if (!ctf_data) {
+		error(404, { message: 'CTF does not exist.' });
+	}
 
 	return { ctf_data };
 };
