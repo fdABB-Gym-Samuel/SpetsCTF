@@ -2,6 +2,7 @@
 	// export let challenge_data;
 	let { data } = $props();
 	let { challenge_data } = data;
+	console.log(challenge_data, "here")
 </script>
 
 <!-- <main class="card flex flex-col justify-between bg-button-dark h-[var(--challenge-card-height)] w-[var(--challenge-card-width)] rounded-[var(--card-radius)] px-4 py-2"> -->
@@ -33,6 +34,7 @@
 			<!-- <p class="author mb-2 text-sm"><i class="fa-solid fa-pen"></i> {challenge_data.author}</p> -->
 		</div>
 		<div class="solution-stats flex flex-row justify-between text-sm">
+			{#if challenge_data.num_solves}
 			<p
 				class="num-solves text-background-light dark:text-background-dark"
 				class:dark:text-background-dark={challenge_data.solved}
@@ -40,6 +42,7 @@
 			>
 				# {challenge_data.num_solves}
 			</p>
+			{/if}
 			<p
 				class="point-reward text-background-light dark:text-background-dark"
 				class:dark:text-background-dark={challenge_data.solved}

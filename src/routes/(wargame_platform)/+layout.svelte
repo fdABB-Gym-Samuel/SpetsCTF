@@ -8,7 +8,8 @@
 		{ display: translations.challenges, href: '/challenges' },
 		{ display: translations.ctfs, href: `/ctfs` },
 		{ display: translations.leaderboard, href: `/scoreboard` },
-		{ display: translations.about, href: `/about` }
+		{ display: translations.about, href: `/about` },
+		{ display: translations.users, href: `/users` }
 	];
 </script>
 
