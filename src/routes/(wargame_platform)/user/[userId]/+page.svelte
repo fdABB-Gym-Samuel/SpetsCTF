@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ChallengeCard from '$lib/components/challengeCard.svelte';
+	import ChallengeCard from '$lib/components/ChallengeCard.svelte';
 	let { data } = $props();
 	let { userInfo } = data;
 
