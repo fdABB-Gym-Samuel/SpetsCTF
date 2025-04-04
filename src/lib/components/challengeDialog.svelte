@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
+	// import { SendHorizontal } from 'lucide-svelte';
 
 	let {
 		challenge_data = {

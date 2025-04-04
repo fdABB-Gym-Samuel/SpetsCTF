@@ -58,7 +58,7 @@
 						class="border-b-accent-light dark:border-b-accent-dark outline-accent-dark w-fit border-b-1 text-wrap break-words"
 					>
 						<td class="mt-2 h-12 px-2 text-left">{i + 1}</td>
-						<td class="mt-2 h-12 px-2 text-left break-words">{player.display_name}</td>
+						<td class="mt-2 h-12 px-2 text-left break-words"><a href={`/user/${player.id}`}>{player.display_name}</a></td>
 						<td class="mt-2 h-12 px-4 text-center">{player.represents_class}</td>
 						<td class="mt-2 h-12 px-2 text-right"
 							>{player.total_points == null ? 0 : player.total_points}</td
