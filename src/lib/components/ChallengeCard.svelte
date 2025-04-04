@@ -1,5 +1,5 @@
 <script lang="ts">
-	// export let challenge_data;
+	import { CirclePlus, Flag } from "@lucide/svelte";
 	let { data } = $props();
 	let { challenge_data } = data;
 </script>
@@ -34,22 +34,29 @@
 		</div>
 		<div class="solution-stats flex flex-row justify-between text-sm">
 			{#if challenge_data.num_solves}
+			<div class="flex flex-row items-center gap-0.5">
+				<Flag class="size-4"></Flag> 
 				<p
 					class="num-solves text-background-light dark:text-background-dark"
 					class:dark:text-background-dark={challenge_data.solved}
 					class:text-background-light={challenge_data.solved}
 				>
-					# {challenge_data.num_solves}
+					{challenge_data.num_solves}
 				</p>
+			</div>
 			{/if}
+			<div class="flex flex-row items-center gap-0.5">
+				<CirclePlus class="size-4"></CirclePlus>
 			<p
-				class="point-reward text-background-light dark:text-background-dark"
+				class="point-reward text-background-light dark:text-background-dark align-text-middle"
 				class:dark:text-background-dark={challenge_data.solved}
 				class:text-background-light={challenge_data.solved}
 			>
-				<i class="fa-solid fa-circle-plus"></i>
+			
 				{challenge_data.points}
 			</p>
+			</div>
+
 		</div>
 	</section>
 </main>

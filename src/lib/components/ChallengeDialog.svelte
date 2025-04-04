@@ -1,8 +1,9 @@
 <script lang="ts">
+	import { Link, SquareTerminal, Copy, File, UserRoundPen, CirclePlus, Flag } from "@lucide/svelte"
 	import { goto } from '$app/navigation';
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
-	// import { SendHorizontal } from 'lucide-svelte';
+	import { SendHorizontal } from '@lucide/svelte';
 
 	let {
 		challenge_data = {
@@ -70,19 +71,19 @@
 			<ul class="categroies flex w-8/10 flex-row flex-wrap justify-center">
 				{#each [challenge_data.challenge_category] as category}
 					<li
-						class="bg-foreground-light dark:bg-foreground-dark text-background-light dark:text-background-dark mt-1 mr-1.5 rounded-md px-2 py-1 text-xs"
+						class="bg-foreground-light dark:bg-foreground-dark text-background-light dark:text-background-dark rounded-md px-2 py-1 text-xs"
 					>
 						{category}
 					</li>
 				{/each}
 			</ul>
 			<div class="solve-stats text-foreground-dark mt-1 flex flex-row gap-5">
-				<p class="points text-foreground-light dark:text-foreground-dark">
-					<i class="fa-solid fa-circle-plus"></i>
+				<p class="points flex flex-row items-center gap-0.5 text-foreground-light dark:text-foreground-dark">
+					<CirclePlus class="size-4"></CirclePlus>
 					{challenge_data.points}
 				</p>
-				<p class="num-solves text-foreground-light dark:text-foreground-dark">
-					<i class="fa-solid fa-flag"></i>
+				<p class="num-solves flex flex-row items-center gap-0.5 text-foreground-light dark:text-foreground-dark">
+					<Flag class="size-4"></Flag>
 					{challenge_data.num_solves}
 				</p>
 			</div>
@@ -101,22 +102,25 @@
 					<p class="font-bold">Resources:</p>
 					<ul class="resources flex flex-col gap-0 pl-4">
 						{#each challenge_data.resources as resource}
-							{#if resource.type === 'link'}
+							{#if resource.type === 'web'}
 								<li
-									class="challenge-resource text-foreground-light dark:text-foreground-dark h-fit underline"
+									class="challenge-resource flex flex-row items-center gap-1 text-foreground-light dark:text-foreground-dark h-fit underline"
 								>
+									<Link class="size-4"></Link>
 									<a href={resource.content} class="ignore-default h-fit">{resource.content}</a>
 								</li>
 							{:else if resource.type === 'file'}
-								<li class="challenge-resource">
+								<li class="challenge-resource flex flex-row items-center gap-1">
+									<File class="size-4"></File>
 									<a href={resource.content} class="ignore-default h-fit"
 										>{resource.content.split('/')[3]}</a
 									>
 								</li>
 							{:else}
-								<li class="challenge-resource flex flex-row gap-1">
+								<li class="challenge-resource flex flex-row items-center gap-1">
+									<SquareTerminal class="size-4"></SquareTerminal>
+
 									<p>
-										<i class="fa-solid fa-terminal"></i>
 										{resource.content}
 									</p>
 									<button
@@ -126,7 +130,7 @@
 											copyToClipboard(resource.content);
 										}}
 									>
-										<i class="fa-solid fa-copy"></i>
+										<Copy class="size-4"></Copy>
 										{#if show_copied_message}
 											<div
 												class="bg-background-dark text-background-light absolute bottom-6 -translate-x-5 rounded-md px-2 py-2 text-xs"
@@ -140,7 +144,8 @@
 						{/each}
 					</ul>
 				</div>
-				<div class="author flex flex-row gap-1">
+				<div class="author flex flex-row gap-1 items-center">
+					<UserRoundPen class="size-4"></UserRoundPen>
 					<p class="font-bold">Author:</p>
 					<p>{challenge_data.author ? challenge_data.author : 'Anonymous'}</p>
 				</div>
@@ -179,10 +184,12 @@
 					<button
 						aria-label="Submit flag"
 						type="submit"
-						class="submit-flag bg-foreground-light dark:bg-foreground-dark h-8 w-8 rounded-sm text-center"
-						><i
-							class="fa-solid fa-paper-plane text-foreground-light dark:text-foreground-dark relative right-1.5 bottom-0.5"
-						></i></button
+						class="submit-flag ignore-default bg-foreground-light dark:bg-foreground-dark h-8 w-8 rounded-sm text-center p-0"
+						>
+						<div class="size-full flex items-center justify-center">
+							<SendHorizontal  />
+						</div>
+						</button
 					>
 				</form>
 			{:else}
