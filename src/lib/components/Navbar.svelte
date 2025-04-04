@@ -5,6 +5,8 @@
 	import type { Users } from '$lib/db/db';
 	import type { Selectable } from 'kysely';
 
+	import { ArrowLeft, User } from '@lucide/svelte';
+
 	interface NavLink {
 		display: string;
 		href: string;
@@ -63,23 +65,7 @@
 	<div class="right">
 		{#if user}
 			<a href="/user" class="ignore-default flex flex-row items-center space-x-4 underline">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="24"
-					height="24"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					class="lucide lucide-user"
-					><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle
-						cx="12"
-						cy="7"
-						r="4"
-					/></svg
-				>
+				<User />
 				{user.display_name || user.github_username}</a
 			>
 		{:else}
@@ -108,21 +94,7 @@
 		>
 			<div class="pl-2">
 				<button aria-label="Close sidebar" class="ignore-default" onclick={toggle_sidebar}>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 24 24"
-						width="24"
-						height="24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						class="back-arrow text-foreground-light dark:text-foreground-dark h-10 w-10"
-					>
-						<line x1="22" y1="12" x2="5" y2="12" />
-						<polyline points="12 19 5 12 12 5" />
-					</svg>
+					<ArrowLeft />
 				</button>
 			</div>
 			<div class="w-full pt-4">

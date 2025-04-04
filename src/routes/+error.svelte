@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.css';
-	import Navbar from '$lib/components/navbar.svelte';
+	import Navbar from '$lib/components/Navbar.svelte';
 	import { page } from '$app/state';
 	import { enhance } from '$app/forms';
 

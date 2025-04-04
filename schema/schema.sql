@@ -113,7 +113,7 @@ CREATE TABLE challenge_resources (
     challenge VARCHAR(256) NOT NULL,
     type challenge_resource_type NOT NULL DEFAULT 'file',
     content TEXT NOT NULL,
-    FOREIGN KEY (challenge) REFERENCES challenges(challenge_id)
+    FOREIGN KEY (challenge) REFERENCES challenges(challenge_id) ON DELETE CASCADE
 );
 
 CREATE TABLE user_sessions (
