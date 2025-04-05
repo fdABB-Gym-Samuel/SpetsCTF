@@ -2,7 +2,6 @@
 	import ChallengeCard from '$lib/components/ChallengeCard.svelte';
 	let { data } = $props();
 	let { userInfo } = data;
-
 </script>
 
 <div class="content flex flex-col gap-10">

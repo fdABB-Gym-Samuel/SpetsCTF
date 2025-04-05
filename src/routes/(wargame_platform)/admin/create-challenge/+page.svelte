@@ -4,21 +4,21 @@
 	let { translations } = data;
 
 	type resource_type = 'File' | 'Command' | 'Website';
-	
+
 	let categories = [
 		'crypto',
-    	'forensics',
-    	'introduction',
-    	'misc',
-    	'osint',
-    	'pwn',
-    	'reversing',
-    	'web'
-	]
+		'forensics',
+		'introduction',
+		'misc',
+		'osint',
+		'pwn',
+		'reversing',
+		'web'
+	];
 
-	let mainCategory:string = $state(categories[3])
+	let mainCategory: string = $state(categories[3]);
 
-	let selectedCategories = $state([])
+	let selectedCategories = $state([]);
 
 	interface resource {
 		resource_type: resource_type;
@@ -105,7 +105,6 @@
 		bind:this={new_challenge_form}
 		use:enhance
 	>
-
 		<div class="mb-5 flex flex-col">
 			<label for="display_name">{translations.challenge_display_name}</label>
 			<input
@@ -171,22 +170,25 @@
 			</select>
 		</div>
 		<div>
-
 			<fieldset>
 				<legend>Categories</legend>
-				<ul class="grid grid-cols-3 px-4 gap-x-4 divide-x divide-accent-dark">
-					{#each categories.filter((category_) => (category_ !== mainCategory)) as category}
-						<div class="flex flex-row justify-between w-full px-2">
+				<ul class="divide-accent-dark grid grid-cols-3 gap-x-4 divide-x px-4">
+					{#each categories.filter((category_) => category_ !== mainCategory) as category}
+						<div class="flex w-full flex-row justify-between px-2">
 							<label for={`sub_category_${category}`}>
 								{category}
-					  		</label>
-							<input name="sub_categories" type="checkbox" id={`sub_category_${category}`} bind:group={selectedCategories} value={category} />
-
+							</label>
+							<input
+								name="sub_categories"
+								type="checkbox"
+								id={`sub_category_${category}`}
+								bind:group={selectedCategories}
+								value={category}
+							/>
 						</div>
 					{/each}
 				</ul>
 			</fieldset>
-			
 		</div>
 	</form>
 
@@ -236,7 +238,6 @@
 	<h5 class="border-accent-light dark:border-accent-dark mb-2 border-b-2 text-xl">Files</h5>
 	<ul>
 		{#each files !== undefined ? files : [] as file, i}
-
 			<li class="flex flex-row gap-2">
 				<p>{file instanceof File ? file.name : file}</p>
 				<button
@@ -257,7 +258,6 @@
 			<h5 class="border-accent-light dark:border-accent-dark mb-2 border-b-2 text-xl">{type}s</h5>
 			<ul class="flex flex-col gap-1">
 				{#each resource_list as resource, i}
-
 					<li class="flex flex-row gap-2">
 						<p>{resource}</p>
 						<button
@@ -279,5 +279,4 @@
 	{/each}
 
 	<button type="submit" form="new_challenge_form" class="mt-5">Submit</button>
-
 </div>

@@ -1,19 +1,18 @@
 <script lang="ts">
-	import { CirclePlus, Flag } from "@lucide/svelte";
+	import { CirclePlus, Flag } from '@lucide/svelte';
 	let { data } = $props();
 	let { challenge_data } = data;
 
-
 	let categories = [
 		'crypto',
-    	'forensics',
-    	'introduction',
-    	'misc',
-    	'osint',
-    	'pwn',
-    	'reversing',
-    	'web'
-	]
+		'forensics',
+		'introduction',
+		'misc',
+		'osint',
+		'pwn',
+		'reversing',
+		'web'
+	];
 </script>
 
 <!-- <main class="card flex flex-col justify-between bg-button-dark h-[var(--challenge-card-height)] w-[var(--challenge-card-width)] rounded-[var(--card-radius)] px-4 py-2"> -->
@@ -32,7 +31,10 @@
 		</h5>
 		<ul class="categroies flex w-full flex-row flex-wrap">
 			<!-- {#each [challenge_data.challenge_category] as category} -->
-			{#each categories.filter((_, index) => (challenge_data.challenge_sub_categories & (1 << index)) !== 0) as category}
+			{#each categories.filter((_, index) => challenge_data.challenge_sub_categories
+						.split('')
+						.reverse()
+						.join('')[index] === '1') as category}
 				<li
 					class="bg-foreground-dark text-background-dark mt-1 mr-1.5 rounded-md px-1 py-0.5 text-xs"
 				>
@@ -47,29 +49,27 @@
 		</div>
 		<div class="solution-stats flex flex-row justify-between text-sm">
 			{#if challenge_data.num_solves}
-			<div class="flex flex-row items-center gap-0.5">
-				<Flag class="size-4"></Flag> 
-				<p
-					class="num-solves text-background-light dark:text-background-dark"
-					class:dark:text-background-dark={challenge_data.solved}
-					class:text-background-light={challenge_data.solved}
-				>
-					{challenge_data.num_solves}
-				</p>
-			</div>
+				<div class="flex flex-row items-center gap-0.5">
+					<Flag class="size-4"></Flag>
+					<p
+						class="num-solves text-background-light dark:text-background-dark"
+						class:dark:text-background-dark={challenge_data.solved}
+						class:text-background-light={challenge_data.solved}
+					>
+						{challenge_data.num_solves}
+					</p>
+				</div>
 			{/if}
 			<div class="flex flex-row items-center gap-0.5">
 				<CirclePlus class="size-4"></CirclePlus>
-			<p
-				class="point-reward text-background-light dark:text-background-dark align-text-middle"
-				class:dark:text-background-dark={challenge_data.solved}
-				class:text-background-light={challenge_data.solved}
-			>
-			
-				{challenge_data.points}
-			</p>
+				<p
+					class="point-reward text-background-light dark:text-background-dark align-text-middle"
+					class:dark:text-background-dark={challenge_data.solved}
+					class:text-background-light={challenge_data.solved}
+				>
+					{challenge_data.points}
+				</p>
 			</div>
-
 		</div>
 	</section>
 </main>

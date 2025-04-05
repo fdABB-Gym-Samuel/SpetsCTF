@@ -8,16 +8,9 @@ import { randomUUID } from 'crypto';
 
 export function validateCategory(value: any): Category {
 	if (
-		[
-			'crypto',
-			'forensics',
-			'introduction',
-			'misc',
-			'osint',
-			'pwn',
-			'reversing',
-			'web'
-		].includes(value)
+		['crypto', 'forensics', 'introduction', 'misc', 'osint', 'pwn', 'reversing', 'web'].includes(
+			value
+		)
 	) {
 		return value as Category;
 	} else {
@@ -156,14 +149,15 @@ export async function getUserFromGithubId(github_id: number) {
 	return res;
 }
 
-export function selectedCategoriesToBitset(standardCategories:string[], selectedCateories:string[]) {
-	let bitset = 0
-
-	standardCategories.forEach((category:string, index:number) => {
-		if (selectedCateories.includes(category)){
-			bitset |= (1 << index);
+export function selectedCategoriesToBitset(
+	standardCategories: string[],
+	selectedCateories: string[]
+) {
+	let bitset = 0;
+	standardCategories.forEach((category: string, index: number) => {
+		if (selectedCateories.includes(category)) {
+			bitset |= 1 << index;
 		}
-	})
-	return String.fromCharCode(bitset)
-
+	});
+	return bitset.toString(2).padStart(8, '0');
 }

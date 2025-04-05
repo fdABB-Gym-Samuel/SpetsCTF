@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Link, SquareTerminal, Copy, File, UserRoundPen, CirclePlus, Flag } from "@lucide/svelte"
+	import { Link, SquareTerminal, Copy, File, UserRoundPen, CirclePlus, Flag } from '@lucide/svelte';
 	import { goto } from '$app/navigation';
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
@@ -11,7 +11,7 @@
 			challenge_name: '',
 			challenge_description: '',
 			challenge_category: null,
-			challenge_sub_categories: "",
+			challenge_sub_categories: '',
 			points: 0,
 			flag_format: '',
 			first_solvers: [],
@@ -25,15 +25,14 @@
 
 	let categories = [
 		'crypto',
-    	'forensics',
-    	'introduction',
-    	'misc',
-    	'osint',
-    	'pwn',
-    	'reversing',
-    	'web'
-	]
-
+		'forensics',
+		'introduction',
+		'misc',
+		'osint',
+		'pwn',
+		'reversing',
+		'web'
+	];
 	// Needs to be changed to handle when there are multiple commands that can be copied
 	let show_copied_message = $state(false);
 
@@ -82,8 +81,11 @@
 			</h3>
 			<ul class="categroies flex w-8/10 flex-row flex-wrap justify-center">
 				<!-- {#each [challenge_data.challenge_category] as category} -->
-				<!-- {#each categories.filter((_, index) => (challenge_data.challenge_sub_categories & (1 << index)) !== 0) as category} -->
-				{#each categories.filter((_, index) => (challenge_data.challenge_sub_categories & (1 << index)) !== 0) as category}
+				<!-- {#each categories.filter((_, index) => (challenge_data.challenge_sub_categories.split("").reverse().join("") & (1 << index)) !== 0) as category} -->
+				{#each categories.filter((_, index) => challenge_data.challenge_sub_categories
+							.split('')
+							.reverse()
+							.join('')[index] === '1') as category}
 					<li
 						class="bg-foreground-light dark:bg-foreground-dark text-background-light dark:text-background-dark rounded-md px-2 py-1 text-xs"
 					>
@@ -92,11 +94,15 @@
 				{/each}
 			</ul>
 			<div class="solve-stats text-foreground-dark mt-1 flex flex-row gap-5">
-				<p class="points flex flex-row items-center gap-0.5 text-foreground-light dark:text-foreground-dark">
+				<p
+					class="points text-foreground-light dark:text-foreground-dark flex flex-row items-center gap-0.5"
+				>
 					<CirclePlus class="size-4"></CirclePlus>
 					{challenge_data.points}
 				</p>
-				<p class="num-solves flex flex-row items-center gap-0.5 text-foreground-light dark:text-foreground-dark">
+				<p
+					class="num-solves text-foreground-light dark:text-foreground-dark flex flex-row items-center gap-0.5"
+				>
 					<Flag class="size-4"></Flag>
 					{challenge_data.num_solves}
 				</p>
@@ -118,7 +124,7 @@
 						{#each challenge_data.resources as resource}
 							{#if resource.type === 'web'}
 								<li
-									class="challenge-resource flex flex-row items-center gap-1 text-foreground-light dark:text-foreground-dark h-fit underline"
+									class="challenge-resource text-foreground-light dark:text-foreground-dark flex h-fit flex-row items-center gap-1 underline"
 								>
 									<Link class="size-4"></Link>
 									<a href={resource.content} class="ignore-default h-fit">{resource.content}</a>
@@ -158,7 +164,7 @@
 						{/each}
 					</ul>
 				</div>
-				<div class="author flex flex-row gap-1 items-center">
+				<div class="author flex flex-row items-center gap-1">
 					<UserRoundPen class="size-4"></UserRoundPen>
 					<p class="font-bold">Author:</p>
 					<p>{challenge_data.author ? challenge_data.author : 'Anonymous'}</p>
@@ -198,13 +204,12 @@
 					<button
 						aria-label="Submit flag"
 						type="submit"
-						class="submit-flag ignore-default bg-foreground-light dark:bg-foreground-dark h-8 w-8 rounded-sm text-center p-0"
-						>
-						<div class="size-full flex items-center justify-center">
-							<SendHorizontal  />
-						</div>
-						</button
+						class="submit-flag ignore-default bg-foreground-light dark:bg-foreground-dark h-8 w-8 rounded-sm p-0 text-center"
 					>
+						<div class="flex size-full items-center justify-center">
+							<SendHorizontal />
+						</div>
+					</button>
 				</form>
 			{:else}
 				<p

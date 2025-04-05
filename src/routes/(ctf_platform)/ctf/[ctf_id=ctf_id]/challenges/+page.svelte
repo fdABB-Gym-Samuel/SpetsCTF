@@ -11,13 +11,13 @@
 
 	let categories = [
 		'crypto',
-    	'forensics',
-    	'introduction',
-    	'misc',
-    	'osint',
-    	'pwn',
-    	'reversing',
-    	'web'
+		'forensics',
+		'introduction',
+		'misc',
+		'osint',
+		'pwn',
+		'reversing',
+		'web'
 	];
 	let modal_data = $derived.by(() => {
 		if (show_challenge_dialog) {

@@ -36,6 +36,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 			'ch.description',
 			'ch.points',
 			'ch.challenge_category',
+			'ch.challenge_sub_categories',
 			'a.display_name',
 			'a.id',
 			'f.flag_format'
@@ -45,6 +46,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 			'ch.display_name as challenge_name',
 			'ch.description as challenge_description',
 			'ch.challenge_category',
+			'ch.challenge_sub_categories',
 			'ch.points',
 			'f.flag_format',
 			'a.display_name as author',

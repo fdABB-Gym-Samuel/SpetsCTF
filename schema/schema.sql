@@ -58,10 +58,10 @@ CREATE TABLE challenges (
     -- The challenges are stored in an array, order matters!!! Its the same as the Enum for category, i.e alphabetical
     -- The list of challenges can be derived like this in js:
     --
-    -- categories.filter((_, index) => (challenge_data.challenge_sub_categories & (1 << index)) !== 0)
+    -- categories.filter((_, index) => (challenge_data.challenge_sub_categories.split("").reverse().join("")[index] === "1")) as category}
     --
     -- Where categories is the aforementioned array 
-    challenge_sub_categories char(1),
+    challenge_sub_categories BIT(8),
     flag INT,
     ctf INT,
     author UUID,

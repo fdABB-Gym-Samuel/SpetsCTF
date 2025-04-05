@@ -32,13 +32,15 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 								points: number;
 								description: string;
 								challenge_category: Category;
+								challenge_sub_categories: string;
 							}>
 						>`json_agg(json_build_object(
                     'id', challenges.challenge_id,
                     'challenge_name', challenges.display_name,
                     'points', challenges.points,
                     'description', challenges.description,
-                    'challenge_category', challenges.challenge_category
+                    'challenge_category', challenges.challenge_category,
+					'challenge_sub_categories', challenges.challenge_sub_categories
                   ))`.as('solves')
 					])
 					.whereRef('wargame_submissions.user_id', '=', 'users.id')
@@ -56,13 +58,15 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 								points: number;
 								description: string;
 								challenge_category: Category;
+								challenge_sub_categories: String;
 							}>
 						>`json_agg(json_build_object(
                     'id', challenges.challenge_id,
                     'challenge_name', challenges.display_name,
                     'points', challenges.points,
                     'description', challenges.description,
-                    'challenge_category', challenges.challenge_category
+                    'challenge_category', challenges.challenge_category,
+					'challenge_sub_categories', challenges.challenge_sub_categories
                   ))`.as('authoredChallenges')
 					])
 					.whereRef('challenges.author', '=', 'users.id')
