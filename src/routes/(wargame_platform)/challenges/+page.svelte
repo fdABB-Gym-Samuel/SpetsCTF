@@ -11,15 +11,14 @@
 	let show_challenge_dialog: boolean = $derived(challengeId !== null);
 
 	let categories = [
-		'Introduction',
-		'Web',
-		'Pwn',
-		'Crypto',
-		'Reversing',
-		'Forensics',
-		'Osint',
-		'Blockchain',
-		'Misc'
+		'crypto',
+    	'forensics',
+    	'introduction',
+    	'misc',
+    	'osint',
+    	'pwn',
+    	'reversing',
+    	'web'
 	];
 
 	let modal_data = $derived.by(() => {

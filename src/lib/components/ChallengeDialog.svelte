@@ -11,6 +11,7 @@
 			challenge_name: '',
 			challenge_description: '',
 			challenge_category: null,
+			challenge_sub_categories: "",
 			points: 0,
 			flag_format: '',
 			first_solvers: [],
@@ -21,6 +22,17 @@
 		},
 		translations
 	} = $props();
+
+	let categories = [
+		'crypto',
+    	'forensics',
+    	'introduction',
+    	'misc',
+    	'osint',
+    	'pwn',
+    	'reversing',
+    	'web'
+	]
 
 	// Needs to be changed to handle when there are multiple commands that can be copied
 	let show_copied_message = $state(false);
@@ -69,7 +81,9 @@
 				{challenge_data.challenge_name}
 			</h3>
 			<ul class="categroies flex w-8/10 flex-row flex-wrap justify-center">
-				{#each [challenge_data.challenge_category] as category}
+				<!-- {#each [challenge_data.challenge_category] as category} -->
+				<!-- {#each categories.filter((_, index) => (challenge_data.challenge_sub_categories & (1 << index)) !== 0) as category} -->
+				{#each categories.filter((_, index) => (challenge_data.challenge_sub_categories & (1 << index)) !== 0) as category}
 					<li
 						class="bg-foreground-light dark:bg-foreground-dark text-background-light dark:text-background-dark rounded-md px-2 py-1 text-xs"
 					>

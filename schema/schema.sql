@@ -23,7 +23,6 @@ CREATE TABLE users (
 );
 
 CREATE TYPE category AS ENUM (
-    'blockchain',
     'crypto',
     'forensics',
     'introduction',
@@ -55,6 +54,14 @@ CREATE TABLE challenges (
     display_name VARCHAR(256),
     description TEXT,
     challenge_category category DEFAULT 'misc',
+    -- This is basically a bitset storing the challenges
+    -- The challenges are stored in an array, order matters!!! Its the same as the Enum for category, i.e alphabetical
+    -- The list of challenges can be derived like this in js:
+    --
+    -- categories.filter((_, index) => (challenge_data.challenge_sub_categories & (1 << index)) !== 0)
+    --
+    -- Where categories is the aforementioned array 
+    challenge_sub_categories char(1),
     flag INT,
     ctf INT,
     author UUID,

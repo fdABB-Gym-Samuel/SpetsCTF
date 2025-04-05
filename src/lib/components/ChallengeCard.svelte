@@ -2,6 +2,18 @@
 	import { CirclePlus, Flag } from "@lucide/svelte";
 	let { data } = $props();
 	let { challenge_data } = data;
+
+
+	let categories = [
+		'crypto',
+    	'forensics',
+    	'introduction',
+    	'misc',
+    	'osint',
+    	'pwn',
+    	'reversing',
+    	'web'
+	]
 </script>
 
 <!-- <main class="card flex flex-col justify-between bg-button-dark h-[var(--challenge-card-height)] w-[var(--challenge-card-width)] rounded-[var(--card-radius)] px-4 py-2"> -->
@@ -19,7 +31,8 @@
 			{challenge_data.challenge_name}
 		</h5>
 		<ul class="categroies flex w-full flex-row flex-wrap">
-			{#each [challenge_data.challenge_category] as category}
+			<!-- {#each [challenge_data.challenge_category] as category} -->
+			{#each categories.filter((_, index) => (challenge_data.challenge_sub_categories & (1 << index)) !== 0) as category}
 				<li
 					class="bg-foreground-dark text-background-dark mt-1 mr-1.5 rounded-md px-1 py-0.5 text-xs"
 				>

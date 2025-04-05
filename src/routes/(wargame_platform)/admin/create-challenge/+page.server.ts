@@ -1,7 +1,7 @@
 import type { Actions } from './$types';
 import { fail, error, type ServerLoadEvent } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
-import { validateCategory, get_challenge_id_from_display_name } from '$lib/db/functions';
+import { validateCategory, get_challenge_id_from_display_name, selectedCategoriesToBitset } from '$lib/db/functions';
 import type { Category, ChallengeResources, Challenges } from '$lib/db/db';
 import type { Insertable } from 'kysely';
 import { writeFile, mkdir } from 'fs/promises';
@@ -9,6 +9,16 @@ import path from 'path';
 import sanitize from 'sanitize-filename';
 
 // export const ssr = false
+let categories = [
+	'crypto',
+	'forensics',
+	'introduction',
+	'misc',
+	'osint',
+	'pwn',
+	'reversing',
+	'web'
+]
 
 export const load = async ({ locals }: ServerLoadEvent) => {
 	if (locals.user?.is_admin !== true) {
@@ -30,6 +40,10 @@ export const actions = {
 			const challenge_category: Category = validateCategory(
 				formData.get('challenge_category')?.toString() ?? ''
 			);
+
+			const categories_list: string[] = formData.getAll("sub_categories") as string[]
+			const challenge_sub_categories = selectedCategoriesToBitset(categories, [...challenge_category, ...categories_list])
+			console.log(challenge_sub_categories, "here")
 
 			const points = formData.get('points')?.toString() ?? '';
 			if (!points) {
@@ -56,6 +70,7 @@ export const actions = {
 
 			const challenge: Insertable<Challenges> = {
 				challenge_category,
+				challenge_sub_categories,
 				challenge_id,
 				points: pointsInt,
 				flag: flagId.id,

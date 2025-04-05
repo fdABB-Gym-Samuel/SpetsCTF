@@ -9,7 +9,6 @@ import { randomUUID } from 'crypto';
 export function validateCategory(value: any): Category {
 	if (
 		[
-			'blockchain',
 			'crypto',
 			'forensics',
 			'introduction',
@@ -155,4 +154,16 @@ export async function getUserFromGithubId(github_id: number) {
 		.executeTakeFirst();
 
 	return res;
+}
+
+export function selectedCategoriesToBitset(standardCategories:string[], selectedCateories:string[]) {
+	let bitset = 0
+
+	standardCategories.forEach((category:string, index:number) => {
+		if (selectedCateories.includes(category)){
+			bitset |= (1 << index);
+		}
+	})
+	return String.fromCharCode(bitset)
+
 }

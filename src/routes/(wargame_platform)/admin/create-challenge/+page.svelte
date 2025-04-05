@@ -4,6 +4,21 @@
 	let { translations } = data;
 
 	type resource_type = 'File' | 'Command' | 'Website';
+	
+	let categories = [
+		'crypto',
+    	'forensics',
+    	'introduction',
+    	'misc',
+    	'osint',
+    	'pwn',
+    	'reversing',
+    	'web'
+	]
+
+	let mainCategory:string = $state(categories[3])
+
+	let selectedCategories = $state([])
 
 	interface resource {
 		resource_type: resource_type;
@@ -25,8 +40,6 @@
 
 	let new_challenge_form: HTMLFormElement;
 
-	let formData_new_challenge: FormData | undefined = $state();
-
 	const add_resource = (e: SubmitEvent) => {
 		e.preventDefault();
 		if (!(e.currentTarget instanceof HTMLFormElement)) {
@@ -36,7 +49,6 @@
 
 		const type: resource_type = formData.get('resource_type') as resource_type;
 		const type_formdata = `${type.toLocaleLowerCase()}s`;
-		// const resources: File[] | string[] = formData.getAll(type_formdata) as (File | string)[];
 		let resources: File[] | string[];
 		if (type !== 'File') {
 			resources = formData.getAll(type_formdata) as string[];
@@ -78,7 +90,6 @@
 	};
 </script>
 
-<!-- <div class="mx-auto flex w-1/2 flex-col space-y-2"> -->
 <div class="content">
 	<h2 class="text-4xl font-bold">{translations.addnewchallenge}</h2>
 	{#if form && form?.success}
@@ -94,18 +105,7 @@
 		bind:this={new_challenge_form}
 		use:enhance
 	>
-		<!-- <div class="mb-5 flex flex-col">
-			<label for="challenge_id">{translations.challenge_id}</label>
-			<input
-				class="border border-accent-light dark:border-accent-dark pl-2"
-				type="text"
-				name="challenge_id"
-				id="challenge_id"
-				required
-				placeholder="Enter the ID."
-				pattern=[A-Za-z0-9_]+
-			/>
-		</div> -->
+
 		<div class="mb-5 flex flex-col">
 			<label for="display_name">{translations.challenge_display_name}</label>
 			<input
@@ -158,17 +158,35 @@
 			/>
 		</div>
 		<div class="mb-5 flex flex-col">
-			<label for="challenge_category">{translations.challenge_category}</label>
+			<label for="challenge_category">{translations.main} {translations.challenge_category}</label>
 			<select
 				id="challenge_category"
 				name="challenge_category"
 				class="border-accent-light dark:border-accent-dark bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark border pl-2"
-				value="misc"
+				bind:value={mainCategory}
 			>
-				{#each ['blockchain', 'crypto', 'forensics', 'introduction', 'misc', 'osint', 'pwn', 'reversing', 'web'] as option}
+				{#each ['crypto', 'forensics', 'introduction', 'misc', 'osint', 'pwn', 'reversing', 'web'] as option}
 					<option value={option} class="text-background-dark">{option}</option>
 				{/each}
 			</select>
+		</div>
+		<div>
+
+			<fieldset>
+				<legend>Categories</legend>
+				<ul class="grid grid-cols-3 px-4 gap-x-4 divide-x divide-accent-dark">
+					{#each categories.filter((category_) => (category_ !== mainCategory)) as category}
+						<div class="flex flex-row justify-between w-full px-2">
+							<label for={`sub_category_${category}`}>
+								{category}
+					  		</label>
+							<input name="sub_categories" type="checkbox" id={`sub_category_${category}`} bind:group={selectedCategories} value={category} />
+
+						</div>
+					{/each}
+				</ul>
+			</fieldset>
+			
 		</div>
 	</form>
 
@@ -208,7 +226,6 @@
 				bind:value={current_resource.resource_file}
 			/>
 		{/if}
-		<!-- {#if current_resource.resource_type === "File"} -->
 		<button
 			type="submit"
 			class="ignore-default bg-button-light dark:bg-button-dark border-foreground-light dark:border-foreground-dark mt-3 w-fit rounded-md border-2 px-1.5 py-0.5"
@@ -219,7 +236,7 @@
 	<h5 class="border-accent-light dark:border-accent-dark mb-2 border-b-2 text-xl">Files</h5>
 	<ul>
 		{#each files !== undefined ? files : [] as file, i}
-			<!-- {#if type !== 'File'} -->
+
 			<li class="flex flex-row gap-2">
 				<p>{file instanceof File ? file.name : file}</p>
 				<button
@@ -240,7 +257,7 @@
 			<h5 class="border-accent-light dark:border-accent-dark mb-2 border-b-2 text-xl">{type}s</h5>
 			<ul class="flex flex-col gap-1">
 				{#each resource_list as resource, i}
-					<!-- {#if type !== 'File'} -->
+
 					<li class="flex flex-row gap-2">
 						<p>{resource}</p>
 						<button
@@ -262,5 +279,5 @@
 	{/each}
 
 	<button type="submit" form="new_challenge_form" class="mt-5">Submit</button>
-	<!-- </form> -->
+
 </div>
