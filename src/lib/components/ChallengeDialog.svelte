@@ -41,7 +41,7 @@
 			await navigator.clipboard.writeText(text_to_copy).then(() => {
 				show_copied_message = true;
 				setTimeout(() => {
-					show_copied_message = false; // Hide the copied message after 1 seconds
+					show_copied_message = false;
 				}, 1000);
 			});
 		} catch (err) {
@@ -80,8 +80,7 @@
 				{challenge_data.challenge_name}
 			</h3>
 			<ul class="categroies flex w-8/10 flex-row flex-wrap justify-center">
-				<!-- {#each [challenge_data.challenge_category] as category} -->
-				<!-- {#each categories.filter((_, index) => (challenge_data.challenge_sub_categories.split("").reverse().join("") & (1 << index)) !== 0) as category} -->
+	
 				{#each categories.filter((_, index) => challenge_data.challenge_sub_categories
 							.split('')
 							.reverse()
@@ -179,7 +178,6 @@
 						{/each}
 					</ol>
 				</div>
-				<!-- </ul> -->
 			</div>
 		</section>
 		<section class="bottom absolute bottom-2 w-10/12">

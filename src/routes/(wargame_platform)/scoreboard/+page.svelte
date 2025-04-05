@@ -9,7 +9,6 @@
 <div class="content">
 	<h1 class="route-title">Scoreboards</h1>
 	<div class="scoreboards grid grid-cols-2 grid-rows-[fit_1fr] items-start gap-x-10">
-		<!-- <div class="scoreboards grid grid-cols-[repeat(auto-fit,minmax(fit,1fr))] gap-x-10 items-start"> -->
 		<div class="mb-2 flex flex-col justify-between">
 			<h3 class="scoreboard-title text-5xl">Users:</h3>
 			<div

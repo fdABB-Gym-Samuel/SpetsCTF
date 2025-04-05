@@ -92,7 +92,6 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 			`.as('resources')
 		])
 		.orderBy('ch.points', 'asc')
-		//   .orderBy('rs.first_time')
 		.execute();
 
 	return { challenges };

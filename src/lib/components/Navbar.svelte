@@ -1,6 +1,4 @@
 <script lang="ts">
-	// export let user_name:string | undefined = undefined;
-
 	import { goto } from '$app/navigation';
 	import type { Users } from '$lib/db/db';
 	import type { Selectable } from 'kysely';

@@ -21,7 +21,6 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 					'challenges.points as points'
 				])
 				.where('ctf_submissions.success', '=', true)
-				// Group by team and challenge so each challenge is counted only once per team
 				.groupBy([
 					'ctf_teams.id',
 					'ctf_teams.name',

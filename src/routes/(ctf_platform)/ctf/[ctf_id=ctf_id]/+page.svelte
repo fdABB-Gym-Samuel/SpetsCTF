@@ -5,7 +5,6 @@
 	let { data } = $props();
 	let { ctf_data } = data;
 
-	// Create a reactive tick store that updates every second.
 	const time = readable(Date.now(), (set) => {
 		const interval = setInterval(() => {
 			set(Date.now());
@@ -32,7 +31,6 @@
 			<h3>CTF Starts in:</h3>
 
 			<div class="countdown flex max-w-full flex-row items-center justify-center gap-2">
-				<!-- <p>{t}</p> -->
 				<div class="day flex flex-row items-center gap-1">
 					<h5 class="text-xl">Days:</h5>
 					{#each `${Math.floor(timeToStart / (1000 * 60 * 60 * 24))}` as daySquare, i}

@@ -55,8 +55,10 @@ export const actions = {
 			if (
 				!categories_list ||
 				categories_list.filter((category) => !categories.includes(category)).length > 0
-			)
+			){
 				return fail(422, { message: 'Invalid Categories' });
+			}
+
 			const challenge_sub_categories = selectedCategoriesToBitset(categories, categories_list);
 
 			const points = formData.get('points')?.toString() ?? '';
@@ -129,7 +131,6 @@ export const actions = {
 				resource_files = files.map((file) => {
 					return {
 						challenge: challenge_id,
-						// content: path.join(challenge_dir, file?.name),
 						content: path.join(`/challenge_files/${challenge_id}`, file?.name),
 						type: 'file'
 					};

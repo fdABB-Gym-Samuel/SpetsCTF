@@ -80,7 +80,6 @@
 			{/each}
 		</ul>
 	</section>
-	<!-- <hr /> -->
 	<section>
 		<h3 class="text-2xl">{translations.upcoming_ctfs}</h3>
 		<ul>

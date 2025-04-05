@@ -36,7 +36,6 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 				sql<number>`COUNT(ctf_teams_members.user_id)`.as('memberCount'),
 				sql<string[]>`ARRAY_AGG(ctf_teams_members.user_id)`.as('members')
 			])
-			// .where('ctf_teams.ctf', '=', ctfId)
 			.where('ctf_teams.join_code', '=', join_code)
 			.groupBy('ctf_teams.id')
 			.executeTakeFirstOrThrow();

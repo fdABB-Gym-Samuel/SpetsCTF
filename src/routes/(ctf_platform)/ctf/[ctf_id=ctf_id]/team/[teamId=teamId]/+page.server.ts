@@ -14,7 +14,6 @@ export const load: PageServerLoad = async ({ locals, params }: ServerLoadEvent) 
 		.select([
 			't.name',
 			't.website',
-			// Conditionally select join_code if the current user is a member.
 			sql<string>`
                 (
                     SELECT t.join_code
@@ -24,7 +23,6 @@ export const load: PageServerLoad = async ({ locals, params }: ServerLoadEvent) 
                     LIMIT 1
                 )
             `.as('join_code'),
-			// Aggregate all team members as JSON
 			sql<string[]>`
                 (
                     SELECT json_agg(u.display_name)

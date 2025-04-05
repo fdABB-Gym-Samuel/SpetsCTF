@@ -5,7 +5,6 @@ import { sql } from 'kysely';
 import path from 'path';
 
 export async function GET({ params }: RequestEvent) {
-	// const filepath = path.join(process.cwd(), "files", params.filepath);
 	const challengeId = params.challengeId ?? '';
 	const filename = params.filename as string;
 

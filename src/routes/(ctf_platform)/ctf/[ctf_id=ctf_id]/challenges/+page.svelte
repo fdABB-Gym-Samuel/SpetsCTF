@@ -39,9 +39,6 @@
 
 				{#if challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()).length > 0}
 					<ul class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
-						<!-- <ul
-						class="flex flex-row flex-wrap gap-4"
-					> -->
 						{#each challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challenge_data}
 							<li class="min-h-35 min-w-65">
 								<a

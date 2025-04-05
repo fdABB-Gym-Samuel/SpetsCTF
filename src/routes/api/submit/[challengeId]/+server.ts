@@ -1,5 +1,3 @@
-// import type { LoadEvent } from "@sveltejs/kit";
-
 import { db } from '$lib/db/database.js';
 import { error, json } from '@sveltejs/kit';
 import type { WargameSubmissions } from '$lib/db/db';
