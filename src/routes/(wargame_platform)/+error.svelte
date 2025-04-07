@@ -42,6 +42,15 @@
 					Submit flag that may or may not exist</button
 				>
 			</form>
+		{:else if page.status === 401 || page.status === 403}
+			<!-- <h3>As the Wizard of the Land i beseach you to leave, for ...</h3> -->
+			<a class="mt-4" href="/super_great_artist">
+				<img
+					src="/thou_shall_not_pass_dark.png"
+					alt="Super cool 'Thou shall not pass' illustration"
+					class="max-h-120 object-contain"
+				/>
+			</a>
 		{/if}
 	</div>
 </div>
