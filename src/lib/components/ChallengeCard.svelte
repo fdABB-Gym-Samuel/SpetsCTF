@@ -42,8 +42,7 @@
 		</ul>
 	</section>
 	<section class="bottom flex flex-col justify-between">
-		<div class="author-wrapper">
-		</div>
+		<div class="author-wrapper"></div>
 		<div class="solution-stats flex flex-row justify-between text-sm">
 			{#if challenge_data.num_solves}
 				<div class="flex flex-row items-center gap-0.5">

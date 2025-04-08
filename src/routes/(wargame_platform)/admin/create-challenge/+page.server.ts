@@ -55,7 +55,7 @@ export const actions = {
 			if (
 				!categories_list ||
 				categories_list.filter((category) => !categories.includes(category)).length > 0
-			){
+			) {
 				return fail(422, { message: 'Invalid Categories' });
 			}
 

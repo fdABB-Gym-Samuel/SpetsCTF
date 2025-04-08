@@ -80,7 +80,6 @@
 				{challenge_data.challenge_name}
 			</h3>
 			<ul class="categroies flex w-8/10 flex-row flex-wrap justify-center">
-	
 				{#each categories.filter((_, index) => challenge_data.challenge_sub_categories
 							.split('')
 							.reverse()

@@ -62,4 +62,3 @@
 {#if challengeId}
 	<ChallengeDialog challenge_data={modal_data} {translations}></ChallengeDialog>
 {/if}
-
