@@ -13,7 +13,7 @@
 		>
 	</div>
 	<div class="flex flex-col items-center justify-center">
-		<h1 class="ignore-default text-center text-9xl">{page.status}</h1>
+		<h1 class="ignore-default text-center text-9xl font-mono">{page.status}</h1>
 		{#if page.status === 404}
 			<h3 class="ignore-default text-center">No flag here, nor is there a page?</h3>
 			<a href="/super_great_artist">
@@ -44,11 +44,13 @@
 			</form>
 		{:else if page.status === 401 || page.status === 403}
 			<!-- <h3>As the Wizard of the Land i beseach you to leave, for ...</h3> -->
-			<a class="mt-4" href="/super_great_artist">
+			<h5 class="text-6xl">Thou Shall Not Pass</h5>
+
+			<a class="ignore-default mt-4 text-center bottom-0 w-full" href="/super_great_artist">
 				<img
-					src="/thou_shall_not_pass_dark.png"
+					src="/thou_shall_not_pass.png"
 					alt="Super cool 'Thou shall not pass' illustration"
-					class="max-h-120 object-contain"
+					class="h-full max-h-fit object-contain w-full"
 				/>
 			</a>
 		{/if}
