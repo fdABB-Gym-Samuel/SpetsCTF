@@ -169,7 +169,7 @@
 				{/each}
 			</select>
 		</div>
-		<div>
+		<div class="mb-5">
 			<fieldset>
 				<legend>Categories</legend>
 				<ul class="divide-accent-dark grid grid-cols-3 gap-x-4 divide-x px-4">
@@ -190,6 +190,10 @@
 				</ul>
 			</fieldset>
 		</div>
+        <div class="mb-5">
+            <label for="stay_anonymous">Stay Anonymous:</label>
+            <input type="checkbox" name="stay_anonymous" id="stay_anonymous" value="1" checked>
+        </div>
 	</form>
 
 	<h5 class="text-xl">Add Resource</h5>

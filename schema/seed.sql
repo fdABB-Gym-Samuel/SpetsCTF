@@ -47,14 +47,14 @@ INSERT INTO ctf_events (short_name, display_name, start_time, end_time, max_team
 ('ctf_fest', 'CTF Festival 2025', '2025-03-28 09:00:00+00', '2025-03-28 19:00:00+00', 6);
 
 
-INSERT INTO challenges (challenge_id, points, display_name, description, challenge_category, challenge_sub_categories, flag, ctf) VALUES
-('challenge2', 150, 'Crypto Cracking', 'Decrypt the given message using the provided hints.', 'crypto', '10010100', 2, 1),
-('challenge3', 200, 'Forensics Investigation', 'Analyze the provided data to find the hidden flag.', 'forensics', '10010100', 3, 2),
-('challenge4', 250, 'Intro to OSINT', 'Use open-source intelligence to gather information.', 'osint', '10010100', 4, 2),
-('challenge5', 300, 'Web Exploitation', 'Find vulnerabilities in the web application.', 'web', '10010100', 5, 3),
-('challenge6', 350, 'Pwn the Server', 'Gain access to the server and retrieve the flag.', 'pwn', '10010100', 6, 3),
-('challenge7', 400, 'Reversing Challenge', 'Reverse engineer the binary to find the flag.', 'reversing', '10010100', 7, 4),
-('challenge8', 450, 'Miscellaneous Challenge', 'A surprise challenge with various tasks.', 'misc', '10010100', 8, 4),
-('challenge9', 500, 'Advanced Crypto', 'Solve the complex cryptographic puzzle.', 'crypto', '10010100', 9, 5)
+INSERT INTO challenges (challenge_id, points, display_name, description, challenge_category, challenge_sub_categories, flag, ctf, approved) VALUES
+('challenge2', 150, 'Crypto Cracking', 'Decrypt the given message using the provided hints.', 'crypto', '10010100', 2, 1, TRUE),
+('challenge3', 200, 'Forensics Investigation', 'Analyze the provided data to find the hidden flag.', 'forensics', '10010100', 3, 2, TRUE),
+('challenge4', 250, 'Intro to OSINT', 'Use open-source intelligence to gather information.', 'osint', '10010100', 4, 2, TRUE),
+('challenge5', 300, 'Web Exploitation', 'Find vulnerabilities in the web application.', 'web', '10010100', 5, 3, TRUE),
+('challenge6', 350, 'Pwn the Server', 'Gain access to the server and retrieve the flag.', 'pwn', '10010100', 6, 3, TRUE),
+('challenge7', 400, 'Reversing Challenge', 'Reverse engineer the binary to find the flag.', 'reversing', '10010100', 7, 4, TRUE),
+('challenge8', 450, 'Miscellaneous Challenge', 'A surprise challenge with various tasks.', 'misc', '10010100', 8, 4, TRUE),
+('challenge9', 500, 'Advanced Crypto', 'Solve the complex cryptographic puzzle.', 'crypto', '10010100', 9, 5, TRUE)
 
 

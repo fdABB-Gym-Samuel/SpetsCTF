@@ -31,7 +31,7 @@ export const load = async ({ locals }: ServerLoadEvent) => {
 };
 
 export const actions = {
-	default: async ({ request }) => {
+	default: async ({ request, locals }) => {
 		try {
 			const formData = await request.formData();
 
@@ -84,6 +84,8 @@ export const actions = {
 
 			const description = formData.get('description')?.toString() ?? null;
 
+			const authorAnonymous = formData.get("stay_anonymous") === "1"
+
 			const challenge: Insertable<Challenges> = {
 				challenge_category,
 				challenge_sub_categories,
@@ -91,7 +93,10 @@ export const actions = {
 				points: pointsInt,
 				flag: flagId.id,
 				display_name,
-				description
+				description,
+				author: locals.user?.id,
+                anonymous_author: authorAnonymous,
+				approved: true
 			};
 
 			await db.insertInto('challenges').values(challenge).execute();

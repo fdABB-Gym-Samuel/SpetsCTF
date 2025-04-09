@@ -65,6 +65,8 @@ CREATE TABLE challenges (
     flag INT,
     ctf INT,
     author UUID,
+    anonymous_author BOOLEAN,
+    approved BOOLEAN,
     FOREIGN KEY (flag) REFERENCES flag(id),
     FOREIGN KEY (ctf) REFERENCES ctf_events(id),
     FOREIGN KEY (author) REFERENCES users(id)

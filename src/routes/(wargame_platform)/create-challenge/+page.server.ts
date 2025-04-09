@@ -31,7 +31,7 @@ export const load = async ({ locals }: ServerLoadEvent) => {
 };
 
 export const actions = {
-    default: async ({ request }) => {
+    default: async ({ request, locals }) => {
         try{
             const formData = await request.formData();
             
@@ -84,6 +84,8 @@ export const actions = {
 
             const description = formData.get('description')?.toString() ?? null;
 
+            const authorAnonymous = formData.get("stay_anonymous") === "1"
+
             const challenge: Insertable<Challenges> = {
                 challenge_category,
                 challenge_sub_categories,
@@ -91,8 +93,83 @@ export const actions = {
                 points: pointsInt,
                 flag: flagId.id,
                 display_name,
-                description
+                description,
+                approved: false,
+                author: locals.user?.id,
+                anonymous_author: authorAnonymous
             };
+            await db.insertInto('challenges').values(challenge).execute();
+            
+            const files: File[] | null = formData.getAll('files') as File[] | null;
+            const commands: string[] | null = formData.getAll('commands') as string[] | null;
+            const websites: string[] | null = formData.getAll('websites') as string[] | null;
+
+            let resource_files;
+            if (files !== null) {
+                const challenge_dir = path.join(process.cwd(), `files/${challenge_id}`);
+                await mkdir(challenge_dir, { recursive: true });
+
+                files.forEach((file) => {
+                    return new File([file], sanitize(file.name), {
+                        type: file.type,
+                        lastModified: file.lastModified
+                    });
+                });
+                let currently_used_filenames: string[] = [];
+                for (let [index, file] of files.entries()) {
+                    if (currently_used_filenames.includes(file.name)) {
+                        files[index] = new File([file], sanitize(`${file.name}_${index}`), {
+                            type: file.type,
+                            lastModified: file.lastModified
+                        });
+                    }
+                    currently_used_filenames.push(file.name);
+                }
+
+                for (let file of files) {
+                    let filepath = path.join(challenge_dir, sanitize(file.name));
+
+                    await writeFile(filepath, Buffer.from(await file.arrayBuffer()));
+                }
+
+                resource_files = files.map((file) => {
+                    return {
+                        challenge: challenge_id,
+                        content: path.join(`/challenge_files/${challenge_id}`, file?.name),
+                        type: 'file'
+                    };
+                });
+            }
+
+            let resource_commands;
+            if (commands !== null) {
+                resource_commands = commands.map((command) => {
+                    return { challenge: challenge_id, content: command, type: 'cmd' };
+                });
+            }
+
+            let resource_websites;
+            if (websites !== null) {
+                resource_websites = websites.map((website) => {
+                    return { challenge: challenge_id, content: website, type: 'web' };
+                });
+            }
+
+            if (resource_files && resource_commands && resource_websites) {
+                if (
+                    resource_commands?.length > 0 ||
+                    resource_files?.length > 0 ||
+                    resource_websites?.length > 0
+                ) {
+                    const resources = [
+                        ...resource_files,
+                        ...resource_commands,
+                        ...resource_websites
+                    ] as Insertable<ChallengeResources>[];
+                    const _ = await db.insertInto('challenge_resources').values(resources).execute();
+                }
+            }
+            return { success: true, message: 'Challenge successfully submitted for review' };
         }
      catch (err) {
         const error = err as Error;
