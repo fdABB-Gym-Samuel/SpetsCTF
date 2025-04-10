@@ -32,7 +32,13 @@ export const load = async ({ locals }: ServerLoadEvent) => {
 
 export const actions = {
 	default: async ({ request, locals }) => {
+		if (locals.user?.is_admin !== true) {
+			return fail(401, { message: 'Not authorized' });
+		}
 		try {
+			if (locals.user?.is_admin !== true) {
+				return fail(401, { message: 'Not authorized' });
+			}
 			const formData = await request.formData();
 
 			const display_name = formData.get('display_name')?.toString() ?? null;
