@@ -4,7 +4,10 @@ import type { CtfEvents } from '$lib/db/db';
 import type { Insertable } from 'kysely';
 
 export const actions = {
-	default: async ({ request }) => {
+	default: async ({ locals, request }) => {
+		if (locals.user?.is_admin === true) {
+			fail(401, { message: 'Not authorized' });
+		}
 		const form = await request.formData();
 		const display_name = form.get('display_name')?.toString();
 		const short_name = form.get('short_name')?.toString();
