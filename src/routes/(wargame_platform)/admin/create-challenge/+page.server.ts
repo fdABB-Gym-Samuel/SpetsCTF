@@ -84,7 +84,7 @@ export const actions = {
 
 			const description = formData.get('description')?.toString() ?? null;
 
-			const authorAnonymous = formData.get("stay_anonymous") === "1"
+			const authorAnonymous = formData.get('stay_anonymous') === '1';
 
 			const challenge: Insertable<Challenges> = {
 				challenge_category,
@@ -95,7 +95,7 @@ export const actions = {
 				display_name,
 				description,
 				author: locals.user?.id,
-                anonymous_author: authorAnonymous,
+				anonymous_author: authorAnonymous,
 				approved: true
 			};
 

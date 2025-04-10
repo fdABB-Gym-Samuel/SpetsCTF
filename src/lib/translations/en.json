@@ -9,6 +9,7 @@
 	"challenge_display_name": "Challenge display name",
 	"challenge_id": "Challenge ID",
 	"challenges": "Challenges",
+	"competed_in": "Has competed in",
 	"copy": "Copy",
 	"createchallenge": "Create challenge",
 	"createctf": "Create CTF competition",
@@ -37,6 +38,9 @@
 	"forensics": "Forensics",
 	"friday": "Friday",
 	"from": "From",
+	"has_authored": "Has authored",
+	"has_competed_in": "has competed in",
+	"has_solved": "Has solved",
 	"home": "Home",
 	"introduction": "Introduction",
 	"invite": "Invite",
@@ -56,6 +60,7 @@
 	"oct": "October",
 	"or_join": "or join",
 	"osint": "Osint",
+	"overview": "Overview",
 	"past_ctfs": "Past CTFs",
 	"points": "Points",
 	"pwn": "Pwn",
@@ -93,5 +98,6 @@
 	"welcome": "Welcome",
 	"when_its_time": "when it is time.",
 	"who_are_we": "Who are we?",
+	"with": "with",
 	"you_can_play": "You can play"
 }

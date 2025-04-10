@@ -9,6 +9,7 @@
 	"challenge_display_name": "Offentligt namn för utmaning",
 	"challenge_id": "ID för utmaning",
 	"challenges": "Utmaningar",
+	"competed_in": "Har deltagit i",
 	"copy": "Kopiera",
 	"createchallenge": "Skapa utmaning",
 	"createctf": "Skapa CTF-tävling",
@@ -37,6 +38,9 @@
 	"forensics": "Forensik",
 	"friday": "Fredag",
 	"from": "Från",
+	"has_authored": "Har skapat",
+	"has_competed_in": "har tävlat i",
+	"has_solved": "Har löst",
 	"home": "Hem",
 	"introduction": "Introduktion",
 	"invite": "Inbjudan",
@@ -56,6 +60,7 @@
 	"oct": "Oktober",
 	"or_join": "eller anmäla dig till",
 	"osint": "Osint",
+	"overview": "Översikt",
 	"past_ctfs": "Avslutade CTF-tävlingar",
 	"points": "Poäng",
 	"pwn": "Pwn",
@@ -93,5 +98,6 @@
 	"welcome": "Välkommen",
 	"when_its_time": "när det är dags.",
 	"who_are_we": "Vilka är vi?",
+	"with": "med",
 	"you_can_play": "Du kan göra utmaningar från"
 }
