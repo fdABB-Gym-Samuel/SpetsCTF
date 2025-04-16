@@ -59,6 +59,11 @@ export interface CtfEvents {
 	start_time: Timestamp;
 }
 
+export interface CtfOrganizers {
+	ctf: number;
+	user_id: string;
+}
+
 export interface CtfSubmissions {
 	challenge: string;
 	ctf: number;
@@ -117,6 +122,7 @@ export interface DB {
 	challenges: Challenges;
 	classes: Classes;
 	ctf_events: CtfEvents;
+	ctf_organizers: CtfOrganizers;
 	ctf_submissions: CtfSubmissions;
 	ctf_teams: CtfTeams;
 	ctf_teams_members: CtfTeamsMembers;

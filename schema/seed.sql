@@ -35,16 +35,16 @@ INSERT INTO flag (flag, flag_format) VALUES
 ('ctf{victory_is_yours}', 'ctf{...}');
 
 INSERT INTO ctf_events (short_name, display_name, start_time, end_time, max_team_size) VALUES
-('spring2025', 'Spring 2025 Capture The Flag', '2025-03-01 10:00:00+00', '2025-03-29 18:00:00+00', 5),
-('hackathon2025', '2025 Hackathon Challenge', '2025-03-15 09:00:00+00', '2025-03-15 21:00:00+00', 4),
-('summer2025', 'Summer 2025 CTF Extravaganza', '2025-03-10 12:00:00+00', '2025-03-10 20:00:00+00', 6),
-('fall2025', 'Fall 2025 Capture The Flag', '2025-03-20 11:00:00+00', '2025-03-20 19:00:00+00', 5),
-('winter2025', 'Winter 2025 CTF Challenge', '2025-03-25 10:00:00+00', '2025-03-25 18:00:00+00', 3),
-('ctf2025', '2025 Global CTF Championship', '2025-03-30 08:00:00+00', '2025-03-30 20:00:00+00', 7),
-('online2025', 'Online CTF 2025', '2025-03-05 09:00:00+00', '2025-03-05 17:00:00+00', 5),
-('local2025', 'Local CTF 2025', '2025-03-12 10:00:00+00', '2025-03-19 16:00:00+00', 4),
-('ctf_challenge', 'CTF Challenge Series 2025', '2025-03-18 10:00:00+00', '2025-03-18 18:00:00+00', 5),
-('ctf_fest', 'CTF Festival 2025', '2025-03-28 09:00:00+00', '2025-03-28 19:00:00+00', 6);
+('spring2025', 'Spring 2025 Capture The Flag', '2025-04-01 10:00:00+00', '2025-04-29 18:00:00+00', 5),
+('hackathon2025', '2025 Hackathon Challenge', '2025-04-15 09:00:00+00', '2025-04-15 21:00:00+00', 4),
+('summer2025', 'Summer 2025 CTF Extravaganza', '2025-04-10 12:00:00+00', '2025-04-10 20:00:00+00', 6),
+('fall2025', 'Fall 2025 Capture The Flag', '2025-04-20 11:00:00+00', '2025-04-20 19:00:00+00', 5),
+('winter2025', 'Winter 2025 CTF Challenge', '2025-04-25 10:00:00+00', '2025-04-25 18:00:00+00', 3),
+('ctf2025', '2025 Global CTF Championship', '2025-04-30 08:00:00+00', '2025-04-30 20:00:00+00', 7),
+('online2025', 'Online CTF 2025', '2025-04-05 09:00:00+00', '2025-04-05 17:00:00+00', 5),
+('local2025', 'Local CTF 2025', '2025-04-12 10:00:00+00', '2025-04-19 16:00:00+00', 4),
+('ctf_challenge', 'CTF Challenge Series 2025', '2025-04-18 10:00:00+00', '2025-04-18 18:00:00+00', 5),
+('ctf_fest', 'CTF Festival 2025', '2025-04-28 09:00:00+00', '2025-04-28 19:00:00+00', 6);
 
 
 INSERT INTO challenges (challenge_id, points, display_name, description, challenge_category, challenge_sub_categories, flag, ctf, approved) VALUES
