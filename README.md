@@ -16,7 +16,9 @@ Things still needed:
 - [x] Link resources to challenges in database
 - [x] Check if challenge belongs to a CTF that has ended before showing in /challenges
 - [x] Make functionality to add CTFs
-- [ ] Allow non-admin users to propose challenges before being validate by an admin
+- [x] Allow non-admin users to propose challenges before being validate by an admin
 - [x] Validate filenames and challenge_ids before adding them to resources (prevent pathtraversal)
 - [ ] Make leaderboards wrap on smaller screens
-- [ ] Let admins edit challenges
+- [ ] Let admins/orgs/author edit challenges
+- [ ] Let admins/orgs approve challenges
+- [ ] Let admins/orgs add new orgs to ctf
