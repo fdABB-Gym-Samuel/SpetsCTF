@@ -46,8 +46,25 @@ export const load = async ({ locals, params }: ServerLoadEvent) => {
 export const actions = {
 	default: async ({ request, locals, params }) => {
 		try {
-			const formData = await request.formData();
+			const user = locals.user;
 			const ctfId = Number(params.ctf_id);
+			if (!user) {
+				return fail(401, { message: 'User not signed in' });
+			}
+
+			const org = await db
+				.selectFrom('ctf_organizers')
+				.where('ctf', '=', ctfId)
+				.where('user_id', '=', user.id)
+				.executeTakeFirst();
+
+			const isOrg = org !== undefined;
+
+			if (!user.is_admin && !isOrg) {
+				return fail(401, { message: 'User not authorized.' });
+			}
+
+			const formData = await request.formData();
 
 			const display_name = formData.get('display_name')?.toString() ?? null;
 			if (!display_name) {

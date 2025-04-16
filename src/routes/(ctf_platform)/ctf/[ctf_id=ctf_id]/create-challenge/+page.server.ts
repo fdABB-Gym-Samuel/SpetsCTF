@@ -46,10 +46,14 @@ export const load = async ({ locals, params }: ServerLoadEvent) => {
 export const actions = {
 	default: async ({ request, locals, params }) => {
 		try {
+			if (!locals.user) {
+				return fail(401, { message: 'User not logged in' });
+			}
+
 			const formData = await request.formData();
 			const ctfId = Number(params.ctf_id);
 
-			const ctf = await db.selectFrom('ctf_events').where('id', '=', ctfId);
+			const ctf = await db.selectFrom('ctf_events').where('id', '=', ctfId).executeTakeFirst();
 
 			if (!ctf) {
 				return fail(404, { message: 'CTF not found.' });
