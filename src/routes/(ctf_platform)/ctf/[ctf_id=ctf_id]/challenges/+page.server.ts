@@ -26,6 +26,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 		// Main query: join challenges, ranked submissions, users, and flag.
 		.selectFrom('challenges as ch')
 		.where('ch.ctf', '=', ctfId)
+		.where('ch.approved', '=', true)
 		.leftJoin('ranked_submissions as rs', 'ch.challenge_id', 'rs.challenge')
 		.leftJoin('users as u', 'rs.user_id', 'u.id')
 		.leftJoin('flag as f', 'ch.flag', 'f.id')

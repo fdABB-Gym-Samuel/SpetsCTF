@@ -25,6 +25,9 @@ let categories = [
 ];
 
 export const load = async ({ locals }: ServerLoadEvent) => {
+	if (!locals.user) {
+		error(401, { message: 'User not signed in.' });
+	}
 	if (locals.user?.is_admin === true) {
 		redirect(303, '/admin/create-challenge');
 	}
