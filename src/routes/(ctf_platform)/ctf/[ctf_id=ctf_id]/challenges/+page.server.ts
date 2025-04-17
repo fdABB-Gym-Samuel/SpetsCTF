@@ -1,7 +1,9 @@
 import { db } from '$lib/db/database';
-import type { ServerLoadEvent } from '@sveltejs/kit';
+import { error, fail, type ServerLoadEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from '../$types';
-import { sql } from 'kysely';
+import { sql, type Insertable } from 'kysely';
+import { get_flag_of_challenge } from '$lib/db/functions';
+import type { CtfSubmissions } from '$lib/db/db';
 
 export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 	const ctfId = Number(event.params.ctf_id);
@@ -94,4 +96,89 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 		.execute();
 
 	return { challenges };
+};
+
+export const actions = {
+	submit: async ({ request, locals, params }) => {
+		try {
+			const user = locals.user;
+
+			if (!user) {
+				return fail(401, { message: 'User not logged in' });
+			}
+
+			const ctfId = Number(params.ctf_id);
+			const ctf = await db
+				.selectFrom('ctf_events')
+				.select(['start_time', 'end_time'])
+				.where('id', '=', ctfId)
+				.executeTakeFirst();
+
+			if (ctf === undefined) {
+				return fail(404, { message: 'CTF not found' });
+			}
+
+			const currentTime = new Date();
+			const isOngoing = currentTime >= ctf.start_time && currentTime <= ctf.end_time;
+			if (!isOngoing) {
+				return fail(403, { messsage: 'CTF is not ongoing' });
+			}
+
+			const userTeam = await db
+				.selectFrom('ctf_teams_members')
+				.innerJoin('ctf_teams', 'ctf_teams.id', 'ctf_teams_members.team')
+				.select([
+					'ctf_teams.id as teamId',
+					'ctf_teams.name as teamName',
+					'ctf_teams.join_code as joinCode',
+					'ctf_teams.website as website'
+				])
+				.where('ctf_teams_members.user_id', '=', user.id)
+				.where('ctf_teams.ctf', '=', ctfId)
+				.executeTakeFirst();
+
+			if (userTeam === undefined) {
+				return fail(401, { message: 'User not part of team for this CTF' });
+			}
+
+			const formData = await request.formData();
+			const challengeId = formData.get('challenge_id') as string;
+			const submittedFlag = formData.get('flag') as string;
+
+			if (!challengeId) {
+				return fail(400, { message: 'Challenge_id parameter missing' });
+			}
+
+			const correctFlag = await get_flag_of_challenge(challengeId);
+
+			if (!correctFlag.challengeExists) {
+				return fail(404, { message: 'Challenge not found' });
+			}
+			if (!correctFlag.flagExists) {
+				return fail(404, { message: 'Flag of challenge not found' });
+			}
+
+			if (!correctFlag.flag) return fail(404, { message: 'Flag of challenge not found' });
+
+			const flagIsCorrect = submittedFlag === correctFlag.flag;
+
+			let submission: Insertable<CtfSubmissions> = {
+				ctf: ctfId,
+				challenge: challengeId,
+				user_id: user.id,
+				time: new Date(),
+				success: flagIsCorrect,
+				submitted_data: submittedFlag
+			};
+
+			const _ = await db.insertInto('ctf_submissions').values(submission).executeTakeFirst();
+
+			let message;
+			flagIsCorrect ? (message = 'Correct flag') : (message = 'Incorrect flag');
+
+			return { success: flagIsCorrect, message };
+		} catch (err) {
+			throw err;
+		}
+	}
 };

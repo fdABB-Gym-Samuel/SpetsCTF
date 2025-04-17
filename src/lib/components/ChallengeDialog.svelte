@@ -20,7 +20,8 @@
 			resources: [],
 			author: null
 		},
-		translations
+		translations,
+		form
 	} = $props();
 
 	let categories = [
@@ -182,11 +183,22 @@
 		<section class="bottom absolute bottom-2 w-10/12">
 			{#if !challenge_data.solved}
 				<form
-					action={`/api/submit/${challenge_data.challenge_id}`}
+					action="?/submit"
 					method="POST"
 					class="flag-submission-form flex w-full flex-row gap-1"
 					use:enhance
 				>
+					<!-- <form
+					action={`/api/submit/${challenge_data.challenge_id}`}
+					method="POST"
+					class="flag-submission-form flex w-full flex-row gap-1"
+					use:enhance
+				> -->
+					{#if form && form?.success}
+						<span class="text-green-600">{translations.success}: {form.message}</span>
+					{:else if form && !form?.success}
+						<span class="text-red-600">{translations.failure}: {form.message}</span>
+					{/if}
 					<label
 						for="flag"
 						class="text-foreground-light dark:text-foreground-dark text-xl font-semibold"
@@ -198,6 +210,7 @@
 						class="flag bg-foreground-light dark:bg-foreground-dark text-background-light dark:text-background-dark w-full rounded-sm px-1"
 						placeholder={challenge_data.flag_format}
 					/>
+					<input type="hidden" value={challenge_data.challenge_id} name="challenge_id" />
 					<button
 						aria-label="Submit flag"
 						type="submit"
