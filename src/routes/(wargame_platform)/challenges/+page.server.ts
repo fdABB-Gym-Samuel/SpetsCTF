@@ -1,7 +1,10 @@
-import type { ServerLoadEvent } from '@sveltejs/kit';
+import { type ServerLoadEvent, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
+import { type Insertable } from 'kysely';
+import type { WargameSubmissions } from '$lib/db/db';
+import { get_flag_of_challenge } from '$lib/db/functions';
 
 export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 	const user_id = locals.user?.id;
@@ -96,4 +99,78 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 		.execute();
 
 	return { challenges };
+};
+
+export const actions = {
+	submit: async ({ request, locals, params }) => {
+		try {
+			const user = locals.user;
+
+			if (!user) {
+				return fail(401, { message: 'User not logged in' });
+			}
+
+			const formData = await request.formData();
+			const challengeId = formData.get('challenge_id') as string;
+			const submittedFlag = formData.get('flag') as string;
+
+			if (!challengeId) {
+				return fail(400, { message: 'Challenge_id parameter missing' });
+			}
+
+			const challengeCtf = await db
+				.selectFrom('challenges')
+				.select('ctf')
+				.where('challenge_id', '=', challengeId)
+				.executeTakeFirst();
+
+			if (challengeCtf && challengeCtf.ctf) {
+				const ctf = await db
+					.selectFrom('ctf_events')
+					.select(['end_time'])
+					.where('id', '=', challengeCtf.ctf)
+					.executeTakeFirst();
+
+				const currentTime = new Date();
+				if (!ctf) {
+					return fail(500, { message: 'Challenge belongs to ctf with unclear end-time' });
+				}
+				// User should submit this request through the ctf route
+				const ctfHasEnded = currentTime > ctf?.end_time;
+				if (!ctfHasEnded) {
+					throw redirect(307, `/ctf/${challengeCtf.ctf}/challenges?/submit`);
+				}
+			}
+
+			const correctFlag = await get_flag_of_challenge(challengeId);
+
+			if (!correctFlag.challengeExists) {
+				return fail(404, { message: 'Challenge not found' });
+			}
+			if (!correctFlag.flagExists) {
+				return fail(404, { message: 'Flag of challenge not found' });
+			}
+
+			if (!correctFlag.flag) return fail(404, { message: 'Flag of challenge not found' });
+
+			const flagIsCorrect = submittedFlag === correctFlag.flag;
+
+			let submission: Insertable<WargameSubmissions> = {
+				challenge: challengeId,
+				user_id: user.id,
+				time: new Date(),
+				success: flagIsCorrect,
+				submitted_data: submittedFlag
+			};
+
+			const _ = await db.insertInto('wargame_submissions').values(submission).executeTakeFirst();
+
+			let message;
+			flagIsCorrect ? (message = 'Correct flag') : (message = 'Incorrect flag');
+
+			return { success: flagIsCorrect, message };
+		} catch (err) {
+			throw err;
+		}
+	}
 };
