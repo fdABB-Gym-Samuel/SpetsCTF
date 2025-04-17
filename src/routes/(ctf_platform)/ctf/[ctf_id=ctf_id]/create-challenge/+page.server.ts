@@ -1,4 +1,3 @@
-import type { Actions } from './$types';
 import { fail, error, redirect, type ServerLoadEvent } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import {

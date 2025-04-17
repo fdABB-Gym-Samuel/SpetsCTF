@@ -69,8 +69,8 @@
 >
 	<dialog
 		class="bg-button-light dark:bg-button-dark relative m-auto flex max-h-[calc(100vh-40px)] min-h-[var(--challenge-dialog-height)] w-[var(--challenge-dialog-width)] flex-col items-center gap-5 rounded-md px-[var(--challenge-padding-inline)] py-2 pb-15"
-		class:dark:bg-challenge-solved-dark={challenge_data.solved}
-		class:bg-challenge-solved-light={challenge_data.solved}
+		class:dark:bg-challenge-solved-dark={challenge_data.solved || form?.success}
+		class:bg-challenge-solved-light={challenge_data.solved || form?.success}
 	>
 		<section class="top flex w-full flex-col items-center">
 			<h3
@@ -181,6 +181,11 @@
 			</div>
 		</section>
 		<section class="bottom absolute bottom-2 w-10/12">
+			{#if form && form?.success}
+				<span class="text-green-600">{translations.success}: {form.message}</span>
+			{:else if form && !form?.success}
+				<span class="text-red-600">{translations.failure}: {form.message}</span>
+			{/if}
 			{#if !challenge_data.solved}
 				<form
 					action="?/submit"
@@ -194,11 +199,7 @@
 					class="flag-submission-form flex w-full flex-row gap-1"
 					use:enhance
 				> -->
-					{#if form && form?.success}
-						<span class="text-green-600">{translations.success}: {form.message}</span>
-					{:else if form && !form?.success}
-						<span class="text-red-600">{translations.failure}: {form.message}</span>
-					{/if}
+
 					<label
 						for="flag"
 						class="text-foreground-light dark:text-foreground-dark text-xl font-semibold"
