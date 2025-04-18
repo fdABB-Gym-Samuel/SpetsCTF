@@ -19,7 +19,14 @@
 
 		<ul class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
 			{#each unapprovedChallenges as challenge_data}
-				<ChallengeCard data={{ challenge_data }}></ChallengeCard>
+				<li>
+					<a
+						href={`approve/${challenge_data.challenge_id}`}
+						data-sveltekit-noscroll
+						class="ignore-default h-38 w-full"
+						><ChallengeCard data={{ challenge_data }}></ChallengeCard></a
+					>
+				</li>
 			{/each}
 		</ul>
 	</div>
