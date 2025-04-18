@@ -49,8 +49,9 @@ CREATE TABLE ctf_events (
 );
 
 CREATE TABLE ctf_organizers (
-    user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
-    ctf INT NOT NULL REFERENCES ctf_events(id) ON DELETE CASCADE
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    ctf INT NOT NULL REFERENCES ctf_events(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, ctf)
 );
 
 CREATE TABLE challenges (

@@ -12,7 +12,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 	const challenges = await db
 		.with('unique_success', (qb) =>
 			qb
-				.selectFrom('wargame_submissions')
+				.selectFrom('ctf_submissions')
 				.select(['challenge', 'user_id'])
 				.select(sql`MIN(time)`.as('first_time'))
 				.where('success', '=', true)
@@ -72,7 +72,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
             )`.as('num_solves'),
 			// Check if the current user has a successful submission on this challenge.
 			sql`EXISTS(
-              SELECT 1 FROM wargame_submissions ws
+              SELECT 1 FROM ctf_submissions ws
               WHERE ws.challenge = ch.challenge_id
                 AND ws.user_id = ${userId}
                 AND ws.success = true
