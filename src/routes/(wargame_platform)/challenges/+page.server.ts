@@ -107,7 +107,7 @@ export const actions = {
 			const user = locals.user;
 
 			if (!user) {
-				return fail(401, { message: 'User not logged in' });
+				return redirect(304, '/login');
 			}
 
 			const formData = await request.formData();

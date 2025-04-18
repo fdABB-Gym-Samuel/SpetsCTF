@@ -60,7 +60,7 @@
 		}
 	}}
 	onkeydown={(e) => {
-		if (e.key === ' ' || e.key === 'Enter' || e.key === 'Escape')
+		if (e.key === ' ' || e.key === 'Escape')
 			goto('/challenges', { replaceState: true, noScroll: true });
 	}}
 	role="button"

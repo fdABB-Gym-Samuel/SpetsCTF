@@ -1,5 +1,5 @@
 import { db } from '$lib/db/database';
-import { error, fail, type ServerLoadEvent } from '@sveltejs/kit';
+import { error, fail, redirect, type ServerLoadEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from '../$types';
 import { sql, type Insertable } from 'kysely';
 import { get_flag_of_challenge } from '$lib/db/functions';
@@ -104,7 +104,7 @@ export const actions = {
 			const user = locals.user;
 
 			if (!user) {
-				return fail(401, { message: 'User not logged in' });
+				return redirect(304, '/login');
 			}
 
 			const ctfId = Number(params.ctf_id);
