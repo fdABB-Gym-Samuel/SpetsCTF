@@ -112,7 +112,7 @@ export const actions = {
 			const isOrg = org !== undefined;
 
 			if (!isOrg && !user.is_admin) {
-				return error(401, 'User not organizer for this CTF or admin');
+				return fail(401, { message: 'User not organizer for this CTF or admin' });
 			}
 
 			const formData = await request.formData();
@@ -129,6 +129,9 @@ export const actions = {
 			const flagFormat = formData.get('flag_format') as string;
 
 			const points = Number(formData.get('points'));
+			if (points < 0) {
+				return fail(422, { message: 'Points must be a non-negative integer' });
+			}
 
 			const mainCategory: Category = validateCategory(
 				formData.get('challenge_category')?.toString() ?? ''
@@ -303,9 +306,10 @@ export const actions = {
 				.onConflict((oc) => oc.columns(['challenge', 'type', 'content']).doNothing())
 				.execute();
 
-			console.log(formData);
+			return { success: true, message: 'Challenge successfully approved' };
 		} catch (err) {
-			console.log(err);
+			console.error(err);
+			return fail(500, { message: err.message });
 		}
 	}
 };

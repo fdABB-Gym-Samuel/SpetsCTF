@@ -110,6 +110,9 @@ export const actions = {
 			const flagFormat = formData.get('flag_format') as string;
 
 			const points = Number(formData.get('points'));
+			if (points < 0) {
+				return fail(404, { message: 'Points must be a non-negative integer' });
+			}
 
 			const mainCategory: Category = validateCategory(
 				formData.get('challenge_category')?.toString() ?? ''
@@ -283,9 +286,9 @@ export const actions = {
 				.onConflict((oc) => oc.columns(['challenge', 'type', 'content']).doNothing())
 				.execute();
 
-			console.log(formData);
+			return { success: true, message: 'Challenge successfully approved' };
 		} catch (err) {
-			console.log(err);
+			return fail(500, { message: err.message });
 		}
 	}
 };

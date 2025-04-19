@@ -3,8 +3,6 @@
 
 	let { data } = $props();
 	let { translations, unapprovedChallenges } = data;
-
-	console.log(unapprovedChallenges);
 </script>
 
 <div class="content">

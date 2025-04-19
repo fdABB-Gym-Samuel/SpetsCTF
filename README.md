@@ -20,5 +20,5 @@ Things still needed:
 - [x] Validate filenames and challenge_ids before adding them to resources (prevent pathtraversal)
 - [ ] Make leaderboards wrap on smaller screens
 - [ ] Let admins/orgs/author edit challenges
-- [ ] Let admins/orgs approve challenges
+- [x] Let admins/orgs approve challenges
 - [ ] Let admins/orgs add new orgs to ctf
