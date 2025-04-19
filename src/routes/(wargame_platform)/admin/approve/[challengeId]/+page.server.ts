@@ -22,29 +22,20 @@ let categories = [
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	const user = locals.user;
-	const ctfId = Number(params.ctf_id);
 	const challengeId = params.challengeId;
 
 	if (!user) {
 		return redirect(304, '/login');
 	}
 
-	const org = await db
-		.selectFrom('ctf_organizers')
-		.where('ctf', '=', ctfId)
-		.where('user_id', '=', user.id)
-		.executeTakeFirst();
-
-	const isOrg = org !== undefined;
-
-	if (!isOrg && !user.is_admin) {
-		return error(401, 'User not organizer for this CTF or admin');
+	if (!user.is_admin) {
+		return error(401, 'User not admin');
 	}
 
 	const unapprovedChallenge = await db
 		.selectFrom('challenges as ch')
 		.where('challenge_id', '=', challengeId)
-		.where('ch.ctf', '=', ctfId)
+		.where('ch.ctf', 'is', null)
 		.where('ch.approved', '=', false)
 		.leftJoin('flag as f', 'ch.flag', 'f.id')
 		.leftJoin('users as a', 'ch.author', 'a.id')
@@ -96,23 +87,14 @@ export const actions = {
 	default: async ({ request, params, locals }) => {
 		try {
 			const user = locals.user;
-			const ctfId = Number(params.ctf_id);
 			const challengeId = params.challengeId;
 
 			if (!user) {
 				return redirect(304, '/login');
 			}
 
-			const org = await db
-				.selectFrom('ctf_organizers')
-				.where('ctf', '=', ctfId)
-				.where('user_id', '=', user.id)
-				.executeTakeFirst();
-
-			const isOrg = org !== undefined;
-
-			if (!isOrg && !user.is_admin) {
-				return error(401, 'User not organizer for this CTF or admin');
+			if (!user.is_admin) {
+				return error(401, 'User not admin');
 			}
 
 			const formData = await request.formData();
@@ -159,7 +141,7 @@ export const actions = {
 					approved: true
 				})
 				.where('challenge_id', '=', challengeId)
-				.where('ctf', '=', ctfId)
+				.where('ctf', 'is', null)
 				.returning('flag')
 				.executeTakeFirst();
 

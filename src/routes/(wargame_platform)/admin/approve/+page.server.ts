@@ -5,28 +5,19 @@ import { sql } from 'kysely';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	const user = locals.user;
-	const ctfId = Number(params.ctf_id);
 
 	if (!user) {
 		return redirect(304, '/login');
 	}
 
-	const org = await db
-		.selectFrom('ctf_organizers')
-		.where('ctf', '=', ctfId)
-		.where('user_id', '=', user.id)
-		.executeTakeFirst();
-
-	const isOrg = org !== undefined;
-
-	if (!isOrg && !user.is_admin) {
-		return error(401, 'User not oragnizer for this CTF or admin');
+	if (!user.is_admin) {
+		return error(401, 'User not admin');
 	}
 
 	const unapprovedChallenges = await db
 		.selectFrom('challenges as ch')
-		.where('ch.ctf', '=', ctfId)
 		.where('ch.approved', '=', false)
+		.where('ch.ctf', 'is', null)
 		.leftJoin('flag as f', 'ch.flag', 'f.id')
 		.leftJoin('users as a', 'ch.author', 'a.id')
 		.groupBy([
