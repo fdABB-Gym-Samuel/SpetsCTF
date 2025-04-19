@@ -23,9 +23,10 @@ export function get_challenge_id_from_display_name(display_name: string) {
 	const unsanitzed_challenge_id = display_name.toLowerCase().replace(/ /g, '_');
 	const query = db
 		.selectFrom('challenges')
-		.where('challenge_id', '=', sanitize(unsanitzed_challenge_id));
+		.where('challenge_id', '=', sanitize(unsanitzed_challenge_id))
+		.executeTakeFirst()
 
-	if (query.execute.length > 0) {
+	if (query !== undefined) {
 		return sanitize(unsanitzed_challenge_id + randomUUID());
 	}
 	return sanitize(unsanitzed_challenge_id);

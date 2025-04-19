@@ -96,7 +96,10 @@ export const actions = {
 			if (!points) {
 				return fail(422, { message: 'Cannot insert challenge with no points!' });
 			}
-			const pointsInt = parseInt(points);
+			const pointsInt = Number(points);
+			if(pointsInt < 0){
+				return fail(400, { message: "Points must be a non-negative integer" })
+			}
 			const flag = formData.get('flag')?.toString() ?? '';
 			if (!flag) {
 				return fail(422, { message: 'You need to provide flag.' });

@@ -13,9 +13,13 @@ export const actions = {
 			const start_time = form.get('start_time')?.toString();
 			const end_time = form.get('end_time')?.toString();
 
-			let max_team_size_parsed: number | null = parseInt(max_team_size ?? '');
+			let max_team_size_parsed: number | null = Math.floor(Number(max_team_size ?? ''));
 			if (isNaN(max_team_size_parsed)) {
 				max_team_size_parsed = null;
+			}
+
+			if (max_team_size_parsed !== null && max_team_size_parsed < 1){
+				return fail(400, { message: "Max team-size must be at least 1"})
 			}
 
 			if (!display_name) {
