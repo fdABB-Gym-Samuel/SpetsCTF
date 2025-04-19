@@ -4,8 +4,10 @@ import { db } from '$lib/db/database';
 import { sql } from 'kysely';
 import { selectedCategoriesToBitset, validateCategory } from '$lib/db/functions';
 import type { Category, ChallengeResources, Challenges } from '$lib/db/db';
-import { promises as fs } from 'fs';
+import { writeFile, mkdir, unlink } from 'fs/promises';
+import sanitize from 'sanitize-filename';
 import path from 'path';
+import { type Insertable } from 'kysely';
 
 let categories = [
 	'crypto',
@@ -175,7 +177,9 @@ export const actions = {
 
 			// const authorAnonymous = formData.get("stay_anonymous") === "1"
 			const originalFilesNew = formData.getAll('original_files') as string[];
-			const new_files = formData.getAll('files');
+			const newFiles = formData.getAll('files') as File[];
+
+			// Remove deleted files from db
 			let updatedOriginalFiles;
 			if (originalFilesNew.length > 0) {
 				updatedOriginalFiles = await db
@@ -192,6 +196,58 @@ export const actions = {
 					.where('type', '=', 'file')
 					.returning('content')
 					.execute();
+			}
+
+			const challengeDir = path.join(process.cwd(), `files/${challengeId}`);
+			// Delete old files from server
+			updatedOriginalFiles.forEach((filepath) => {
+				try {
+					const filename = path.basename(filepath.content);
+					const completeFilepath = path.join(challengeDir, filename);
+					unlink(completeFilepath);
+				} catch (err) {
+					console.error('Error deleting file', filepath.content);
+				}
+			});
+
+			let resource_files;
+			if (newFiles !== null) {
+				await mkdir(challengeDir, { recursive: true });
+
+				newFiles.forEach((file) => {
+					return new File([file], sanitize(file.name), {
+						type: file.type,
+						lastModified: file.lastModified
+					});
+				});
+				let currentlyUsedFilenames: string[] = originalFilesNew;
+				for (let [index, file] of newFiles.entries()) {
+					if (currentlyUsedFilenames.includes(file.name)) {
+						newFiles[index] = new File([file], sanitize(`${file.name}_${index}`), {
+							type: file.type,
+							lastModified: file.lastModified
+						});
+					}
+					currentlyUsedFilenames.push(file.name);
+				}
+
+				for (let file of newFiles) {
+					let filepath = path.join(challengeDir, sanitize(file.name));
+
+					await writeFile(filepath, Buffer.from(await file.arrayBuffer()));
+				}
+
+				resource_files = newFiles.map((file) => {
+					return {
+						challenge: challengeId,
+						content: path.join(`/challenge_files/${challengeId}`, file?.name),
+						type: 'file'
+					};
+				}) as Insertable<ChallengeResources>[];
+
+				if (resource_files.length > 0) {
+					const _ = await db.insertInto('challenge_resources').values(resource_files).execute();
+				}
 			}
 
 			const commands = formData.getAll('commands') as string[];
@@ -246,17 +302,6 @@ export const actions = {
 				)
 				.onConflict((oc) => oc.columns(['challenge', 'type', 'content']).doNothing())
 				.execute();
-
-			const challengeDir = path.join(process.cwd(), `files/${challengeId}`);
-			updatedOriginalFiles.forEach((filepath) => {
-				try {
-					const filename = path.basename(filepath.content);
-					const completeFilepath = path.join(challengeDir, filename);
-					fs.unlink(completeFilepath);
-				} catch (err) {
-					console.error('Error deleting file', filepath.content);
-				}
-			});
 
 			console.log(formData);
 		} catch (err) {
