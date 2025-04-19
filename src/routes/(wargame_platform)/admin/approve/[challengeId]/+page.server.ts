@@ -35,7 +35,6 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	const unapprovedChallenge = await db
 		.selectFrom('challenges as ch')
 		.where('challenge_id', '=', challengeId)
-		.where('ch.ctf', 'is', null)
 		.where('ch.approved', '=', false)
 		.leftJoin('flag as f', 'ch.flag', 'f.id')
 		.leftJoin('users as a', 'ch.author', 'a.id')
@@ -141,7 +140,6 @@ export const actions = {
 					approved: true
 				})
 				.where('challenge_id', '=', challengeId)
-				.where('ctf', 'is', null)
 				.returning('flag')
 				.executeTakeFirst();
 

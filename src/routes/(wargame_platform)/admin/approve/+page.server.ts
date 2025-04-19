@@ -17,7 +17,6 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	const unapprovedChallenges = await db
 		.selectFrom('challenges as ch')
 		.where('ch.approved', '=', false)
-		.where('ch.ctf', 'is', null)
 		.leftJoin('flag as f', 'ch.flag', 'f.id')
 		.leftJoin('users as a', 'ch.author', 'a.id')
 		.groupBy([
