@@ -20,7 +20,8 @@
 			resources: [],
 			author: null
 		},
-		translations
+		translations,
+		form
 	} = $props();
 
 	let categories = [
@@ -59,7 +60,7 @@
 		}
 	}}
 	onkeydown={(e) => {
-		if (e.key === ' ' || e.key === 'Enter' || e.key === 'Escape')
+		if (e.key === ' ' || e.key === 'Escape')
 			goto('/challenges', { replaceState: true, noScroll: true });
 	}}
 	role="button"
@@ -68,8 +69,8 @@
 >
 	<dialog
 		class="bg-button-light dark:bg-button-dark relative m-auto flex max-h-[calc(100vh-40px)] min-h-[var(--challenge-dialog-height)] w-[var(--challenge-dialog-width)] flex-col items-center gap-5 rounded-md px-[var(--challenge-padding-inline)] py-2 pb-15"
-		class:dark:bg-challenge-solved-dark={challenge_data.solved}
-		class:bg-challenge-solved-light={challenge_data.solved}
+		class:dark:bg-challenge-solved-dark={challenge_data.solved || form?.success}
+		class:bg-challenge-solved-light={challenge_data.solved || form?.success}
 	>
 		<section class="top flex w-full flex-col items-center">
 			<h3
@@ -180,13 +181,25 @@
 			</div>
 		</section>
 		<section class="bottom absolute bottom-2 w-10/12">
+			{#if form && form?.success}
+				<span class="text-green-600">{translations.success}: {form.message}</span>
+			{:else if form && !form?.success}
+				<span class="text-red-600">{translations.failure}: {form.message}</span>
+			{/if}
 			{#if !challenge_data.solved}
 				<form
-					action={`/api/submit/${challenge_data.challenge_id}`}
+					action="?/submit"
 					method="POST"
 					class="flag-submission-form flex w-full flex-row gap-1"
 					use:enhance
 				>
+					<!-- <form
+					action={`/api/submit/${challenge_data.challenge_id}`}
+					method="POST"
+					class="flag-submission-form flex w-full flex-row gap-1"
+					use:enhance
+				> -->
+
 					<label
 						for="flag"
 						class="text-foreground-light dark:text-foreground-dark text-xl font-semibold"
@@ -198,6 +211,7 @@
 						class="flag bg-foreground-light dark:bg-foreground-dark text-background-light dark:text-background-dark w-full rounded-sm px-1"
 						placeholder={challenge_data.flag_format}
 					/>
+					<input type="hidden" value={challenge_data.challenge_id} name="challenge_id" />
 					<button
 						aria-label="Submit flag"
 						type="submit"

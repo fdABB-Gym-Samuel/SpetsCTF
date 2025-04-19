@@ -48,6 +48,12 @@ CREATE TABLE ctf_events (
     max_team_size SMALLINT
 );
 
+CREATE TABLE ctf_organizers (
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    ctf INT NOT NULL REFERENCES ctf_events(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, ctf)
+);
+
 CREATE TABLE challenges (
     challenge_id VARCHAR(256) PRIMARY KEY,
     points INT NOT NULL,
@@ -122,7 +128,8 @@ CREATE TABLE challenge_resources (
     challenge VARCHAR(256) NOT NULL,
     type challenge_resource_type NOT NULL DEFAULT 'file',
     content TEXT NOT NULL,
-    FOREIGN KEY (challenge) REFERENCES challenges(challenge_id) ON DELETE CASCADE
+    FOREIGN KEY (challenge) REFERENCES challenges(challenge_id) ON DELETE CASCADE,
+    UNIQUE (challenge, type, content)
 );
 
 CREATE TABLE user_sessions (

@@ -2,7 +2,7 @@
 	import ChallengeCard from '$lib/components/ChallengeCard.svelte';
 	import ChallengeDialog from '$lib/components/ChallengeDialog.svelte';
 	import { page } from '$app/state';
-	let { data } = $props();
+	let { data, form } = $props();
 	let { translations, challenges } = data;
 
 	let challengeId = $derived(page.url.searchParams.get('show'));
@@ -58,5 +58,5 @@
 	</article>
 </div>
 {#if challengeId}
-	<ChallengeDialog challenge_data={modal_data} {translations}></ChallengeDialog>
+	<ChallengeDialog challenge_data={modal_data} {translations} {form}></ChallengeDialog>
 {/if}

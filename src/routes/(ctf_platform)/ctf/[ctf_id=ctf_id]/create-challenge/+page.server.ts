@@ -1,4 +1,3 @@
-import type { Actions } from './$types';
 import { fail, error, redirect, type ServerLoadEvent } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import {
@@ -24,19 +23,40 @@ let categories = [
 	'web'
 ];
 
-export const load = async ({ locals }: ServerLoadEvent) => {
-	if (!locals.user) {
+export const load = async ({ locals, params }: ServerLoadEvent) => {
+	const user = locals.user;
+	const ctfId = Number(params.ctf_id);
+	if (!user) {
 		error(401, { message: 'User not signed in.' });
 	}
-	if (locals.user?.is_admin === true) {
-		redirect(303, '/admin/create-challenge');
+
+	const org = await db
+		.selectFrom('ctf_organizers')
+		.where('ctf', '=', ctfId)
+		.where('user_id', '=', user.id)
+		.executeTakeFirst();
+
+	const isOrg = org !== undefined;
+	if (locals.user?.is_admin || isOrg) {
+		redirect(303, 'organizer/create-challenge');
 	}
 };
 
 export const actions = {
-	default: async ({ request, locals }) => {
+	default: async ({ request, locals, params }) => {
 		try {
+			if (!locals.user) {
+				return fail(401, { message: 'User not logged in' });
+			}
+
 			const formData = await request.formData();
+			const ctfId = Number(params.ctf_id);
+
+			const ctf = await db.selectFrom('ctf_events').where('id', '=', ctfId).executeTakeFirst();
+
+			if (!ctf) {
+				return fail(404, { message: 'CTF not found.' });
+			}
 
 			const display_name = formData.get('display_name')?.toString() ?? null;
 			if (!display_name) {
@@ -69,8 +89,8 @@ export const actions = {
 				return fail(422, { message: 'Cannot insert challenge with no points!' });
 			}
 			const pointsInt = Number(points);
-			if(pointsInt < 0){
-				return fail(400, { message: "Points must be a non-negative integer" })
+			if (pointsInt < 0){
+				return fail(400, { message: "Points must be a non-negative integer"})
 			}
 			const flag = formData.get('flag')?.toString() ?? '';
 			if (!flag) {
@@ -96,6 +116,7 @@ export const actions = {
 				challenge_category,
 				challenge_sub_categories,
 				challenge_id,
+				ctf: ctfId,
 				points: pointsInt,
 				flag: flagId.id,
 				display_name,

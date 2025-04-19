@@ -1,5 +1,5 @@
 import type { Actions } from './$types';
-import { fail, error, redirect, type ServerLoadEvent } from '@sveltejs/kit';
+import { fail, error, type ServerLoadEvent } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import {
 	validateCategory,
@@ -7,7 +7,7 @@ import {
 	selectedCategoriesToBitset
 } from '$lib/db/functions';
 import type { Category, ChallengeResources, Challenges } from '$lib/db/db';
-import type { Insertable } from 'kysely';
+import { createFunctionModule, type Insertable } from 'kysely';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import sanitize from 'sanitize-filename';
@@ -24,18 +24,46 @@ let categories = [
 	'web'
 ];
 
-export const load = async ({ locals }: ServerLoadEvent) => {
-	if (!locals.user) {
-		error(401, { message: 'User not signed in.' });
+export const load = async ({ locals, params }: ServerLoadEvent) => {
+	const user = locals.user;
+	const ctfId = Number(params.ctf_id);
+	if (!user) {
+		error(401, { message: 'User not signed in' });
 	}
-	if (locals.user?.is_admin === true) {
-		redirect(303, '/admin/create-challenge');
+
+	const org = await db
+		.selectFrom('ctf_organizers')
+		.where('ctf', '=', ctfId)
+		.where('user_id', '=', user.id)
+		.executeTakeFirst();
+
+	const isOrg = org !== undefined;
+	if (!locals.user?.is_admin && !isOrg) {
+		error(401, { message: 'Not authorized' });
 	}
 };
 
 export const actions = {
-	default: async ({ request, locals }) => {
+	default: async ({ request, locals, params }) => {
 		try {
+			const user = locals.user;
+			const ctfId = Number(params.ctf_id);
+			if (!user) {
+				return fail(401, { message: 'User not signed in' });
+			}
+
+			const org = await db
+				.selectFrom('ctf_organizers')
+				.where('ctf', '=', ctfId)
+				.where('user_id', '=', user.id)
+				.executeTakeFirst();
+
+			const isOrg = org !== undefined;
+
+			if (!user.is_admin && !isOrg) {
+				return fail(401, { message: 'User not authorized.' });
+			}
+
 			const formData = await request.formData();
 
 			const display_name = formData.get('display_name')?.toString() ?? null;
@@ -96,14 +124,16 @@ export const actions = {
 				challenge_category,
 				challenge_sub_categories,
 				challenge_id,
+				ctf: ctfId,
 				points: pointsInt,
 				flag: flagId.id,
 				display_name,
 				description,
-				approved: false,
 				author: locals.user?.id,
-				anonymous_author: authorAnonymous
+				anonymous_author: authorAnonymous,
+				approved: true
 			};
+
 			await db.insertInto('challenges').values(challenge).execute();
 
 			const files: File[] | null = formData.getAll('files') as File[] | null;
@@ -175,10 +205,10 @@ export const actions = {
 					const _ = await db.insertInto('challenge_resources').values(resources).execute();
 				}
 			}
-			return { success: true, message: 'Challenge successfully submitted for review' };
+			return { success: true, message: 'Challenge uploaded successfully' };
 		} catch (err) {
 			const error = err as Error;
 			return { success: false, message: error.message };
 		}
 	}
-};
+} satisfies Actions;
