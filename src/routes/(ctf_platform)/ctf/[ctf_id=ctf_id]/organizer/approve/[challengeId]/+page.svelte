@@ -270,6 +270,7 @@
 						original_files.splice(i, 1);
 					}}>X</button
 				>
+				<input type="hidden" name="original_files" form="new_challenge_form" value={filepath} />
 			</li>
 		{/each}
 		{#each files !== undefined ? files : [] as file, i}

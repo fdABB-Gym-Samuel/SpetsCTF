@@ -8,12 +8,13 @@
 	}
 
 	const adminLinks: adminLink[] = [
-		{ href: 'organizer/create-challenge', display: translations.createchallenge }
+		{ href: 'organizer/create-challenge', display: translations.createchallenge },
+		{ href: 'organizer/approve', display: translations.approve }
 	];
 </script>
 
-<div>
-	<h1>{translations.cuttingedgeadmintools}</h1>
+<div class="content">
+	<h1 class="route-title">{translations.cuttingedgeadmintools}</h1>
 	<ul>
 		{#each adminLinks as adminLink}
 			<li>
