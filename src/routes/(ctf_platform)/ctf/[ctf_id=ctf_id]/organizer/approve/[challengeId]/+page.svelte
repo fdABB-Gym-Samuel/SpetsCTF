@@ -183,8 +183,8 @@
 				class="border-accent-light dark:border-accent-dark bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark border pl-2"
 				bind:value={mainCategory}
 			>
-				{#each ['crypto', 'forensics', 'introduction', 'misc', 'osint', 'pwn', 'reversing', 'web'] as option}
-					<option value={option} class="text-background-dark">{option}</option>
+				{#each categories as categoryOption}
+					<option value={categoryOption} class="text-background-dark">{categoryOption}</option>
 				{/each}
 			</select>
 		</div>

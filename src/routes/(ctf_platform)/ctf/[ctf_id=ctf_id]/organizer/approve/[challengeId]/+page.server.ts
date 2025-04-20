@@ -176,7 +176,7 @@ export const actions = {
 					flag_format: flagFormat
 				})
 				.where('id', '=', updatedChallenge.flag)
-				.executeTakeFirst();
+				.executeTakeFirstOrThrow();
 
 			// const authorAnonymous = formData.get("stay_anonymous") === "1"
 			const originalFilesNew = formData.getAll('original_files') as string[];

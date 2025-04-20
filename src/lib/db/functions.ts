@@ -6,7 +6,6 @@ import { sql } from 'kysely';
 import type { Insertable, Selectable } from 'kysely';
 import sanitize from 'sanitize-filename';
 import { randomUUID } from 'crypto';
-import { fail } from '@sveltejs/kit';
 
 export function validateCategory(value: any): Category {
 	if (
@@ -24,7 +23,7 @@ export function get_challenge_id_from_display_name(display_name: string) {
 	const query = db
 		.selectFrom('challenges')
 		.where('challenge_id', '=', sanitize(unsanitzed_challenge_id))
-		.executeTakeFirst()
+		.executeTakeFirst();
 
 	if (query !== undefined) {
 		return sanitize(unsanitzed_challenge_id + randomUUID());

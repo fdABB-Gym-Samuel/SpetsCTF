@@ -18,10 +18,6 @@ export const actions = {
 				max_team_size_parsed = null;
 			}
 
-			if (max_team_size_parsed !== null && max_team_size_parsed < 1){
-				return fail(400, { message: "Max team-size must be at least 1"})
-			}
-
 			if (!display_name) {
 				return fail(422, { message: 'Display name missing' });
 			}
