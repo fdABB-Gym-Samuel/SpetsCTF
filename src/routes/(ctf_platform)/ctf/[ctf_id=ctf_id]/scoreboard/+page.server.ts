@@ -14,6 +14,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 				.where('ctf_teams.ctf', '=', ctfId)
 				.innerJoin('challenges', 'ctf_submissions.challenge', 'challenges.challenge_id')
 				.where('challenges.ctf', '=', ctfId)
+				.where('approved', '=', true)
 				.select([
 					'ctf_teams.id as team_id',
 					'ctf_teams.name as team_name',

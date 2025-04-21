@@ -28,6 +28,7 @@ const get_top_users = async () => {
 		.where(sql<boolean>`ctf.end_time IS NULL OR ctf.end_time < NOW()`)
 		.select(['u.id', 'u.display_name', 'u.represents_class'])
 		.select(({ fn }) => fn.coalesce(fn.sum('c.points'), sql`0`).as('total_points'))
+		.where('c.approved', '=', true)
 		.groupBy(['u.id', 'u.display_name', 'u.represents_class'])
 		.orderBy('total_points', 'desc')
 		.execute();
