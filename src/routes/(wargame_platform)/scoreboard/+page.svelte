@@ -8,31 +8,31 @@
 
 <div class="content">
 	<h1 class="route-title">Scoreboards</h1>
-	<div class="scoreboards grid grid-cols-1 lg:grid-cols-2 grid-rows-[fit_1fr] items-start gap-x-10">
+	<div class="scoreboards grid grid-cols-1 grid-rows-[fit_1fr] items-start gap-x-10 lg:grid-cols-2">
 		<div class="mb-2 flex flex-col justify-between">
 			<div>
-			<h3 class="scoreboard-title text-5xl">Users:</h3>
-			<div
-				class="class-filtering flex w-full flex-row flex-wrap items-end justify-start gap-1 text-center align-middle"
-			>
-				{#each original_classes as _class}
-					<div
-						class="rounded-sm bg-neutral-500 px-1 text-sm text-neutral-100 dark:bg-neutral-600"
-						class:bg-neutral-800={!include_classes.includes(_class)}
-						class:text-neutral-300={!include_classes.includes(_class)}
-						class:dark:bg-neutral-200={!include_classes.includes(_class)}
-						class:dark:text-neutral-800={!include_classes.includes(_class)}
-					>
-						<label class="h-full pr-0.5 align-text-bottom" for={_class}>{_class}</label><input
-							class="peer bg-grey-dark dark:bg-dim-beige checked:bg-accent-light dark:checked:bg-accent-dark h-3 w-3 appearance-none rounded-sm"
-							type="checkbox"
-							id={_class}
-							bind:group={include_classes}
-							value={_class}
-						/>
-					</div>
-				{/each}
-			</div>
+				<h3 class="scoreboard-title text-5xl">Users:</h3>
+				<div
+					class="class-filtering flex w-full flex-row flex-wrap items-end justify-start gap-1 text-center align-middle"
+				>
+					{#each original_classes as _class}
+						<div
+							class="rounded-sm bg-neutral-500 px-1 text-sm text-neutral-100 dark:bg-neutral-600"
+							class:bg-neutral-800={!include_classes.includes(_class)}
+							class:text-neutral-300={!include_classes.includes(_class)}
+							class:dark:bg-neutral-200={!include_classes.includes(_class)}
+							class:dark:text-neutral-800={!include_classes.includes(_class)}
+						>
+							<label class="h-full pr-0.5 align-text-bottom" for={_class}>{_class}</label><input
+								class="peer bg-grey-dark dark:bg-dim-beige checked:bg-accent-light dark:checked:bg-accent-dark h-3 w-3 appearance-none rounded-sm"
+								type="checkbox"
+								id={_class}
+								bind:group={include_classes}
+								value={_class}
+							/>
+						</div>
+					{/each}
+				</div>
 			</div>
 		</div>
 		<div class="mb-2 flex flex-col justify-between">

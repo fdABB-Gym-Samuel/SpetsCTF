@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import {categories} from '$lib/db/constants';
+	import { categories } from '$lib/db/constants';
 	let { data, form } = $props();
 	let { translations, unapprovedChallenge } = data;
 

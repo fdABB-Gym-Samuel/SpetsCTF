@@ -4,7 +4,7 @@
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
 	import { SendHorizontal } from '@lucide/svelte';
-	import {categories} from '$lib/db/constants';
+	import { categories } from '$lib/db/constants';
 
 	let {
 		challenge_data = {

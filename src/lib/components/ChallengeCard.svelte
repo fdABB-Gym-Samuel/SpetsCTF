@@ -3,7 +3,7 @@
 	let { data } = $props();
 	let { challenge_data } = data;
 
-	import {categories} from '$lib/db/constants';
+	import { categories } from '$lib/db/constants';
 </script>
 
 <main

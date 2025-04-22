@@ -10,7 +10,7 @@
 	const links = [
 		{ display: 'Challenges', href: '/challenges' },
 		{ display: 'CTFs', href: `/ctfs` },
-		{ display: 'Leaderboard', href: `/scoreboard` },
+		{ display: 'Leaderboard', href: `/scoreboard` }
 	];
 </script>
 
