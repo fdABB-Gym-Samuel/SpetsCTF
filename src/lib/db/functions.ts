@@ -18,9 +18,9 @@ export function validateCategory(value: any): Category {
 		return 'misc' as Category;
 	}
 }
-export function get_challenge_id_from_display_name(display_name: string) {
+export async function get_challenge_id_from_display_name(display_name: string) {
 	const unsanitzed_challenge_id = display_name.toLowerCase().replace(/ /g, '_');
-	const query = db
+	const query = await db
 		.selectFrom('challenges')
 		.where('challenge_id', '=', sanitize(unsanitzed_challenge_id))
 		.executeTakeFirst();
