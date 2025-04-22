@@ -4,21 +4,12 @@
 	import { page } from '$app/state';
 	let { data, form } = $props();
 	let { translations, challenges } = data;
+	import { categories } from '$lib/db/constants';
 
 	let challengeId = $derived(page.url.searchParams.get('show'));
 
 	let show_challenge_dialog: boolean = $derived(challengeId !== null);
 
-	let categories = [
-		'crypto',
-		'forensics',
-		'introduction',
-		'misc',
-		'osint',
-		'pwn',
-		'reversing',
-		'web'
-	];
 	let modal_data = $derived.by(() => {
 		if (show_challenge_dialog) {
 			return challenges.find((chall) => String(chall.challenge_id) === challengeId);

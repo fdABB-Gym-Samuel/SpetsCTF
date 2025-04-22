@@ -11,7 +11,6 @@
 		{ display: 'Challenges', href: '/challenges' },
 		{ display: 'CTFs', href: `/ctfs` },
 		{ display: 'Leaderboard', href: `/scoreboard` },
-		{ display: 'About', href: `/about` }
 	];
 </script>
 

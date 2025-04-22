@@ -8,17 +8,7 @@ import { writeFile, mkdir, unlink } from 'fs/promises';
 import sanitize from 'sanitize-filename';
 import path from 'path';
 import { type Insertable } from 'kysely';
-
-let categories = [
-	'crypto',
-	'forensics',
-	'introduction',
-	'misc',
-	'osint',
-	'pwn',
-	'reversing',
-	'web'
-];
+import { categories } from '$lib/db/constants';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	const user = locals.user;

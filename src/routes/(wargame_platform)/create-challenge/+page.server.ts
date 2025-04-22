@@ -11,18 +11,9 @@ import type { Insertable } from 'kysely';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import sanitize from 'sanitize-filename';
+import { categories } from '$lib/db/constants';
 
 // export const ssr = false
-let categories = [
-	'crypto',
-	'forensics',
-	'introduction',
-	'misc',
-	'osint',
-	'pwn',
-	'reversing',
-	'web'
-];
 
 export const load = async ({ locals }: ServerLoadEvent) => {
 	if (!locals.user) {

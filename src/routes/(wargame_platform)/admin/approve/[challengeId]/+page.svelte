@@ -2,19 +2,10 @@
 	import { enhance } from '$app/forms';
 	let { data, form } = $props();
 	let { translations, unapprovedChallenge } = data;
+	import { categories } from '$lib/db/constants';
 
 	type resource_type = 'File' | 'Command' | 'Website';
 
-	let categories = [
-		'crypto',
-		'forensics',
-		'introduction',
-		'misc',
-		'osint',
-		'pwn',
-		'reversing',
-		'web'
-	];
 	let mainCategory: string = $state(categories[3]);
 	if (unapprovedChallenge?.challenge_category) {
 		mainCategory = unapprovedChallenge?.challenge_category;

@@ -8,8 +8,9 @@
 
 <div class="content">
 	<h1 class="route-title">Scoreboards</h1>
-	<div class="scoreboards grid grid-cols-2 grid-rows-[fit_1fr] items-start gap-x-10">
+	<div class="scoreboards grid grid-cols-1 lg:grid-cols-2 grid-rows-[fit_1fr] items-start gap-x-10">
 		<div class="mb-2 flex flex-col justify-between">
+			<div>
 			<h3 class="scoreboard-title text-5xl">Users:</h3>
 			<div
 				class="class-filtering flex w-full flex-row flex-wrap items-end justify-start gap-1 text-center align-middle"
@@ -31,6 +32,7 @@
 						/>
 					</div>
 				{/each}
+			</div>
 			</div>
 		</div>
 		<div class="mb-2 flex flex-col justify-between">
