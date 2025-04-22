@@ -33,67 +33,66 @@
 						</div>
 					{/each}
 				</div>
+				<table class="min-w-20 overflow-scroll">
+					<thead>
+						<tr
+							class=" border-b-accent-light dark:border-b-accent-dark my-10 w-fit min-w-20 border-b-1"
+						>
+							<th class="w-1 px-2 text-left font-bold uppercase">#</th>
+							<th class="w-1 px-2 text-left font-bold uppercase">Username</th>
+							<th class="w-1 px-4 text-center font-bold uppercase">Class</th>
+							<th class="w-1 px-2 text-right font-bold uppercase">Score</th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each users_scoreboard
+							.filter((user) => {
+								if (user.represents_class) return include_classes.includes(user.represents_class);
+							})
+							.slice(0, 15) as player, i}
+							<tr
+								class="border-b-accent-light dark:border-b-accent-dark outline-accent-dark w-fit border-b-1 text-wrap break-words"
+							>
+								<td class="mt-2 h-12 px-2 text-left">{i + 1}</td>
+								<td class="mt-2 h-12 px-2 text-left break-words"
+									><a class="ignore-default underline" href={`/user/${player.id}`}
+										>{player.display_name}</a
+									></td
+								>
+								<td class="mt-2 h-12 px-4 text-center">{player.represents_class}</td>
+								<td class="mt-2 h-12 px-2 text-right"
+									>{player.total_points == null ? 0 : player.total_points}</td
+								>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
 			</div>
 		</div>
 		<div class="mb-2 flex flex-col justify-between">
 			<h3 class="scoreboard-title text-5xl">Classes:</h3>
+			<table class="min-w-20 overflow-scroll">
+				<thead>
+					<tr
+						class=" border-b-accent-light dark:border-b-accent-dark my-10 w-fit min-w-20 border-b-1"
+					>
+						<th class="w-1 px-2 text-left font-bold uppercase">#</th>
+						<th class="w-1 px-2 text-left font-bold uppercase">Class</th>
+						<th class="w-1 px-2 text-right font-bold uppercase">Score</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each classes_scoreboard as curr_class, i}
+						<tr
+							class="border-b-accent-light dark:border-b-accent-dark outline-accent-dark w-fit border-b-1 text-wrap break-words"
+						>
+							<td class="mt-2 h-12 px-2 text-left">{i + 1}</td>
+							<td class="mt-2 h-12 px-2 text-left break-words">{curr_class.class_name}</td>
+							<td class="mt-2 h-12 px-2 text-right">{curr_class.total_points}</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
 		</div>
-		<table class="min-w-20 overflow-scroll">
-			<thead>
-				<tr
-					class=" border-b-accent-light dark:border-b-accent-dark my-10 w-fit min-w-20 border-b-1"
-				>
-					<th class="w-1 px-2 text-left font-bold uppercase">#</th>
-					<th class="w-1 px-2 text-left font-bold uppercase">Username</th>
-					<th class="w-1 px-4 text-center font-bold uppercase">Class</th>
-					<th class="w-1 px-2 text-right font-bold uppercase">Score</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each users_scoreboard
-					.filter((user) => {
-						if (user.represents_class) return include_classes.includes(user.represents_class);
-					})
-					.slice(0, 15) as player, i}
-					<tr
-						class="border-b-accent-light dark:border-b-accent-dark outline-accent-dark w-fit border-b-1 text-wrap break-words"
-					>
-						<td class="mt-2 h-12 px-2 text-left">{i + 1}</td>
-						<td class="mt-2 h-12 px-2 text-left break-words"
-							><a class="ignore-default underline" href={`/user/${player.id}`}
-								>{player.display_name}</a
-							></td
-						>
-						<td class="mt-2 h-12 px-4 text-center">{player.represents_class}</td>
-						<td class="mt-2 h-12 px-2 text-right"
-							>{player.total_points == null ? 0 : player.total_points}</td
-						>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
-
-		<table class="min-w-20 overflow-scroll">
-			<thead>
-				<tr
-					class=" border-b-accent-light dark:border-b-accent-dark my-10 w-fit min-w-20 border-b-1"
-				>
-					<th class="w-1 px-2 text-left font-bold uppercase">#</th>
-					<th class="w-1 px-2 text-left font-bold uppercase">Class</th>
-					<th class="w-1 px-2 text-right font-bold uppercase">Score</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each classes_scoreboard as curr_class, i}
-					<tr
-						class="border-b-accent-light dark:border-b-accent-dark outline-accent-dark w-fit border-b-1 text-wrap break-words"
-					>
-						<td class="mt-2 h-12 px-2 text-left">{i + 1}</td>
-						<td class="mt-2 h-12 px-2 text-left break-words">{curr_class.class_name}</td>
-						<td class="mt-2 h-12 px-2 text-right">{curr_class.total_points}</td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
 	</div>
 </div>
