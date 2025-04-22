@@ -13,6 +13,7 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 const get_top_users = async () => {
 	const result = await db
 		.selectFrom('users as u')
+		.where('u.is_admin', '=', false)
 		.leftJoin(
 			db
 				.selectFrom('wargame_submissions')
@@ -42,6 +43,7 @@ const get_top_classes = async () => {
 			qb
 				.selectFrom('wargame_submissions as ws')
 				.innerJoin('users as u', 'u.id', 'ws.user_id')
+				.where('u.is_admin', '=', false)
 				.innerJoin('challenges as ch', 'ch.challenge_id', 'ws.challenge')
 				.leftJoin('ctf_events as ctf', 'ch.ctf', 'ctf.id')
 				.where(sql<boolean>`ctf.end_time IS NULL OR ctf.end_time < NOW()`)
