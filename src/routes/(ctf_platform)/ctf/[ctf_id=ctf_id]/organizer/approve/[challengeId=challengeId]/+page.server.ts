@@ -8,23 +8,43 @@ import { writeFile, mkdir, unlink } from 'fs/promises';
 import sanitize from 'sanitize-filename';
 import path from 'path';
 import { type Insertable } from 'kysely';
-import { categories } from '$lib/db/constants';
+
+let categories = [
+	'crypto',
+	'forensics',
+	'introduction',
+	'misc',
+	'osint',
+	'pwn',
+	'reversing',
+	'web'
+];
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	const user = locals.user;
+	const ctfId = Number(params.ctf_id);
 	const challengeId = params.challengeId;
 
 	if (!user) {
 		return redirect(303, '/login');
 	}
 
-	if (!user.is_admin) {
-		return error(401, 'User not admin');
+	const org = await db
+		.selectFrom('ctf_organizers')
+		.where('ctf', '=', ctfId)
+		.where('user_id', '=', user.id)
+		.executeTakeFirst();
+
+	const isOrg = org !== undefined;
+
+	if (!isOrg && !user.is_admin) {
+		return error(401, 'User not organizer for this CTF or admin');
 	}
 
 	const unapprovedChallenge = await db
 		.selectFrom('challenges as ch')
 		.where('challenge_id', '=', challengeId)
+		.where('ch.ctf', '=', ctfId)
 		.where('ch.approved', '=', false)
 		.leftJoin('flag as f', 'ch.flag', 'f.id')
 		.leftJoin('users as a', 'ch.author', 'a.id')
@@ -69,6 +89,10 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		// .orderBy('ch.points', 'asc')
 		.executeTakeFirst();
 
+	if (unapprovedChallenge === undefined) {
+		return error(404, { message: 'Challenge not found' });
+	}
+
 	return { unapprovedChallenge };
 };
 
@@ -76,14 +100,23 @@ export const actions = {
 	default: async ({ request, params, locals }) => {
 		try {
 			const user = locals.user;
+			const ctfId = Number(params.ctf_id);
 			const challengeId = params.challengeId;
 
 			if (!user) {
 				return redirect(304, '/login');
 			}
 
-			if (!user.is_admin) {
-				return error(401, 'User not admin');
+			const org = await db
+				.selectFrom('ctf_organizers')
+				.where('ctf', '=', ctfId)
+				.where('user_id', '=', user.id)
+				.executeTakeFirst();
+
+			const isOrg = org !== undefined;
+
+			if (!isOrg && !user.is_admin) {
+				return fail(401, { message: 'User not organizer for this CTF or admin' });
 			}
 
 			const formData = await request.formData();
@@ -101,7 +134,7 @@ export const actions = {
 
 			const points = Number(formData.get('points'));
 			if (points < 0) {
-				return fail(404, { message: 'Points must be a non-negative integer' });
+				return fail(422, { message: 'Points must be a non-negative integer' });
 			}
 
 			const mainCategory: Category = validateCategory(
@@ -133,6 +166,7 @@ export const actions = {
 					approved: true
 				})
 				.where('challenge_id', '=', challengeId)
+				.where('ctf', '=', ctfId)
 				.returning('flag')
 				.executeTakeFirst();
 
@@ -278,6 +312,7 @@ export const actions = {
 
 			return { success: true, message: 'Challenge successfully approved' };
 		} catch (err) {
+			console.error(err);
 			return fail(500, { message: err.message });
 		}
 	}

@@ -32,7 +32,7 @@ export const load: LayoutServerLoad = async ({ locals, depends, params }) => {
 			.where('user_id', '=', user.id)
 			.executeTakeFirst();
 
-		isOrg = org !== undefined;
+		isOrg = org !== undefined || locals.user?.is_admin;
 
 		team = await db
 			.selectFrom('ctf_teams_members')

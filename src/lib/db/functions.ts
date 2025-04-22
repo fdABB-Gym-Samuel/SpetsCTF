@@ -189,3 +189,13 @@ export const get_flag_of_challenge = async (challenge_id: string) => {
 
 	return flag;
 };
+
+export const map = (
+	x: number,
+	originalMin: number,
+	originalMax: number,
+	newMin: number,
+	newMax: number
+) => {
+	return ((x - originalMin) * (newMax - newMin)) / (originalMax - originalMin) + newMin;
+};
