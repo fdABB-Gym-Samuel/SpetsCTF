@@ -17,7 +17,7 @@ export const load: LayoutServerLoad = async ({ locals, depends, params }) => {
 		.where('id', '=', ctfId)
 		.executeTakeFirst();
 
-	if (!ctf_data) {
+	if (ctf_data === undefined) {
 		error(404, { message: 'CTF does not exist.' });
 	}
 

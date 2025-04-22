@@ -15,7 +15,11 @@ export async function GET({ params }: RequestEvent) {
 		.where('challenges.challenge_id', '=', challengeId)
 		.executeTakeFirst();
 
-	if (ctf?.hasStarted) {
+	if (ctf === undefined) {
+		return error(404, { message: 'CTF not found' });
+	}
+
+	if (ctf.hasStarted) {
 		try {
 			const challenge = await db
 				.selectFrom('challenges')

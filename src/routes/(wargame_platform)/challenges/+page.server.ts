@@ -144,22 +144,23 @@ export const actions = {
 					.where('id', '=', challengeCtf.ctf)
 					.executeTakeFirst();
 
-				const currentTime = new Date();
-				if (!ctf) {
-					return fail(500, { message: 'Challenge belongs to ctf with unclear end-time' });
+				if (ctf === undefined) {
+					return fail(404, { message: 'Challenge belongs to CTF that could not be found' });
 				}
-				// User should submit this request through the ctf route
+				const currentTime = new Date();
 				const ctfHasEnded = currentTime > ctf?.end_time;
+				// User should submit this request through the ctf route
 				if (!ctfHasEnded) {
 					throw redirect(307, `/ctf/${challengeCtf.ctf}/challenges?/submit`);
 				}
 			}
 
 			const correctFlag = await get_flag_of_challenge(challengeId);
-
+			console.log(correctFlag);
 			if (!correctFlag.challengeExists) {
 				return fail(404, { message: 'Challenge not found' });
 			}
+			console.log('ejrhwkj');
 			if (!correctFlag.flagExists) {
 				return fail(404, { message: 'Flag of challenge not found' });
 			}
@@ -176,7 +177,14 @@ export const actions = {
 				submitted_data: submittedFlag
 			};
 
-			const _ = await db.insertInto('wargame_submissions').values(submission).executeTakeFirst();
+			const submissionResult = await db
+				.insertInto('wargame_submissions')
+				.values(submission)
+				.executeTakeFirst();
+
+			if (submissionResult === undefined) {
+				return fail(500, { message: 'Youre submission could not be recorded, please try again.' });
+			}
 
 			let message;
 			flagIsCorrect ? (message = 'Correct flag') : (message = 'Incorrect flag');

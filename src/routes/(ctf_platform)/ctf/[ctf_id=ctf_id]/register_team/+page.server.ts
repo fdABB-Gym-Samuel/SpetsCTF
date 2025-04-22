@@ -20,8 +20,8 @@ export const actions = {
 				.where('id', '=', ctf_id)
 				.executeTakeFirst();
 
-			if (!ctf) {
-				return fail(422, { message: 'CTF does not exist' });
+			if (ctf === undefined) {
+				return fail(422, { message: 'CTF not found' });
 			}
 
 			if (ctf.end_time.getTime() < new Date().getTime())
@@ -42,7 +42,7 @@ export const actions = {
 				.executeTakeFirst();
 
 			if (current_user_team !== undefined) {
-				return fail(400, { success: false, message: 'User is already in team' });
+				return fail(401, { success: false, message: 'User is already in team' });
 			}
 
 			if (!team_name) {
@@ -59,7 +59,7 @@ export const actions = {
 				.returning('id')
 				.executeTakeFirst();
 
-			if (!team_id) {
+			if (team_id === undefined) {
 				return fail(500, { success: false, message: 'Unknown error' });
 			}
 

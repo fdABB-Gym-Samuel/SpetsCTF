@@ -45,7 +45,7 @@ export const actions = {
 
 			const ctf = await db.selectFrom('ctf_events').where('id', '=', ctfId).executeTakeFirst();
 
-			if (!ctf) {
+			if (ctf === undefined) {
 				return fail(404, { message: 'CTF not found.' });
 			}
 

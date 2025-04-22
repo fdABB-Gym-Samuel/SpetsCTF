@@ -97,7 +97,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 			.executeTakeFirst();
 
 		if (userInfo === undefined) {
-			throw error(404, { message: 'No User with that id' });
+			throw error(404, { message: 'User not found' });
 		} else {
 			return { userInfo };
 		}

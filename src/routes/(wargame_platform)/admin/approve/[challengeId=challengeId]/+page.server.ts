@@ -68,6 +68,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		])
 		// .orderBy('ch.points', 'asc')
 		.executeTakeFirst();
+
 	if (unapprovedChallenge === undefined) {
 		return error(404, { message: 'Challenge not found' });
 	}

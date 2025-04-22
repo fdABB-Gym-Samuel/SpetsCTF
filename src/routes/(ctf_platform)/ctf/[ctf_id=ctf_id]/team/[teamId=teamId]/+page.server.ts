@@ -36,8 +36,8 @@ export const load: PageServerLoad = async ({ locals, params }: ServerLoadEvent) 
 		.where('t.ctf', '=', ctfId)
 		.executeTakeFirst();
 
-	if (!teamData) {
-		return error(404, { message: 'Team ID does not exist.' });
+	if (teamData === undefined) {
+		return error(404, { message: 'Team not found.' });
 	}
 
 	return { teamData };
