@@ -34,7 +34,6 @@ export const actions = {
 				return fail(422, { message: 'No display name' });
 			}
 			const challenge_id = await get_challenge_id_from_display_name(display_name);
-			console.log(challenge_id);
 
 			const challenge_category: Category = validateCategory(
 				formData.get('challenge_category')?.toString() ?? ''
