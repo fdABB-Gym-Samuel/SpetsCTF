@@ -1,9 +1,15 @@
 <script lang="ts">
-	import { Link, SquareTerminal, Copy, File, UserRoundPen, CirclePlus, Flag } from '@lucide/svelte';
+	import { Link, SquareTerminal, Copy, File, UserRoundPen, CircleX } from '@lucide/svelte';
 	import { goto } from '$app/navigation';
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
-	import { SendHorizontal } from '@lucide/svelte';
+
+  import { capitalizeFirstLetter } from '$lib/utils/utils';
+
+  import { playAnimations } from '$lib/gsap/animations';
+
+  import Button from './Button.svelte';
+	import { onMount, onDestroy } from 'svelte';
 
 	let {
 		challenge_data = {
@@ -33,6 +39,32 @@
 		'reversing',
 		'web'
 	];
+
+  function getPointColor(points: number): string {
+    const colorRanges = [
+      { min: 0, max: 199, class: 'text-point-100' },
+      { min: 200, max: 299, class: 'text-point-200' },
+      { min: 300, max: 399, class: 'text-point-300' },
+      { min: 400, max: 499, class: 'text-point-400' },
+      { min: 500, max: 599, class: 'text-point-500' },
+    ];
+
+    for (const range of colorRanges) {
+      if (points >= range.min && points <= range.max) {
+        return range.class;
+      }
+    }
+
+    return 'text-text-100';
+  }
+
+  let filteredCategories = categories.filter((_, index) =>
+		challenge_data.challenge_sub_categories
+			.split('')
+			.reverse()
+			.join('')[index] === '1'
+	);
+
 	// Needs to be changed to handle when there are multiple commands that can be copied
 	let show_copied_message = $state(false);
 
@@ -48,76 +80,81 @@
 			console.error('Failed to copy!', err);
 		}
 	}
+
+  function closeDialog() {
+    const newUrl = new URL(page.url);
+    newUrl.searchParams.delete('show');
+    goto(newUrl, { replaceState: true, noScroll: true });
+  }
+
+  let keydownHandler: (e: KeyboardEvent) => void;
+
+  let gsapContext: gsap.Context | undefined;
+  let componentRoot : HTMLElement;
+
+  onMount(() => {
+    gsapContext = playAnimations(componentRoot)
+
+    keydownHandler = (e: KeyboardEvent) => {
+    if (e.key === 'Escape' || e.key === 'Enter') {
+      closeDialog();
+    }
+  };
+
+    document.addEventListener('keydown', keydownHandler);
+  })
+
+  onDestroy(() => {
+    gsapContext?.revert();
+
+    if (keydownHandler) {
+      document.removeEventListener('keydown', keydownHandler);
+    }
+  })
 </script>
 
 <div
-	onclick={(e) => {
-		if (e.currentTarget === e.target) {
-			const newUrl = new URL(page.url);
-			newUrl.searchParams.delete('show');
-			goto(newUrl, { replaceState: true, noScroll: true });
-		}
-	}}
-	onkeydown={(e) => {
-		if (e.key === ' ' || e.key === 'Enter' || e.key === 'Escape')
-			goto('/challenges', { replaceState: true, noScroll: true });
-	}}
-	role="button"
-	tabindex="0"
-	class="backdrop bg-backdrop-light dark:bg-backdrop-dark prevent-default fixed top-0 flex h-screen w-screen items-center justify-center"
+  bind:this={componentRoot}
+	class="backdrop bg-overlay prevent-default fixed top-0 left-0 flex h-screen w-screen items-center justify-center pb-32"
 >
+  <button
+  type="button"
+  class="absolute inset-0 w-full h-full cursor-default focus:outline-none"
+  onclick={(e) => {
+    if (e.currentTarget === e.target) {
+      closeDialog();
+    };
+  }}
+  aria-label="Close challenge details"
+  ></button>
 	<dialog
-		class="bg-button-light dark:bg-button-dark relative m-auto flex max-h-[calc(100vh-40px)] min-h-[var(--challenge-dialog-height)] w-[var(--challenge-dialog-width)] flex-col items-center gap-5 rounded-md px-[var(--challenge-padding-inline)] py-2 pb-15"
+		class="bg-bg-800 rounded-lg relative m-auto flex w-[85%] max-w-[1000px] flex-col px-16 py-12 gsap-opacity"
 		class:dark:bg-challenge-solved-dark={challenge_data.solved}
 		class:bg-challenge-solved-light={challenge_data.solved}
 	>
-		<section class="top flex w-full flex-col items-center">
-			<h3
-				class="challenge-title text-foreground-light dark:text-foreground-dark px-4 pt-5 pb-2 text-5xl"
-				class:dark:text-background-dark={challenge_data.solved}
-				class:text-background-light={challenge_data.solved}
-			>
-				{challenge_data.challenge_name}
-			</h3>
-			<ul class="categroies flex w-8/10 flex-row flex-wrap justify-center">
-				{#each categories.filter((_, index) => challenge_data.challenge_sub_categories
-							.split('')
-							.reverse()
-							.join('')[index] === '1') as category}
-					<li
-						class="bg-foreground-light dark:bg-foreground-dark text-background-light dark:text-background-dark rounded-md px-2 py-1 text-xs"
-					>
-						{category}
-					</li>
-				{/each}
-			</ul>
-			<div class="solve-stats text-foreground-dark mt-1 flex flex-row gap-5">
-				<p
-					class="points text-foreground-light dark:text-foreground-dark flex flex-row items-center gap-0.5"
-				>
-					<CirclePlus class="size-4"></CirclePlus>
-					{challenge_data.points}
-				</p>
-				<p
-					class="num-solves text-foreground-light dark:text-foreground-dark flex flex-row items-center gap-0.5"
-				>
-					<Flag class="size-4"></Flag>
-					{challenge_data.num_solves}
-				</p>
-			</div>
+    <section class="-mt-2 mb-12 flex w-full justify-between">
+      <!-- TODO: add field for date -->
+      <p class="font-mono mb-0.5 text-sm font-bold text-primary-light">Uploaded 2025-03-04</p>
+      <button type="button" onclick={() => closeDialog()} class="cursor-pointer">
+        <CircleX color="var(--color-text-200)" size=20 class="hover:stroke-text-100 transition-colors" />
+      </button>
+    </section>
+		<section class="top flex w-full items-center justify-between mb-6">
+      <h3
+        class="challenge-name text-text-100 text-xl font-bold"
+        class:dark:text-background-dark={challenge_data.solved}
+        class:text-background-light={challenge_data.solved}
+      >
+        {challenge_data.challenge_name}
+      </h3>
+
 		</section>
 		<section
-			class="middle text-foreground-dark flex h-full w-full flex-row justify-between gap-2 overflow-hidden px-4"
+			class="middle text-foreground-dark flex h-full w-full flex-row justify-between gap-2 overflow-hidden mb-24"
 		>
-			<p
-				class="challenge-description text-foreground-light dark:text-foreground-dark mr-1 max-h-full w-1/2 overflow-scroll"
-				class:text-background-light={challenge_data.solved}
-			>
-				{challenge_data.challenge_description}
-			</p>
-			<div class="right ml-1 flex w-1/2 flex-col gap-1">
-				<div class="flex flex-col">
-					<p class="font-bold">Resources:</p>
+      <div class="w-1/2">
+        <div class="flex flex-col mb-8">
+					<p class="text-text-200">Resources:</p>
 					<ul class="resources flex flex-col gap-0 pl-4">
 						{#each challenge_data.resources as resource}
 							{#if resource.type === 'web'}
@@ -162,59 +199,84 @@
 						{/each}
 					</ul>
 				</div>
-				<div class="author flex flex-row items-center gap-1">
-					<UserRoundPen class="size-4"></UserRoundPen>
-					<p class="font-bold">Author:</p>
-					<p>{challenge_data.author ? challenge_data.author : 'Anonymous'}</p>
+        <div class="author mb-2">
+					<UserRoundPen class="inline-block mb-0.5" color="var(--color-text-200)" size=16></UserRoundPen>
+					<p class="inline-block text-text-200 text-sm">Author:&nbsp;</p>
+					<p class="inline-block font-bold text-sm">{challenge_data.author ? challenge_data.author : 'Anonymous'}</p>
 				</div>
+        <p
+				class="challenge-description text-foreground-light dark:text-foreground-dark mr-1 max-h-full overflow-scroll"
+				class:text-background-light={challenge_data.solved}
+        >
+          {challenge_data.challenge_description}
+        </p>
+      </div>
+			<div class="right w-1/2">
+        {#if !challenge_data.solved}
+          <form
+            action={`/api/submit/${challenge_data.challenge_id}`}
+            method="POST"
+            class="flag-submission-form"
+            use:enhance
+          >
+            <label
+              for="flag"
+              class="text-sm"
+              >Submit flag</label
+            >
+            <div class="relative mt-2 mb-8">
+              <input
+                type="text"
+                name="flag"
+                class="flag w-full px-6 py-1.5 font-mono bg-bg-600 rounded-xl focus:outline-none"
+                placeholder={challenge_data.flag_format}
+              />
+              <div class="absolute right-0 top-1/2 transform -translate-y-1/2">
+                <Button label="Submit" type="submit" ariaLabel="Submit flag" bgColor="bg-bg-500" outlineColor="outline-transparent" hoverColor="hover:bg-secondary" />
+              </div>
+            </div>
+          </form>
+        {:else}
+          <p
+            class="rounded-lg border-4 border-neutral-400 bg-stone-700 py-2 text-center font-semibold text-stone-300"
+          >
+            Challenge Already Solved
+          </p>
+        {/if}
 				<div
 					class="first-solvers-wrapper text-foreground-light dark:text-foreground-dark flex flex-col justify-start"
 				>
-					<h5 class="font-bold">First Solvers:</h5>
-					<ol class="first-solvers flex list-inside list-decimal flex-col justify-start">
-						{#each challenge_data.first_solvers as solver}
-							<li class="solver">{solver.display_name}</li>
-						{/each}
-					</ol>
+          {#if challenge_data.num_solves != 0}
+            <h5 class="text-text-200">First Solvers:</h5>
+            <ol class="first-solvers flex list-inside list-decimal flex-col justify-start">
+              {#each challenge_data.first_solvers as solver}
+                <li class="solver">{solver.display_name}</li>
+              {/each}
+            </ol>
+          {:else}
+            <p>This challenge has no solvers yet.</p>
+          {/if}
 				</div>
 			</div>
 		</section>
-		<section class="bottom absolute bottom-2 w-10/12">
-			{#if !challenge_data.solved}
-				<form
-					action={`/api/submit/${challenge_data.challenge_id}`}
-					method="POST"
-					class="flag-submission-form flex w-full flex-row gap-1"
-					use:enhance
-				>
-					<label
-						for="flag"
-						class="text-foreground-light dark:text-foreground-dark text-xl font-semibold"
-						>Flag:</label
-					>
-					<input
-						type="text"
-						name="flag"
-						class="flag bg-foreground-light dark:bg-foreground-dark text-background-light dark:text-background-dark w-full rounded-sm px-1"
-						placeholder={challenge_data.flag_format}
-					/>
-					<button
-						aria-label="Submit flag"
-						type="submit"
-						class="submit-flag ignore-default bg-foreground-light dark:bg-foreground-dark h-8 w-8 rounded-sm p-0 text-center"
-					>
-						<div class="flex size-full items-center justify-center">
-							<SendHorizontal />
-						</div>
-					</button>
-				</form>
-			{:else}
-				<p
-					class="rounded-lg border-4 border-neutral-400 bg-stone-700 py-2 text-center font-semibold text-stone-300"
-				>
-					Challenge Already Solved
-				</p>
-			{/if}
+		<section class="flex justify-between w-full">
+      <ul class="categroies flex w-full flex-row flex-wrap">
+        {#each filteredCategories as category, index}
+          <li
+            class="text-text-100 px-7 py-1 text-xs
+            {index === 0 ? "bg-gradient-100 rounded-l-xl rounded-bl-xl" : ""}
+            {index === 1 ? "bg-gradient-200" : ""}
+            {index === 2 ? "bg-gradient-300" : ""}
+            {index === filteredCategories.length - 1 ? "rounded-r-xl rounded-br-xl" : ""}"
+          >
+            <p># {capitalizeFirstLetter(category)}</p>
+          </li>
+        {/each}
+      </ul>
+      <div class="flex flex-row gap-10">
+        <p class="font-mono text-sm font-bold {getPointColor(challenge_data.points)}">{challenge_data.points}&nbsp;&nbsp;<span class="text-text-200">POINTS</span></p>
+        <p class="font-mono text-sm font-bold text-text-100">{challenge_data.num_solves}&nbsp;&nbsp;<span class="text-text-200">SOLVERS</span></p>
+      </div>
 		</section>
 	</dialog>
 </div>
