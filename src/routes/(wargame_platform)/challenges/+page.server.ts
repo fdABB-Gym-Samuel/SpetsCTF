@@ -158,11 +158,9 @@ export const actions = {
 			}
 
 			const correctFlag = await get_flag_of_challenge(challengeId);
-			console.log(correctFlag);
 			if (!correctFlag.challengeExists) {
 				return fail(404, { message: 'Challenge not found' });
 			}
-			console.log('ejrhwkj');
 			if (!correctFlag.flagExists) {
 				return fail(404, { message: 'Flag of challenge not found' });
 			}
