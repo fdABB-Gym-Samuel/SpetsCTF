@@ -44,7 +44,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 			'a.id',
 			'f.flag_format'
 		])
-		.select([
+		.select((eb) => [
 			'ch.challenge_id',
 			'ch.display_name as challenge_name',
 			'ch.description as challenge_description',
@@ -52,8 +52,21 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 			'ch.challenge_sub_categories',
 			'ch.points',
 			'f.flag_format',
-			'a.display_name as author',
-			'a.id as author_id',
+			eb
+				.case()
+				.when(sql.ref('ch.anonymous_author'), '=', true)
+				.then(sql.lit('Anonymous'))
+				.else(sql.ref('a.display_name'))
+				.end()
+				.as('author'),
+			// 'a.id as author_id',
+			eb
+				.case()
+				.when(sql.ref('ch.anonymous_author'), '=', true)
+				.then(sql.lit(null))
+				.else(sql.ref('a.id'))
+				.end()
+				.as('author_id'),
 			// Aggregate up to the first 5 solver display_names into a JSON array, ordered by submission time.
 			sql`
               COALESCE(
