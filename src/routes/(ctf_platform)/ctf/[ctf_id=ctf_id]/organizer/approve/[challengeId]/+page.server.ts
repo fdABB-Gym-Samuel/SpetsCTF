@@ -26,7 +26,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	const challengeId = params.challengeId;
 
 	if (!user) {
-		return redirect(304, '/login');
+		return redirect(303, '/login');
 	}
 
 	const org = await db

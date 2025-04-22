@@ -7,7 +7,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	const user = locals.user;
 
 	if (!user) {
-		return redirect(304, '/login');
+		return redirect(303, '/login');
 	}
 
 	if (!user.is_admin) {

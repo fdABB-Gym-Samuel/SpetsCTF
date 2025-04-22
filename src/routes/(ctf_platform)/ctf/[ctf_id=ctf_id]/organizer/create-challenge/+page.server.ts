@@ -1,5 +1,5 @@
 import type { Actions } from './$types';
-import { fail, error, type ServerLoadEvent } from '@sveltejs/kit';
+import { redirect, fail, error, type ServerLoadEvent } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import {
 	validateCategory,
@@ -28,7 +28,7 @@ export const load = async ({ locals, params }: ServerLoadEvent) => {
 	const user = locals.user;
 	const ctfId = Number(params.ctf_id);
 	if (!user) {
-		error(401, { message: 'User not signed in' });
+		return redirect(303, '/login');
 	}
 
 	const org = await db
@@ -39,7 +39,7 @@ export const load = async ({ locals, params }: ServerLoadEvent) => {
 
 	const isOrg = org !== undefined;
 	if (!locals.user?.is_admin && !isOrg) {
-		error(401, { message: 'Not authorized' });
+		return error(401, { message: 'Not authorized' });
 	}
 };
 

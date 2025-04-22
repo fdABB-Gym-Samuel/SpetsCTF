@@ -1,5 +1,5 @@
 import type { Actions } from './$types';
-import { fail, error, type ServerLoadEvent } from '@sveltejs/kit';
+import { fail, error, type ServerLoadEvent, redirect } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import {
 	validateCategory,
@@ -26,7 +26,7 @@ let categories = [
 
 export const load = async ({ locals }: ServerLoadEvent) => {
 	if (locals.user?.is_admin !== true) {
-		error(401, { message: 'Not authorized' });
+		return redirect(303, '/login');
 	}
 };
 

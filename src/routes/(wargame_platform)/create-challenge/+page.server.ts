@@ -26,7 +26,7 @@ let categories = [
 
 export const load = async ({ locals }: ServerLoadEvent) => {
 	if (!locals.user) {
-		error(401, { message: 'User not signed in.' });
+		return redirect(303, '/login');
 	}
 	if (locals.user?.is_admin === true) {
 		redirect(303, '/admin/create-challenge');
@@ -43,7 +43,7 @@ export const actions = {
 				return fail(422, { message: 'No display name' });
 			}
 			const challenge_id = await get_challenge_id_from_display_name(display_name);
-			console.log(challenge_id)
+			console.log(challenge_id);
 
 			const challenge_category: Category = validateCategory(
 				formData.get('challenge_category')?.toString() ?? ''

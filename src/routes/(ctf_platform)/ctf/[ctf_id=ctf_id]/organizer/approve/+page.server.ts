@@ -8,7 +8,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	const ctfId = Number(params.ctf_id);
 
 	if (!user) {
-		return redirect(304, '/login');
+		return redirect(303, '/login');
 	}
 
 	const org = await db

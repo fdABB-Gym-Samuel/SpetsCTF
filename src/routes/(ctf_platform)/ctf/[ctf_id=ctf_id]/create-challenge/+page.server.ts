@@ -27,7 +27,7 @@ export const load = async ({ locals, params }: ServerLoadEvent) => {
 	const user = locals.user;
 	const ctfId = Number(params.ctf_id);
 	if (!user) {
-		error(401, { message: 'User not signed in.' });
+		return redirect(303, '/login');
 	}
 
 	const org = await db
