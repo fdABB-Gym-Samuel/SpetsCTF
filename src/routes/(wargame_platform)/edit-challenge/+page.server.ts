@@ -1,0 +1,55 @@
+import type { PageServerLoad } from '../$types';
+import { error, redirect } from '@sveltejs/kit';
+import { db } from '$lib/db/database';
+import { sql } from 'kysely';
+
+export const load: PageServerLoad = async ({ locals, params }) => {
+	const user = locals.user;
+
+	if (!user) {
+		return redirect(303, '/login');
+	}
+
+	const editableChallengesQuery = db
+		.selectFrom('challenges as ch')
+		.leftJoin('flag as f', 'ch.flag', 'f.id')
+		.leftJoin('users as a', 'ch.author', 'a.id')
+		.select([
+			'ch.challenge_id',
+			'ch.display_name as challenge_name',
+			'ch.description as challenge_description',
+			'ch.challenge_category',
+			'ch.challenge_sub_categories',
+			'ch.points',
+			'f.flag_format',
+			'a.display_name as author',
+			'a.id as author_id',
+			sql<boolean>`ch.author = ${locals.user.id}`.as('is_author'),
+			// Get an array of resources for the challenge (ordered by resource id).
+			sql`
+                  COALESCE(
+                    (
+                      SELECT JSON_AGG(
+                        json_build_object('type', cr.type, 'content', cr.content)
+                        ORDER BY cr.id
+                      )
+                      FROM challenge_resources cr
+                      WHERE cr.challenge = ch.challenge_id
+                    ),
+                    '[]'::json
+                  )
+                `.as('resources')
+		]);
+
+	let editableChallenges;
+	if (!locals.user.is_admin) {
+		editableChallenges = await editableChallengesQuery
+			.where('ch.author', '=', locals.user.id)
+			.execute();
+	} else {
+		editableChallenges = await editableChallengesQuery.execute();
+	}
+
+	console.log(editableChallenges);
+	return { editableChallenges };
+};
