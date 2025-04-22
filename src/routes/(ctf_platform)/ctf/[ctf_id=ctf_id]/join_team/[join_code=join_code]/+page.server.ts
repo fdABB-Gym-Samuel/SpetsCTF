@@ -10,6 +10,19 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 		}
 
 		const ctfId = Number(event.params.ctf_id);
+
+		let org = await db
+			.selectFrom('ctf_organizers')
+			.where('ctf', '=', ctfId)
+			.where('user_id', '=', event.locals.user.id)
+			.executeTakeFirst();
+
+		const isOrg = org !== undefined;
+
+		if (isOrg || event.locals.user.is_admin) {
+			return error(403, { message: 'Orgs and admins cannot join CTFs' });
+		}
+
 		const join_code = event.params.join_code ?? '';
 
 		const ctf = await db

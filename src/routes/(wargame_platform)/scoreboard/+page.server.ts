@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 const get_top_users = async () => {
 	const result = await db
 		.selectFrom('users as u')
-		.where('u.is_admin', '=', false)
+		.where('is_admin', 'is not', true)
 		.leftJoin(
 			db
 				.selectFrom('wargame_submissions')
@@ -29,6 +29,7 @@ const get_top_users = async () => {
 		.where(sql<boolean>`ctf.end_time IS NULL OR ctf.end_time < NOW()`)
 		.where('c.approved', '=', true)
 		.select(['u.id', 'u.display_name', 'u.represents_class'])
+		.where('u.is_admin', 'is not', true)
 		.select(({ fn }) => fn.coalesce(fn.sum('c.points'), sql`0`).as('total_points'))
 		.groupBy(['u.id', 'u.display_name', 'u.represents_class'])
 		.orderBy('total_points', 'desc')
@@ -42,13 +43,14 @@ const get_top_classes = async () => {
 		.with('challenge_scores', (qb) =>
 			qb
 				.selectFrom('wargame_submissions as ws')
-				.innerJoin('users as u', 'u.id', 'ws.user_id')
-				.where('u.is_admin', '=', false)
+				.innerJoin('users as u', 'ws.user_id', 'u.id')
+				.where('u.is_admin', 'is not', true)
 				.innerJoin('challenges as ch', 'ch.challenge_id', 'ws.challenge')
 				.leftJoin('ctf_events as ctf', 'ch.ctf', 'ctf.id')
 				.where(sql<boolean>`ctf.end_time IS NULL OR ctf.end_time < NOW()`)
 				.where('ch.approved', '=', true)
 				.where('ws.success', '=', true)
+				.where('u.is_admin', 'is not', true)
 				.select([
 					'u.represents_class as class',
 					'ws.challenge',

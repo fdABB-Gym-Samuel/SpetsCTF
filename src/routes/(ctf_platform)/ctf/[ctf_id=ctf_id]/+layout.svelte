@@ -8,12 +8,11 @@
 		{ display: translations.wargames, href: '/challenges' },
 		{ display: translations.challenges, href: `/ctf/${page.params.ctf_id}/challenges` },
 		{ display: translations.leaderboard, href: `/ctf/${page.params.ctf_id}/scoreboard` },
-		team === undefined
-			? { display: translations.register_team, href: `/ctf/${page.params.ctf_id}/register_team` }
-			: { display: translations.team, href: `/ctf/${page.params.ctf_id}/team/${team?.teamId}` },
-		...(isOrg === true
-			? [{ display: 'Organizer', href: `/ctf/${page.params.ctf_id}/organizer` }]
-			: [])
+		isOrg === false
+			? team === undefined
+				? { display: translations.register_team, href: `/ctf/${page.params.ctf_id}/register_team` }
+				: { display: translations.team, href: `/ctf/${page.params.ctf_id}/team/${team?.teamId}` }
+			: { display: 'Organizer', href: `/ctf/${page.params.ctf_id}/organizer` }
 	];
 </script>
 

@@ -134,7 +134,7 @@ export const actions = {
 					points,
 					challenge_category: mainCategory,
 					challenge_sub_categories: selectedCategoriesBitset,
-					approved: false
+					approved: true
 				})
 				.where('challenge_id', '=', challengeId)
 				.returning('flag')

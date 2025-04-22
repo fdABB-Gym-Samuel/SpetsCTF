@@ -14,6 +14,8 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 		.with('unique_success', (qb) =>
 			qb
 				.selectFrom('wargame_submissions')
+				.innerJoin('users', 'wargame_submissions.user_id', 'users.id')
+				.where('is_admin', '!=', true)
 				.select(['challenge', 'user_id'])
 				.select(sql`MIN(time)`.as('first_time'))
 				.where('success', '=', true)

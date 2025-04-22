@@ -2,6 +2,7 @@ import type { ServerLoadEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from '../$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
+import { Users } from '@lucide/svelte';
 
 export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 	const ctfId = Number(event.params.ctf_id);
@@ -9,6 +10,8 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 		.with('team_challenges', (qb) =>
 			qb
 				.selectFrom('ctf_submissions')
+				.leftJoin('users', 'ctf_submissions.user_id', 'users.id')
+				.where('users.is_admin', 'is not', true)
 				.innerJoin('ctf_teams_members', 'ctf_submissions.user_id', 'ctf_teams_members.user_id')
 				.innerJoin('ctf_teams', 'ctf_teams_members.team', 'ctf_teams.id')
 				.where('ctf_teams.ctf', '=', ctfId)

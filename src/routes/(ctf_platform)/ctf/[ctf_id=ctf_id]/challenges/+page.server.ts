@@ -31,6 +31,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 		.where('ch.approved', '=', true)
 		.leftJoin('ranked_submissions as rs', 'ch.challenge_id', 'rs.challenge')
 		.leftJoin('users as u', 'rs.user_id', 'u.id')
+		.where('u.is_admin', 'is not', true)
 		.leftJoin('flag as f', 'ch.flag', 'f.id')
 		.leftJoin('users as a', 'ch.author', 'a.id')
 		.groupBy([
