@@ -274,14 +274,16 @@ export const actions = {
 					.execute();
 			}
 
-			let newCommands = await db
-				.insertInto('challenge_resources')
-				.columns(['challenge', 'type', 'content'])
-				.values(
-					commands.map((command) => ({ challenge: challengeId, type: 'cmd', content: command }))
-				)
-				.onConflict((oc) => oc.columns(['challenge', 'type', 'content']).doNothing())
-				.execute();
+			if (commands.length > 0) {
+				let newCommands = await db
+					.insertInto('challenge_resources')
+					.columns(['challenge', 'type', 'content'])
+					.values(
+						commands.map((command) => ({ challenge: challengeId, type: 'cmd', content: command }))
+					)
+					.onConflict((oc) => oc.columns(['challenge', 'type', 'content']).doNothing())
+					.execute();
+			}
 
 			const websites = formData.getAll('websites') as string[];
 			let _deleteWebsites;
@@ -301,14 +303,17 @@ export const actions = {
 					.returning('content')
 					.execute();
 			}
-			let _newWebsites = await db
-				.insertInto('challenge_resources')
-				.columns(['challenge', 'type', 'content'])
-				.values(
-					websites.map((website) => ({ challenge: challengeId, type: 'web', content: website }))
-				)
-				.onConflict((oc) => oc.columns(['challenge', 'type', 'content']).doNothing())
-				.execute();
+
+			if (websites.length > 0) {
+				let _newWebsites = await db
+					.insertInto('challenge_resources')
+					.columns(['challenge', 'type', 'content'])
+					.values(
+						websites.map((website) => ({ challenge: challengeId, type: 'web', content: website }))
+					)
+					.onConflict((oc) => oc.columns(['challenge', 'type', 'content']).doNothing())
+					.execute();
+			}
 
 			return { success: true, message: 'Challenge successfully approved' };
 		} catch (err) {

@@ -1,17 +1,27 @@
-import type { PageServerLoad } from '../$types';
+import type { PageServerLoad } from '../../../../(wargame_platform)/$types';
 import { error, redirect } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	const user = locals.user;
+	const ctfId = params.ctf_id;
 
 	if (!user) {
 		return redirect(303, '/login');
 	}
 
+	const org = await db
+		.selectFrom('ctf_organizers')
+		.where('ctf', '=', ctfId)
+		.where('user_id', '=', user.id)
+		.executeTakeFirst();
+
+	const isOrg = org !== undefined;
+
 	const editableChallengesQuery = db
 		.selectFrom('challenges as ch')
+		.where('ctf', '=', ctfId)
 		.leftJoin('flag as f', 'ch.flag', 'f.id')
 		.leftJoin('users as a', 'ch.author', 'a.id')
 		.select([
@@ -42,7 +52,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		]);
 
 	let editableChallenges;
-	if (!locals.user.is_admin) {
+	if (!locals.user.is_admin && !isOrg) {
 		editableChallenges = await editableChallengesQuery
 			.where('ch.author', '=', locals.user.id)
 			.execute();

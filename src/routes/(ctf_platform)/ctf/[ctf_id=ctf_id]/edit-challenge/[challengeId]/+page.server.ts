@@ -13,14 +13,24 @@ import { categories } from '$lib/db/constants';
 export const load: PageServerLoad = async ({ locals, params }) => {
 	const user = locals.user;
 	const challengeId = params.challengeId;
+	const ctfId = params.ctf_id;
 
 	if (!user) {
 		return redirect(303, '/login');
 	}
 
+	const org = await db
+		.selectFrom('ctf_organizers')
+		.where('ctf', '=', ctfId)
+		.where('user_id', '=', user.id)
+		.executeTakeFirst();
+
+	const isOrg = org !== undefined;
+
 	const editableChallengeQuery = db
 		.selectFrom('challenges as ch')
 		.where('challenge_id', '=', challengeId)
+		.where('ctf', '=', ctfId)
 		.leftJoin('flag as f', 'ch.flag', 'f.id')
 		.leftJoin('users as a', 'ch.author', 'a.id')
 		.select([
@@ -52,14 +62,15 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		]);
 
 	let editableChallenge;
-	if (!locals.user.is_admin) {
+	if (!locals.user.is_admin && !isOrg) {
 		editableChallenge = await editableChallengeQuery
 			.where('ch.author', '=', locals.user.id)
 			.executeTakeFirst();
 	} else {
 		editableChallenge = await editableChallengeQuery.executeTakeFirst();
+		console.log(editableChallenge);
 	}
-	console.log(editableChallenge);
+
 	if (editableChallenge === undefined) {
 		return error(404, { message: 'Challenge not found' });
 	}
@@ -72,10 +83,19 @@ export const actions = {
 		try {
 			const user = locals.user;
 			const challengeId = params.challengeId;
+			const ctfId = params.ctfId;
 
 			if (!user) {
 				return redirect(304, '/login');
 			}
+
+			const org = await db
+				.selectFrom('ctf_organizers')
+				.where('ctf', '=', ctfId)
+				.where('user_id', '=', user.id)
+				.executeTakeFirst();
+
+			const isOrg = org !== undefined;
 
 			const oldChallenge = await db
 				.selectFrom('challenges')
@@ -89,8 +109,8 @@ export const actions = {
 
 			const isAuthor = oldChallenge.author === locals.user?.id;
 
-			if (!user.is_admin && !isAuthor) {
-				return error(401, 'User not author of challenge or admin');
+			if (!user.is_admin && !isAuthor && !isOrg) {
+				return error(401, 'User not author of challenge, admin or organizer for CTF');
 			}
 
 			const formData = await request.formData();
@@ -137,7 +157,7 @@ export const actions = {
 					points,
 					challenge_category: mainCategory,
 					challenge_sub_categories: selectedCategoriesBitset,
-					approved: locals.user?.is_admin
+					approved: locals.user?.is_admin || isOrg
 				})
 				.where('challenge_id', '=', challengeId)
 				.returning('flag')
