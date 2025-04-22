@@ -28,13 +28,15 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 		)
 		// Main query: join challenges, ranked submissions, users, flag, and ctf_events.
 		.selectFrom('challenges as ch')
-		.where('ch.approved', '=', true)
 		.leftJoin('ranked_submissions as rs', 'ch.challenge_id', 'rs.challenge')
 		.leftJoin('users as u', 'rs.user_id', 'u.id')
 		.leftJoin('flag as f', 'ch.flag', 'f.id')
 		.leftJoin('ctf_events as ctf', 'ch.ctf', 'ctf.id')
 		.leftJoin('users as a', 'ch.author', 'a.id')
+		// For some reason both of the ch.approved are needed, or else there are some challs that slip through the gap
+		.where('ch.approved', '=', true)
 		.where(sql<boolean>`ctf.end_time IS NULL OR ctf.end_time < NOW()`)
+		.where('ch.approved', '=', true)
 		.groupBy([
 			'ch.challenge_id',
 			'ch.display_name',
