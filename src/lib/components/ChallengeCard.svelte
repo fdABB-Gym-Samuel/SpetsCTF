@@ -3,16 +3,7 @@
 	let { data } = $props();
 	let { challenge_data } = data;
 
-	let categories = [
-		'crypto',
-		'forensics',
-		'introduction',
-		'misc',
-		'osint',
-		'pwn',
-		'reversing',
-		'web'
-	];
+	import { categories } from '$lib/db/constants';
 </script>
 
 <main

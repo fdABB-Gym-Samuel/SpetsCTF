@@ -4,6 +4,7 @@
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
 	import { SendHorizontal } from '@lucide/svelte';
+	import { categories } from '$lib/db/constants';
 
 	let {
 		challenge_data = {
@@ -24,16 +25,6 @@
 		form
 	} = $props();
 
-	let categories = [
-		'crypto',
-		'forensics',
-		'introduction',
-		'misc',
-		'osint',
-		'pwn',
-		'reversing',
-		'web'
-	];
 	// Needs to be changed to handle when there are multiple commands that can be copied
 	let show_copied_message = $state(false);
 
