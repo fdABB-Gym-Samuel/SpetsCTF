@@ -28,17 +28,19 @@
 		resource_type: 'Website',
 		resource_content: ''
 	});
-
+	console.log(editableChallenge.resources);
 	let challenge_resources: Record<'Command' | 'Website', string[]> = $state({
 		Command: editableChallenge?.resources
-			.filter((res) => res.type === 'cmd')
+			.filter((res) => (res.type as unknown as 'cmd' | 'web' | 'file') === 'cmd')
 			.map((res) => res.content),
 		Website: editableChallenge?.resources
-			.filter((res) => res.type === 'web')
+			.filter((res) => (res.type as unknown as 'cmd' | 'web' | 'file') === 'web')
 			.map((res) => res.content)
 	});
 	let original_files: string[] = $state(
-		editableChallenge?.resources.filter((res) => res.type === 'file').map((res) => res.content)
+		editableChallenge?.resources
+			.filter((res) => (res.type as unknown as 'cmd' | 'web' | 'file') === 'file')
+			.map((res) => res.content)
 	);
 	// It just doenst want to work wihtout a separate array
 	let files: FileList | undefined = $state();

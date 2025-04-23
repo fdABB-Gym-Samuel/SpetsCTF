@@ -31,14 +31,16 @@
 
 	let challenge_resources: Record<'Command' | 'Website', string[]> = $state({
 		Command: unapprovedChallenge?.resources
-			.filter((res) => res.type === 'cmd')
+			.filter((res) => (res.type as unknown as 'cmd' | 'web' | 'file') === 'cmd')
 			.map((res) => res.content),
 		Website: unapprovedChallenge?.resources
-			.filter((res) => res.type === 'web')
+			.filter((res) => (res.type as unknown as 'cmd' | 'web' | 'file') === 'web')
 			.map((res) => res.content)
 	});
 	let original_files: string[] = $state(
-		unapprovedChallenge?.resources.filter((res) => res.type === 'file').map((res) => res.content)
+		unapprovedChallenge?.resources
+			.filter((res) => (res.type as unknown as 'cmd' | 'web' | 'file') === 'file')
+			.map((res) => res.content)
 	);
 	// It just doenst want to work wihtout a separate array
 	let files: FileList | undefined = $state();

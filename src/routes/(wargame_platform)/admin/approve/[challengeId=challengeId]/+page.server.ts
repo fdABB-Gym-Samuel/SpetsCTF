@@ -52,8 +52,8 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			'a.display_name as author',
 			'a.id as author_id',
 			// Get an array of resources for the challenge (ordered by resource id).
-			sql`
-                  COALESCE(
+			sql<Pick<ChallengeResources, 'type' | 'content'>[]>`
+                COALESCE(
                     (
                       SELECT JSON_AGG(
                         json_build_object('type', cr.type, 'content', cr.content)

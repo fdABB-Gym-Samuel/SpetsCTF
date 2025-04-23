@@ -1,4 +1,4 @@
-import type { PageServerLoad } from '../$types';
+import type { PageServerLoad } from './$types';
 import { error, redirect, fail } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
@@ -36,8 +36,8 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			'a.id as author_id',
 			sql<boolean>`ch.author = ${user.id}`.as('is_author'),
 			// Get an array of resources for the challenge (ordered by resource id).
-			sql`
-                  COALESCE(
+			sql<Pick<ChallengeResources, 'type' | 'content'>[]>`
+                COALESCE(
                     (
                       SELECT JSON_AGG(
                         json_build_object('type', cr.type, 'content', cr.content)
@@ -51,14 +51,11 @@ export const load: PageServerLoad = async ({ locals, params }) => {
                 `.as('resources')
 		]);
 
-	let editableChallenge;
 	if (!user.is_admin) {
-		editableChallenge = await editableChallengeQuery
-			.where('ch.author', '=', user.id)
-			.executeTakeFirst();
-	} else {
-		editableChallenge = await editableChallengeQuery.executeTakeFirst();
+		editableChallengeQuery.where('ch.author', '=', user.id);
 	}
+
+	const editableChallenge = await editableChallengeQuery.executeTakeFirst();
 
 	if (editableChallenge === undefined) {
 		return error(404, { message: 'Challenge not found' });

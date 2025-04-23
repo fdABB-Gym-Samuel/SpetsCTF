@@ -1,11 +1,11 @@
-import type { PageServerLoad } from '../../../../(wargame_platform)/$types';
+import { type PageServerLoad } from '../$types';
 import { error, redirect } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	const user = locals.user;
-	const ctfId = params.ctf_id;
+	const ctfId = Number(params.ctf_id);
 
 	if (!user) {
 		return redirect(303, '/login');
@@ -34,7 +34,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			'f.flag_format',
 			'a.display_name as author',
 			'a.id as author_id',
-			sql<boolean>`ch.author = ${locals.user.id}`.as('is_author'),
+			sql<boolean>`ch.author = ${user.id}`.as('is_author'),
 			// Get an array of resources for the challenge (ordered by resource id).
 			sql`
                   COALESCE(
@@ -52,10 +52,8 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		]);
 
 	let editableChallenges;
-	if (!locals.user.is_admin && !isOrg) {
-		editableChallenges = await editableChallengesQuery
-			.where('ch.author', '=', locals.user.id)
-			.execute();
+	if (!user.is_admin && !isOrg) {
+		editableChallenges = await editableChallengesQuery.where('ch.author', '=', user.id).execute();
 	} else {
 		editableChallenges = await editableChallengesQuery.execute();
 	}

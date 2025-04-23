@@ -1,5 +1,5 @@
-import type { PageServerLoad } from '../$types';
-import { error, redirect, fail } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
+import { error, redirect, fail, type ServerLoadEvent } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
 import { selectedCategoriesToBitset, validateCategory } from '$lib/db/functions';
@@ -12,8 +12,9 @@ import { categories } from '$lib/db/constants';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	const user = locals.user;
+	// This is giving an error that there is no challengeId in RouteParams, but there is and i do not konw how to fix it :(
 	const challengeId = params.challengeId;
-	const ctfId = params.ctf_id;
+	const ctfId = Number(params.ctf_id);
 
 	if (!user) {
 		return redirect(303, '/login');
@@ -44,9 +45,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			'f.flag',
 			'a.display_name as author',
 			'a.id as author_id',
-			sql<boolean>`ch.author = ${locals.user.id}`.as('is_author'),
+			sql<boolean>`ch.author = ${user.id}`.as('is_author'),
 			// Get an array of resources for the challenge (ordered by resource id).
-			sql`
+			sql<Pick<ChallengeResources, 'type' | 'content'>[]>`
                   COALESCE(
                     (
                       SELECT JSON_AGG(
@@ -62,9 +63,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		]);
 
 	let editableChallenge;
-	if (!locals.user.is_admin && !isOrg) {
+	if (!user.is_admin && !isOrg) {
 		editableChallenge = await editableChallengeQuery
-			.where('ch.author', '=', locals.user.id)
+			.where('ch.author', '=', user.id)
 			.executeTakeFirst();
 	} else {
 		editableChallenge = await editableChallengeQuery.executeTakeFirst();
@@ -83,7 +84,7 @@ export const actions = {
 		try {
 			const user = locals.user;
 			const challengeId = params.challengeId;
-			const ctfId = params.ctfId;
+			const ctfId = Number(params.ctf_id);
 
 			if (!user) {
 				return redirect(304, '/login');

@@ -57,9 +57,9 @@ CREATE TABLE ctf_organizers (
 CREATE TABLE challenges (
     challenge_id VARCHAR(256) PRIMARY KEY,
     points INT NOT NULL,
-    display_name VARCHAR(256),
+    display_name VARCHAR(256) NOT NULL,
     description TEXT,
-    challenge_category category DEFAULT 'misc',
+    challenge_category category DEFAULT 'misc' NOT NULL,
     -- This is basically a bitset storing the challenges
     -- The challenges are stored in an array, order matters!!! Its the same as the Enum for category, i.e alphabetical
     -- The list of challenges can be derived like this in js:
@@ -67,8 +67,8 @@ CREATE TABLE challenges (
     -- categories.filter((_, index) => (challenge_data.challenge_sub_categories.split("").reverse().join("")[index] === "1")) as category}
     --
     -- Where categories is the aforementioned array 
-    challenge_sub_categories BIT(8),
-    flag INT,
+    challenge_sub_categories BIT(8) NOT NULL,
+    flag INT NOT NULL,
     ctf INT,
     author UUID,
     anonymous_author BOOLEAN,

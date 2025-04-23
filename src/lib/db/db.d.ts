@@ -35,13 +35,13 @@ export interface Challenges {
 	anonymous_author: boolean | null;
 	approved: boolean | null;
 	author: string | null;
-	challenge_category: Generated<Category | null>;
+	challenge_category: Generated<Category>;
 	challenge_id: string;
-	challenge_sub_categories: string | null;
+	challenge_sub_categories: string;
 	ctf: number | null;
 	description: string | null;
-	display_name: string | null;
-	flag: number | null;
+	display_name: string;
+	flag: number;
 	points: number;
 }
 
