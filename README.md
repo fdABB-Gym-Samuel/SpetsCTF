@@ -19,6 +19,6 @@ Things still needed:
 - [x] Allow non-admin users to propose challenges before being validate by an admin
 - [x] Validate filenames and challenge_ids before adding them to resources (prevent pathtraversal)
 - [ ] Make leaderboards wrap on smaller screens
-- [ ] Let admins/orgs/author edit challenges
+- [x] Let admins/orgs/author edit challenges
 - [x] Let admins/orgs approve challenges
 - [ ] Let admins/orgs add new orgs to ctf

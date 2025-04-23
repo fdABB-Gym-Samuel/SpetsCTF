@@ -28,7 +28,7 @@ export const load = async ({ locals, params }: ServerLoadEvent) => {
 		.executeTakeFirst();
 
 	const isOrg = org !== undefined;
-	if (locals.user?.is_admin || isOrg) {
+	if (user.is_admin || isOrg) {
 		redirect(303, 'organizer/create-challenge');
 	}
 };

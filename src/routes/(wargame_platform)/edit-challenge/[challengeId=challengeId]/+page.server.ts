@@ -34,7 +34,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			'f.flag',
 			'a.display_name as author',
 			'a.id as author_id',
-			sql<boolean>`ch.author = ${locals.user.id}`.as('is_author'),
+			sql<boolean>`ch.author = ${user.id}`.as('is_author'),
 			// Get an array of resources for the challenge (ordered by resource id).
 			sql`
                   COALESCE(
@@ -52,9 +52,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		]);
 
 	let editableChallenge;
-	if (!locals.user.is_admin) {
+	if (!user.is_admin) {
 		editableChallenge = await editableChallengeQuery
-			.where('ch.author', '=', locals.user.id)
+			.where('ch.author', '=', user.id)
 			.executeTakeFirst();
 	} else {
 		editableChallenge = await editableChallengeQuery.executeTakeFirst();
@@ -72,7 +72,6 @@ export const actions = {
 		try {
 			const user = locals.user;
 			const challengeId = params.challengeId;
-			const ctfId = params.ctfId;
 
 			if (!user) {
 				return redirect(304, '/login');
@@ -88,7 +87,7 @@ export const actions = {
 				return fail(404, { message: 'Challenge not found' });
 			}
 
-			const isAuthor = oldChallenge.author === locals.user?.id;
+			const isAuthor = oldChallenge.author === user.id;
 
 			if (!user.is_admin && !isAuthor) {
 				return error(401, 'User not author of challenge or admin');
@@ -138,7 +137,7 @@ export const actions = {
 					points,
 					challenge_category: mainCategory,
 					challenge_sub_categories: selectedCategoriesBitset,
-					approved: locals.user?.is_admin
+					approved: user.is_admin
 				})
 				.where('challenge_id', '=', challengeId)
 				.returning('flag')
