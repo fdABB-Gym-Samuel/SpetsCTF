@@ -28,7 +28,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 
 	const isOrg = org !== undefined;
 
-	const editableChallengeQuery = db
+	const editableChallenge = await db
 		.selectFrom('challenges as ch')
 		.where('challenge_id', '=', challengeId)
 		.where('ctf', '=', ctfId)
@@ -60,19 +60,18 @@ export const load: PageServerLoad = async ({ locals, params }) => {
                     '[]'::json
                   )
                 `.as('resources')
-		]);
-
-	let editableChallenge;
-	if (!user.is_admin && !isOrg) {
-		editableChallenge = await editableChallengeQuery
-			.where('ch.author', '=', user.id)
-			.executeTakeFirst();
-	} else {
-		editableChallenge = await editableChallengeQuery.executeTakeFirst();
-	}
+		])
+		.executeTakeFirst();
 
 	if (editableChallenge === undefined) {
 		return error(404, { message: 'Challenge not found' });
+	}
+
+	if (!user.is_admin && !isOrg && editableChallenge.author_id !== user.id) {
+		return error(401, {
+			message:
+				'Challenges can only be edited by the author of a specific challenge, an admin or an organizer'
+		});
 	}
 
 	return { editableChallenge };
