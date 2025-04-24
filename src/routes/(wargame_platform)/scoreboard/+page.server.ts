@@ -39,36 +39,60 @@ const get_top_users = async () => {
 };
 
 const get_top_classes = async () => {
-	const result = db
-		.with('challenge_scores', (qb) =>
-			qb
-				.selectFrom('wargame_submissions as ws')
-				.innerJoin('users as u', 'ws.user_id', 'u.id')
-				.where('u.is_admin', 'is not', true)
-				.innerJoin('challenges as ch', 'ch.challenge_id', 'ws.challenge')
-				.leftJoin('ctf_events as ctf', 'ch.ctf', 'ctf.id')
-				.where(sql<boolean>`ctf.end_time IS NULL OR ctf.end_time < NOW()`)
-				.where('ch.approved', '=', true)
-				.where('ws.success', '=', true)
-				.where('u.is_admin', 'is not', true)
-				.select([
-					'u.represents_class as class',
-					'ws.challenge',
-					sql<number>`count(distinct ws.user_id)`.as('solves'),
-					'ch.points as base_points'
-				])
-				.groupBy(['u.represents_class', 'ws.challenge', 'ch.points'])
+	const result = await db
+		.with('solved', (eb) =>
+			eb
+				.selectFrom('wargame_submissions')
+				.select(['challenge', 'user_id'])
+				.innerJoin('challenges', 'wargame_submissions.challenge', 'challenges.challenge_id')
+				.where('wargame_submissions.success', '=', true)
+				.where('challenges.approved', '=', true)
+				.unionAll((eb2) =>
+					eb2
+						.selectFrom('ctf_submissions')
+						.select(['challenge', 'user_id'])
+						.innerJoin('challenges', 'ctf_submissions.challenge', 'challenges.challenge_id')
+						.leftJoin('ctf_events', 'challenges.ctf', 'ctf_events.id')
+						.where('ctf_submissions.success', '=', true)
+						.where('challenges.approved', '=', true)
+						.where((qb) =>
+							qb.or([qb('challenges.ctf', 'is', null), qb('ctf_events.end_time', '<', new Date())])
+						)
+				)
 		)
-		.selectFrom('classes as cl')
-		.leftJoin('challenge_scores as cs', 'cs.class', 'cl.name')
+
+		.with('per_ch', (eb) =>
+			eb
+				.selectFrom('solved')
+				.innerJoin('users', 'solved.user_id', 'users.id')
+				.innerJoin('classes', 'users.represents_class', 'classes.name')
+				.select([
+					sql`classes.name`.as('className'),
+					sql`solved.challenge`.as('challenge'),
+					sql`COUNT(DISTINCT solved.user_id)`.as('solved_count')
+				])
+				.where('users.is_admin', 'is not', true)
+				.groupBy(['classes.name', 'solved.challenge'])
+		)
+
+		.with('scored', (eb) =>
+			eb
+				.selectFrom('per_ch')
+				.innerJoin('challenges', 'per_ch.challenge', 'challenges.challenge_id')
+				.select([
+					'per_ch.className',
+					sql<number>`POWER(per_ch.solved_count::float, 0.25) * challenges.points`.as('score')
+				])
+		)
+
+		.selectFrom('classes')
+		.leftJoin('scored', 'classes.name', 'scored.className')
 		.select([
-			'cl.name as class_name',
-			sql<number>`round(coalesce(sum(cs.base_points * power(cs.solves, 0.25)), 0), 1)`.as(
-				'total_points'
-			)
+			'classes.name as className',
+			sql<number>`ROUND(COALESCE(SUM(scored.score), 0)::numeric, 1)`.as('totalPoints')
 		])
-		.groupBy('cl.name')
-		.orderBy('total_points', 'desc')
+		.groupBy('classes.name')
+		.orderBy('totalPoints desc')
 		.execute();
 
 	return result;

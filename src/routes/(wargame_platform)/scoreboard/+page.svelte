@@ -2,7 +2,7 @@
 	let { data } = $props();
 	let { users_scoreboard, classes_scoreboard } = data;
 
-	let original_classes = classes_scoreboard.map((class_obj) => class_obj.class_name);
+	let original_classes = classes_scoreboard.map((class_obj) => class_obj.className);
 	let include_classes = $state(original_classes);
 </script>
 
@@ -87,8 +87,8 @@
 							class="border-b-accent-light dark:border-b-accent-dark outline-accent-dark w-fit border-b-1 text-wrap break-words"
 						>
 							<td class="mt-2 h-12 px-2 text-left">{i + 1}</td>
-							<td class="mt-2 h-12 px-2 text-left break-words">{curr_class.class_name}</td>
-							<td class="mt-2 h-12 px-2 text-right">{curr_class.total_points}</td>
+							<td class="mt-2 h-12 px-2 text-left break-words">{curr_class.className}</td>
+							<td class="mt-2 h-12 px-2 text-right">{curr_class.totalPoints}</td>
 						</tr>
 					{/each}
 				</tbody>

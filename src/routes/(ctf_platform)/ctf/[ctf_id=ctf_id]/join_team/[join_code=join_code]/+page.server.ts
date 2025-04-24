@@ -20,7 +20,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 		const isOrg = org !== undefined;
 
 		if (isOrg || event.locals.user.is_admin) {
-			return error(403, { message: 'Orgs and admins cannot join CTFs' });
+			return { success: false, message: 'Orgs and admins cannot join CTFs' };
 		}
 
 		const join_code = event.params.join_code ?? '';
@@ -87,6 +87,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 
 		return { success: true, message: `Successfully joined team, ${team?.displayName}` };
 	} catch (err) {
-		return { succes: false, message: 'Something went wrong' };
+		const errorTyped = err as Error;
+		return error(500, { message: 'Something went wrong' });
 	}
 };
