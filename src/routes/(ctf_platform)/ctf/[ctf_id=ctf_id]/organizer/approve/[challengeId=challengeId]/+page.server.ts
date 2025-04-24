@@ -23,6 +23,7 @@ let categories = [
 export const load: PageServerLoad = async ({ locals, params }) => {
 	const user = locals.user;
 	const ctfId = Number(params.ctf_id);
+	// @ts-expect-error
 	const challengeId = params.challengeId;
 
 	if (!user) {
@@ -317,8 +318,8 @@ export const actions = {
 
 			return { success: true, message: 'Challenge successfully approved' };
 		} catch (err) {
-			console.error(err);
-			return fail(500, { message: err.message });
+			const errorTyped = err as Error;
+			return fail(500, { message: errorTyped.message });
 		}
 	}
 };

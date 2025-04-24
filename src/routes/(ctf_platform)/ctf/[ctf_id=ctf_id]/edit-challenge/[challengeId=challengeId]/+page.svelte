@@ -28,7 +28,6 @@
 		resource_type: 'Website',
 		resource_content: ''
 	});
-	console.log(editableChallenge.resources);
 	let challenge_resources: Record<'Command' | 'Website', string[]> = $state({
 		Command: editableChallenge?.resources
 			.filter((res) => (res.type as unknown as 'cmd' | 'web' | 'file') === 'cmd')

@@ -12,6 +12,7 @@ import { categories } from '$lib/db/constants';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	const user = locals.user;
+	// @ts-expect-error
 	const challengeId = params.challengeId;
 
 	if (!user) {
@@ -150,8 +151,11 @@ export const actions = {
 					flag_format: flagFormat
 				})
 				.where('id', '=', updatedChallenge.flag)
-				.executeTakeFirstOrThrow();
+				.executeTakeFirst();
 
+			if (updatedFlag === undefined) {
+				return fail(500, { message: 'Failed to save new flag' });
+			}
 			// const authorAnonymous = formData.get("stay_anonymous") === "1"
 			const originalFilesNew = formData.getAll('original_files') as string[];
 			const newFiles = formData.getAll('files') as File[];
@@ -286,7 +290,8 @@ export const actions = {
 
 			return { success: true, message: 'Challenge successfully approved' };
 		} catch (err) {
-			return fail(500, { message: err.message });
+			const errTyped = err as Error;
+			return fail(500, { message: 'Unable to save file' });
 		}
 	}
 };

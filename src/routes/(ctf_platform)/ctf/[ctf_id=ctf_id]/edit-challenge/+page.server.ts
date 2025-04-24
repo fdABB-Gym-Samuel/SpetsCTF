@@ -58,6 +58,5 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		editableChallenges = await editableChallengesQuery.execute();
 	}
 
-	console.log(editableChallenges);
 	return { editableChallenges };
 };

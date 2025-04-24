@@ -42,7 +42,7 @@ CREATE TABLE flag (
 CREATE TABLE ctf_events (
     id SERIAL PRIMARY KEY,
     short_name VARCHAR(256) NOT NULL,
-    display_name TEXT,
+    display_name TEXT NOT NULL,
     start_time TIMESTAMPTZ NOT NULL,
     end_time TIMESTAMPTZ NOT NULL,
     max_team_size SMALLINT

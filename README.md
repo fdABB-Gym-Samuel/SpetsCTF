@@ -22,3 +22,5 @@ Things still needed:
 - [x] Let admins/orgs/author edit challenges
 - [x] Let admins/orgs approve challenges
 - [ ] Let admins/orgs add new orgs to ctf
+- [ ] Make code DRYer
+- [ ] Write API endpoints for people who might want to create separate clients, even if nobody will it's nice to have.

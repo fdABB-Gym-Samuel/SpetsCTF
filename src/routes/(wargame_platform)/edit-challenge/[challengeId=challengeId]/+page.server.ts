@@ -290,7 +290,8 @@ export const actions = {
 				: (message = 'Challenge successfully edited and has been submitted for review');
 			return { success: true, message };
 		} catch (err) {
-			return fail(500, { message: err.message });
+			const errorTyped = err as Error;
+			return fail(500, { message: errorTyped.message });
 		}
 	}
 };
