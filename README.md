@@ -26,3 +26,5 @@ Things still needed:
 - [ ] Write API endpoints for people who might want to create separate clients, even if nobody will it's nice to have.
 - [ ] CTF countdown doesnt work correctly, seemingly when days remaining is greater than 10 (tested with something in the 300s)
 - [ ] Edit-challenge shows an error page on success
+- [ ] Make leaderboard for ctf page
+- [ ] Make a podium for top 3 of a ctf?

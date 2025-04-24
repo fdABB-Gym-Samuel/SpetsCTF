@@ -316,5 +316,5 @@
 		{/if}
 	{/each}
 
-	<button type="submit" form="new_challenge_form" class="mt-5">Submit</button>
+	<button type="submit" form="new_challenge_form" class="mt-5">Approve</button>
 </div>
