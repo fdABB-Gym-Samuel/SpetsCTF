@@ -98,7 +98,7 @@
 
 <div
 	bind:this={componentRoot}
-	class="backdrop bg-overlay prevent-default fixed top-0 left-0 flex h-screen w-screen items-center justify-center pb-32"
+	class="backdrop bg-overlay prevent-default fixed top-0 left-0 flex h-screen w-screen items-center justify-center overflow-y-scroll pt-16"
 >
 	<button
 		type="button"
@@ -111,7 +111,7 @@
 		aria-label="Close challenge details"
 	></button>
 	<dialog
-		class="bg-bg-800 gsap-opacity relative m-auto flex w-[85%] max-w-[1000px] flex-col rounded-lg px-16 py-12"
+		class="bg-bg-800 gsap-opacity relative m-auto flex w-[85%] max-w-[1000px] flex-col overflow-y-scroll rounded-lg px-4 py-12 sm:px-8 md:px-10 lg:px-16"
 	>
 		<section class="-mt-2 mb-12 flex w-full justify-between">
 			<!-- TODO: add field for date -->
@@ -130,10 +130,10 @@
 			</h3>
 		</section>
 		<section
-			class="middle text-foreground-dark mb-24 flex h-full w-full flex-row justify-between gap-2 overflow-hidden"
+			class="middle text-foreground-dark mb-24 flex h-full w-full flex-row flex-wrap justify-center gap-y-8 overflow-hidden"
 		>
-			<div class="w-1/2">
-				<div class="mb-8 flex flex-col">
+			<div class="w-1/2 min-w-70 flex-grow">
+				<div class="mb-4 flex flex-col">
 					<p class="text-text-200">Resources:</p>
 					<ul class="resources flex flex-col gap-0 pl-4">
 						{#each challenge_data.resources as resource}
@@ -187,19 +187,21 @@
 						{challenge_data.author ? challenge_data.author : 'Anonymous'}
 					</p>
 				</div>
-				<p
-					class="challenge-description text-foreground-light dark:text-foreground-dark mr-1 max-h-full overflow-scroll"
-					class:text-background-light={challenge_data.solved}
-				>
-					{challenge_data.challenge_description}
-				</p>
+				<div class="description">
+					<p class="text-text-200 inline-block text-sm">Description:&nbsp;</p>
+					<p
+						class="challenge-description text-foreground-light dark:text-foreground-dark mr-1 max-h-full overflow-scroll"
+					>
+						{challenge_data.challenge_description}
+					</p>
+				</div>
 			</div>
-			<div class="right w-1/2">
+			<div class="right w-1/2 min-w-70 flex-grow">
 				{#if !challenge_data.solved}
 					<form
 						action={`/api/submit/${challenge_data.challenge_id}`}
 						method="POST"
-						class="flag-submission-form"
+						class="flag-submission-form max-w-full"
 						use:enhance
 					>
 						<label for="flag" class="text-sm">Submit flag</label>
@@ -245,17 +247,21 @@
 				</div>
 			</div>
 		</section>
-		<section class="flex w-full justify-between">
-			<ul class="categroies flex w-full flex-row flex-wrap">
+		<section class="flex w-full flex-wrap justify-between gap-x-12 gap-y-4">
+			<ul
+				class="categories @container flex h-fit w-fit flex-row flex-wrap"
+				style="container-type:normal"
+			>
 				{#each filteredCategories as category, index}
 					<li
 						class="text-text-100 px-7 py-1 text-xs
             {index === 0 ? 'bg-gradient-100 rounded-l-xl rounded-bl-xl' : ''}
             {index === 1 ? 'bg-gradient-200' : ''}
             {index === 2 ? 'bg-gradient-300' : ''}
+			{index > 2 ? 'bg-neutral-800' : ''}
             {index === filteredCategories.length - 1 ? 'rounded-r-xl rounded-br-xl' : ''}"
 					>
-						<p># {capitalizeFirstLetter(category)}</p>
+						<p>{capitalizeFirstLetter(category)}</p>
 					</li>
 				{/each}
 			</ul>

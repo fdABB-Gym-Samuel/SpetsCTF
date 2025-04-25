@@ -184,6 +184,12 @@ h2 {
 	box-shadow: 92px 4px 64px var(--color-inner-shadow) inset;
 }
 
+@container (max-height: 24px) {
+	.categories li {
+		border-radius: 0; /* Tailwind equivalent: rounded-none */
+	}
+}
+
 @layer components {
 	.link {
 		@apply relative inline-block transition-all duration-500;
