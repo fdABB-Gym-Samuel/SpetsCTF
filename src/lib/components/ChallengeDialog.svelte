@@ -112,8 +112,6 @@
 	></button>
 	<dialog
 		class="bg-bg-800 gsap-opacity relative m-auto flex w-[85%] max-w-[1000px] flex-col rounded-lg px-16 py-12"
-		class:dark:bg-challenge-solved-dark={challenge_data.solved}
-		class:bg-challenge-solved-light={challenge_data.solved}
 	>
 		<section class="-mt-2 mb-12 flex w-full justify-between">
 			<!-- TODO: add field for date -->
@@ -127,11 +125,7 @@
 			</button>
 		</section>
 		<section class="top mb-6 flex w-full items-center justify-between">
-			<h3
-				class="challenge-name text-text-100 text-xl font-bold"
-				class:dark:text-background-dark={challenge_data.solved}
-				class:text-background-light={challenge_data.solved}
-			>
+			<h3 class="challenge-name text-text-100 text-xl font-bold">
 				{challenge_data.challenge_name}
 			</h3>
 		</section>

@@ -85,7 +85,7 @@
 					{capitalizeFirstLetter(category)}
 				</h3>
 				{#if challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()).length > 0}
-					<ul class="mb-12 flex gap-8">
+					<ul class="mb-12 flex flex-wrap gap-8">
 						{#each challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challenge_data}
 							<li class="gsap-left-right-opacity min-h-35 min-w-65">
 								<a

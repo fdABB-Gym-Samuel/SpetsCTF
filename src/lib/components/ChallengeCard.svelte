@@ -49,14 +49,15 @@
 				</p>
 			</div>
 		</section>
-		<section class="flex items-center">
+		<section class="justify arounditems-center flex">
 			<ul class="categroies flex w-full flex-row flex-wrap">
 				{#each displayedCategories as category, index}
 					<li
-						class="text-text-100 px-7 py-1 text-xs
+						class="text-text-100 px-4 py-1 text-xs
             {index === 0 ? 'bg-gradient-100 rounded-l-xl rounded-bl-xl' : ''}
             {index === 1 ? 'bg-gradient-200' : ''}
-            {index === 2 ? 'bg-gradient-300 rounded-r-xl rounded-br-xl' : ''}"
+            {index === 2 ? 'bg-gradient-300 rounded-r-xl rounded-br-xl' : ''}
+            {index === displayedCategories.length - 1 ? 'rounded-r-xl rounded-br-xl' : ''}"
 					>
 						<p># {capitalizeFirstLetter(category)}</p>
 					</li>
@@ -98,9 +99,3 @@
 		</div>
 	</section> -->
 </article>
-
-<style>
-	#points {
-		color: lab(100% 100% 100%);
-	}
-</style>

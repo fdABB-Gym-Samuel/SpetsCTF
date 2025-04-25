@@ -39,10 +39,10 @@
 
 <header>
 	<nav
-		class="fixed top-4 left-0 z-10 flex w-full flex-row items-center justify-between px-10 *:w-1/3"
+		class="bg-bg-900 fixed top-0 left-0 z-10 flex h-15 w-full flex-row items-center justify-between px-10 *:w-1/3"
 	>
 		<div class="left flex flex-row items-center">
-			<div class="logo-continer relative mr-4">
+			<div class="logo-continer relative mr-4 flex justify-end">
 				<svg
 					viewBox="0 0 180 100"
 					preserveAspectRatio="xMidYMin slice"
