@@ -1,5 +1,5 @@
 import type { Actions } from './$types';
-import { fail, error, type ServerLoadEvent } from '@sveltejs/kit';
+import { fail, error, type ServerLoadEvent, redirect } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import {
 	validateCategory,
@@ -11,35 +11,32 @@ import type { Insertable } from 'kysely';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import sanitize from 'sanitize-filename';
+import { categories } from '$lib/db/constants';
 
 // export const ssr = false
-let categories = [
-	'crypto',
-	'forensics',
-	'introduction',
-	'misc',
-	'osint',
-	'pwn',
-	'reversing',
-	'web'
-];
 
 export const load = async ({ locals }: ServerLoadEvent) => {
 	if (locals.user?.is_admin !== true) {
-		error(401, { message: 'Not authorized' });
+		return redirect(303, '/login');
 	}
 };
 
 export const actions = {
 	default: async ({ request, locals }) => {
+		if (locals.user?.is_admin !== true) {
+			return fail(401, { message: 'Not authorized' });
+		}
 		try {
+			if (locals.user?.is_admin !== true) {
+				return fail(401, { message: 'Not authorized' });
+			}
 			const formData = await request.formData();
 
 			const display_name = formData.get('display_name')?.toString() ?? null;
 			if (!display_name) {
 				return fail(422, { message: 'No display name' });
 			}
-			const challenge_id = get_challenge_id_from_display_name(display_name);
+			const challenge_id = await get_challenge_id_from_display_name(display_name);
 
 			const challenge_category: Category = validateCategory(
 				formData.get('challenge_category')?.toString() ?? ''
@@ -65,7 +62,10 @@ export const actions = {
 			if (!points) {
 				return fail(422, { message: 'Cannot insert challenge with no points!' });
 			}
-			const pointsInt = parseInt(points);
+			const pointsInt = Number(points);
+			if (pointsInt < 0) {
+				return fail(400, { message: 'Points must be a non-negative integer' });
+			}
 			const flag = formData.get('flag')?.toString() ?? '';
 			if (!flag) {
 				return fail(422, { message: 'You need to provide flag.' });

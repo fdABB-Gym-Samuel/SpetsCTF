@@ -1,5 +1,5 @@
 import { db } from '$lib/db/database.js';
-import type { RequestEvent } from '@sveltejs/kit';
+import { error, type RequestEvent } from '@sveltejs/kit';
 import fs from 'fs/promises';
 import { sql } from 'kysely';
 import path from 'path';
@@ -15,8 +15,24 @@ export async function GET({ params }: RequestEvent) {
 		.where('challenges.challenge_id', '=', challengeId)
 		.executeTakeFirst();
 
-	if (ctf?.hasStarted) {
+	if (ctf === undefined) {
+		return error(404, { message: 'CTF not found' });
+	}
+
+	if (ctf.hasStarted) {
 		try {
+			const challenge = await db
+				.selectFrom('challenges')
+				.select('approved')
+				.where('challenge_id', '=', challengeId)
+				.executeTakeFirstOrThrow();
+
+			if (!challenge.approved) {
+				return error(403, {
+					message:
+						"Challenge hasn't been approved, all resources belonging to this file have not been confirmed to be safe."
+				});
+			}
 			const filepath = path.join(process.cwd(), 'files', challengeId, filename);
 			const file = await fs.readFile(filepath);
 			return new Response(file, {
@@ -27,10 +43,9 @@ export async function GET({ params }: RequestEvent) {
 				}
 			});
 		} catch (error) {
-			console.error('Error reading file:', error);
-			return new Response('File not found', { status: 404 });
+			throw error;
 		}
 	} else {
-		return new Response("🤓☝️ Erm, ackshually, the CTF hasn't started yet. 🤓☝️", { status: 400 });
+		return new Response("🤓☝️ Erm, ackshually, the CTF hasn't started yet. 🤓☝️", { status: 403 });
 	}
 }

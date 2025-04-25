@@ -1,5 +1,5 @@
 <script>
-  let { color = "bg-seperator" } = $props();
+	let { color = 'bg-seperator' } = $props();
 </script>
 
-<div class="w-full h-1 rounded-full {color}"></div>
+<div class="h-1 w-full rounded-full {color}"></div>

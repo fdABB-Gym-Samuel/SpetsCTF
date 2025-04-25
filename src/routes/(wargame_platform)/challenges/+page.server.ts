@@ -1,7 +1,10 @@
-import type { ServerLoadEvent } from '@sveltejs/kit';
+import { type ServerLoadEvent, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
+import { type Insertable } from 'kysely';
+import type { WargameSubmissions } from '$lib/db/db';
+import { get_flag_of_challenge } from '$lib/db/functions';
 
 export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 	const user_id = locals.user?.id;
@@ -11,6 +14,8 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 		.with('unique_success', (qb) =>
 			qb
 				.selectFrom('wargame_submissions')
+				.innerJoin('users', 'wargame_submissions.user_id', 'users.id')
+				.where('is_admin', '!=', true)
 				.select(['challenge', 'user_id'])
 				.select(sql`MIN(time)`.as('first_time'))
 				.where('success', '=', true)
@@ -30,7 +35,10 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 		.leftJoin('flag as f', 'ch.flag', 'f.id')
 		.leftJoin('ctf_events as ctf', 'ch.ctf', 'ctf.id')
 		.leftJoin('users as a', 'ch.author', 'a.id')
+		// For some reason both of the ch.approved are needed, or else there are some challs that slip through the gap
+		.where('ch.approved', '=', true)
 		.where(sql<boolean>`ctf.end_time IS NULL OR ctf.end_time < NOW()`)
+		.where('ch.approved', '=', true)
 		.groupBy([
 			'ch.challenge_id',
 			'ch.display_name',
@@ -43,15 +51,28 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 			'f.flag_format',
 			'ctf.end_time'
 		])
-		.select([
+		.select((eb) => [
 			'ch.challenge_id',
 			'ch.display_name as challenge_name',
 			'ch.description as challenge_description',
 			'ch.challenge_category',
 			'ch.challenge_sub_categories',
 			'ch.points',
-			'a.display_name as author',
-			'a.id as author_id',
+			eb
+				.case()
+				.when(sql.ref('ch.anonymous_author'), '=', true)
+				.then(sql.lit('Anonymous'))
+				.else(sql.ref('a.display_name'))
+				.end()
+				.as('author'),
+			// 'a.id as author_id',
+			eb
+				.case()
+				.when(sql.ref('ch.anonymous_author'), '=', true)
+				.then(sql.lit(null))
+				.else(sql.ref('a.id'))
+				.end()
+				.as('author_id'),
 			'f.flag_format',
 			// Aggregate up to the first 5 solver display_names into a JSON array, ordered by submission time.
 			sql`
@@ -95,4 +116,84 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 		.execute();
 
 	return { challenges };
+};
+
+export const actions = {
+	submit: async ({ request, locals, params }) => {
+		try {
+			const user = locals.user;
+
+			if (!user) {
+				return redirect(304, '/login');
+			}
+
+			const formData = await request.formData();
+			const challengeId = formData.get('challenge_id') as string;
+			const submittedFlag = formData.get('flag') as string;
+
+			if (!challengeId) {
+				return fail(400, { message: 'Challenge_id parameter missing' });
+			}
+
+			const challengeCtf = await db
+				.selectFrom('challenges')
+				.select('ctf')
+				.where('challenge_id', '=', challengeId)
+				.executeTakeFirst();
+
+			if (challengeCtf && challengeCtf.ctf) {
+				const ctf = await db
+					.selectFrom('ctf_events')
+					.select(['end_time'])
+					.where('id', '=', challengeCtf.ctf)
+					.executeTakeFirst();
+
+				if (ctf === undefined) {
+					return fail(404, { message: 'Challenge belongs to CTF that could not be found' });
+				}
+				const currentTime = new Date();
+				const ctfHasEnded = currentTime > ctf?.end_time;
+				// User should submit this request through the ctf route
+				if (!ctfHasEnded) {
+					throw redirect(307, `/ctf/${challengeCtf.ctf}/challenges?/submit`);
+				}
+			}
+
+			const correctFlag = await get_flag_of_challenge(challengeId);
+			if (!correctFlag.challengeExists) {
+				return fail(404, { message: 'Challenge not found' });
+			}
+			if (!correctFlag.flagExists) {
+				return fail(404, { message: 'Flag of challenge not found' });
+			}
+
+			if (!correctFlag.flag) return fail(404, { message: 'Flag of challenge not found' });
+
+			const flagIsCorrect = submittedFlag === correctFlag.flag;
+
+			let submission: Insertable<WargameSubmissions> = {
+				challenge: challengeId,
+				user_id: user.id,
+				time: new Date(),
+				success: flagIsCorrect,
+				submitted_data: submittedFlag
+			};
+
+			const submissionResult = await db
+				.insertInto('wargame_submissions')
+				.values(submission)
+				.executeTakeFirst();
+
+			if (submissionResult === undefined) {
+				return fail(500, { message: 'Youre submission could not be recorded, please try again.' });
+			}
+
+			let message;
+			flagIsCorrect ? (message = 'Correct flag') : (message = 'Incorrect flag');
+
+			return { success: flagIsCorrect, message };
+		} catch (err) {
+			throw err;
+		}
+	}
 };

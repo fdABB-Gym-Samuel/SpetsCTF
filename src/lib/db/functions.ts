@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { Category, UserSessions, Users } from './db';
 import { db } from './database';
+import { sql } from 'kysely';
 import type { Insertable, Selectable } from 'kysely';
 import sanitize from 'sanitize-filename';
 import { randomUUID } from 'crypto';
@@ -17,13 +18,14 @@ export function validateCategory(value: any): Category {
 		return 'misc' as Category;
 	}
 }
-export function get_challenge_id_from_display_name(display_name: string) {
+export async function get_challenge_id_from_display_name(display_name: string) {
 	const unsanitzed_challenge_id = display_name.toLowerCase().replace(/ /g, '_');
-	const query = db
+	const query = await db
 		.selectFrom('challenges')
-		.where('challenge_id', '=', sanitize(unsanitzed_challenge_id));
+		.where('challenge_id', '=', sanitize(unsanitzed_challenge_id))
+		.executeTakeFirst();
 
-	if (query.execute.length > 0) {
+	if (query !== undefined) {
 		return sanitize(unsanitzed_challenge_id + randomUUID());
 	}
 	return sanitize(unsanitzed_challenge_id);
@@ -161,3 +163,29 @@ export function selectedCategoriesToBitset(
 	});
 	return bitset.toString(2).padStart(8, '0');
 }
+
+export const get_flag_of_challenge = async (challenge_id: string) => {
+	const flag_object = await db
+		.selectFrom('challenges')
+		.select('flag')
+		.where('challenge_id', '=', challenge_id)
+		.where('approved', '=', true)
+		.executeTakeFirst();
+
+	if (!flag_object) {
+		return { flag: '', challengeExists: false, flagExists: false };
+	}
+	const flag_id = flag_object['flag'];
+
+	const flag = await db
+		.selectFrom('flag')
+		.select(['flag', sql<boolean>`true`.as('challengeExists'), sql<boolean>`true`.as('flagExists')])
+		.where('id', '=', flag_id)
+		.executeTakeFirst();
+
+	if (flag === undefined) {
+		return { flag: '', challengeExists: true, flagExists: false };
+	}
+
+	return flag;
+};

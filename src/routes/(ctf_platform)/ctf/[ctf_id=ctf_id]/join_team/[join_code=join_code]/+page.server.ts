@@ -10,6 +10,19 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 		}
 
 		const ctfId = Number(event.params.ctf_id);
+
+		let org = await db
+			.selectFrom('ctf_organizers')
+			.where('ctf', '=', ctfId)
+			.where('user_id', '=', event.locals.user.id)
+			.executeTakeFirst();
+
+		const isOrg = org !== undefined;
+
+		if (isOrg || event.locals.user.is_admin) {
+			return { success: false, message: 'Orgs and admins cannot join CTFs' };
+		}
+
 		const join_code = event.params.join_code ?? '';
 
 		const ctf = await db
@@ -74,6 +87,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 
 		return { success: true, message: `Successfully joined team, ${team?.displayName}` };
 	} catch (err) {
-		return { succes: false, message: 'Something went wrong' };
+		const errorTyped = err as Error;
+		return error(500, { message: 'Something went wrong' });
 	}
 };

@@ -42,18 +42,24 @@ CREATE TABLE flag (
 CREATE TABLE ctf_events (
     id SERIAL PRIMARY KEY,
     short_name VARCHAR(256) NOT NULL,
-    display_name TEXT,
+    display_name TEXT NOT NULL,
     start_time TIMESTAMPTZ NOT NULL,
     end_time TIMESTAMPTZ NOT NULL,
     max_team_size SMALLINT
 );
 
+CREATE TABLE ctf_organizers (
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    ctf INT NOT NULL REFERENCES ctf_events(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, ctf)
+);
+
 CREATE TABLE challenges (
     challenge_id VARCHAR(256) PRIMARY KEY,
     points INT NOT NULL,
-    display_name VARCHAR(256),
+    display_name VARCHAR(256) NOT NULL,
     description TEXT,
-    challenge_category category DEFAULT 'misc',
+    challenge_category category DEFAULT 'misc' NOT NULL,
     -- This is basically a bitset storing the challenges
     -- The challenges are stored in an array, order matters!!! Its the same as the Enum for category, i.e alphabetical
     -- The list of challenges can be derived like this in js:
@@ -61,8 +67,8 @@ CREATE TABLE challenges (
     -- categories.filter((_, index) => (challenge_data.challenge_sub_categories.split("").reverse().join("")[index] === "1")) as category}
     --
     -- Where categories is the aforementioned array 
-    challenge_sub_categories BIT(8),
-    flag INT,
+    challenge_sub_categories BIT(8) NOT NULL,
+    flag INT NOT NULL,
     ctf INT,
     author UUID,
     anonymous_author BOOLEAN,
@@ -122,7 +128,8 @@ CREATE TABLE challenge_resources (
     challenge VARCHAR(256) NOT NULL,
     type challenge_resource_type NOT NULL DEFAULT 'file',
     content TEXT NOT NULL,
-    FOREIGN KEY (challenge) REFERENCES challenges(challenge_id) ON DELETE CASCADE
+    FOREIGN KEY (challenge) REFERENCES challenges(challenge_id) ON DELETE CASCADE,
+    UNIQUE (challenge, type, content)
 );
 
 CREATE TABLE user_sessions (

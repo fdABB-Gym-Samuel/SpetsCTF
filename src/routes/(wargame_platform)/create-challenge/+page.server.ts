@@ -11,20 +11,14 @@ import type { Insertable } from 'kysely';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import sanitize from 'sanitize-filename';
+import { categories } from '$lib/db/constants';
 
 // export const ssr = false
-let categories = [
-	'crypto',
-	'forensics',
-	'introduction',
-	'misc',
-	'osint',
-	'pwn',
-	'reversing',
-	'web'
-];
 
 export const load = async ({ locals }: ServerLoadEvent) => {
+	if (!locals.user) {
+		return redirect(303, '/login');
+	}
 	if (locals.user?.is_admin === true) {
 		redirect(303, '/admin/create-challenge');
 	}
@@ -39,7 +33,7 @@ export const actions = {
 			if (!display_name) {
 				return fail(422, { message: 'No display name' });
 			}
-			const challenge_id = get_challenge_id_from_display_name(display_name);
+			const challenge_id = await get_challenge_id_from_display_name(display_name);
 
 			const challenge_category: Category = validateCategory(
 				formData.get('challenge_category')?.toString() ?? ''
@@ -65,7 +59,10 @@ export const actions = {
 			if (!points) {
 				return fail(422, { message: 'Cannot insert challenge with no points!' });
 			}
-			const pointsInt = parseInt(points);
+			const pointsInt = Number(points);
+			if (pointsInt < 0) {
+				return fail(400, { message: 'Points must be a non-negative integer' });
+			}
 			const flag = formData.get('flag')?.toString() ?? '';
 			if (!flag) {
 				return fail(422, { message: 'You need to provide flag.' });

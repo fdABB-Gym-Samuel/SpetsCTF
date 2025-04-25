@@ -14,7 +14,6 @@
 
 <Navbar {user} {translations} {links}></Navbar>
 
-<main
->
+<main>
 	{@render children()}
 </main>

@@ -35,13 +35,13 @@ export interface Challenges {
 	anonymous_author: boolean | null;
 	approved: boolean | null;
 	author: string | null;
-	challenge_category: Generated<Category | null>;
+	challenge_category: Generated<Category>;
 	challenge_id: string;
-	challenge_sub_categories: string | null;
+	challenge_sub_categories: string;
 	ctf: number | null;
 	description: string | null;
-	display_name: string | null;
-	flag: number | null;
+	display_name: string;
+	flag: number;
 	points: number;
 }
 
@@ -57,6 +57,11 @@ export interface CtfEvents {
 	max_team_size: number | null;
 	short_name: string;
 	start_time: Timestamp;
+}
+
+export interface CtfOrganizers {
+	ctf: number;
+	user_id: string;
 }
 
 export interface CtfSubmissions {
@@ -117,6 +122,7 @@ export interface DB {
 	challenges: Challenges;
 	classes: Classes;
 	ctf_events: CtfEvents;
+	ctf_organizers: CtfOrganizers;
 	ctf_submissions: CtfSubmissions;
 	ctf_teams: CtfTeams;
 	ctf_teams_members: CtfTeamsMembers;
