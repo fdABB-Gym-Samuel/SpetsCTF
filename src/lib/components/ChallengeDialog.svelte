@@ -79,7 +79,7 @@
 		gsapContext = playAnimations(componentRoot);
 
 		keydownHandler = (e: KeyboardEvent) => {
-			if (e.key === 'Escape' || e.key === 'Enter') {
+			if (e.key === 'Escape' || e.key === ' ') {
 				closeDialog();
 			}
 		};
@@ -198,12 +198,7 @@
 			</div>
 			<div class="right w-1/2 min-w-70 flex-grow">
 				{#if !challenge_data.solved}
-					<form
-						action={`/api/submit/${challenge_data.challenge_id}`}
-						method="POST"
-						class="flag-submission-form max-w-full"
-						use:enhance
-					>
+					<form action="?/submit" method="POST" class="flag-submission-form max-w-full" use:enhance>
 						<label for="flag" class="text-sm">Submit flag</label>
 						<div class="relative mt-2 mb-8">
 							<input
@@ -212,6 +207,7 @@
 								class="flag bg-bg-600 w-full rounded-xl px-6 py-1.5 font-mono focus:outline-none"
 								placeholder={challenge_data.flag_format}
 							/>
+							<input type="hidden" value={challenge_data.challenge_id} name="challenge_id" />
 							<div class="absolute top-1/2 right-0 -translate-y-1/2 transform">
 								<Button
 									label="Submit"

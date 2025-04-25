@@ -19,17 +19,18 @@
 	});
 </script>
 
-<div class="content">
+<div class="content bg-bg-900">
 	<h1 class="route-title">{translations.challenges}</h1>
 	<article class="challenge-container w-full">
 		{#each categories as category}
 			<section class="category-container flex flex-col">
-				<h3 class="category-header my-4 border-b-2 border-[var(--color-accent-dark)] pb-1">
+				<h3 class="category-header my-4 border-b-2 pb-1">
 					{category}
 				</h3>
 
 				{#if challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()).length > 0}
-					<ul class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
+					<!-- <ul class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4"> -->
+					<ul class="flex flex-wrap gap-4">
 						{#each challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challenge_data}
 							<li class="min-h-35 min-w-65">
 								<a

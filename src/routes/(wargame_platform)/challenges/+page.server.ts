@@ -141,6 +141,7 @@ export const actions = {
 				.where('challenge_id', '=', challengeId)
 				.executeTakeFirst();
 
+			let useCTFSubmissions;
 			if (challengeCtf && challengeCtf.ctf) {
 				const ctf = await db
 					.selectFrom('ctf_events')
@@ -157,7 +158,23 @@ export const actions = {
 				if (!ctfHasEnded) {
 					throw redirect(307, `/ctf/${challengeCtf.ctf}/challenges?/submit`);
 				}
+
+				useCTFSubmissions = true;
 			}
+			let submissionTable;
+			useCTFSubmissions !== true
+				? (submissionTable = 'wargame_submissions')
+				: (submissionTable = 'ctf_submissions');
+
+			const successfulSubmission = await db
+				.selectFrom(submissionTable)
+				.where('user_id', '=', user.id)
+				.where('challenge', '=', challengeId)
+				.where('success', '=', true)
+				.executeTakeFirst();
+
+			if (successfulSubmission !== undefined)
+				return fail(403, { message: 'User has already solved challenge' });
 
 			const correctFlag = await get_flag_of_challenge(challengeId);
 			if (!correctFlag.challengeExists) {

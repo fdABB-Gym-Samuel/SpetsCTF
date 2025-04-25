@@ -2,8 +2,10 @@ import { db } from '$lib/db/database';
 import { error, fail, redirect, type ServerLoadEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from '../$types';
 import { sql, type Insertable } from 'kysely';
-import { get_flag_of_challenge } from '$lib/db/functions';
+import { get_flag_of_challenge, selectedCategoriesToBitset } from '$lib/db/functions';
 import type { CtfSubmissions } from '$lib/db/db';
+import { CssSyntaxError } from 'postcss';
+import { TvMinimal } from '@lucide/svelte';
 
 export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 	const ctfId = Number(event.params.ctf_id);
@@ -161,6 +163,22 @@ export const actions = {
 
 			if (!challengeId) {
 				return fail(400, { message: 'Challenge_id parameter missing' });
+			}
+
+			const successfulSubmission = await db
+				.selectFrom('ctf_teams_members')
+				.where('team', '=', userTeam.teamId)
+				.innerJoin('ctf_submissions as cs', (join) =>
+					join
+						.onRef('cs.user_id', '=', 'ctf_teams_members.user_id')
+						.on('cs.challenge', '=', challengeId)
+						.on('cs.success', '=', true)
+				)
+				.select(['ctf_teams_members.user_id'])
+				.execute();
+
+			if (successfulSubmission.length >= 1) {
+				return fail(403, { message: 'Team has already solved this challenge' });
 			}
 
 			const correctFlag = await get_flag_of_challenge(challengeId);
