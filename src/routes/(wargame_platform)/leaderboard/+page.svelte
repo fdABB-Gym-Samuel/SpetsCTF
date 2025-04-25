@@ -2,7 +2,7 @@
 	let { data } = $props();
 	let { users_scoreboard, classes_scoreboard } = data;
 
-	let original_classes = classes_scoreboard.map((class_obj) => class_obj.class_name);
+	let original_classes = classes_scoreboard.map((class_obj) => class_obj.className);
 	let include_classes = $state(original_classes);
 
 	let filtered_users = $derived(
@@ -33,7 +33,9 @@
 	<header class="gsap-top-down-opacity mb-12">
 		<h1 class="text-xl font-bold">Hannes <span class="text-text-200">#10</span></h1>
 		<p class="text-text-200">
-			You have <span class="text-text-100">0 points</span>, currently in the
+			You have <span class="text-text-100"
+				>{users_scoreboard.filter((user_) => user_.id === data.user.id)[0].total_points}</span
+			>, currently in the
 			<span class="text-text-100">#1 class</span>.
 		</p>
 	</header>
@@ -76,12 +78,12 @@
 					<table class="gsap-top-down-opacity w-full table-fixed">
 						<thead>
 							<tr
-								class="*:bg-bg-800 min-w-20 *:px-10 *:py-2 [&>th:first-child]:rounded-l-lg [&>th:last-child]:rounded-r-lg"
+								class="*:bg-bg-800 min-w-20 *:py-2 [&>th:first-child]:rounded-l-lg [&>th:last-child]:rounded-r-lg"
 							>
-								<th class="text-text-200 w-1/6 text-left font-medium">#</th>
-								<th class="text-text-200 w-2/6 text-left font-medium">Username</th>
-								<th class="text-text-200 w-2/6 text-center font-medium">Class</th>
-								<th class="text-text-200 w-1/6 text-right font-medium">Score</th>
+								<th class="text-text-200 w-8 text-left font-medium">#</th>
+								<th class="text-text-200 w-fit text-left font-medium">Username</th>
+								<th class="text-text-200 w-fit text-center font-medium">Class</th>
+								<th class="text-text-200 w-16 text-right font-medium">Score</th>
 							</tr>
 						</thead>
 					</table>
@@ -91,7 +93,7 @@
 						<tbody>
 							{#each filtered_users as player, i}
 								<tr
-									class="*:border-bg-700 w-full text-wrap break-words *:border-t-0 *:px-10
+									class="*:border-bg-700 w-full text-wrap break-words *:border-t-0
                         {i ===
 									users_scoreboard
 										.filter(
@@ -110,13 +112,13 @@
 												? 'text-primary-extra-light'
 												: ''}"
 								>
-									<td class="h-12 w-1/6 px-2 text-left">{i + 1}</td>
-									<td class="h-12 w-2/6 px-2 text-left break-words"
+									<td class="h-12 w-8 text-left">{i + 1}</td>
+									<td class="h-12 w-fit text-left break-words"
 										><a class="ignore-default" href={`/user/${player.id}`}>{player.display_name}</a
 										></td
 									>
-									<td class="h-12 w-2/6 px-4 text-center">{player.represents_class}</td>
-									<td class="h-12 w-1/6 px-2 text-right"
+									<td class="h-12 w-fit text-center">{player.represents_class}</td>
+									<td class="h-12 w-16 text-right"
 										>{player.total_points == null ? 0 : player.total_points}</td
 									>
 								</tr>
@@ -156,16 +158,16 @@
 						{#each classes_scoreboard as curr_class, i}
 							<tr
 								class="*:border-bg-700 w-full text-wrap break-words
-                       *:border-t-0 *:px-10
+                       *:border-t-0
                        {i === classes_scoreboard.length - 1 ? '' : '*:border-b-3'}
                        {i === 0 ? 'text-secondary' : ''}"
 							>
-								<td class="h-12 w-1/6 px-2 text-left">{i + 1}</td>
-								<td class="h-12 w-4/6 px-2 text-left break-words">
-									{curr_class.class_name}
+								<td class="h-12 w-1/6 px-2 pl-10 text-left">{i + 1}</td>
+								<td class="h-12 w-fit px-2 pl-10 text-left break-words">
+									{curr_class.className}
 								</td>
-								<td class="h-12 w-1/6 px-2 text-right">
-									{curr_class.total_points}
+								<td class="h-12 w-fit pr-10 text-right">
+									{curr_class.totalPoints}
 								</td>
 							</tr>
 						{/each}
