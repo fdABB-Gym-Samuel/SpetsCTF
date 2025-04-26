@@ -1,7 +1,7 @@
-import { type PageServerLoad } from '../$types';
-import { error, redirect } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
+import type { PageServerLoad } from '../$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	const user = locals.user;
