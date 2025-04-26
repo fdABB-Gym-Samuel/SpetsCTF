@@ -39,7 +39,7 @@
 
 <header>
 	<nav
-		class="bg-bg-900 fixed top-0 left-0 z-10 flex h-15 w-full flex-row items-center justify-between px-10 *:w-1/3"
+		class="bg-bg-900 fixed top-0 left-0 z-10 flex h-15 w-full flex-row items-center justify-between px-4 *:w-1/3 sm:px-6 md:px-10"
 	>
 		<div class="left flex flex-row items-center">
 			<div class="logo-continer relative mr-4 flex justify-end">
@@ -77,7 +77,7 @@
 						gsap.to('#turbulance', { attr: { baseFrequency: 0.01 }, duration: 1.2 })}
 					onmouseleave={() => gsap.to('#turbulance', { attr: { baseFrequency: 0 }, duration: 1.2 })}
 				>
-					<img src="/assets/logo.svg" alt="SpetsCTF" class="logo h-5 select-none" />
+					<img src="/assets/logo.svg" alt="SpetsCTF" class="logo h-5 min-w-25 select-none" />
 				</a>
 			</div>
 			<div class="mr-4 block sm:hidden">

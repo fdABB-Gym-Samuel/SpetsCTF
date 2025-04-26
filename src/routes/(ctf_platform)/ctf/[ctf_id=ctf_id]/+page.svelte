@@ -1,81 +1,161 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { readable } from 'svelte/store';
-
 	let { data } = $props();
-	let { ctf_data } = data;
+	let { translations, ctf_data } = data;
 
-	const time = readable(Date.now(), (set) => {
-		const interval = setInterval(() => {
-			set(Date.now());
-		}, 1000);
-		return () => clearInterval(interval);
+	import { page } from '$app/state';
+	import { Swords } from '@lucide/svelte';
+
+	import { onMount, onDestroy } from 'svelte';
+	import gsap from 'gsap';
+	import { goto } from '$app/navigation';
+
+	import { playAnimations } from '$lib/gsap/animations';
+
+	import HSeperator from '$lib/components/HSeperator.svelte';
+	import Button from '$lib/components/Button.svelte';
+	// import type { H } from 'vitest/dist/chunks/environment.d8YfPkTm.js';
+
+	let countdown = $state({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+	let started = $state(false);
+	let ended = $state(false);
+	type Timeout = ReturnType<typeof setInterval>;
+	let interval: Timeout;
+
+	function updateCountdown(): void {
+		if (ctf_data === undefined || ctf_data === null) {
+			countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+			return;
+		}
+		const now = new Date();
+		let diff = ctf_data.start_time.getTime() - now.getTime();
+
+		if (diff <= 0) {
+			started = true;
+			diff = ctf_data.end_time.getTime() - now.getTime();
+		}
+		if (diff <= 0) {
+			ended = true;
+		}
+
+		const totalSeconds = Math.floor(diff / 1000);
+		const days = Math.floor(totalSeconds / (3600 * 24));
+		const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+		const minutes = Math.floor((totalSeconds % 3600) / 60);
+		const seconds = totalSeconds % 60;
+
+		countdown = { days, hours, minutes, seconds };
+	}
+	let componentRoot: HTMLElement;
+	let gsapContext: gsap.Context | undefined;
+
+	let countdownContainer: HTMLElement;
+	const maxRotate: number = 1.5;
+
+	function handleMouseMove(event: MouseEvent): void {
+		const rect = countdownContainer.getBoundingClientRect();
+		const xRel = event.clientX - (rect.left + rect.width / 2);
+		const yRel = event.clientY - (rect.top + rect.height / 2);
+
+		// Normalize to range [-1, 1]
+		const xNorm = xRel / (rect.width / 2);
+		const yNorm = yRel / (rect.height / 2);
+
+		const rotY = xNorm * maxRotate; // mouse right → positive Y-rotation
+		const rotX = -yNorm * maxRotate; // mouse down → positive X-rotation
+
+		// Smoothly tween to the new rotation
+		gsap.to(countdownContainer, {
+			rotationX: rotX,
+			rotationY: rotY,
+			duration: 0.5
+		});
+	}
+
+	function handleMouseLeave() {
+		// reset back to flat
+		gsap.to(countdownContainer, {
+			rotationX: 0,
+			rotationY: 0,
+			duration: 0.5
+		});
+	}
+
+	onMount(() => {
+		updateCountdown();
+		interval = setInterval(updateCountdown, 1000);
+
+		gsapContext = playAnimations(componentRoot);
 	});
 
-	let timeToStart = $derived.by(() => {
-		if (ctf_data?.start_time !== undefined) return ctf_data?.start_time.getTime() - $time;
-		return 0;
-	});
-	let timeToEnd = $derived.by(() => {
-		if (ctf_data?.end_time !== undefined) return ctf_data?.end_time.getTime() - $time;
-		return 0;
+	onDestroy(() => {
+		clearInterval(interval);
+
+		gsapContext?.revert();
 	});
 </script>
 
-<div class="hero flex h-[var(--hero-height)] w-full flex-col items-center justify-center">
-	<div class="flex flex-col items-center gap-2">
-		<h1 class="hero-text h-fit max-w-screen text-center font-mono text-4xl sm:text-5xl md:text-7xl">
-			{ctf_data?.display_name}
-		</h1>
-		{#if timeToStart > 0}
-			<h3>CTF Starts in:</h3>
+<svelte:body on:mousemove={handleMouseMove} on:mouseleave={handleMouseLeave} />
 
-			<div class="countdown flex max-w-full flex-row items-center justify-center gap-2">
-				<div class="day flex flex-row items-center gap-1">
-					<h5 class="text-xl">Days:</h5>
-					{#each `${Math.floor(timeToStart / (1000 * 60 * 60 * 24))}` as daySquare, i}
-						<p class="bg-stone-500 px-3 py-3">{`${daySquare}`[i]}</p>
-					{/each}
+<main
+	class="m-auto flex max-w-[520px] flex-col items-center justify-center pt-48"
+	bind:this={componentRoot}
+>
+	<h1 class="text-3xl font-bold">
+		{ctf_data?.display_name}
+	</h1>
+	<div class="w-full perspective-midrange">
+		<article
+			bind:this={countdownContainer}
+			class="gsap-opacity-slow mt-12 w-full will-change-transform transform-3d"
+		>
+			{#if !started}
+				<p class="text-text-200 mb-2 text-sm">CTF starts in</p>
+			{:else if !ended}
+				<p class="text-text-200 mb-2 text-sm">CTF ends in</p>
+			{/if}
+			{#if !ended}
+				<div class="rounded-lg shadow-xl">
+					<div
+						class="bg-bg-800 inner-shadow flex items-center justify-between rounded-lg px-10 py-2 pb-3 select-none"
+					>
+						{#each Object.entries(countdown) as [label, number], index}
+							<div class="flex flex-col items-center">
+								<p class="-mb-2 flex-1 text-center text-lg">{number}</p>
+								<p class="text-text-200 text-sm">{label}</p>
+							</div>
+							{#if index !== Object.entries(countdown).length - 1}
+								<div class="h-5">
+									<HSeperator color="bg-bg-600" />
+								</div>
+							{/if}
+						{/each}
+					</div>
 				</div>
-
-				<div class="hour flex flex-row items-center gap-1">
-					<h5 class="text-xl">Hours:</h5>
-					<p class="bg-stone-500 px-3 py-3">
-						{`${Math.floor(timeToStart / (1000 * 60 * 60)) % 24}`.padStart(2, '0')[0]}
-					</p>
-					<p class="bg-stone-500 px-3 py-3">
-						{`${Math.floor(timeToStart / (1000 * 60 * 60)) % 24}`.padStart(2, '0')[1]}
-					</p>
-				</div>
-
-				<div class="hour flex flex-row items-center gap-1">
-					<h5 class="text-xl">Minutes:</h5>
-
-					<p class="bg-stone-500 px-3 py-3">
-						{`${Math.floor(timeToStart / (1000 * 60)) % 60}`.padStart(2, '0')[0]}
-					</p>
-					<p class="bg-stone-500 px-3 py-3">
-						{`${Math.floor(timeToStart / (1000 * 60)) % 60}`.padStart(2, '0')[1]}
-					</p>
-				</div>
-
-				<div class="hour flex flex-row items-center gap-1">
-					<h5 class="text-xl">Seconds:</h5>
-
-					<p class="bg-stone-500 px-3 py-3">
-						{`${Math.floor(timeToStart / 1000) % 60}`.padStart(2, '0')[0]}
-					</p>
-					<p class="bg-stone-500 px-3 py-3">
-						{`${Math.floor(timeToStart / 1000) % 60}`.padStart(2, '0')[1]}
-					</p>
-				</div>
-			</div>
-		{:else if timeToEnd < 0}
-			<h3>CTF has ended!!!</h3>
-			<a href={`${page.params.ctf_id}/scoreboard`}>See Results here</a>
+			{/if}
+		</article>
+		{#if ended}
+			<p class="text-center">CTF has ended</p>
 		{:else}
-			<h3>CTF has started!!!</h3>
-			<a href={`${page.params.ctf_id}/challenges`}>See Challenges here</a>
+			<div class="gsap-bottom-up-opacity mt-24 text-center">
+				<Button
+					label="See Challenges"
+					type="button"
+					onClick={() => goto(`${page.url}/challenges`)}
+					Icon={Swords}
+					ariaLabel="Go to challenges"
+				/>
+			</div>
 		{/if}
 	</div>
-</div>
+</main>
+
+<!--
+<header class="hero flex h-[var(--hero-height)] w-full flex-col items-center justify-center">
+	<div class="flex flex-row items-center gap-2">
+		<img src="/logo.svg" alt="" class="logo w-20" />
+		<h1 class="hero-text h-fit text-center font-mono text-5xl sm:text-6xl md:text-8xl">SpetsCTF</h1>
+	</div>
+	<span class="text-grey-dark">{translations.by_students_for_students}</span>
+	<a href="/challenges">{translations.challenges}</a>
+	<a href="/ctfs">{translations.ctf}</a>
+</header> -->

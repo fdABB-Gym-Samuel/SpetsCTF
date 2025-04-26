@@ -16,9 +16,8 @@
 	];
 </script>
 
-<Navbar {translations} {user} {links}></Navbar>
-<main
-	class="bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark flex min-h-[var(--main-height)] w-screen flex-col items-stretch py-[var(--nav-height)]"
->
+<Navbar {user} {translations} {links}></Navbar>
+
+<main>
 	{@render children()}
 </main>

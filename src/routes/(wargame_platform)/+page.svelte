@@ -1,6 +1,6 @@
 <script lang="ts">
 	let { data } = $props();
-	let { translations } = data;
+	let { translations, nextCtf } = data;
 
 	import { Brain } from '@lucide/svelte';
 
@@ -12,9 +12,7 @@
 
 	import HSeperator from '$lib/components/HSeperator.svelte';
 	import Button from '$lib/components/Button.svelte';
-	import type { H } from 'vitest/dist/chunks/environment.d8YfPkTm.js';
-
-	const targetDate = new Date('2025-12-01T12:00:00Z');
+	// import type { H } from 'vitest/dist/chunks/environment.d8YfPkTm.js';
 
 	let countdown = $state({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
@@ -22,8 +20,12 @@
 	let interval: Timeout;
 
 	function updateCountdown(): void {
+		if (nextCtf === undefined) {
+			countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+			return;
+		}
 		const now = new Date();
-		const diff = targetDate.getTime() - now.getTime();
+		const diff = nextCtf?.start_time.getTime() - now.getTime();
 
 		if (diff <= 0) {
 			countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
