@@ -1,13 +1,13 @@
 <script lang="ts">
 	let { data } = $props();
-	let { users_scoreboard, classes_scoreboard } = data;
+	let { user, users_scoreboard, classes_scoreboard } = data;
 
 	let original_classes = classes_scoreboard.map((class_obj) => class_obj.className);
 	let include_classes = $state(original_classes);
 
 	let filtered_users = $derived(
 		users_scoreboard
-			.filter((user) => user.represents_class && include_classes.includes(user.represents_class))
+			.filter((user_) => user_.represents_class && include_classes.includes(user_.represents_class))
 			.slice(0, 15)
 	);
 
@@ -19,6 +19,10 @@
 	let componentRoot: HTMLElement;
 	let gsapContext: gsap.Context | undefined;
 
+	let userPosition = $derived(users_scoreboard.findIndex((user_) => user_.id === user?.id) + 1);
+	let userClassPosition = $derived(
+		classes_scoreboard.findIndex((class_) => class_.className === user?.represents_class) + 1
+	);
 	onMount(() => {
 		gsapContext = playAnimations(componentRoot);
 	});
@@ -30,15 +34,19 @@
 
 <main class="content m-auto w-full max-w-[1200px] pt-24" bind:this={componentRoot}>
 	<!-- TODO: add header with user info if logged in -->
-	<header class="gsap-top-down-opacity mb-12">
-		<h1 class="text-xl font-bold">Hannes <span class="text-text-200">#10</span></h1>
-		<p class="text-text-200">
-			You have <span class="text-text-100"
-				>{users_scoreboard.filter((user_) => user_.id === data.user.id)[0].total_points}</span
-			>, currently in the
-			<span class="text-text-100">#1 class</span>.
-		</p>
-	</header>
+	{#if user}
+		<header class="gsap-top-down-opacity mb-12">
+			<h1 class="text-xl font-bold">
+				{user.display_name} <span class="text-text-200">#{userPosition}</span>
+			</h1>
+			<p class="text-text-200">
+				You have <span class="text-text-100"
+					>{users_scoreboard.filter((user_) => user_.id === user.id)[0].total_points}</span
+				>, currently in the
+				<span class="text-text-100">#{userClassPosition} class</span>.
+			</p>
+		</header>
+	{/if}
 	<div class="scoreboards flex w-full flex-col gap-16">
 		<section>
 			<div class="mb-4 flex items-center justify-between">
