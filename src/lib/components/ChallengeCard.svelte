@@ -11,8 +11,11 @@
 	}
 	let pointElement: HTMLElement;
 	$effect(() => {
-		if (pointElement) {
+		if (pointElement && !challenge_data.solved) {
 			pointElement.style.color = getPointColor(challenge_data.points);
+		} else if (pointElement && challenge_data.solved) {
+			pointElement.style.backgroundColor = getPointColor(challenge_data.points);
+			pointElement.classList.add('text-bg-700');
 		}
 	});
 
@@ -30,6 +33,9 @@
 	class="card dark:bg-bg-800 before:bg-bg-750 relative h-full min-h-fit max-w-full overflow-hidden rounded-lg px-10
   py-6 before:absolute before:inset-0 before:origin-center before:scale-0 before:rounded-lg before:transition-transform
   before:duration-500 before:ease-out before:content-[''] hover:before:scale-100"
+	class:bg-gradient-to-br={challenge_data.solved}
+	class:from-primary={challenge_data.solved}
+	class:to-primary-light={challenge_data.solved}
 >
 	<div class="relative z-10 flex h-full flex-col justify-between">
 		<section class="top *:flex *:items-center *:justify-between">
@@ -42,10 +48,15 @@
 			</div>
 			<div class="mt-2 mb-4">
 				<p class="font-mono text-sm font-bold">
-					{challenge_data.num_solves}&nbsp;&nbsp;<span class="text-text-200">SOLVERS</span>
+					{challenge_data.num_solves}&nbsp;&nbsp;<span
+						class="text-text-200"
+						class:!text-text-100={challenge_data.solved}>SOLVERS</span
+					>
 				</p>
-				<p class="font-mono text-sm font-bold" bind:this={pointElement}>
-					{challenge_data.points}&nbsp;&nbsp;<span class="text-text-200">POINTS</span>
+				<p class="font-mono text-sm font-bold">
+					<span class="bg-bg-800 mx-1 rounded-2xl" bind:this={pointElement}
+						>&nbsp;{challenge_data.points}&nbsp;</span
+					><span class="text-text-200" class:!text-text-100={challenge_data.solved}>POINTS</span>
 				</p>
 			</div>
 		</section>
@@ -58,6 +69,10 @@
             {index === 1 ? 'bg-gradient-200' : ''}
             {index === 2 ? 'bg-gradient-300 rounded-r-xl rounded-br-xl' : ''}
             {index === displayedCategories.length - 1 ? 'rounded-r-xl rounded-br-xl' : ''}"
+						class:bg-text-100={challenge_data.solved}
+						class:!text-gradient-100={index === 0 && challenge_data.solved}
+						class:!text-gradient-200={index === 1 && challenge_data.solved}
+						class:!text-gradient-300={index === 2 && challenge_data.solved}
 					>
 						<p># {capitalizeFirstLetter(category)}</p>
 					</li>

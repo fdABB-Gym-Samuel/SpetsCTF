@@ -222,7 +222,7 @@
 					</form>
 				{:else}
 					<p
-						class="rounded-lg border-4 border-neutral-400 bg-stone-700 py-2 text-center font-semibold text-stone-300"
+						class="from-primary to-primary-light rounded-xl bg-gradient-to-br py-2 text-center font-semibold"
 					>
 						Challenge Already Solved
 					</p>

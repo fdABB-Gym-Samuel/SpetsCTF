@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 			qb
 				.selectFrom('wargame_submissions')
 				.innerJoin('users', 'wargame_submissions.user_id', 'users.id')
-				.where('is_admin', '!=', true)
+				.where('is_admin', 'is not', true)
 				.select(['challenge', 'user_id'])
 				.select(sql`MIN(time)`.as('first_time'))
 				.where('success', '=', true)
@@ -141,7 +141,7 @@ export const actions = {
 				.where('challenge_id', '=', challengeId)
 				.executeTakeFirst();
 
-			let useCTFSubmissions;
+			let submissionTable: 'wargame_submissions' | 'ctf_submissions' = 'wargame_submissions';
 			if (challengeCtf && challengeCtf.ctf) {
 				const ctf = await db
 					.selectFrom('ctf_events')
@@ -159,12 +159,8 @@ export const actions = {
 					throw redirect(307, `/ctf/${challengeCtf.ctf}/challenges?/submit`);
 				}
 
-				useCTFSubmissions = true;
+				submissionTable = 'ctf_submissions';
 			}
-			let submissionTable;
-			useCTFSubmissions !== true
-				? (submissionTable = 'wargame_submissions')
-				: (submissionTable = 'ctf_submissions');
 
 			const successfulSubmission = await db
 				.selectFrom(submissionTable)

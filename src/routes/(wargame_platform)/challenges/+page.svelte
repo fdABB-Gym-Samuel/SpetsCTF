@@ -85,7 +85,11 @@
 					{capitalizeFirstLetter(category)}
 				</h3>
 				{#if challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()).length > 0}
-					<ul class="grid grid-cols-[repeat(auto-fill,minmax(305px,1fr))] gap-4">
+					<ul
+						class="grid grid-cols-[repeat(auto-fill,minmax(305px,1fr))] gap-4 sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(390px,1fr))]"
+					>
+						<!-- <ul class="grid grid-cols-[repeat(auto-fill,minmax(320px,clamp(400px,25%,20vw)))] gap-4"> -->
+
 						<!-- <ul class="mb-12 flex flex-wrap gap-8"> -->
 						{#each challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challenge_data}
 							<li class="gsap-left-right-opacity min-h-fit min-w-65">
@@ -101,6 +105,7 @@
 				{:else}
 					<p class="mb-4">No challenges yet</p>
 				{/if}
+				<br />
 				<VSeperator />
 			</div>
 		{/each}
