@@ -80,10 +80,15 @@
 							<tr
 								class="*:bg-bg-800 min-w-20 *:py-2 [&>th:first-child]:rounded-l-lg [&>th:last-child]:rounded-r-lg"
 							>
-								<th class="text-text-200 w-8 text-left font-medium">#</th>
+								<th class="text-text-200 w-12 pl-4 text-left font-medium sm:w-18 sm:pl-10">#</th>
 								<th class="text-text-200 w-fit text-left font-medium">Username</th>
-								<th class="text-text-200 w-fit text-center font-medium">Class</th>
-								<th class="text-text-200 w-16 text-right font-medium">Score</th>
+								<th
+									class="text-text-200 w-14 pl-2 text-left font-medium sm:w-20 md:w-30 md:p-0 md:text-center"
+									>Class</th
+								>
+								<th class="text-text-200 w-18 pr-4 text-right font-medium sm:w-24 sm:pr-10"
+									>Score</th
+								>
 							</tr>
 						</thead>
 					</table>
@@ -93,7 +98,7 @@
 						<tbody>
 							{#each filtered_users as player, i}
 								<tr
-									class="*:border-bg-700 w-full text-wrap break-words *:border-t-0
+									class="*:border-bg-700 max-h-12 w-full text-wrap break-words *:border-t-0
                         {i ===
 									users_scoreboard
 										.filter(
@@ -112,13 +117,16 @@
 												? 'text-primary-extra-light'
 												: ''}"
 								>
-									<td class="h-12 w-8 text-left">{i + 1}</td>
-									<td class="h-12 w-fit text-left break-words"
+									<td class="h-12 w-12 pl-4 text-left sm:w-18 sm:pl-10">{i + 1}</td>
+									<td
+										class="h-12 max-h-12 w-fit overflow-hidden text-left break-normal text-ellipsis"
 										><a class="ignore-default" href={`/user/${player.id}`}>{player.display_name}</a
 										></td
 									>
-									<td class="h-12 w-fit text-center">{player.represents_class}</td>
-									<td class="h-12 w-16 text-right"
+									<td class="h-12 w-14 pl-1 text-left sm:w-20 md:w-30 md:text-center"
+										>{player.represents_class}</td
+									>
+									<td class="h-12 w-18 pr-4 text-right sm:w-24 sm:pr-10"
 										>{player.total_points == null ? 0 : player.total_points}</td
 									>
 								</tr>
@@ -139,13 +147,13 @@
 				<table class="gsap-top-down-opacity w-full table-fixed">
 					<thead>
 						<tr
-							class="*:bg-bg-800 min-w-20 *:px-10 *:py-2
+							class="*:bg-bg-800 min-w-20
                      [&>th:first-child]:rounded-l-lg
                      [&>th:last-child]:rounded-r-lg"
 						>
-							<th class="text-text-200 w-1/6 text-left font-medium">#</th>
-							<th class="text-text-200 w-4/6 text-left font-medium">Class</th>
-							<th class="text-text-200 w-1/6 text-right font-medium">Score</th>
+							<th class="text-text-200 w-1/6 pl-4 text-left font-medium sm:pl-10">#</th>
+							<th class="text-text-200 w-fit pl-4 text-left font-medium sm:pl-10">Class</th>
+							<th class="text-text-200 w-fit pr-4 text-right font-medium sm:pr-10">Score</th>
 						</tr>
 					</thead>
 				</table>
@@ -162,11 +170,11 @@
                        {i === classes_scoreboard.length - 1 ? '' : '*:border-b-3'}
                        {i === 0 ? 'text-secondary' : ''}"
 							>
-								<td class="h-12 w-1/6 px-2 pl-10 text-left">{i + 1}</td>
-								<td class="h-12 w-fit px-2 pl-10 text-left break-words">
+								<td class="h-12 w-1/6 px-2 pl-4 text-left sm:pl-10">{i + 1}</td>
+								<td class="h-12 w-fit px-2 pl-4 text-left break-words sm:pl-10">
 									{curr_class.className}
 								</td>
-								<td class="h-12 w-fit pr-10 text-right">
+								<td class="h-12 w-fit pr-4 text-right sm:pr-10">
 									{curr_class.totalPoints}
 								</td>
 							</tr>
