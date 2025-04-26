@@ -39,7 +39,7 @@
 	});
 </script>
 
-<main class="content m-auto w-[85%] pt-24" bind:this={componentRoot}>
+<main class="content w-[100%] pt-24 sm:m-auto" bind:this={componentRoot}>
 	<header class="mb-16 flex flex-col items-center justify-center gap-3">
 		<p class="text-text-200 gsap-top-down-opacity">Challenge yourself, practise and gain points.</p>
 		<div class="gsap-top-down-opacity flex flex-wrap items-center justify-center gap-4">
@@ -48,7 +48,7 @@
 					type="text"
 					name="search"
 					placeholder="Search"
-					class="bg-bg-800 placeholder:text-text-200 focus:bg-bg-700 h-8 w-96 rounded-lg px-5 transition-colors outline-none"
+					class="bg-bg-800 placeholder:text-text-200 focus:bg-bg-700 h-8 max-w-96 rounded-lg px-5 transition-colors outline-none"
 				/>
 				<Search
 					strokeWidth="3"
@@ -85,13 +85,14 @@
 					{capitalizeFirstLetter(category)}
 				</h3>
 				{#if challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()).length > 0}
-					<ul class="mb-12 flex flex-wrap gap-8">
+					<ul class="grid grid-cols-[repeat(auto-fill,minmax(305px,1fr))] gap-4">
+						<!-- <ul class="mb-12 flex flex-wrap gap-8"> -->
 						{#each challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challenge_data}
-							<li class="gsap-left-right-opacity min-h-35 min-w-65">
+							<li class="gsap-left-right-opacity min-h-fit min-w-65">
 								<a
 									href={`challenges?show=${challenge_data.challenge_id}`}
 									data-sveltekit-noscroll
-									class="ignore-default h-38 w-full"
+									class="ignore-default block h-full w-full"
 									><ChallengeCard data={{ challenge_data: challenge_data }}></ChallengeCard></a
 								>
 							</li>

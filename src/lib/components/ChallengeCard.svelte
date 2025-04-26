@@ -27,20 +27,20 @@
 </script>
 
 <article
-	class="card dark:bg-bg-800 before:bg-bg-750 relative h-full min-h-46 w-full max-w-100 min-w-108 overflow-hidden rounded-lg px-10
+	class="card dark:bg-bg-800 before:bg-bg-750 relative h-full min-h-fit max-w-full overflow-hidden rounded-lg px-10
   py-6 before:absolute before:inset-0 before:origin-center before:scale-0 before:rounded-lg before:transition-transform
   before:duration-500 before:ease-out before:content-[''] hover:before:scale-100"
 >
 	<div class="relative z-10 flex h-full flex-col justify-between">
 		<section class="top *:flex *:items-center *:justify-between">
-			<div>
+			<div class="flex !items-start justify-start">
 				<h3 class="challenge-name text-[18px] font-bold">
 					{challenge_data.challenge_name}
 				</h3>
 				<!-- TODO: add field for date -->
-				<p class="mb-0.5 font-mono text-xs font-bold">2025-03-04</p>
+				<p class="mt-1 mb-0.5 font-mono text-xs">2025-03-04</p>
 			</div>
-			<div class="mt-2">
+			<div class="mt-2 mb-4">
 				<p class="font-mono text-sm font-bold">
 					{challenge_data.num_solves}&nbsp;&nbsp;<span class="text-text-200">SOLVERS</span>
 				</p>
