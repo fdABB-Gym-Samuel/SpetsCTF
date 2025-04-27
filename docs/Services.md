@@ -1,9 +1,10 @@
 # Packaging services for SpetsCTF challenges
+
 This page is intended to guide the aspiring CTF challenge creator in
 deploying their challenge network services for the competitors. Network
 services are primarily used in the `web` and `pwn` categories. Because of
 the nature of CTF competitions, vulnerabilities are intentionally inserted
-into these services.  Thus, deploying a CTF network service improperly may
+into these services. Thus, deploying a CTF network service improperly may
 leave the hosting server vulnerable, which is not usually intended. Leaving
 the deployment without sufficient protection can also allow bad actors to
 alter and crash challenges. Therefore, this guide will make heavy use of:
@@ -17,16 +18,19 @@ which are always important when developing systems.
 ## Programming the service for ease of deployment
 
 ### Pwn
+
 For Pwn challenges, we recommend implementing the challenge service as a
 console application, using `stdin` and `stdout` for communication. This is
 because these interfaces are available in every programming language relevant
 for challenge creation.
 
 ### Web
+
 For Web challenges, using the network is recommended, because _all_ web
-frameworks (worth learning) support it. 
+frameworks (worth learning) support it.
 
 ## Docker
+
 For deploying network services, using Docker containers is an appropriate
 choice, because of its mature tooling, software availability and relative
 ease of administration.

@@ -102,7 +102,7 @@
 >
 	<button
 		type="button"
-		class="absolute inset-0 h-full w-full cursor-default focus:outline-none"
+		class="fixed inset-0 h-full w-full cursor-default focus:outline-none"
 		onclick={(e) => {
 			if (e.currentTarget === e.target) {
 				closeDialog();
