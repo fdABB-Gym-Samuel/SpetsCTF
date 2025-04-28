@@ -34,14 +34,14 @@
 
 <main class="content m-auto w-full max-w-[1200px] pt-24" bind:this={componentRoot}>
 	<!-- TODO: add header with user info if logged in -->
-	{#if user}
+	{#if user && !user.is_admin}
 		<header class="gsap-top-down-opacity mb-12">
 			<h1 class="text-xl font-bold">
 				{user.display_name} <span class="text-text-200">#{userPosition}</span>
 			</h1>
 			<p class="text-text-200">
 				You have <span class="text-text-100"
-					>{users_scoreboard.filter((user_) => user_.id === user.id)[0].total_points}</span
+					>{users_scoreboard.filter((user_) => user_.id === user.id)[0]?.total_points}</span
 				>, currently in the
 				<span class="text-text-100">#{userClassPosition} class</span>.
 			</p>
