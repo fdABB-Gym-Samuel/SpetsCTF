@@ -142,7 +142,15 @@
 									class="challenge-resource text-foreground-light dark:text-foreground-dark flex h-fit flex-row items-center gap-1 underline"
 								>
 									<Link class="size-4"></Link>
-									<a href={resource.content} class="ignore-default h-fit">{resource.content}</a>
+									<a href={resource.content} class="ignore-default h-fit"
+										>{resource.content
+											.split('//')[1]
+											.split('/')[0]
+											.split('.')
+											.slice(-2)
+											.join('.')
+											.slice(0, 35)}</a
+									>
 								</li>
 							{:else if resource.type === 'file'}
 								<li class="challenge-resource flex flex-row items-center gap-1">
