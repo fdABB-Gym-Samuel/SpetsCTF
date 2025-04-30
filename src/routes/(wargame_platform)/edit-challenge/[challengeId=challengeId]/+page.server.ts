@@ -9,6 +9,7 @@ import sanitize from 'sanitize-filename';
 import path from 'path';
 import { type Insertable } from 'kysely';
 import { categories } from '$lib/db/constants';
+import { linkPattern } from '$lib/utils/utils';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	const user = locals.user;
@@ -274,12 +275,17 @@ export const actions = {
 					.returning('content')
 					.execute();
 			}
-			if (websites.length > 0) {
+			let allowedWebsites = websites?.filter((website) => website.match(linkPattern));
+			if (allowedWebsites.length > 0) {
 				let _newWebsites = await db
 					.insertInto('challenge_resources')
 					.columns(['challenge', 'type', 'content'])
 					.values(
-						websites.map((website) => ({ challenge: challengeId, type: 'web', content: website }))
+						allowedWebsites.map((website) => ({
+							challenge: challengeId,
+							type: 'web',
+							content: website
+						}))
 					)
 					.onConflict((oc) => oc.columns(['challenge', 'type', 'content']).doNothing())
 					.execute();

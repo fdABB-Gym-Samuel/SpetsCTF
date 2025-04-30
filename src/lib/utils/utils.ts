@@ -11,3 +11,6 @@ export const map = (
 ) => {
 	return ((x - originalMin) * (newMax - newMin)) / (originalMax - originalMin) + newMin;
 };
+
+export const linkPattern =
+	/\b(?:https?|ftp|mailto|tel|data:image\/[a-zA-Z]+)(?::\/\/)?[^\s<>"']+/gi;

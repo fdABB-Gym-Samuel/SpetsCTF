@@ -11,6 +11,7 @@ import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import sanitize from 'sanitize-filename';
 import { categories } from '$lib/db/constants';
+import { linkPattern } from '$lib/utils/utils';
 
 // export const ssr = false
 
@@ -119,8 +120,8 @@ export const actions = {
 			await db.insertInto('challenges').values(challenge).execute();
 
 			const files: File[] | null = formData.getAll('files') as File[] | null;
-			const commands: string[] | null = formData.getAll('commands') as string[] | null;
-			const websites: string[] | null = formData.getAll('websites') as string[] | null;
+			const commands = formData.getAll('commands') as string[] | null;
+			const websites = formData.getAll('websites') as string[] | null;
 
 			let resource_files;
 			if (files !== null) {
@@ -167,8 +168,9 @@ export const actions = {
 			}
 
 			let resource_websites;
-			if (websites !== null) {
-				resource_websites = websites.map((website) => {
+			let allowedWebsites = websites?.filter((website) => website.match(linkPattern));
+			if (allowedWebsites !== undefined && allowedWebsites.length > 0) {
+				resource_websites = allowedWebsites.map((website) => {
 					return { challenge: challenge_id, content: website, type: 'web' };
 				});
 			}

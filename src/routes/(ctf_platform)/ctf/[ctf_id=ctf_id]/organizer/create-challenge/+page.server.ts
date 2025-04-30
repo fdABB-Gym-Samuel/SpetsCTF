@@ -12,6 +12,7 @@ import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import sanitize from 'sanitize-filename';
 import { categories } from '$lib/db/constants';
+import { linkPattern } from '$lib/utils/utils';
 
 // export const ssr = false
 
@@ -176,8 +177,9 @@ export const actions = {
 			}
 
 			let resource_websites;
-			if (websites !== null) {
-				resource_websites = websites.map((website) => {
+			let allowedWebsites = websites?.filter((website) => website.match(linkPattern));
+			if (allowedWebsites !== undefined && allowedWebsites.length > 0) {
+				resource_websites = allowedWebsites.map((website) => {
 					return { challenge: challenge_id, content: website, type: 'web' };
 				});
 			}
