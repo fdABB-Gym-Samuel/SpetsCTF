@@ -258,7 +258,6 @@ export const actions = {
 					.onConflict((oc) => oc.columns(['challenge', 'type', 'content']).doNothing())
 					.executeTakeFirst();
 			}
-
 			const websites = formData.getAll('websites') as string[];
 			let _deleteWebsites;
 			if (websites.length > 0) {
@@ -277,12 +276,18 @@ export const actions = {
 					.returning('content')
 					.execute();
 			}
-			if (websites.length > 0) {
+			const linkPattern = /\b(?:https?|ftp|mailto|tel|data:image\/[a-zA-Z]+)(?::\/\/)?[^\s<>"']+/gi;
+			let allowedWebsites = websites?.filter((website) => website.match(linkPattern));
+			if (allowedWebsites.length > 0) {
 				let _newWebsites = await db
 					.insertInto('challenge_resources')
 					.columns(['challenge', 'type', 'content'])
 					.values(
-						websites.map((website) => ({ challenge: challengeId, type: 'web', content: website }))
+						allowedWebsites.map((website) => ({
+							challenge: challengeId,
+							type: 'web',
+							content: website
+						}))
 					)
 					.onConflict((oc) => oc.columns(['challenge', 'type', 'content']).doNothing())
 					.execute();
