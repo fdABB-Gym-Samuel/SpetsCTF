@@ -98,7 +98,7 @@
 
 <div
 	bind:this={componentRoot}
-	class="backdrop bg-overlay prevent-default fixed top-0 left-0 flex h-screen w-screen items-center justify-center overflow-y-scroll pt-16"
+	class="backdrop bg-overlay prevent-default fixed top-0 left-0 z-20 flex h-screen w-screen items-center justify-center overflow-y-scroll pt-16"
 >
 	<button
 		type="button"
@@ -149,14 +149,24 @@
 											.split('.')
 											.slice(-2)
 											.join('.')
-											.slice(0, 35)}</a
+											.slice(0, 35)}{resource.content
+											.split('//')[1]
+											.split('/')[0]
+											.split('.')
+											.slice(-2)
+											.join('.').length > 35
+											? '...'
+											: ''}</a
 									>
 								</li>
 							{:else if resource.type === 'file'}
 								<li class="challenge-resource flex flex-row items-center gap-1">
 									<File class="size-4"></File>
 									<a href={resource.content} class="ignore-default h-fit"
-										>{resource.content.split('/')[3]}</a
+										>{resource.content.split('/')[3].slice(0, 35)}{resource.content.split('/')[3]
+											.length > 35
+											? '...'
+											: ''}</a
 									>
 								</li>
 							{:else}
