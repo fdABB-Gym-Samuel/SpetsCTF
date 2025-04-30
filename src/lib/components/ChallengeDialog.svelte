@@ -79,7 +79,7 @@
 		gsapContext = playAnimations(componentRoot);
 
 		keydownHandler = (e: KeyboardEvent) => {
-			if (e.key === 'Escape' || e.key === ' ') {
+			if (e.key === 'Escape') {
 				closeDialog();
 			}
 		};

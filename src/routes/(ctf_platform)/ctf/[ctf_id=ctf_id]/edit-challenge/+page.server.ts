@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		return redirect(303, '/login');
 	}
 
-	const isOrg = await getIsOrg(user.id, ctfId)
+	const isOrg = await getIsOrg(user.id, ctfId);
 
 	const editableChallengesQuery = db
 		.selectFrom('challenges as ch')

@@ -9,7 +9,7 @@ export const load = async ({ locals, params }: ServerLoadEvent) => {
 		return redirect(303, '/login');
 	}
 
-	const isOrg = await getIsOrg(user.id, ctfId)
+	const isOrg = await getIsOrg(user.id, ctfId);
 
 	if (!user.is_admin && !isOrg) {
 		return error(401, { message: 'Not authorized' });

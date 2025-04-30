@@ -27,7 +27,7 @@ export const load: LayoutServerLoad = async ({ locals, depends, params }) => {
 	if (!user) {
 		team = null;
 	} else {
-		isOrg = await getIsOrg(user.id, ctfId)
+		isOrg = await getIsOrg(user.id, ctfId);
 
 		team = await db
 			.selectFrom('ctf_teams_members')

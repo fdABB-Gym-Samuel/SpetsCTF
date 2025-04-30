@@ -8,8 +8,9 @@ import { CssSyntaxError } from 'postcss';
 import { TvMinimal } from '@lucide/svelte';
 
 export const load: PageServerLoad = async (event: ServerLoadEvent) => {
+	const user = event.locals.user;
 	const ctfId = Number(event.params.ctf_id);
-	const userId = event.locals.user ? event.locals.user.id : undefined;
+	const userId = user ? user.id : undefined;
 
 	const challenges = await db
 		.with('unique_success', (qb) =>

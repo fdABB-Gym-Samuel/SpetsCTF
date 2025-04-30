@@ -2,15 +2,19 @@ import type { PageServerLoad } from './$types';
 import { error, redirect, fail, type ServerLoadEvent } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
-import { getIsOrg, selectedCategoriesToBitset, validateCategory } from '$lib/db/functions';
+import {
+	getIsOrg,
+	insertFlag,
+	selectedCategoriesToBitset,
+	validateCategory
+} from '$lib/db/functions';
 import type { Category, ChallengeResources, Challenges } from '$lib/db/db';
 import { writeFile, mkdir, unlink } from 'fs/promises';
 import sanitize from 'sanitize-filename';
 import path from 'path';
 import { type Insertable } from 'kysely';
 import { categories } from '$lib/db/constants';
-import { linkPattern } from "$lib/utils/utils"
-
+import { linkPattern } from '$lib/utils/utils';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	const user = locals.user;
@@ -22,7 +26,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		return redirect(303, '/login');
 	}
 
-	const isOrg = await getIsOrg(user.id, ctfId)
+	const isOrg = await getIsOrg(user.id, ctfId);
 
 	const editableChallenge = await db
 		.selectFrom('challenges as ch')
@@ -84,7 +88,7 @@ export const actions = {
 				return redirect(304, '/login');
 			}
 
-			const isOrg = await getIsOrg(user.id, ctfId)
+			const isOrg = await getIsOrg(user.id, ctfId);
 
 			const oldChallenge = await db
 				.selectFrom('challenges')
@@ -155,14 +159,12 @@ export const actions = {
 			if (updatedChallenge === undefined) {
 				return fail(404, { message: 'Challenge not found' });
 			}
-			const updatedFlag = await db
-				.updateTable('flag')
-				.set({
-					flag,
-					flag_format: flagFormat
-				})
-				.where('id', '=', updatedChallenge.flag)
-				.executeTakeFirstOrThrow();
+
+			const updatedFlag = await insertFlag(flag, flagFormat, true, updatedChallenge.flag);
+
+			if (updatedFlag === undefined) {
+				return fail(500, { message: 'Failed to save new flag' });
+			}
 
 			// const authorAnonymous = formData.get("stay_anonymous") === "1"
 			const originalFilesNew = formData.getAll('original_files') as string[];

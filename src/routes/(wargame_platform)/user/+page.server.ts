@@ -20,10 +20,12 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 
 export const actions = {
 	settings: async ({ request, locals }) => {
-		const form = await request.formData();
-		const userId = locals.user?.id ?? '';
+		const user = locals.user;
 
-		if (!locals.user || !locals.user.id) {
+		const form = await request.formData();
+		const userId = user ? user.id : '';
+
+		if (!user || !user.id) {
 			return fail(400, { success: false });
 		}
 

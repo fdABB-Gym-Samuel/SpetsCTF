@@ -6,15 +6,14 @@ import { getIsOrg } from '$lib/db/functions';
 
 export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 	try {
-
-		const user = event.locals.user
+		const user = event.locals.user;
 		if (!user) {
 			return { success: false, teamName: '', message: 'Log in to join a team' };
 		}
 
 		const ctfId = Number(event.params.ctf_id);
 
-		const isOrg = await getIsOrg(user.id, ctfId)
+		const isOrg = await getIsOrg(user.id, ctfId);
 
 		if (isOrg || user.is_admin) {
 			return { success: false, message: 'Orgs and admins cannot join CTFs' };

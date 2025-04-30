@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		return redirect(303, '/login');
 	}
 
-	const isOrg = await getIsOrg(user.id, ctfId)
+	const isOrg = await getIsOrg(user.id, ctfId);
 
 	if (!isOrg && !user.is_admin) {
 		return error(401, 'User not oragnizer for this CTF or admin');

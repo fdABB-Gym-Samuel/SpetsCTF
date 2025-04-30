@@ -2,7 +2,7 @@ import type { PageServerLoad } from './$types';
 import { error, redirect, fail } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
-import { selectedCategoriesToBitset, validateCategory } from '$lib/db/functions';
+import { insertFlag, selectedCategoriesToBitset, validateCategory } from '$lib/db/functions';
 import type { Category, ChallengeResources, Challenges } from '$lib/db/db';
 import { writeFile, mkdir, unlink } from 'fs/promises';
 import sanitize from 'sanitize-filename';
@@ -145,14 +145,12 @@ export const actions = {
 			if (updatedChallenge === undefined) {
 				return fail(404, { message: 'Challenge not found' });
 			}
-			const updatedFlag = await db
-				.updateTable('flag')
-				.set({
-					flag,
-					flag_format: flagFormat
-				})
-				.where('id', '=', updatedChallenge.flag)
-				.executeTakeFirstOrThrow();
+
+			const updatedFlag = await insertFlag(flag, flagFormat, true, updatedChallenge.flag);
+
+			if (updatedFlag === undefined) {
+				return fail(500, { message: 'Failed to save new flag' });
+			}
 
 			// const authorAnonymous = formData.get("stay_anonymous") === "1"
 			const originalFilesNew = formData.getAll('original_files') as string[];
