@@ -88,9 +88,7 @@
 	--challenge-dialog-width: clamp(400px, 80vw, 700px);
 
 	--dont-fucking-care-anymore: calc(100vw - var(--main-paddin-inline))
-		/*****************************/
-		/********  PADDINGS  *********/
-		/*****************************/
+		/*****************************/ /********  PADDINGS  *********/ /*****************************/
 		--challenge-padding-inline: 5%;
 	--main-padding-inline: 10%;
 
