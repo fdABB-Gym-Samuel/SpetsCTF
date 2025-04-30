@@ -62,7 +62,9 @@ For Pwn challenges, the deployment stack is as follows:
   - Putting the flag string into the source file (in which case no special action is needed)
 
 #### Step 1 - Config file for `xinetd`
+
 Create a file called `xinetd.conf` with the following contents, adjusted for your environment:
+
 ```
 service chall
 {
