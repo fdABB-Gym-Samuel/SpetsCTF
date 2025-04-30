@@ -4,7 +4,8 @@ import { db } from '$lib/db/database';
 import {
 	validateCategory,
 	get_challenge_id_from_display_name,
-	selectedCategoriesToBitset
+	selectedCategoriesToBitset,
+	getIsOrg
 } from '$lib/db/functions';
 import type { Category, ChallengeResources, Challenges } from '$lib/db/db';
 import { createFunctionModule, type Insertable } from 'kysely';
@@ -23,14 +24,9 @@ export const load = async ({ locals, params }: ServerLoadEvent) => {
 		return redirect(303, '/login');
 	}
 
-	const org = await db
-		.selectFrom('ctf_organizers')
-		.where('ctf', '=', ctfId)
-		.where('user_id', '=', user.id)
-		.executeTakeFirst();
+	const isOrg = await getIsOrg(user.id, ctfId)
 
-	const isOrg = org !== undefined;
-	if (!locals.user?.is_admin && !isOrg) {
+	if (!user.is_admin && !isOrg) {
 		return error(401, { message: 'Not authorized' });
 	}
 };
@@ -44,13 +40,7 @@ export const actions = {
 				return fail(401, { message: 'User not signed in' });
 			}
 
-			const org = await db
-				.selectFrom('ctf_organizers')
-				.where('ctf', '=', ctfId)
-				.where('user_id', '=', user.id)
-				.executeTakeFirst();
-
-			const isOrg = org !== undefined;
+			const isOrg = await getIsOrg(user.id, ctfId)
 
 			if (!user.is_admin && !isOrg) {
 				return fail(401, { message: 'User not authorized.' });

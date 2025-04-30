@@ -2,6 +2,7 @@ import type { PageServerLoad } from '../$types';
 import { error, redirect } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
+import { getIsOrg } from '$lib/db/functions';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	const user = locals.user;
@@ -11,13 +12,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		return redirect(303, '/login');
 	}
 
-	const org = await db
-		.selectFrom('ctf_organizers')
-		.where('ctf', '=', ctfId)
-		.where('user_id', '=', user.id)
-		.executeTakeFirst();
-
-	const isOrg = org !== undefined;
+	const isOrg = await getIsOrg(user.id, ctfId)
 
 	if (!isOrg && !user.is_admin) {
 		return error(401, 'User not oragnizer for this CTF or admin');

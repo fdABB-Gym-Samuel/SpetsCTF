@@ -2,7 +2,7 @@ import type { PageServerLoad } from '../$types';
 import { error, redirect, fail } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
-import { selectedCategoriesToBitset, validateCategory } from '$lib/db/functions';
+import { selectedCategoriesToBitset, validateCategory, getIsOrg } from '$lib/db/functions';
 import type { Category, ChallengeResources, Challenges } from '$lib/db/db';
 import { writeFile, mkdir, unlink } from 'fs/promises';
 import sanitize from 'sanitize-filename';
@@ -31,13 +31,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		return redirect(303, '/login');
 	}
 
-	const org = await db
-		.selectFrom('ctf_organizers')
-		.where('ctf', '=', ctfId)
-		.where('user_id', '=', user.id)
-		.executeTakeFirst();
-
-	const isOrg = org !== undefined;
+	const isOrg = await getIsOrg(user.id, ctfId)
 
 	if (!isOrg && !user.is_admin) {
 		return error(401, 'User not organizer for this CTF or admin');
@@ -109,13 +103,7 @@ export const actions = {
 				return redirect(304, '/login');
 			}
 
-			const org = await db
-				.selectFrom('ctf_organizers')
-				.where('ctf', '=', ctfId)
-				.where('user_id', '=', user.id)
-				.executeTakeFirst();
-
-			const isOrg = org !== undefined;
+			const isOrg = await getIsOrg(user.id, ctfId)
 
 			if (!isOrg && !user.is_admin) {
 				return fail(401, { message: 'User not organizer for this CTF or admin' });

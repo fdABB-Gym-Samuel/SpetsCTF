@@ -189,3 +189,14 @@ export const get_flag_of_challenge = async (challenge_id: string) => {
 
 	return flag;
 };
+
+
+export const getIsOrg = async (userId: string, ctfId:number) => {
+	const org = await db
+			.selectFrom('ctf_organizers')
+			.where('ctf', '=', ctfId)
+			.where('user_id', '=', userId)
+			.executeTakeFirst();
+	
+	return org !== undefined;
+}

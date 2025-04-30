@@ -2,14 +2,15 @@ import type { PageServerLoad } from './$types';
 import { error, redirect, fail, type ServerLoadEvent } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
-import { selectedCategoriesToBitset, validateCategory } from '$lib/db/functions';
+import { getIsOrg, selectedCategoriesToBitset, validateCategory } from '$lib/db/functions';
 import type { Category, ChallengeResources, Challenges } from '$lib/db/db';
 import { writeFile, mkdir, unlink } from 'fs/promises';
 import sanitize from 'sanitize-filename';
 import path from 'path';
 import { type Insertable } from 'kysely';
 import { categories } from '$lib/db/constants';
-import { linkPattern } from '$lib/utils/utils';
+import { linkPattern } from "$lib/utils/utils"
+
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	const user = locals.user;
@@ -21,13 +22,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		return redirect(303, '/login');
 	}
 
-	const org = await db
-		.selectFrom('ctf_organizers')
-		.where('ctf', '=', ctfId)
-		.where('user_id', '=', user.id)
-		.executeTakeFirst();
-
-	const isOrg = org !== undefined;
+	const isOrg = await getIsOrg(user.id, ctfId)
 
 	const editableChallenge = await db
 		.selectFrom('challenges as ch')
@@ -89,13 +84,7 @@ export const actions = {
 				return redirect(304, '/login');
 			}
 
-			const org = await db
-				.selectFrom('ctf_organizers')
-				.where('ctf', '=', ctfId)
-				.where('user_id', '=', user.id)
-				.executeTakeFirst();
-
-			const isOrg = org !== undefined;
+			const isOrg = await getIsOrg(user.id, ctfId)
 
 			const oldChallenge = await db
 				.selectFrom('challenges')
@@ -157,7 +146,7 @@ export const actions = {
 					points,
 					challenge_category: mainCategory,
 					challenge_sub_categories: selectedCategoriesBitset,
-					approved: locals.user?.is_admin || isOrg
+					approved: user.is_admin || isOrg
 				})
 				.where('challenge_id', '=', challengeId)
 				.returning('flag')
@@ -311,7 +300,7 @@ export const actions = {
 			}
 
 			let message;
-			locals.user?.is_admin || isOrg
+			user.is_admin || isOrg
 				? (message = 'Challenge successfully edited')
 				: (message = 'Challenge successfully edited and has been submitted for review');
 			return { success: true, message };

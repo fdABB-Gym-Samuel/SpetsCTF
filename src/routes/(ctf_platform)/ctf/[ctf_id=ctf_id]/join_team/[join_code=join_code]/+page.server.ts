@@ -2,24 +2,21 @@ import { error, type ServerLoadEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from '../../$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
+import { getIsOrg } from '$lib/db/functions';
 
 export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 	try {
-		if (!event.locals.user) {
+
+		const user = event.locals.user
+		if (!user) {
 			return { success: false, teamName: '', message: 'Log in to join a team' };
 		}
 
 		const ctfId = Number(event.params.ctf_id);
 
-		let org = await db
-			.selectFrom('ctf_organizers')
-			.where('ctf', '=', ctfId)
-			.where('user_id', '=', event.locals.user.id)
-			.executeTakeFirst();
+		const isOrg = await getIsOrg(user.id, ctfId)
 
-		const isOrg = org !== undefined;
-
-		if (isOrg || event.locals.user.is_admin) {
+		if (isOrg || user.is_admin) {
 			return { success: false, message: 'Orgs and admins cannot join CTFs' };
 		}
 
@@ -58,7 +55,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 		}
 
 		// The SQL query makes it difficult for kysely to do type inference.
-		if (team?.members.includes(event.locals.user.id)) {
+		if (team?.members.includes(user.id)) {
 			return { success: false, message: 'User already part of team.' };
 		}
 		if (ctf.maxTeamSize !== null && ctf?.maxTeamSize <= team?.memberCount) {
@@ -69,7 +66,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 			.selectFrom('ctf_teams_members')
 			.innerJoin('ctf_teams', 'ctf_teams_members.team', 'ctf_teams.id')
 			.select('ctf_teams.id as teamId')
-			.where('ctf_teams_members.user_id', '=', event.locals.user.id)
+			.where('ctf_teams_members.user_id', '=', user.id)
 			.where('ctf_teams.ctf', '=', ctfId)
 			.executeTakeFirst();
 
@@ -80,7 +77,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 		await db
 			.insertInto('ctf_teams_members')
 			.values({
-				user_id: event.locals.user.id,
+				user_id: user.id,
 				team: team?.teamId
 			})
 			.execute();
