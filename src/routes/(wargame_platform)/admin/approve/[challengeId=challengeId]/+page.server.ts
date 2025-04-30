@@ -9,6 +9,7 @@ import sanitize from 'sanitize-filename';
 import path from 'path';
 import { type Insertable } from 'kysely';
 import { categories } from '$lib/db/constants';
+import { linkPattern } from '$lib/utils/utils';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	const user = locals.user;
@@ -276,7 +277,6 @@ export const actions = {
 					.returning('content')
 					.execute();
 			}
-			const linkPattern = /\b(?:https?|ftp|mailto|tel|data:image\/[a-zA-Z]+)(?::\/\/)?[^\s<>"']+/gi;
 			let allowedWebsites = websites?.filter((website) => website.match(linkPattern));
 			if (allowedWebsites.length > 0) {
 				let _newWebsites = await db

@@ -3,6 +3,7 @@
 	let { data, form } = $props();
 	let { translations, unapprovedChallenge } = data;
 	import { categories } from '$lib/db/constants';
+	import { linkPattern } from '$lib/utils/utils.js';
 
 	type resource_type = 'File' | 'Command' | 'Website';
 
@@ -225,7 +226,17 @@
 			<option class="text-background-dark" value="Website">Website</option>
 			<option class="text-background-dark" value="File">File</option>
 		</select>
-		{#if current_resource.resource_type !== 'File'}
+		{#if current_resource.resource_type === 'Website'}
+			<label for="resource_content">Content</label>
+			<input
+				type="text"
+				name={`${current_resource.resource_type.toLocaleLowerCase()}s`}
+				class="border-accent-light dark:border-accent-dark border pl-2"
+				bind:value={current_resource.resource_content}
+				placeholder={`My ${current_resource.resource_type}`}
+				pattern={linkPattern.source}
+			/>
+		{:else if current_resource.resource_type === 'Command'}
 			<label for="resource_content">Content</label>
 			<input
 				type="text"
