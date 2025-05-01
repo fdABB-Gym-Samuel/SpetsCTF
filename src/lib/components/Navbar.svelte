@@ -39,10 +39,10 @@
 
 <header>
 	<nav
-		class="bg-bg-900 fixed top-0 left-0 z-10 flex h-15 w-full flex-row items-center justify-between px-4 *:w-1/3 sm:px-6 md:px-10"
+		class="bg-bg-900 fixed top-0 left-0 z-10 flex h-15 w-full flex-row items-center justify-between gap-5 px-4 *:w-1/3 sm:px-6 md:px-10"
 	>
-		<div class="left flex flex-row items-center">
-			<div class="logo-continer relative mr-4 flex justify-end">
+		<div class="left flex w-1/5 flex-grow-0 flex-row items-center sm:flex-grow">
+			<div class="logo-continer relative mr-4 flex justify-end sm:mr-0">
 				<svg
 					viewBox="0 0 180 100"
 					preserveAspectRatio="xMidYMin slice"
@@ -92,7 +92,7 @@
 				</button>
 			</div>
 		</div>
-		<ul class="hidden h-full flex-row items-center justify-center gap-8 sm:flex">
+		<ul class="hidden h-full min-w-fit flex-row items-center justify-center gap-8 sm:flex">
 			{#each links as nav_link}
 				<li>
 					<a
@@ -104,10 +104,10 @@
 				</li>
 			{/each}
 		</ul>
-		<div class="flex justify-end">
+		<div class="flex w-1/5 flex-grow justify-end overflow-y-hidden">
 			{#if user}
-				<a href="/user" class="ignore-default flex flex-row items-center space-x-4 underline">
-					<User />
+				<a href="/user" class="ignore-default max-w-full space-x-4 truncate text-center underline">
+					<User class=" inline-block min-h-6 min-w-6" />
 					{user.display_name || user.github_username}</a
 				>
 			{:else}

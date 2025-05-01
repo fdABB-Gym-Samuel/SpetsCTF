@@ -7,8 +7,7 @@
 	const links = [
 		{ display: translations.challenges, href: '/challenges' },
 		{ display: translations.ctfs, href: `/ctfs` },
-		{ display: translations.leaderboard, href: `/leaderboard` },
-		{ display: translations.users, href: `/users` }
+		{ display: translations.leaderboard, href: `/leaderboard` }
 	];
 </script>
 
