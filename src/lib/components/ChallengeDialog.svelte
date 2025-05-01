@@ -215,7 +215,7 @@
 				</div>
 			</div>
 			<div class="right w-1/2 min-w-70 flex-grow">
-				{#if !challenge_data.solved}
+				{#if !challenge_data.solved && (!form || !form.success)}
 					<form action="?/submit" method="POST" class="flag-submission-form max-w-full" use:enhance>
 						<label for="flag" class="text-sm">Submit flag</label>
 						<div class="relative mt-2 mb-8">

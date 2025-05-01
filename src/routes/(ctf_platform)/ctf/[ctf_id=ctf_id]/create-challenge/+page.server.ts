@@ -14,8 +14,6 @@ import sanitize from 'sanitize-filename';
 import { categories } from '$lib/db/constants';
 import { linkPattern } from '$lib/utils/utils';
 
-// export const ssr = false
-
 export const load = async ({ locals, params }: ServerLoadEvent) => {
 	const user = locals.user;
 	const ctfId = Number(params.ctf_id);

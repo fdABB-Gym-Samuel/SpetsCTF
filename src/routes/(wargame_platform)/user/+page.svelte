@@ -29,14 +29,16 @@
 	<form class="flex w-min flex-col space-y-1" method="POST" action="?/settings" use:enhance>
 		<label for="display_name">
 			{translations.displayname}
-		</label><br />
-		<input
-			class="border border-black p-1 dark:border-white"
-			value={user.display_name ?? ''}
-			name="display_name"
-			placeholder={translations.enterdisplayname}
-			id="display_name"
-		/>
+		</label>
+		<div>
+			<input
+				class="border border-black p-1 dark:border-white"
+				value={user.display_name ?? ''}
+				name="display_name"
+				placeholder={translations.enterdisplayname}
+				id="display_name"
+			/>
+		</div>
 
 		<br />
 		<label for="represents_class">
