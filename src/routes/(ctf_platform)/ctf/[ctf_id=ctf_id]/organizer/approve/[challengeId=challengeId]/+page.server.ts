@@ -1,5 +1,5 @@
 import type { PageServerLoad } from '../$types';
-import { error, redirect, fail } from '@sveltejs/kit';
+import { error, redirect, fail, isRedirect } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
 import {
@@ -311,9 +311,12 @@ export const actions = {
 					.execute();
 			}
 
-			return { success: true, message: 'Challenge successfully approved' };
+			return redirect(304, `/ctf/${ctfId}/organizer/approve?status=approved`);
 		} catch (err) {
 			const errorTyped = err as Error;
+			if (isRedirect(errorTyped)) {
+				throw errorTyped;
+			}
 			return fail(500, { message: errorTyped.message });
 		}
 	}

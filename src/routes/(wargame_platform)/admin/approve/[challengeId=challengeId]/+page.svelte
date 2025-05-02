@@ -98,15 +98,15 @@
 	};
 </script>
 
-<div class="content">
-	<h2 class="text-4xl font-bold">{translations.addnewchallenge}</h2>
-	{#if form && form?.success}
-		<span class="text-green-600">{translations.success}: {form.message}</span>
-	{:else if form && !form?.success}
+<div class="content mt-4">
+	{#if form}
 		<span class="text-red-600">{translations.failure}: {form.message}</span>
 	{/if}
+
+	<h2 class="text-4xl font-bold">{translations.addnewchallenge}</h2>
 	<form
 		method="POST"
+		action=""
 		class="flex flex-col"
 		id="new_challenge_form"
 		enctype="multipart/form-data"

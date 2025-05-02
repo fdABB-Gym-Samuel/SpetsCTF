@@ -1,5 +1,5 @@
 import type { PageServerLoad } from '../$types';
-import { error, redirect, fail } from '@sveltejs/kit';
+import { error, redirect, fail, type Redirect, isRedirect } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
 import { insertFlag, selectedCategoriesToBitset, validateCategory } from '$lib/db/functions';
@@ -12,6 +12,7 @@ import { categories } from '$lib/db/constants';
 import { linkPattern } from '$lib/utils/utils';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
+	console.log('1');
 	const user = locals.user;
 	// @ts-expect-error
 	const challengeId = params.challengeId;
@@ -287,9 +288,13 @@ export const actions = {
 					.execute();
 			}
 
-			return { success: true, message: 'Challenge successfully approved' };
+			return redirect(304, '/admin/approve?status=approved');
+			// return { success: true, message: 'Challenge successfully approved' };
 		} catch (err) {
-			const errTyped = err as Error;
+			const errTyped = err as Error | Redirect;
+			if (isRedirect(errTyped)) {
+				throw err;
+			}
 			return fail(500, { message: 'Unable to save file' });
 		}
 	}

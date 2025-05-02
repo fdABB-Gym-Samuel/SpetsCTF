@@ -33,7 +33,7 @@
 		<div>
 			<input
 				class="border border-black p-1 dark:border-white"
-				value={user.display_name ?? ''}
+				value={form?.display_name ?? user.display_name ?? ''}
 				name="display_name"
 				placeholder={translations.enterdisplayname}
 				id="display_name"
@@ -49,7 +49,7 @@
 			class="border-accent-light dark:border-accent-dark bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark border p-1"
 			name="represents_class"
 			id="represents_class"
-			value={user.represents_class ?? ''}
+			value={form?.represents_class ?? user.represents_class ?? ''}
 		>
 			<option value="">{translations.selectclass}</option>
 			{#each availableClasses as availableClass}
