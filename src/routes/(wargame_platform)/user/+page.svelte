@@ -53,7 +53,9 @@
 		>
 			<option value="">{translations.selectclass}</option>
 			{#each availableClasses as availableClass}
-				<option value={availableClass.name}>{availableClass.name} ({availableClass.school})</option>
+				<option value={availableClass.name}
+					>{availableClass.name} {availableClass.school ? `(${availableClass.school})` : ''}</option
+				>
 			{/each}
 		</select>
 		<button type="submit" class="mt-3">{translations.submit}</button>

@@ -53,7 +53,8 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		.insertInto('users')
 		.values({
 			github_id: githubUserId,
-			github_username: githubUsername
+			github_username: githubUsername,
+			represents_class: 'No Class'
 		})
 		.returning('id')
 		.executeTakeFirstOrThrow();

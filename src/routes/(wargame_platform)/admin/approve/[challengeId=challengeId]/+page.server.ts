@@ -12,7 +12,6 @@ import { categories } from '$lib/db/constants';
 import { linkPattern } from '$lib/utils/utils';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-	console.log('1');
 	const user = locals.user;
 	// @ts-expect-error
 	const challengeId = params.challengeId;
@@ -289,9 +288,8 @@ export const actions = {
 			}
 
 			return redirect(304, '/admin/approve?status=approved');
-			// return { success: true, message: 'Challenge successfully approved' };
 		} catch (err) {
-			const errTyped = err as Error | Redirect;
+			const errTyped = err as Error;
 			if (isRedirect(errTyped)) {
 				throw err;
 			}

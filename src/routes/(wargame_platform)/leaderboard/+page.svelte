@@ -106,7 +106,7 @@
 						<tbody>
 							{#each filtered_users as player, i}
 								<tr
-									class="*:border-bg-700 max-h-12 w-full text-wrap break-words *:border-t-0
+									class="*:border-bg-700 max-h-12 w-full text-wrap break-words *:border-t-0 [&>th:first-child]:rounded-l-lg [&>th:last-child]:rounded-r-lg
                         {i ===
 									users_scoreboard
 										.filter(
@@ -124,6 +124,7 @@
 											: i === 2
 												? 'text-primary-extra-light'
 												: ''}"
+									class:bg-bg-700={user?.id === player.id}
 								>
 									<td class="h-12 w-12 pl-4 text-left sm:w-18 sm:pl-10">{i + 1}</td>
 									<td
@@ -132,7 +133,7 @@
 										></td
 									>
 									<td class="h-12 w-14 pl-1 text-left sm:w-20 md:w-30 md:text-center"
-										>{player.represents_class}</td
+										>{player?.represents_class}</td
 									>
 									<td class="h-12 w-18 pr-4 text-right sm:w-24 sm:pr-10"
 										>{player.total_points == null ? 0 : player.total_points}</td
