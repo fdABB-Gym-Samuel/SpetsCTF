@@ -11,17 +11,14 @@
 		warningDescription,
 		confirmationButtonText,
 		confirmationButtonIcon,
+		close,
 		warningAria,
 		hiddenName,
 		hiddenData,
 		form
 	} = $props();
 
-	function closeDialog() {
-		console.log('need to close');
-	}
-
-	console.log(action, 'hjerkhskejh');
+	const closeDialog = close;
 
 	let keydownHandler: (e: KeyboardEvent) => void;
 
@@ -78,11 +75,19 @@
 				<form {action} method="POST" use:enhance>
 					<input type="hidden" name={hiddenName} value={hiddenData} />
 					<Button
+						label="Cancel"
+						ariaLabel="Cancel"
+						type="button"
+						onClick={closeDialog}
+						textColor="text-white"
+					></Button>
+					<Button
 						label={confirmationButtonText}
 						ariaLabel={warningAria}
 						type="submit"
 						Icon={confirmationButtonIcon}
-						bgColor="bg-red-600"
+						bgColor="bg-red-700"
+						hoverColor="hover:bg-red-500"
 						textColor="text-white"
 					></Button>
 				</form>

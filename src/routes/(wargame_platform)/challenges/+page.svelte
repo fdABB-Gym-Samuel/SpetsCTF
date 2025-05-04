@@ -49,20 +49,10 @@
 		challengeNameToDelete = challengeName;
 	};
 
-	const deleteChallenge = (id: string) => {
-		console.log(id);
-		const formData = new FormData();
-		formData.append('challengeId', id);
-
-		fetch('/challenges?/delete', {
-			method: 'POST',
-			body: formData
-		});
+	const closeDeleteDialog = () => {
+		challengeIdToDelete = '';
+		challengeNameToDelete = '';
 	};
-
-	$effect(() => {
-		console.log(form);
-	});
 
 	let challengeIdToDelete = $state('');
 	let challengeNameToDelete = $state('');
@@ -215,7 +205,8 @@
 		confirmationButtonText={'Delete'}
 		confirmationButtonIcon={Trash2}
 		action="?/delete"
-		warningAria={'Delete challenge'}
+		close={closeDeleteDialog}
+		warningAria="Delete challenge"
 		{form}
 		hiddenData={challengeIdToDelete}
 		hiddenName="challengeId"

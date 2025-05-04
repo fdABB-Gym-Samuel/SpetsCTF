@@ -230,16 +230,13 @@ export const actions = {
 		}
 	},
 	delete: async ({ request, locals }) => {
-		console.log('herererer');
 		const user = locals.user;
 		if (!user) {
 			return redirect(304, '/login');
 		}
 
 		const formData = await request.formData();
-		console.log(formData);
 		const challengeId = formData.get('challengeId') as string;
-		console.log(challengeId);
 
 		const challengeAuthor = await db
 			.selectFrom('challenges')
