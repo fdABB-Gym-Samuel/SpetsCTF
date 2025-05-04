@@ -162,11 +162,11 @@
 			<ul class="flex flex-col">
 				{#each myChallenges as challenge}
 					<li
-						class="border-bg-500 flex w-full flex-row items-center justify-between border-b-2 px-4 py-4"
+						class="border-bg-500 flex h-16 w-full flex-row items-center justify-between border-b-2 px-4 py-2"
 					>
-						{challenge.challenge_name}
-						<div class="flex flex-row gap-2">
-							<HSeperator></HSeperator>
+						<p class="w-full">{challenge.challenge_name}</p>
+						<HSeperator color="bg-bg-500"></HSeperator>
+						<div class="ml-4 flex h-full flex-row items-center gap-2">
 							<Button
 								label=""
 								ariaLabel="Edit Challenge"
