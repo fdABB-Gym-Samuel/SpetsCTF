@@ -72,12 +72,13 @@
 				<p class="text-white">{warningDescription}</p>
 			</div>
 			<div class="flex flex-row justify-end">
-				<form {action} method="POST" use:enhance>
+				<form {action} method="POST" use:enhance class="flex gap-2">
 					<input type="hidden" name={hiddenName} value={hiddenData} />
 					<Button
 						label="Cancel"
 						ariaLabel="Cancel"
 						type="button"
+						styleType="small"
 						onClick={closeDialog}
 						textColor="text-white"
 					></Button>
@@ -85,6 +86,7 @@
 						label={confirmationButtonText}
 						ariaLabel={warningAria}
 						type="submit"
+						styleType="small"
 						Icon={confirmationButtonIcon}
 						bgColor="bg-red-700"
 						hoverColor="hover:bg-red-500"

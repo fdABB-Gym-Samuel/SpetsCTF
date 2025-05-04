@@ -39,6 +39,28 @@
 			/>
 		{/if}
 	</button>
+{:else if styleType === 'small'}
+	<button
+		{type}
+		onclick={() => onClick()}
+		aria-label={ariaLabel}
+		class="rounded-sm px-4 py-1 text-sm {bgColor} outline-2 {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {twStyles}"
+	>
+		{#if secondLabel !== ''}
+			<span class="mr-0.5 {textColor}"
+				>{label}<span class="text-primary-light">{secondLabel}</span></span
+			>
+		{:else}
+			<span class="mr-0.5 {textColor}">{label}</span>
+		{/if}
+		{#if Icon}
+			<Icon
+				size={iconSize}
+				strokeWidth="2.5"
+				class="{textColor} {secondLabel !== '' ? 'text-primary-light' : ''}"
+			/>
+		{/if}
+	</button>
 {:else if styleType === 'action'}
 	<button
 		{type}
