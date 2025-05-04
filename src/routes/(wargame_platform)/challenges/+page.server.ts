@@ -7,9 +7,9 @@ import type { WargameSubmissions } from '$lib/db/db';
 import { get_flag_of_challenge } from '$lib/db/functions';
 
 export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
-	const user_id = locals.user?.id;
+	const user = locals.user;
 
-	const challenges = await db
+	const allChallenges = await db
 		// First CTE: get each user's earliest successful submission per challenge.
 		.with('unique_success', (qb) =>
 			qb
@@ -94,7 +94,7 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 			sql`EXISTS(
 			  SELECT 1 FROM wargame_submissions ws
 			  WHERE ws.challenge = ch.challenge_id
-				AND ws.user_id = ${user_id}
+				AND ws.user_id = ${user?.id}
 				AND ws.success = true
 			)`.as('solved'),
 			// Get an array of resources for the challenge (ordered by resource id).
@@ -115,7 +115,27 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 		.orderBy('ch.points', 'asc')
 		.execute();
 
-	return { challenges };
+	const myChallengesQuery = db
+		.selectFrom('challenges as ch')
+		.leftJoin('flag as f', 'ch.flag', 'f.id')
+		.leftJoin('users as a', 'ch.author', 'a.id')
+		.select([
+			'ch.challenge_id',
+			'ch.display_name as challenge_name',
+			'ch.challenge_category',
+			'ch.challenge_sub_categories',
+			'ch.points',
+			sql<boolean>`ch.author = ${user?.id}`.as('is_author')
+		]);
+
+	let myChallenges;
+	if (!user?.is_admin) {
+		myChallenges = await myChallengesQuery.where('ch.author', '=', user?.id ?? '').execute();
+	} else {
+		myChallenges = await myChallengesQuery.execute();
+	}
+
+	return { allChallenges, myChallenges };
 };
 
 export const actions = {
@@ -208,5 +228,38 @@ export const actions = {
 		} catch (err) {
 			throw err;
 		}
+	},
+	delete: async ({ request, locals }) => {
+		console.log('herererer');
+		const user = locals.user;
+		if (!user) {
+			return redirect(304, '/login');
+		}
+
+		const formData = await request.formData();
+		console.log(formData);
+		const challengeId = formData.get('challengeId') as string;
+		console.log(challengeId);
+
+		const challengeAuthor = await db
+			.selectFrom('challenges')
+			.select('author')
+			.where('challenge_id', '=', challengeId)
+			.executeTakeFirst();
+
+		if (challengeAuthor === undefined) {
+			return fail(404, { message: 'Challenge not found' });
+		}
+
+		if (challengeAuthor.author !== user.id && !user.is_admin) {
+			return fail(401, { message: 'User not author of challenge or admin' });
+		}
+
+		const deletedChallenge = await db
+			.deleteFrom('challenges')
+			.where('challenge_id', '=', challengeId)
+			.executeTakeFirst();
+
+		return { success: true, message: 'Challenge successfully deleted' };
 	}
 };
