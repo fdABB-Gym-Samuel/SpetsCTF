@@ -10,17 +10,13 @@ const config = {
 		csrf: {
 			checkOrigin: true
 		},
-		// csp: {
-		// 	mode: 'auto',
-		// 	directives: {
-		// 		'font-src': ['self'],
-		// 		'manifest-src': ['none'],
-		// 		'object-src': ['none'],
-		// 		'worker-src': ['none'],
-		// 		'script-src': ['self'],
-		// 		'script-src-elem': ['self']
-		// 	}
-		// }
+		csp: {
+			mode: 'auto',
+			directives: {
+				'script-src-elem': ['self'],
+				'script-src': ['self']
+			}
+		}
 	}
 };
 
