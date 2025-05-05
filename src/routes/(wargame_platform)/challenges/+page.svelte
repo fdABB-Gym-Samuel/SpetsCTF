@@ -7,10 +7,10 @@
 	import { categories } from '$lib/db/constants';
 	import { goto } from '$app/navigation';
 	let { data, form } = $props();
-	let { translations, allChallenges, myChallenges } = data;
+	let { translations, user, allChallenges, myChallenges } = data;
 
 	import { capitalizeFirstLetter } from '$lib/utils/utils.js';
-	import { Search, ChevronDown, Pen, Trash2 } from '@lucide/svelte';
+	import { Search, ChevronDown, Pen, Trash2, LogIn } from '@lucide/svelte';
 	import VSeperator from '$lib/components/VSeperator.svelte';
 	import BackToTop from '$lib/components/BackToTop.svelte';
 
@@ -151,47 +151,59 @@
 			{/each}
 		</section>
 	{:else if currentTab === 'my'}
-		<section>
+		{#if user}
+			<section>
+				<Button
+					label="Create Challenge"
+					type="button"
+					onClick={() => goto('/create-challenge')}
+					Icon={Pen}
+					ariaLabel="Go to challenges"
+				></Button>
+				{#if myChallenges !== null && myChallenges?.length > 0}
+					<ul class="flex flex-col">
+						{#each myChallenges as challenge}
+							<li
+								class="border-bg-500 flex h-16 w-full flex-row items-center justify-between border-b-2 px-4 py-2"
+							>
+								<p class="w-full">{challenge.challenge_name}</p>
+								<HSeperator color="bg-bg-500"></HSeperator>
+								<div class="ml-4 flex h-full flex-row items-center gap-2">
+									<Button
+										label=""
+										ariaLabel="Edit Challenge"
+										type="button"
+										styleType="action"
+										onClick={() => {
+											goto(`/edit-challenge/${challenge.challenge_id}`);
+										}}
+										Icon={Pen}
+									></Button>
+									<Button
+										label=""
+										ariaLabel="Delete challenge"
+										type="button"
+										styleType="action"
+										onClick={() => {
+											openDeleteDialog(challenge.challenge_id, challenge.challenge_name);
+										}}
+										Icon={Trash2}
+									></Button>
+								</div>
+							</li>
+						{/each}
+					</ul>
+				{/if}
+			</section>
+		{:else}
 			<Button
-				label="Create Challenge"
+				label={translations.login}
 				type="button"
-				onClick={() => goto('/create-challenge')}
-				Icon={Pen}
-				ariaLabel="Go to challenges"
-			></Button>
-			<ul class="flex flex-col">
-				{#each myChallenges as challenge}
-					<li
-						class="border-bg-500 flex h-16 w-full flex-row items-center justify-between border-b-2 px-4 py-2"
-					>
-						<p class="w-full">{challenge.challenge_name}</p>
-						<HSeperator color="bg-bg-500"></HSeperator>
-						<div class="ml-4 flex h-full flex-row items-center gap-2">
-							<Button
-								label=""
-								ariaLabel="Edit Challenge"
-								type="button"
-								styleType="action"
-								onClick={() => {
-									goto(`/edit-challenge/${challenge.challenge_id}`);
-								}}
-								Icon={Pen}
-							></Button>
-							<Button
-								label=""
-								ariaLabel="Delete challenge"
-								type="button"
-								styleType="action"
-								onClick={() => {
-									openDeleteDialog(challenge.challenge_id, challenge.challenge_name);
-								}}
-								Icon={Trash2}
-							></Button>
-						</div>
-					</li>
-				{/each}
-			</ul>
-		</section>
+				onClick={() => goto('/login')}
+				Icon={LogIn}
+				ariaLabel="Login"
+			/>
+		{/if}
 	{/if}
 </main>
 {#if challengeId}
