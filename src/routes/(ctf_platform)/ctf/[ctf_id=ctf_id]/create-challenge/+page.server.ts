@@ -3,7 +3,8 @@ import { db } from '$lib/db/database';
 import {
 	validateCategory,
 	get_challenge_id_from_display_name,
-	selectedCategoriesToBitset
+	selectedCategoriesToBitset,
+	getIsOrg
 } from '$lib/db/functions';
 import type { Category, ChallengeResources, Challenges } from '$lib/db/db';
 import type { Insertable } from 'kysely';
@@ -13,8 +14,6 @@ import sanitize from 'sanitize-filename';
 import { categories } from '$lib/db/constants';
 import { linkPattern } from '$lib/utils/utils';
 
-// export const ssr = false
-
 export const load = async ({ locals, params }: ServerLoadEvent) => {
 	const user = locals.user;
 	const ctfId = Number(params.ctf_id);
@@ -22,13 +21,8 @@ export const load = async ({ locals, params }: ServerLoadEvent) => {
 		return redirect(303, '/login');
 	}
 
-	const org = await db
-		.selectFrom('ctf_organizers')
-		.where('ctf', '=', ctfId)
-		.where('user_id', '=', user.id)
-		.executeTakeFirst();
+	const isOrg = await getIsOrg(user.id, ctfId);
 
-	const isOrg = org !== undefined;
 	if (user.is_admin || isOrg) {
 		redirect(303, 'organizer/create-challenge');
 	}

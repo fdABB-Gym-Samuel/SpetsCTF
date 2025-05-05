@@ -2,7 +2,12 @@ import type { PageServerLoad } from './$types';
 import { error, redirect, fail, type ServerLoadEvent } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
-import { selectedCategoriesToBitset, validateCategory } from '$lib/db/functions';
+import {
+	getIsOrg,
+	insertFlag,
+	selectedCategoriesToBitset,
+	validateCategory
+} from '$lib/db/functions';
 import type { Category, ChallengeResources, Challenges } from '$lib/db/db';
 import { writeFile, mkdir, unlink } from 'fs/promises';
 import sanitize from 'sanitize-filename';
@@ -21,13 +26,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		return redirect(303, '/login');
 	}
 
-	const org = await db
-		.selectFrom('ctf_organizers')
-		.where('ctf', '=', ctfId)
-		.where('user_id', '=', user.id)
-		.executeTakeFirst();
-
-	const isOrg = org !== undefined;
+	const isOrg = await getIsOrg(user.id, ctfId);
 
 	const editableChallenge = await db
 		.selectFrom('challenges as ch')
@@ -89,13 +88,7 @@ export const actions = {
 				return redirect(304, '/login');
 			}
 
-			const org = await db
-				.selectFrom('ctf_organizers')
-				.where('ctf', '=', ctfId)
-				.where('user_id', '=', user.id)
-				.executeTakeFirst();
-
-			const isOrg = org !== undefined;
+			const isOrg = await getIsOrg(user.id, ctfId);
 
 			const oldChallenge = await db
 				.selectFrom('challenges')
@@ -157,7 +150,7 @@ export const actions = {
 					points,
 					challenge_category: mainCategory,
 					challenge_sub_categories: selectedCategoriesBitset,
-					approved: locals.user?.is_admin || isOrg
+					approved: user.is_admin || isOrg
 				})
 				.where('challenge_id', '=', challengeId)
 				.returning('flag')
@@ -166,14 +159,12 @@ export const actions = {
 			if (updatedChallenge === undefined) {
 				return fail(404, { message: 'Challenge not found' });
 			}
-			const updatedFlag = await db
-				.updateTable('flag')
-				.set({
-					flag,
-					flag_format: flagFormat
-				})
-				.where('id', '=', updatedChallenge.flag)
-				.executeTakeFirstOrThrow();
+
+			const updatedFlag = await insertFlag(flag, flagFormat, true, updatedChallenge.flag);
+
+			if (updatedFlag === undefined) {
+				return fail(500, { message: 'Failed to save new flag' });
+			}
 
 			// const authorAnonymous = formData.get("stay_anonymous") === "1"
 			const originalFilesNew = formData.getAll('original_files') as string[];
@@ -311,7 +302,7 @@ export const actions = {
 			}
 
 			let message;
-			locals.user?.is_admin || isOrg
+			user.is_admin || isOrg
 				? (message = 'Challenge successfully edited')
 				: (message = 'Challenge successfully edited and has been submitted for review');
 			return { success: true, message };

@@ -1,11 +1,17 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import ChallengeCard from '$lib/components/ChallengeCard.svelte';
 
 	let { data } = $props();
 	let { translations, unapprovedChallenges } = data;
 </script>
 
-<div class="content">
+<div class="content mt-4">
+	{#if page.url.searchParams.get('status') === 'approved'}
+		<div class="mb-4">
+			<h3 class="text-green-600">Challenge successfully approved</h3>
+		</div>
+	{/if}
 	<div class="mb-4">
 		<h1 class="route-title">Approve challenges</h1>
 		<p>

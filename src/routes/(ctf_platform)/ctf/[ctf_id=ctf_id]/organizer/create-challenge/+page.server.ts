@@ -4,7 +4,9 @@ import { db } from '$lib/db/database';
 import {
 	validateCategory,
 	get_challenge_id_from_display_name,
-	selectedCategoriesToBitset
+	selectedCategoriesToBitset,
+	getIsOrg,
+	insertFlag
 } from '$lib/db/functions';
 import type { Category, ChallengeResources, Challenges } from '$lib/db/db';
 import { createFunctionModule, type Insertable } from 'kysely';
@@ -14,8 +16,6 @@ import sanitize from 'sanitize-filename';
 import { categories } from '$lib/db/constants';
 import { linkPattern } from '$lib/utils/utils';
 
-// export const ssr = false
-
 export const load = async ({ locals, params }: ServerLoadEvent) => {
 	const user = locals.user;
 	const ctfId = Number(params.ctf_id);
@@ -23,14 +23,9 @@ export const load = async ({ locals, params }: ServerLoadEvent) => {
 		return redirect(303, '/login');
 	}
 
-	const org = await db
-		.selectFrom('ctf_organizers')
-		.where('ctf', '=', ctfId)
-		.where('user_id', '=', user.id)
-		.executeTakeFirst();
+	const isOrg = await getIsOrg(user.id, ctfId);
 
-	const isOrg = org !== undefined;
-	if (!locals.user?.is_admin && !isOrg) {
+	if (!user.is_admin && !isOrg) {
 		return error(401, { message: 'Not authorized' });
 	}
 };
@@ -44,13 +39,7 @@ export const actions = {
 				return fail(401, { message: 'User not signed in' });
 			}
 
-			const org = await db
-				.selectFrom('ctf_organizers')
-				.where('ctf', '=', ctfId)
-				.where('user_id', '=', user.id)
-				.executeTakeFirst();
-
-			const isOrg = org !== undefined;
+			const isOrg = await getIsOrg(user.id, ctfId);
 
 			if (!user.is_admin && !isOrg) {
 				return fail(401, { message: 'User not authorized.' });
@@ -84,29 +73,25 @@ export const actions = {
 
 			const challenge_sub_categories = selectedCategoriesToBitset(categories, categories_list);
 
-			const points = formData.get('points')?.toString() ?? '';
-			if (!points) {
+			const points = formData.get('points')?.toString() ?? undefined;
+			if (points === undefined) {
 				return fail(422, { message: 'Cannot insert challenge with no points!' });
 			}
 			const pointsInt = Number(points);
 			if (pointsInt < 0) {
 				return fail(400, { message: 'Points must be a non-negative integer' });
 			}
-			const flag = formData.get('flag')?.toString() ?? '';
-			if (!flag) {
-				return fail(422, { message: 'You need to provide flag.' });
+			const flag = formData.get('flag')?.toString() ?? undefined;
+			if (flag === undefined) return fail(422, { message: 'You need to provide flag.' });
+
+			const flag_format = formData.get('flag_format')?.toString() ?? '';
+
+			const flagId = (await insertFlag(flag, flag_format, false, undefined)) as
+				| { id: number }
+				| undefined;
+			if (flagId === undefined) {
+				return fail(500, { message: 'Failed to save flag' });
 			}
-
-			const flag_format = formData.get('flag_format')?.toString() ?? null;
-
-			const flagId = await db
-				.insertInto('flag')
-				.values({
-					flag,
-					flag_format
-				})
-				.returning('id')
-				.executeTakeFirstOrThrow();
 
 			const description = formData.get('description')?.toString() ?? null;
 

@@ -6,6 +6,7 @@ import { sql } from 'kysely';
 import type { Insertable, Selectable } from 'kysely';
 import sanitize from 'sanitize-filename';
 import { randomUUID } from 'crypto';
+import { Flag } from '@lucide/svelte';
 
 export function validateCategory(value: any): Category {
 	if (
@@ -188,4 +189,48 @@ export const get_flag_of_challenge = async (challenge_id: string) => {
 	}
 
 	return flag;
+};
+
+export const getIsOrg = async (userId: string, ctfId: number) => {
+	const org = await db
+		.selectFrom('ctf_organizers')
+		.where('ctf', '=', ctfId)
+		.where('user_id', '=', userId)
+		.executeTakeFirst();
+
+	return org !== undefined;
+};
+
+export const insertFlag = async (
+	flag: string,
+	flag_format: string,
+	update: boolean = false,
+	flagId: number | undefined = undefined
+) => {
+	if (!update) {
+		const flagId = await db
+			.insertInto('flag')
+			.values({
+				flag,
+				flag_format
+			})
+			.returning('id')
+			.executeTakeFirst();
+
+		return flagId;
+	}
+
+	if (!flagId) {
+		throw Error('Cannot call insertFlag with update true without flagId parameter being set');
+	}
+	const updatedFlag = await db
+		.updateTable('flag')
+		.set({
+			flag,
+			flag_format
+		})
+		.where('id', '=', flagId)
+		.executeTakeFirst();
+
+	return updatedFlag;
 };

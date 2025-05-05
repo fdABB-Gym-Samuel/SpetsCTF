@@ -2,23 +2,19 @@ import { db } from '$lib/db/database.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from '../$types';
+import { getIsOrg } from '$lib/db/functions';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-	if (!locals.user) {
+	const user = locals.user;
+	if (!user) {
 		error(401, { message: 'User not logged in' });
 	}
 
-	const ctf_id = Number(params.ctf_id);
+	const ctfId = Number(params.ctf_id);
 
-	let org = await db
-		.selectFrom('ctf_organizers')
-		.where('ctf', '=', ctf_id)
-		.where('user_id', '=', locals.user.id)
-		.executeTakeFirst();
+	const isOrg = await getIsOrg(user.id, ctfId);
 
-	const isOrg = org !== undefined;
-
-	if (isOrg || locals.user.is_admin) {
+	if (isOrg || user.is_admin) {
 		return error(403, { message: 'Orgs and admins cannot join CTFs' });
 	}
 };
@@ -26,21 +22,16 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 export const actions = {
 	default: async ({ request, params, locals }) => {
 		try {
-			if (!locals.user) {
+			const user = locals.user;
+			if (!user) {
 				error(401, { message: 'User not logged in' });
 			}
 
 			const ctf_id = Number(params.ctf_id);
 
-			let org = await db
-				.selectFrom('ctf_organizers')
-				.where('ctf', '=', ctf_id)
-				.where('user_id', '=', locals.user.id)
-				.executeTakeFirst();
+			const isOrg = await getIsOrg(user.id, ctf_id);
 
-			const isOrg = org !== undefined;
-
-			if (isOrg || locals.user.is_admin) {
+			if (isOrg || user.is_admin) {
 				return fail(403, { message: 'Orgs and admins cannot join CTFs' });
 			}
 
@@ -71,7 +62,7 @@ export const actions = {
 					'ctf_teams.website',
 					'ctf_events.short_name as eventShortName'
 				])
-				.where('ctf_teams_members.user_id', '=', locals.user.id)
+				.where('ctf_teams_members.user_id', '=', user.id)
 				.where('ctf_teams.ctf', '=', ctf_id)
 				.executeTakeFirst();
 
@@ -100,7 +91,7 @@ export const actions = {
 			await db
 				.insertInto('ctf_teams_members')
 				.values({
-					user_id: locals.user.id,
+					user_id: user.id,
 					team: team_id.id
 				})
 				.execute();

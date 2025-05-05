@@ -98,11 +98,9 @@
 	};
 </script>
 
-<div class="content">
+<div class="content mt-4">
 	<h2 class="text-4xl font-bold">{translations.addnewchallenge}</h2>
-	{#if form && form?.success}
-		<span class="text-green-600">{translations.success}: {form.message}</span>
-	{:else if form && !form?.success}
+	{#if form}
 		<span class="text-red-600">{translations.failure}: {form.message}</span>
 	{/if}
 	<form

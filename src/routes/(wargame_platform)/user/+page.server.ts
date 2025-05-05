@@ -3,8 +3,6 @@ import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { deleteSessionTokenCookie, invalidateSession } from '$lib/db/functions';
 
-export const ssr = false;
-
 export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 	if (!locals.user) {
 		redirect(302, '/login');
@@ -20,10 +18,12 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 
 export const actions = {
 	settings: async ({ request, locals }) => {
-		const form = await request.formData();
-		const userId = locals.user?.id ?? '';
+		const user = locals.user;
 
-		if (!locals.user || !locals.user.id) {
+		const form = await request.formData();
+		const userId = user ? user.id : '';
+
+		if (!user || !user.id) {
 			return fail(400, { success: false });
 		}
 

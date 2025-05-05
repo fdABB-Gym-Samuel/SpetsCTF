@@ -2,4 +2,4 @@
 	let { color = 'bg-seperator' } = $props();
 </script>
 
-<div class="h-full w-1 rounded-full {color}"></div>
+<div class="min-h-full w-0.5 rounded-full {color}"></div>

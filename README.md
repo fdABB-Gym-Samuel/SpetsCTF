@@ -18,13 +18,14 @@ Things still needed:
 - [x] Make functionality to add CTFs
 - [x] Allow non-admin users to propose challenges before being validate by an admin
 - [x] Validate filenames and challenge_ids before adding them to resources (prevent pathtraversal)
-- [ ] Make leaderboards wrap on smaller screens
+- [x] Make leaderboards wrap on smaller screens (fixed with new design)
 - [x] Let admins/orgs/author edit challenges
 - [x] Let admins/orgs approve challenges
 - [ ] Let admins/orgs add new orgs to ctf
 - [ ] Make code DRYer
 - [ ] Write API endpoints for people who might want to create separate clients, even if nobody will it's nice to have.
-- [ ] CTF countdown doesnt work correctly, seemingly when days remaining is greater than 10 (tested with something in the 300s)
-- [ ] Edit-challenge shows an error page on success
+- [x] CTF countdown doesnt work correctly, seemingly when days remaining (hannes fixed with new design) is greater than 10 (tested with something in the 300s)
+- [x] Edit-challenge shows an error page on success (fixed for approve, couldn't find in edit)
 - [ ] Make leaderboard for ctf page
 - [ ] Make a podium for top 3 of a ctf?
+- [ ] Ability to remove challenges

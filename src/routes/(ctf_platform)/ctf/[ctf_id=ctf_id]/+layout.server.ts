@@ -1,6 +1,7 @@
 import { db } from '$lib/db/database';
 import type { LayoutServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
+import { getIsOrg } from '$lib/db/functions';
 
 export const load: LayoutServerLoad = async ({ locals, depends, params }) => {
 	const user = locals.user;
@@ -26,13 +27,7 @@ export const load: LayoutServerLoad = async ({ locals, depends, params }) => {
 	if (!user) {
 		team = null;
 	} else {
-		const org = await db
-			.selectFrom('ctf_organizers')
-			.where('ctf', '=', ctfId)
-			.where('user_id', '=', user.id)
-			.executeTakeFirst();
-
-		isOrg = org !== undefined || locals.user?.is_admin;
+		isOrg = (await getIsOrg(user.id, ctfId)) || user.is_admin;
 
 		team = await db
 			.selectFrom('ctf_teams_members')

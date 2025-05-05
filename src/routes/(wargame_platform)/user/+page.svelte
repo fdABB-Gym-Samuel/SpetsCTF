@@ -29,14 +29,16 @@
 	<form class="flex w-min flex-col space-y-1" method="POST" action="?/settings" use:enhance>
 		<label for="display_name">
 			{translations.displayname}
-		</label><br />
-		<input
-			class="border border-black p-1 dark:border-white"
-			value={user.display_name ?? ''}
-			name="display_name"
-			placeholder={translations.enterdisplayname}
-			id="display_name"
-		/>
+		</label>
+		<div>
+			<input
+				class="border border-black p-1 dark:border-white"
+				value={form?.display_name ?? user.display_name ?? ''}
+				name="display_name"
+				placeholder={translations.enterdisplayname}
+				id="display_name"
+			/>
+		</div>
 
 		<br />
 		<label for="represents_class">
@@ -47,11 +49,13 @@
 			class="border-accent-light dark:border-accent-dark bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark border p-1"
 			name="represents_class"
 			id="represents_class"
-			value={user.represents_class ?? ''}
+			value={form?.represents_class ?? user.represents_class ?? ''}
 		>
 			<option value="">{translations.selectclass}</option>
 			{#each availableClasses as availableClass}
-				<option value={availableClass.name}>{availableClass.name} ({availableClass.school})</option>
+				<option value={availableClass.name}
+					>{availableClass.name} {availableClass.school ? `(${availableClass.school})` : ''}</option
+				>
 			{/each}
 		</select>
 		<button type="submit" class="mt-3">{translations.submit}</button>

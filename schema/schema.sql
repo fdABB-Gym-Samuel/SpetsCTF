@@ -10,7 +10,8 @@ CREATE TABLE classes (
 INSERT INTO classes (name, school) VALUES
     ('V220S', 'Hitachigymnasiet Västerås'),
     ('V230S', 'Hitachigymnasiet Västerås'),
-    ('V240S', 'Hitachigymnasiet Västerås');
+    ('V240S', 'Hitachigymnasiet Västerås'),
+    ('No Class', '');
 
 CREATE TABLE users (
     id UUID NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -85,8 +86,8 @@ CREATE TABLE wargame_submissions (
     time TIMESTAMPTZ DEFAULT NOW(),
     success BOOLEAN NOT NULL DEFAULT FALSE,
     submitted_data TEXT,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (challenge) REFERENCES challenges(challenge_id)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (challenge) REFERENCES challenges(challenge_id) ON DELETE CASCADE
 );
 
 CREATE TABLE ctf_teams (
@@ -95,7 +96,7 @@ CREATE TABLE ctf_teams (
     website TEXT,
     name TEXT NOT NULL,
     ctf INT NOT NULL,
-    FOREIGN KEY (ctf) REFERENCES ctf_events(id)
+    FOREIGN KEY (ctf) REFERENCES ctf_events(id) ON DELETE CASCADE
 );
 
 CREATE TABLE ctf_teams_members (
@@ -112,9 +113,9 @@ CREATE TABLE ctf_submissions (
     success BOOLEAN NOT NULL DEFAULT FALSE,
     ctf INT NOT NULL,
     submitted_data TEXT,
-    FOREIGN KEY (ctf) REFERENCES ctf_events(id),
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (challenge) REFERENCES challenges(challenge_id)
+    FOREIGN KEY (ctf) REFERENCES ctf_events(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (challenge) REFERENCES challenges(challenge_id) ON DELETE CASCADE
 );
 
 CREATE TYPE challenge_resource_type AS ENUM (

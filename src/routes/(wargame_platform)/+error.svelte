@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
-	let { data } = $props();
 </script>
 
 <div class="content flex flex-row items-center justify-center">
@@ -24,6 +23,7 @@
 				/>
 			</a>
 			<form
+				method="POST"
 				class="text-center"
 				action="/api/submit/super_secret_super_flag_challenge_that_no_one_knows_about"
 				use:enhance
