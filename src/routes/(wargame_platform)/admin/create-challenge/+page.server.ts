@@ -15,8 +15,13 @@ import { categories } from '$lib/db/constants';
 import { linkPattern } from '$lib/utils/utils';
 
 export const load = async ({ locals }: ServerLoadEvent) => {
-	if (locals.user?.is_admin !== true) {
+	const user = locals.user;
+
+	if (!user) {
 		return redirect(303, '/login');
+	}
+	if (user.is_admin !== true) {
+		return error(401, { message: 'User not admin' });
 	}
 };
 
