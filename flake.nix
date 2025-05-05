@@ -59,6 +59,11 @@
         pname = "spetsctf-bundle";
         inherit version;
 
+        PUBLIC_VERSION_STRING =
+          if (self ? rev)
+          then builtins.substring 0 8 self.rev
+          else "dev";
+
         nodejs = pkgs.nodejs_22;
         npmDepsHash = "sha256-6rWz/V81y44ouP3PoQJyh/1ACkfhNESn6T27laZZo3o=";
         # npmDepsHash = pkgs.lib.fakeHash;
