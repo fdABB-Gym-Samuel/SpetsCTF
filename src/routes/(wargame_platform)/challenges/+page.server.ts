@@ -129,10 +129,14 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 		]);
 
 	let myChallenges;
-	if (!user?.is_admin) {
-		myChallenges = await myChallengesQuery.where('ch.author', '=', user?.id ?? '').execute();
+	if (user) {
+		if (!user?.is_admin) {
+			myChallenges = await myChallengesQuery.where('ch.author', '=', user?.id ?? '').execute();
+		} else {
+			myChallenges = await myChallengesQuery.execute();
+		}
 	} else {
-		myChallenges = await myChallengesQuery.execute();
+		myChallenges = null;
 	}
 
 	return { allChallenges, myChallenges };
