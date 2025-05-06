@@ -98,8 +98,8 @@
 	};
 </script>
 
-<div class="content mt-4">
-	<h2 class="text-4xl font-bold">{translations.addnewchallenge}</h2>
+<div class="content">
+	<h2 class="text-4xl font-bold">Approve challenge</h2>
 	{#if form}
 		<span class="text-red-600">{translations.failure}: {form.message}</span>
 	{/if}
@@ -200,10 +200,6 @@
 					{/each}
 				</ul>
 			</fieldset>
-		</div>
-		<div class="mb-5">
-			<label for="stay_anonymous">Stay Anonymous:</label>
-			<input type="checkbox" name="stay_anonymous" id="stay_anonymous" value="1" checked />
 		</div>
 	</form>
 

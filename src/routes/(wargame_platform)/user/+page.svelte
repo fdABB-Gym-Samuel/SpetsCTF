@@ -14,7 +14,7 @@
 	});
 </script>
 
-<div class="flex flex-col space-y-4 p-4">
+<div class="mt-4 flex flex-col space-y-4 p-4">
 	<h1>{translations.settings}</h1>
 	{#if form && form?.success}
 		<span class="font-bold text-green-600">{translations.settingsupdated}.</span>

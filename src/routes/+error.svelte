@@ -17,9 +17,9 @@
 <Navbar {links} {translations} {user}></Navbar>
 
 <main
-	class="bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark flex min-h-[var(--main-height)] w-screen flex-col items-stretch py-[var(--nav-height)]"
+	class="content bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark flex min-h-[var(--main-height)] w-screen flex-col items-stretch py-[var(--nav-height)]"
 >
-	<div class="content flex flex-row items-center justify-center">
+	<div class="flex flex-row items-center justify-center">
 		<div class="absolute left-0 block -rotate-90">
 			<a
 				href="/what_is_this_a_secret_challenge?"

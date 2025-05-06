@@ -6,7 +6,7 @@
 	let { translations, unapprovedChallenges } = data;
 </script>
 
-<div class="content mt-4">
+<div class="content">
 	{#if page.url.searchParams.get('status') === 'approved'}
 		<div class="mb-4">
 			<h3 class="text-green-600">Challenge successfully approved</h3>

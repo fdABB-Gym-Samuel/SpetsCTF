@@ -65,7 +65,7 @@
 	});
 </script>
 
-<main class="content w-[100%] pt-24 sm:m-auto" bind:this={componentRoot}>
+<main class="content w-[100%] pt-20 sm:m-auto" bind:this={componentRoot}>
 	<header class="mb-16 flex flex-col items-center justify-center gap-3">
 		<p class="text-text-200 gsap-top-down-opacity">Challenge yourself, practise and gain points.</p>
 		<div class="gsap-top-down-opacity flex flex-wrap items-center justify-center gap-4">

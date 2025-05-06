@@ -21,7 +21,7 @@
 	$inspect(formValid);
 </script>
 
-<div class="mt-4 w-screen">
+<div class="content w-screen">
 	<h1>{translations.createctf}</h1>
 	<form method="POST" class="mx-auto flex w-1/2 flex-col space-y-2" use:enhance>
 		<div>
