@@ -10,7 +10,8 @@
 
 	const adminLinks: adminLink[] = [
 		{ href: '/admin/create-challenge', display: translations.createchallenge },
-		{ href: '/admin/create-ctf', display: translations.createctf }
+		{ href: '/admin/create-ctf', display: translations.createctf },
+		{ href: '/admin/approve', display: translations.approve }
 	];
 </script>
 

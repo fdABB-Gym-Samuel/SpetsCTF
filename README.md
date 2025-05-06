@@ -28,4 +28,4 @@ Things still needed:
 - [x] Edit-challenge shows an error page on success (fixed for approve, couldn't find in edit)
 - [ ] Make leaderboard for ctf page
 - [ ] Make a podium for top 3 of a ctf?
-- [ ] Ability to remove challenges
+- [x] Ability to remove challenges
