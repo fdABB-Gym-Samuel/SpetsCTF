@@ -37,9 +37,9 @@
 	};
 </script>
 
-<header>
+<header class="z-40">
 	<nav
-		class="bg-bg-900 fixed top-0 left-0 z-10 flex h-15 w-full flex-row items-center justify-between gap-5 px-4 *:w-1/3 sm:px-6 md:px-10"
+		class="bg-bg-900 fixed top-0 left-0 z-40 flex h-15 w-full flex-row items-center justify-between gap-5 px-4 *:w-1/3 sm:px-6 md:px-10"
 	>
 		<div class="left flex w-1/5 flex-grow-0 flex-row items-center sm:flex-grow">
 			<div class="logo-continer relative mr-4 flex justify-end sm:mr-0">
