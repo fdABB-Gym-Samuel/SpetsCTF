@@ -32,7 +32,7 @@
 	});
 </script>
 
-<main class="content m-auto w-full max-w-[1200px] pt-24" bind:this={componentRoot}>
+<main class="content m-auto w-full max-w-[1200px] pt-20" bind:this={componentRoot}>
 	<!-- TODO: add header with user info if logged in -->
 	{#if user && !user.is_admin}
 		<header class="gsap-top-down-opacity mb-12">
@@ -41,7 +41,7 @@
 			</h1>
 			<p class="text-text-200">
 				You have <span class="text-text-100"
-					>{users_scoreboard.filter((user_) => user_.id === user.id)[0]?.total_points}</span
+					>{users_scoreboard.filter((user_) => user_.id === user.id)[0]?.total_points}pts</span
 				>, currently in the
 				<span class="text-text-100">#{userClassPosition} class</span>.
 			</p>
@@ -172,7 +172,7 @@
 				<!-- body only -->
 				<table class="gsap-top-down-opacity w-full table-fixed">
 					<tbody>
-						{#each classes_scoreboard as curr_class, i}
+						{#each classes_scoreboard.filter((class_) => class_.className !== 'No Class') as curr_class, i}
 							<tr
 								class="*:border-bg-700 w-full text-wrap break-words
                        *:border-t-0

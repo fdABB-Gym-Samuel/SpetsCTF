@@ -1,7 +1,18 @@
-import { fail, type Actions } from '@sveltejs/kit';
+import { error, redirect, fail, type Actions, type ServerLoadEvent } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import type { CtfEvents } from '$lib/db/db';
 import type { Insertable } from 'kysely';
+
+export const load = async ({ locals }: ServerLoadEvent) => {
+	const user = locals.user;
+
+	if (!user) {
+		return redirect(303, '/login');
+	}
+	if (user.is_admin !== true) {
+		return error(401, { message: 'User not admin' });
+	}
+};
 
 export const actions = {
 	default: async ({ locals, request }) => {

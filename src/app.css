@@ -196,6 +196,10 @@ body::before {
 	/* Firefox */
 }
 
+.content {
+	margin-top: 1rem;
+}
+
 h2 {
 	@apply mb-1 text-lg font-bold;
 }

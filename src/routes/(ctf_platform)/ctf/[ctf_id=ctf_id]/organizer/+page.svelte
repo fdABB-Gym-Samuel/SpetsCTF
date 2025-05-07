@@ -13,7 +13,7 @@
 	];
 </script>
 
-<div class="content mt-4">
+<div class="content">
 	<h1 class="route-title">{translations.cuttingedgeadmintools}</h1>
 	<ul>
 		{#each adminLinks as adminLink}
