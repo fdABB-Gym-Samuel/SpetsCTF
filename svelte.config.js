@@ -13,7 +13,6 @@ const config = {
 		csp: {
 			mode: 'auto',
 			directives: {
-				'connect-src': ['none'],
 				'font-src': ['self'],
 				'manifest-src': ['none'],
 				'script-src-elem': ['self'],
