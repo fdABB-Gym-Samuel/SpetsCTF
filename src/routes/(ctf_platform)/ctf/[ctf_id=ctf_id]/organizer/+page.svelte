@@ -15,12 +15,12 @@
 		}
 		searchTimeout = setTimeout(() => {
 			searchUser(curr);
-		}, 500);
+		}, 200);
 	});
 
-	const searchUser = (github_username: string) => {
-		const body = { githubUserName: github_username };
-		fetch('/api/search/users');
+	const searchUser = async (github_username: string) => {
+		const response = await fetch(`/api/search/users?q=${github_username}`);
+		matchingUsers = await response.json();
 	};
 	interface adminLink {
 		display: string;
@@ -52,7 +52,7 @@
 			<input list="usersList" bind:value={userSearch} />
 			<datalist id="usersList">
 				{#each matchingUsers as user}
-					<option value={user.id}>{user.display_name} (user.github_username)</option>
+					<option value={user.id}>{user.display_name} ({user.github_username})</option>
 				{/each}
 			</datalist>
 		</div>
