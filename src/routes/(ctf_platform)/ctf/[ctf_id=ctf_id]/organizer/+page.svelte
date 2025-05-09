@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
-	import Dropdown from '$lib/components/Dropdown.svelte';
 	import Input from '$lib/components/Input.svelte';
 	let { data } = $props();
 	let { translations } = data;
@@ -24,6 +23,7 @@
 		const response = await fetch(`/api/search/users?q=${github_username}`);
 		matchingUsers = await response.json();
 	};
+
 	interface adminLink {
 		display: string;
 		href: string;
@@ -34,7 +34,16 @@
 		{ href: 'organizer/approve', display: translations.approve }
 	];
 
-	let currentSelected = $state(0);
+	let dropdownData = $derived({
+		id: 'matchingUsers',
+		results: matchingUsers,
+		primary_name: 'display_name',
+		secondary_name: 'github_username',
+		onSelect: (id: string) => {
+			console.log(matchingUsers.find((user) => user.id === id));
+		},
+		currentSelected: 0
+	});
 </script>
 
 <div class="content">
@@ -49,27 +58,17 @@
 		{/each}
 	</ul>
 
-	<h3>Add new organizer</h3>
+	<h3 class="text-2xl">Add new organizer</h3>
 	<form action="?/add-org">
 		<div class="mb-2 flex flex-col">
 			<Input
-				label="test"
+				label="Users displayname"
 				type="search"
 				name="newOrg"
 				placeholder="eritho23"
-				list="matchingUsers"
 				bind:value={userSearch}
-			>
-				<Dropdown
-					id="matchingUsers"
-					results={matchingUsers}
-					primary_name="display_name"
-					secondary_name="github_username"
-					onSelect={() => {
-						console.log('here');
-					}}
-				></Dropdown>
-			</Input>
+				{dropdownData}
+			></Input>
 			<!-- <label for="orgName">Github Username</label>
 			<input list="usersList" bind:value={userSearch} />
 			<datalist id="usersList">
