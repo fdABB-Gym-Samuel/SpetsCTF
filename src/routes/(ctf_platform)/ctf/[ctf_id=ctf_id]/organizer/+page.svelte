@@ -1,10 +1,12 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
+	import Dropdown from '$lib/components/Dropdown.svelte';
+	import Input from '$lib/components/Input.svelte';
 	let { data } = $props();
 	let { translations } = data;
 
 	let userSearch = $state('');
-	let matchingUsers = $state([{ id: '1', github_username: 'hello', display_name: 'Hello' }]);
+	let matchingUsers = $state([]);
 	let searchTimeout: null | NodeJS.Timeout | number = null;
 
 	$effect(() => {
@@ -31,6 +33,8 @@
 		{ href: 'organizer/create-challenge', display: translations.createchallenge },
 		{ href: 'organizer/approve', display: translations.approve }
 	];
+
+	let currentSelected = $state(0);
 </script>
 
 <div class="content">
@@ -48,13 +52,31 @@
 	<h3>Add new organizer</h3>
 	<form action="?/add-org">
 		<div class="mb-2 flex flex-col">
-			<label for="orgName">Github Username</label>
+			<Input
+				label="test"
+				type="search"
+				name="newOrg"
+				placeholder="eritho23"
+				list="matchingUsers"
+				bind:value={userSearch}
+			>
+				<Dropdown
+					id="matchingUsers"
+					results={matchingUsers}
+					primary_name="display_name"
+					secondary_name="github_username"
+					onSelect={() => {
+						console.log('here');
+					}}
+				></Dropdown>
+			</Input>
+			<!-- <label for="orgName">Github Username</label>
 			<input list="usersList" bind:value={userSearch} />
 			<datalist id="usersList">
 				{#each matchingUsers as user}
 					<option value={user.id}>{user.display_name} ({user.github_username})</option>
 				{/each}
-			</datalist>
+			</datalist> -->
 		</div>
 		<Button label="Add orgs" type="submit" styleType="normal" ariaLabel="Add orgs"></Button>
 	</form>
