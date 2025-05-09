@@ -22,9 +22,8 @@
 				e.preventDefault();
 				currentSelected = (currentSelected + 1) % dropdownData.results.length;
 			} else if (e.key === 'Enter' && inputFocused) {
-				e.preventDefault();
-				console.log('rererer');
-				dropdownData.onSelect(dropdownData.results[currentSelected].id);
+				// e.preventDefault();
+				dropdownData.onSelect(dropdownData.results[currentSelected]);
 			}
 		}
 	};
@@ -32,7 +31,7 @@
 	let currentSelected = $state(dropdownData.currentSelected);
 </script>
 
-<div class="peer relative flex flex-col">
+<div class="relative flex flex-col">
 	<label for={name}>{label}</label>
 	<input
 		autocomplete="off"
@@ -43,9 +42,9 @@
 		class="{width} bg-bg-850 border-bg-500 focus:border-primary-light rounded-full border-2 px-6 py-2 outline-0"
 		onkeydown={(e) => handleKeyDown(e)}
 		onfocus={() => (inputFocused = true)}
-		onblur={() => (inputFocused = false)}
+		onblur={(e) => (inputFocused = false)}
 	/>
-	{#if dropdownData}
+	{#if dropdownData && inputFocused}
 		<Dropdown {...dropdownData} bind:currentSelected></Dropdown>
 	{/if}
 </div>

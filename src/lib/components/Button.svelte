@@ -61,7 +61,7 @@
 			/>
 		{/if}
 	</button>
-{:else if styleType === 'action'}
+{:else if styleType === 'icon'}
 	<button
 		{type}
 		onclick={() => onClick()}
