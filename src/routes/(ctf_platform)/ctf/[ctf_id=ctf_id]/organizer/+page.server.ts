@@ -1,6 +1,5 @@
 import { error, fail, redirect, type ServerLoadEvent } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
-import { sql } from 'kysely';
 import { getIsOrg } from '$lib/db/functions';
 
 export const load = async ({ locals, params }: ServerLoadEvent) => {
@@ -67,7 +66,7 @@ export const actions = {
 							db
 								.selectFrom('ctf_organizers')
 								// .select(sql`1`)
-								.whereRef('ctf_organizers.user_id', '=', 'users.id')
+								.whereRef('ctf_organizers.user_id', '=', db.dynamic.ref('users.id'))
 								.where('ctf_organizers.ctf', '=', ctfId)
 						)
 						.$castTo<boolean>()
@@ -89,9 +88,9 @@ export const actions = {
 				.selectFrom('ctf_teams as t')
 				// pull whatever team fields you need:
 				.select(['t.id'])
-				// count all members via the join alias "m":
-				.select(db.fn.count('m.user_id').as('member_count'))
 				.innerJoin('ctf_teams_members as m', 'm.team', 't.id')
+				// count all members via the join alias "m":
+				.select(db.fn.count(db.dynamic.ref('m.user_id')).as('member_count'))
 				// now filter: same CTF AND user must be on that team
 				.where((eb) =>
 					eb.and([
@@ -100,7 +99,7 @@ export const actions = {
 							db
 								.selectFrom('ctf_teams_members as mem')
 								// .select(sql`1`)
-								.whereRef('mem.team', '=', 't.id')
+								.whereRef('mem.team', '=', db.dynamic.ref('t.id'))
 								.where('mem.user_id', '=', newOrg)
 						)
 					])

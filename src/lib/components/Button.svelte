@@ -1,6 +1,6 @@
 <script lang="ts">
 	let {
-		onClick = () => console.log('No action specified for this button'),
+		onClick = undefined,
 		label,
 		secondLabel = '',
 		styleType = 'normal',
@@ -15,6 +15,12 @@
 		iconSize = '16',
 		twStyles = ''
 	} = $props();
+
+	if (onClick === undefined && type.toLowerCase() !== 'submit') {
+		onClick = () => console.log('No action specified for this button');
+	} else if (onClick === undefined) {
+		onClick = () => {};
+	}
 </script>
 
 {#if styleType === 'normal'}
@@ -44,7 +50,7 @@
 	<button
 		{disabled}
 		{type}
-		onclick={() => onClick()}
+		onclick={onClick}
 		aria-label={ariaLabel}
 		class="rounded-sm px-4 py-1 text-sm {bgColor} outline-2 {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {twStyles}"
 	>
