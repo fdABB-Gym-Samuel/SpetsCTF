@@ -9,7 +9,9 @@
 		value = $bindable(),
 		inputFocused = $bindable(false),
 		width = 'w-full',
-		dropdownData = null
+		dropdownData = null,
+		pattern = undefined,
+		multiple = false
 	} = $props();
 
 	const handleKeyDown = (e: KeyboardEvent) => {
@@ -38,6 +40,8 @@
 	<label for={name}>{label}</label>
 	<input
 		bind:this={inputElement}
+		{pattern}
+		{name}
 		autocomplete="off"
 		id="input"
 		{type}
@@ -47,6 +51,7 @@
 		onkeydown={(e) => handleKeyDown(e)}
 		onfocus={() => (inputFocused = true)}
 		onblur={(e) => (inputFocused = false)}
+		{multiple}
 	/>
 	{#if dropdownData && inputFocused}
 		<Dropdown {...dropdownData} bind:currentSelected></Dropdown>

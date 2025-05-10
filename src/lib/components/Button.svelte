@@ -75,7 +75,7 @@
 		{type}
 		onclick={() => onClick()}
 		aria-label={ariaLabel}
-		class="h-fit rounded-sm px-1.5 py-1 text-left {bgColor} outline-2 {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {twStyles}"
+		class="h-fit rounded-sm px-1 py-1 text-left {bgColor} outline-2 {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {twStyles} flex"
 	>
 		{#if Icon}
 			<Icon
