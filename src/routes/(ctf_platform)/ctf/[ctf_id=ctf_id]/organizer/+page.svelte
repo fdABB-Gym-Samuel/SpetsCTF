@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
@@ -13,10 +14,22 @@
 	}
 
 	let userSearch = $state('');
-	let matchingUsers: user[] = $state([]);
+	let matchingUsers: user[] = $state([
+		{
+			id: 'df',
+			display_name: 'mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm',
+			github_username: 'test'
+		}
+	]);
 	let searchTimeout: null | NodeJS.Timeout | number = null;
 
-	let organizersToAdd: user[] = $state([]);
+	let organizersToAdd: user[] = $state([
+		{
+			id: 'df',
+			display_name: 'mmmmmmmmmmmmmmmmmmmmmmmmmmmmmm',
+			github_username: 'tstststststststststststststs'
+		}
+	]);
 
 	const ctfId = page.params.ctf_id;
 
@@ -80,7 +93,7 @@
 	</ul>
 
 	<h3 class="text-2xl">Add new organizer</h3>
-	<form action="?/addOrg" method="POST">
+	<form action="?/addOrg" method="POST" use:enhance>
 		<div class="mb-2 flex flex-col">
 			<Input
 				label="User"
@@ -101,11 +114,16 @@
 		<ul class="mb-4 flex max-h-50 w-full flex-col items-center overflow-y-scroll px-4">
 			{#each organizersToAdd.slice().reverse() as newOrg, i}
 				<li
-					class="flex w-full justify-between gap-1 border-y-1 px-4 py-1.5 align-text-top"
+					class="flex w-full items-center justify-between gap-1 border-y-1 px-4 py-1.5"
 					class:bg-bg-600={i % 2 == 1}
 				>
 					<input type="hidden" value={newOrg.id} name="newOrg" />
-					{newOrg.display_name} ({newOrg.github_username})
+					<div
+						class="flex max-w-[calc(100%-2.5em)] min-w-5 gap-1 overflow-x-hidden text-nowrap text-ellipsis"
+					>
+						<span class=" mr-1 min-w-5 overflow-x-hidden text-ellipsis">{newOrg.display_name}</span>
+						(<span class="min-w-5 overflow-x-hidden text-ellipsis">{newOrg.github_username}</span>)
+					</div>
 					<Button
 						Icon={Trash2}
 						type="button"

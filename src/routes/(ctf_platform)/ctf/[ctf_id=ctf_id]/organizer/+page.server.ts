@@ -32,6 +32,19 @@ export const actions = {
 			return fail(401, { message: 'User not organizer of CTF or admin' });
 		}
 
+		const ctf = await db
+			.selectFrom('ctf_events')
+			.select('end_time')
+			.where('id', '=', ctfId)
+			.executeTakeFirst();
+
+		if (ctf === undefined) {
+			return fail(404, { message: 'CTF not found' });
+		}
+		if (ctf?.end_time < new Date()) {
+			return fail(403, { message: 'CTF has already ended' });
+		}
+
 		const formData = await request.formData();
 		const newOrgs = formData.getAll('newOrg') as string[];
 
@@ -44,23 +57,24 @@ export const actions = {
 					eb('users.is_admin', '=', true),
 
 					// OR users who exist in ctf_organizers for this CTF
-					eb.unary(
-						'exists',
-						db
-							.selectFrom('ctf_organizers')
-							// .select(sql`1`)
-							.whereRef('ctf_organizers.user_id', '=', 'users.id')
-							.where('ctf_organizers.ctf', '=', ctfId)
-					)
+					eb
+						.unary(
+							'exists',
+							db
+								.selectFrom('ctf_organizers')
+								// .select(sql`1`)
+								.whereRef('ctf_organizers.user_id', '=', 'users.id')
+								.where('ctf_organizers.ctf', '=', ctfId)
+						)
+						.$castTo<boolean>()
 				])
 			)
 			.execute();
-		console.log(currentOrgs);
 
 		const uniqueNewOrgs = newOrgs.filter(
 			(newOrg) => !currentOrgs.some((oldOrg) => oldOrg.id === newOrg)
 		);
-		console.log(uniqueNewOrgs, 'All new');
+
 		for (let newOrg of uniqueNewOrgs) {
 			console.log(newOrg, 'newOrg');
 			const team = await db
@@ -74,8 +88,7 @@ export const actions = {
 				.where((eb) =>
 					eb.and([
 						eb('t.ctf', '=', ctfId),
-						eb.unary(
-							'exists',
+						eb.exists(
 							db
 								.selectFrom('ctf_teams_members as mem')
 								// .select(sql`1`)
