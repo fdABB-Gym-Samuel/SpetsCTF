@@ -77,7 +77,7 @@
 	</ul>
 
 	<h3 class="text-2xl">Add new organizer</h3>
-	<form action="?/add-org" method="POST">
+	<form action="?/addOrg" method="POST">
 		<div class="mb-2 flex flex-col">
 			<Input
 				label="User"
