@@ -4,6 +4,7 @@
 
 <div class="flex w-6/10 flex-col">
 	<label for={name}>{label}</label>
+
 	<select
 		{name}
 		{id}

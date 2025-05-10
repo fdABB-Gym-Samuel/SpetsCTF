@@ -38,6 +38,7 @@
 
 <div class="relative flex flex-col">
 	<label for={name}>{label}</label>
+
 	<input
 		bind:this={inputElement}
 		{pattern}

@@ -9,7 +9,7 @@
 		<ul class="gap-x-4 px-4 pt-2 [&>*:first-child]:border-t-1">
 			{#each options as option}
 				<div
-					class="border-bg-500 flex w-full flex-row items-center justify-between border-b-1 px-2"
+					class="border-bg-500 flex w-full flex-row items-center justify-between border-b-1 px-2 py-0.5"
 				>
 					<label for={`${name}_${option.text}`} class="text-white">
 						{option.text}

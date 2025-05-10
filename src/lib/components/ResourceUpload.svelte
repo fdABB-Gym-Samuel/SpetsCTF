@@ -92,13 +92,15 @@
 	}}
 	class="bprder-foreground-light dark:border-foreground-dark mb-5 flex flex-col gap-1 border-1 px-5 py-2"
 >
-	<Select
-		label="Resource Type"
-		name="resourceType"
-		bind:value={currentResourceType}
-		options={resourceTypeOptions}
-		id="ResourceTypeSelect"
-	></Select>
+	<div>
+		<Select
+			label="Resource Type"
+			name="resourceType"
+			bind:value={currentResourceType}
+			options={resourceTypeOptions}
+			id="ResourceTypeSelect"
+		></Select>
+	</div>
 	{#if currentResourceType === 'website'}
 		<Input
 			label="Website"
@@ -151,11 +153,11 @@
 		</li>
 	{/each}
 
-	{#if files && files?.length > 0}
-		<div>
+	<div>
+		{#if files && files?.length > 0}
 			<input type="file" name="files" {form} bind:files hidden />
-		</div>
-	{/if}
+		{/if}
+	</div>
 </ul>
 {#each Object.entries(challenge_resources) as [type, resource_list]: ["website"|"command", resource[]]}
 	{#if ['command', 'website', 'file'].includes(type)}
