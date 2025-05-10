@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Dropdown from './Dropdown.svelte';
+	import Dropdown from '$lib/components/input/Dropdown.svelte';
 	let {
 		label,
 		type,
@@ -26,7 +26,7 @@
 			}
 		}
 	};
-	let currentSelected = $state(dropdownData.currentSelected);
+	let currentSelected = $state(dropdownData?.currentSelected);
 	let inputElement: HTMLInputElement | undefined;
 
 	onMount(() => {

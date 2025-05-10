@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	let { data, form } = $props();
 	let { translations } = data;
 	import { categories } from '$lib/db/constants';
 	import { linkPattern } from '$lib/utils/utils.js';
+	import ChallengeForm from '$lib/components/ChallengeForm.svelte';
 
 	type resource_type = 'File' | 'Command' | 'Website';
 
@@ -88,7 +88,7 @@
 	{:else if form && !form?.success}
 		<span class="text-red-600">{translations.failure}: {form.message}</span>
 	{/if}
-	<form
+	<!-- <form
 		method="POST"
 		class="flex flex-col"
 		id="new_challenge_form"
@@ -185,7 +185,8 @@
 			<label for="stay_anonymous">Stay Anonymous:</label>
 			<input type="checkbox" name="stay_anonymous" id="stay_anonymous" value="1" checked />
 		</div>
-	</form>
+	</form> -->
+	<ChallengeForm formName="new_challenge_form" isAuthor={false}></ChallengeForm>
 
 	<h5 class="text-xl">Add Resource</h5>
 	<form

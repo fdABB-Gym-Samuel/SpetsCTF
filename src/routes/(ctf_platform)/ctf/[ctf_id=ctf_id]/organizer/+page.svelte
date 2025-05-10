@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
 	import Button from '$lib/components/Button.svelte';
-	import Input from '$lib/components/Input.svelte';
+	import Input from '$lib/components/input/Input.svelte';
 	import { Trash2 } from '@lucide/svelte';
 	let { data, form } = $props();
 	let { translations } = data;
