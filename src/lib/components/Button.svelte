@@ -5,13 +5,13 @@
 		secondLabel = '',
 		styleType = 'normal',
 		type,
+		disabled = false,
 		ariaLabel,
 		bgColor = 'bg-bg-700',
 		textColor = '',
 		hoverColor = 'hover:bg-bg-600',
 		outlineColor = 'outline-bg-500',
 		Icon = undefined,
-		iconColor = undefined,
 		iconSize = '16',
 		twStyles = ''
 	} = $props();
@@ -19,6 +19,7 @@
 
 {#if styleType === 'normal'}
 	<button
+		{disabled}
 		{type}
 		onclick={() => onClick()}
 		aria-label={ariaLabel}
@@ -41,6 +42,7 @@
 	</button>
 {:else if styleType === 'small'}
 	<button
+		{disabled}
 		{type}
 		onclick={() => onClick()}
 		aria-label={ariaLabel}
@@ -63,6 +65,7 @@
 	</button>
 {:else if styleType === 'icon'}
 	<button
+		{disabled}
 		{type}
 		onclick={() => onClick()}
 		aria-label={ariaLabel}

@@ -1,17 +1,17 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import Dropdown from './Dropdown.svelte';
-
-	// let { data } = $props()
 	let {
 		label,
 		type,
 		placeholder,
 		name,
 		value = $bindable(),
+		inputFocused = $bindable(false),
 		width = 'w-full',
 		dropdownData = null
 	} = $props();
-	// let value = $state("")
+
 	const handleKeyDown = (e: KeyboardEvent) => {
 		if (dropdownData) {
 			if (e.key === 'ArrowUp') {
@@ -22,18 +22,22 @@
 				e.preventDefault();
 				currentSelected = (currentSelected + 1) % dropdownData.results.length;
 			} else if (e.key === 'Enter' && inputFocused) {
-				// e.preventDefault();
 				dropdownData.onSelect(dropdownData.results[currentSelected]);
 			}
 		}
 	};
-	let inputFocused = $state(false);
 	let currentSelected = $state(dropdownData.currentSelected);
+	let inputElement: HTMLInputElement | undefined;
+
+	onMount(() => {
+		inputFocused = inputElement === document.activeElement;
+	});
 </script>
 
 <div class="relative flex flex-col">
 	<label for={name}>{label}</label>
 	<input
+		bind:this={inputElement}
 		autocomplete="off"
 		id="input"
 		{type}

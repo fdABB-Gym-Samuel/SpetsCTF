@@ -4,7 +4,7 @@
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import { Trash2 } from '@lucide/svelte';
-	let { data } = $props();
+	let { data, form } = $props();
 	let { translations } = data;
 
 	interface user {
@@ -14,22 +14,11 @@
 	}
 
 	let userSearch = $state('');
-	let matchingUsers: user[] = $state([
-		{
-			id: 'df',
-			display_name: 'mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm',
-			github_username: 'test'
-		}
-	]);
+	let searchFocused = $state(false);
+	let matchingUsers: user[] = $state([]);
 	let searchTimeout: null | NodeJS.Timeout | number = null;
 
-	let organizersToAdd: user[] = $state([
-		{
-			id: 'df',
-			display_name: 'mmmmmmmmmmmmmmmmmmmmmmmmmmmmmm',
-			github_username: 'tstststststststststststststs'
-		}
-	]);
+	let organizersToAdd: user[] = $state([]);
 
 	const ctfId = page.params.ctf_id;
 
@@ -78,6 +67,12 @@
 		},
 		currentSelected: 0
 	});
+
+	$effect(() => {
+		if (form?.success) {
+			organizersToAdd = [];
+		}
+	});
 </script>
 
 <div class="content">
@@ -93,24 +88,23 @@
 	</ul>
 
 	<h3 class="text-2xl">Add new organizer</h3>
-	<form action="?/addOrg" method="POST" use:enhance>
-		<div class="mb-2 flex flex-col">
-			<Input
-				label="User"
-				type="search"
-				name="newOrg"
-				placeholder="eritho23"
-				bind:value={userSearch}
-				{dropdownData}
-			></Input>
-			<!-- <label for="orgName">Github Username</label>
-			<input list="usersList" bind:value={userSearch} />
-			<datalist id="usersList">
-				{#each matchingUsers as user}
-					<option value={user.id}>{user.display_name} ({user.github_username})</option>
-				{/each}
-			</datalist> -->
+	{#if form}
+		<div>
+			<p class:text-green-500={form.success} class:text-red-500={!form.success}>{form.message}</p>
 		</div>
+	{/if}
+	<div class="mb-2 flex flex-col">
+		<Input
+			label="User"
+			type="search"
+			name="newOrg"
+			placeholder="eritho23"
+			bind:value={userSearch}
+			bind:inputFocused={searchFocused}
+			{dropdownData}
+		></Input>
+	</div>
+	<form action="?/addOrg" method="POST" use:enhance>
 		<ul class="mb-4 flex max-h-50 w-full flex-col items-center overflow-y-scroll px-4">
 			{#each organizersToAdd.slice().reverse() as newOrg, i}
 				<li
@@ -136,6 +130,12 @@
 				</li>
 			{/each}
 		</ul>
-		<Button label="Add orgs" type="submit" styleType="normal" ariaLabel="Add orgs"></Button>
+		<Button
+			label="Add orgs"
+			type="submit"
+			styleType="normal"
+			ariaLabel="Add orgs"
+			disabled={searchFocused}
+		></Button>
 	</form>
 </div>

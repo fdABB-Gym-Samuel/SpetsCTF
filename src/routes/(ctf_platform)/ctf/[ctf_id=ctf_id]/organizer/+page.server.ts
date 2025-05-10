@@ -48,6 +48,10 @@ export const actions = {
 		const formData = await request.formData();
 		const newOrgs = formData.getAll('newOrg') as string[];
 
+		if (newOrgs.length < 1) {
+			return fail(400, { message: 'No new organizers selected' });
+		}
+
 		const currentOrgs = await db
 			.selectFrom('users')
 			.select(['users.id', 'display_name'])
@@ -75,8 +79,12 @@ export const actions = {
 			(newOrg) => !currentOrgs.some((oldOrg) => oldOrg.id === newOrg)
 		);
 
+		if (uniqueNewOrgs.length < 1) {
+			return fail(400, { message: 'All new organizers are already organizers or admins' });
+		}
+
+		let numOrgsAdded = 0;
 		for (let newOrg of uniqueNewOrgs) {
-			console.log(newOrg, 'newOrg');
 			const team = await db
 				.selectFrom('ctf_teams as t')
 				// pull whatever team fields you need:
@@ -127,7 +135,11 @@ export const actions = {
 			if (insertedOrg === undefined) {
 				console.error(`Failed to insert new organizer with id: ${newOrg}`);
 			}
+			numOrgsAdded += 1;
 		}
-		return { success: true, message: 'All new orgs inserted successfully' };
+		return {
+			success: true,
+			message: `Successfully added ${numOrgsAdded}/${newOrgs.length} new organizers`
+		};
 	}
 };
