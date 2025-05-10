@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import { Trash2 } from '@lucide/svelte';
@@ -17,6 +18,8 @@
 
 	let organizersToAdd: user[] = $state([]);
 
+	const ctfId = page.params.ctf_id;
+
 	$effect(() => {
 		const curr = userSearch;
 
@@ -29,7 +32,7 @@
 	});
 
 	const searchUser = async (github_username: string) => {
-		const response = await fetch(`/api/search/users?q=${github_username}`);
+		const response = await fetch(`/api/search/users?q=${github_username}&ctf=${ctfId}`);
 		matchingUsers = ((await response.json()) as user[]).filter(
 			(user) => organizersToAdd.filter((org) => org.id === user.id).length < 1
 		);

@@ -1,11 +1,13 @@
 import { db } from '$lib/db/database.js';
 import { sql } from 'kysely';
 import { json } from '@sveltejs/kit';
+import type { SqlBool } from 'kysely';
 
 export const GET = async ({ url, locals }) => {
 	const query = url.searchParams.get('q');
+	const ctfId = Number(url.searchParams.get('ctf'));
 	const matchThreshold = 0;
-	const matchingUsers = await db
+	let matchingUsersQuery = db
 		.selectFrom('users')
 		.select([
 			'id',
@@ -20,6 +22,7 @@ export const GET = async ({ url, locals }) => {
     		`.as('score')
 		])
 		// wrap the raw SQL in a factory so it’s ExpressionOrFactory<…, SqlBool>
+		.where('users.is_admin', 'is not', true)
 		.where(
 			(eb) =>
 				sql<boolean>`
@@ -39,9 +42,18 @@ export const GET = async ({ url, locals }) => {
       			)
     		`,
 			'desc'
-		)
-		.limit(20)
-		.execute();
+		);
+	if (ctfId) {
+		matchingUsersQuery = matchingUsersQuery.where(sql<SqlBool>`
+			NOT EXISTS (
+			  SELECT 1
+			  FROM ctf_organizers o
+			  WHERE o.user_id = users.id
+				AND o.ctf = ${ctfId}
+			)
+		  `);
+	}
+	const matchingUsers = await matchingUsersQuery.limit(20).execute();
 
 	return json(matchingUsers);
 };
