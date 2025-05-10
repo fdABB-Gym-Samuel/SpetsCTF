@@ -1,0 +1,54 @@
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import Dropdown from './Dropdown.svelte';
+	let {
+		label,
+		type,
+		placeholder,
+		name,
+		value = $bindable(),
+		inputFocused = $bindable(false),
+		width = 'w-full',
+		dropdownData = null
+	} = $props();
+
+	const handleKeyDown = (e: KeyboardEvent) => {
+		if (dropdownData) {
+			if (e.key === 'ArrowUp') {
+				e.preventDefault();
+				currentSelected =
+					(currentSelected - 1 + dropdownData.results.length) % dropdownData.results.length;
+			} else if (e.key === 'ArrowDown') {
+				e.preventDefault();
+				currentSelected = (currentSelected + 1) % dropdownData.results.length;
+			} else if (e.key === 'Enter' && inputFocused) {
+				dropdownData.onSelect(dropdownData.results[currentSelected]);
+			}
+		}
+	};
+	let currentSelected = $state(dropdownData.currentSelected);
+	let inputElement: HTMLInputElement | undefined;
+
+	onMount(() => {
+		inputFocused = inputElement === document.activeElement;
+	});
+</script>
+
+<div class="relative flex flex-col">
+	<label for={name}>{label}</label>
+	<input
+		bind:this={inputElement}
+		autocomplete="off"
+		id="input"
+		{type}
+		bind:value
+		{placeholder}
+		class="{width} bg-bg-850 border-bg-500 focus:border-primary-light rounded-full border-2 px-6 py-2 outline-0"
+		onkeydown={(e) => handleKeyDown(e)}
+		onfocus={() => (inputFocused = true)}
+		onblur={(e) => (inputFocused = false)}
+	/>
+	{#if dropdownData && inputFocused}
+		<Dropdown {...dropdownData} bind:currentSelected></Dropdown>
+	{/if}
+</div>

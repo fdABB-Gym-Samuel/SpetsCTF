@@ -1,24 +1,31 @@
 <script lang="ts">
 	let {
-		onClick = () => console.log('No action specified for this button'),
+		onClick = undefined,
 		label,
 		secondLabel = '',
 		styleType = 'normal',
 		type,
+		disabled = false,
 		ariaLabel,
 		bgColor = 'bg-bg-700',
 		textColor = '',
 		hoverColor = 'hover:bg-bg-600',
 		outlineColor = 'outline-bg-500',
 		Icon = undefined,
-		iconColor = undefined,
 		iconSize = '16',
 		twStyles = ''
 	} = $props();
+
+	if (onClick === undefined && type.toLowerCase() !== 'submit') {
+		onClick = () => console.log('No action specified for this button');
+	} else if (onClick === undefined) {
+		onClick = () => {};
+	}
 </script>
 
 {#if styleType === 'normal'}
 	<button
+		{disabled}
 		{type}
 		onclick={() => onClick()}
 		aria-label={ariaLabel}
@@ -41,8 +48,9 @@
 	</button>
 {:else if styleType === 'small'}
 	<button
+		{disabled}
 		{type}
-		onclick={() => onClick()}
+		onclick={onClick}
 		aria-label={ariaLabel}
 		class="rounded-sm px-4 py-1 text-sm {bgColor} outline-2 {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {twStyles}"
 	>
@@ -61,8 +69,9 @@
 			/>
 		{/if}
 	</button>
-{:else if styleType === 'action'}
+{:else if styleType === 'icon'}
 	<button
+		{disabled}
 		{type}
 		onclick={() => onClick()}
 		aria-label={ariaLabel}
