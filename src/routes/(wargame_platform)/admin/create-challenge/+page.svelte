@@ -1,23 +1,7 @@
 <script lang="ts">
 	let { data, form } = $props();
 	let { translations } = data;
-	import { categories } from '$lib/db/constants';
-	// import { linkPattern } from '$lib/utils/utils.js';
 	import ChallengeForm from '$lib/components/ChallengeForm.svelte';
-	// import ResourceUpload from '$lib/components/ResourceUpload.svelte';
-
-	let mainCategory: string = $state(categories[3]);
-
-	let selectedCategories = $state([]);
-
-	let challenge_resources: Record<'Command' | 'Website', string[]> = $state({
-		Command: [],
-		Website: []
-	});
-	// It just doesn't want to work wihtout a separate array
-	let files: FileList | undefined = $state();
-
-	let new_challenge_form: HTMLFormElement;
 
 	let formName = 'newChallengeForm';
 </script>
