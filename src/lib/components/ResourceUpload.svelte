@@ -6,7 +6,7 @@
 	import { linkPattern } from '$lib/utils/utils.js';
 	import { Trash2 } from '@lucide/svelte';
 
-	let { form, files = $bindable() } = $props();
+	let { form, resourceData } = $props();
 
 	type resource_type = 'file' | 'command' | 'website';
 
@@ -26,12 +26,25 @@
 	let currentResourceContent: string = $state('');
 	let currentResourceFile: File | undefined = $state();
 
+	// let challenge_resources: Record<'command' | 'website', string[]> = $state({
+	// 	command: [],
+	// 	website: []
+	// });
 	let challenge_resources: Record<'command' | 'website', string[]> = $state({
-		command: [],
-		website: []
+		command: resourceData
+			?.filter((res: { type: 'cmd' | 'web' | 'file'; content: string }) => res.type === 'cmd')
+			.map((res: { type: 'cmd' | 'web' | 'file'; content: string }) => res.content),
+		website: resourceData
+			?.filter((res: { type: 'cmd' | 'web' | 'file'; content: string }) => res.type === 'web')
+			.map((res: { type: 'cmd' | 'web' | 'file'; content: string }) => res.content)
 	});
 	// It just doenst want to work wihtout a separate array
-	// let files: FileList | undefined = $state();
+	let original_files: string[] = $state(
+		resourceData
+			?.filter((res: { type: resource_type; content: string }) => res.type === 'file')
+			.map((res: { type: resource_type; content: string }) => res.content)
+	);
+	let files: FileList | undefined = $state();
 
 	const add_resource = (e: SubmitEvent) => {
 		e.preventDefault();
@@ -73,9 +86,9 @@
 		// with small parts of the form implementation (status at the top, which is done through form prop)
 		else {
 			if (files !== undefined) {
-				let new_files = Array.from(files).filter((file, i) => i !== index);
+				let new_files: File[] = Array.from(files).filter((file, i) => i !== index);
 				let dt = new DataTransfer();
-				new_files.forEach((file) => {
+				new_files.forEach((file: File) => {
 					dt.items.add(file);
 				});
 				files = dt.files;
@@ -146,6 +159,22 @@
 
 <h5 class="border-bg-600 mb-2 border-b-2 text-lg">Files</h5>
 <ul class="flex flex-col gap-2">
+	{#each original_files as filepath, i}
+		<li class="itmes-center flex flex-row justify-start gap-2">
+			<p>{filepath.split('/')[filepath.split('/').length - 1]}</p>
+			<Button
+				label=""
+				Icon={Trash2}
+				type="button"
+				ariaLabel="Remove File"
+				styleType="icon"
+				onClick={() => {
+					original_files.splice(i, 1);
+				}}
+				bgColor="bg-red-700"
+			></Button>
+		</li>
+	{/each}
 	{#each files !== undefined ? files : [] as file, i}
 		<li class="itmes-center flex flex-row justify-start gap-2">
 			<p>{file instanceof File ? file.name : file}</p>

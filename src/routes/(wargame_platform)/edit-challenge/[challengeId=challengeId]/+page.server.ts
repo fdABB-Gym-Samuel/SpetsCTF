@@ -27,7 +27,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		.select([
 			'ch.challenge_id',
 			'ch.display_name as challenge_name',
-			'ch.description as challenge_description',
+			'ch.description',
 			'ch.challenge_category',
 			'ch.challenge_sub_categories',
 			'ch.points',
