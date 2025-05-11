@@ -9,6 +9,7 @@
 	import { enhance } from '$app/forms';
 	let {
 		formName,
+		submitText,
 		action = '',
 		isAuthor,
 		editing,
@@ -49,7 +50,7 @@
 	let privacyOptions = $state([
 		{ text: 'Author Anonymous', value: 'author_anonymous', disabled: !isAuthor }
 	]);
-	console.log(privacyOptions);
+
 	let privacySelected = $state(['author_anonymous']);
 
 	let submitButtonDisabled = $derived(!displayName || !flag || !points || !mainCategory);
@@ -138,9 +139,9 @@
 </section>
 
 <Button
-	label="Add Challenge"
+	label={submitText}
 	type="submit"
-	ariaLabel="Add challenge"
+	ariaLabel={submitText}
 	disabled={submitButtonDisabled}
 	form={formName}
 ></Button>
