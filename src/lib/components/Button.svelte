@@ -10,6 +10,7 @@
 		bgColor = 'bg-bg-700',
 		disabledBgColor = 'bg-bg-850',
 		disabledTextColor = 'text-gradient-100',
+		responsiveStyles = '',
 		textColor = '',
 		hoverColor = 'hover:bg-bg-600',
 		outlineColor = 'outline-bg-500',
@@ -34,7 +35,7 @@
 		aria-label={ariaLabel}
 		class="rounded-xl px-16 py-1.5 outline-2 {disabled
 			? disabledBgColor
-			: bgColor} {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {twStyles}"
+			: bgColor} {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {twStyles} {responsiveStyles} text-nowrap"
 		{form}
 	>
 		{#if secondLabel !== ''}
@@ -62,7 +63,7 @@
 		aria-label={ariaLabel}
 		class="rounded-sm px-4 py-1 text-sm {disabled
 			? disabledBgColor
-			: bgColor} outline-2 {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {twStyles}"
+			: bgColor} outline-2 {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {responsiveStyles} {twStyles}"
 		{form}
 	>
 		{#if secondLabel !== ''}
@@ -90,7 +91,7 @@
 		aria-label={ariaLabel}
 		class="h-fit rounded-sm px-1 py-1 text-left {disabled
 			? disabledBgColor
-			: bgColor} outline-2 {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {twStyles} flex"
+			: bgColor} outline-2 {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {responsiveStyles} {twStyles} flex"
 		{form}
 	>
 		{#if Icon}
