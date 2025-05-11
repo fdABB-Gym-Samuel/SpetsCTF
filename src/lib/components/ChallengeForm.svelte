@@ -6,6 +6,7 @@
 
 	import { categories } from '$lib/db/constants';
 	import Checkbox from '$lib/components/input/Checkbox.svelte';
+	import { enhance } from '$app/forms';
 	let { formName, action = '', isAuthor, editing } = $props();
 
 	let displayName = $state('');
@@ -26,9 +27,21 @@
 
 	let privacyOptions = $state([{ text: 'Author Anonymous', value: 'author_anonymous' }]);
 	let privacySelected = $state(['author_anonymous']);
+
+	let submitButtonDisabled = $derived(!displayName || !flag || !points || !mainCategory);
+
+	let files: FileList | undefined = $state();
 </script>
 
-<form {action} method="POST" id={formName} class="flex flex-row flex-wrap justify-around gap-x-10">
+<p class="text-sm"><span class="text-primary-light">*</span>: Required</p>
+<form
+	{action}
+	method="POST"
+	id={formName}
+	enctype="multipart/form-data"
+	class="flex flex-row flex-wrap justify-around gap-x-10"
+	use:enhance
+>
 	<section class="flex max-w-200 min-w-80 flex-grow flex-col gap-4">
 		<Input
 			label="Challenge display name"
@@ -36,6 +49,7 @@
 			type="text"
 			placeholder="Enter a FIRE 🔥 name."
 			name="display_name"
+			required={true}
 		></Input>
 		<Input
 			label="Challenge description"
@@ -50,6 +64,7 @@
 			type="text"
 			placeholder="Enter a secret flag 🚩"
 			name="flag"
+			required={true}
 		></Input>
 		<Input
 			label="Flag Format"
@@ -72,7 +87,8 @@
 			bind:value={points}
 			type="number"
 			placeholder="Enter the points one will recieve for solving your challenge"
-			name="flag_format"
+			name="points"
+			required={true}
 		></Input>
 		<Select
 			label="Main Category"
@@ -80,6 +96,7 @@
 			name="challenge_category"
 			id="categorySelection"
 			options={categoryOptions}
+			required={true}
 		></Select>
 		<Checkbox
 			title="Sub Categories"
@@ -89,6 +106,14 @@
 		></Checkbox>
 	</section>
 </form>
-<section>
-	<ResourceUpload form={formName}></ResourceUpload>
+<section class="mb-4">
+	<ResourceUpload form={formName} bind:files></ResourceUpload>
 </section>
+
+<Button
+	label="Add Challenge"
+	type="submit"
+	ariaLabel="Add challenge"
+	disabled={submitButtonDisabled}
+	form={formName}
+></Button>

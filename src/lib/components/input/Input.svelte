@@ -11,7 +11,8 @@
 		width = 'w-full',
 		dropdownData = null,
 		pattern = undefined,
-		multiple = false
+		multiple = false,
+		required = false
 	} = $props();
 
 	const handleKeyDown = (e: KeyboardEvent) => {
@@ -37,8 +38,15 @@
 </script>
 
 <div class="relative flex flex-col">
-	<label for={name}>{label}</label>
+	<div>
+		<label for={name}>
+			<span>{label}</span>
 
+			{#if required}
+				<span class="text-primary-light">*</span>
+			{/if}
+		</label>
+	</div>
 	<input
 		bind:this={inputElement}
 		{pattern}
@@ -53,6 +61,7 @@
 		onfocus={() => (inputFocused = true)}
 		onblur={(e) => (inputFocused = false)}
 		{multiple}
+		{required}
 	/>
 	{#if dropdownData && inputFocused}
 		<Dropdown {...dropdownData} bind:currentSelected></Dropdown>

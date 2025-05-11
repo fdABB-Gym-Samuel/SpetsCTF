@@ -2,30 +2,19 @@
 	let { data, form } = $props();
 	let { translations } = data;
 	import { categories } from '$lib/db/constants';
-	import { linkPattern } from '$lib/utils/utils.js';
+	// import { linkPattern } from '$lib/utils/utils.js';
 	import ChallengeForm from '$lib/components/ChallengeForm.svelte';
-	import ResourceUpload from '$lib/components/ResourceUpload.svelte';
+	// import ResourceUpload from '$lib/components/ResourceUpload.svelte';
 
 	let mainCategory: string = $state(categories[3]);
 
 	let selectedCategories = $state([]);
 
-	interface resource {
-		resource_type: resource_type;
-		resource_content?: string;
-		resource_file?: File;
-	}
-
-	let current_resource: resource = $state({
-		resource_type: 'Website',
-		resource_content: ''
-	});
-
 	let challenge_resources: Record<'Command' | 'Website', string[]> = $state({
 		Command: [],
 		Website: []
 	});
-	// It just doenst want to work wihtout a separate array
+	// It just doesn't want to work wihtout a separate array
 	let files: FileList | undefined = $state();
 
 	let new_challenge_form: HTMLFormElement;
@@ -33,7 +22,7 @@
 	let formName = 'newChallengeForm';
 </script>
 
-<div class="content">
+<div class="content mb-4">
 	<h2 class="text-4xl font-bold">{translations.addnewchallenge}</h2>
 	{#if form && form?.success}
 		<span class="text-green-600">{translations.success}: {form.message}</span>

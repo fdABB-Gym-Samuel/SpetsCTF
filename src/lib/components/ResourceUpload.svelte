@@ -6,7 +6,7 @@
 	import { linkPattern } from '$lib/utils/utils.js';
 	import { Trash2 } from '@lucide/svelte';
 
-	let { form } = $props();
+	let { form, files = $bindable() } = $props();
 
 	type resource_type = 'file' | 'command' | 'website';
 
@@ -31,7 +31,7 @@
 		website: []
 	});
 	// It just doenst want to work wihtout a separate array
-	let files: FileList | undefined = $state();
+	// let files: FileList | undefined = $state();
 
 	const add_resource = (e: SubmitEvent) => {
 		e.preventDefault();
@@ -64,7 +64,6 @@
 			});
 			files = dt.files;
 		}
-		console.log(challenge_resources);
 	};
 	const remove_resource = (type: resource_type, index: number) => {
 		if (type !== 'file') challenge_resources[type].splice(index, 1);
@@ -83,14 +82,19 @@
 			}
 		}
 	};
+	let resourceButtonDisabled = $derived.by(() =>
+		currentResourceType === 'file'
+			? currentResourceFile === undefined
+			: currentResourceContent === ''
+	);
 </script>
 
-<h5 class="text-xl">Add Resource</h5>
+<h5 class="text-lg">Add Resource</h5>
 <form
 	onsubmit={(e: SubmitEvent) => {
 		add_resource(e);
 	}}
-	class="bprder-foreground-light dark:border-foreground-dark mb-5 flex flex-col gap-1 border-1 px-5 py-2"
+	class="border-bg-500 mb-4 flex flex-col gap-1 rounded-lg border-2 px-5 py-4"
 >
 	<div>
 		<Select
@@ -129,14 +133,21 @@
 		></Input>
 	{/if}
 	<div class="mt-4">
-		<Button type="submit" label="Add Resource" ariaLabel="Add resource" styleType="small"></Button>
+		<Button
+			type="submit"
+			label="Add Resource"
+			ariaLabel="Add resource"
+			styleType="small"
+			disabled={resourceButtonDisabled}
+			disabledBgColor="bg-bg-900 text-gradient-100"
+		></Button>
 	</div>
 </form>
 
 <h5 class="border-bg-600 mb-2 border-b-2 text-lg">Files</h5>
 <ul class="flex flex-col gap-2">
 	{#each files !== undefined ? files : [] as file, i}
-		<li class="flex flex-row justify-center gap-2">
+		<li class="itmes-center flex flex-row justify-start gap-2">
 			<p>{file instanceof File ? file.name : file}</p>
 
 			<Button
@@ -153,11 +164,9 @@
 		</li>
 	{/each}
 
-	<div>
-		{#if files && files?.length > 0}
-			<input type="file" name="files" {form} bind:files hidden />
-		{/if}
-	</div>
+	{#if files && files?.length > 0}
+		<input type="file" name="files" {form} bind:files hidden />
+	{/if}
 </ul>
 {#each Object.entries(challenge_resources) as [type, resource_list]: ["website"|"command", resource[]]}
 	{#if ['command', 'website', 'file'].includes(type)}
@@ -178,9 +187,9 @@
 						bgColor="bg-red-700"
 					></Button>
 					<div>
-						{#if type === 'Command'}
+						{#if type === 'command'}
 							<input name="commands" type="hidden" {form} value={resource} />
-						{:else if type === 'Website'}
+						{:else if type === 'website'}
 							<input name="websites" type="hidden" {form} value={resource} />
 						{/if}
 					</div>
