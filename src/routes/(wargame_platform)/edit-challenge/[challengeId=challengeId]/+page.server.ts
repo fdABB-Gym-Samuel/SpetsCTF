@@ -76,17 +76,17 @@ export const actions = {
 				return redirect(304, '/login');
 			}
 
-			const oldChallenge = await db
+			const currentChallenge = await db
 				.selectFrom('challenges')
-				.select('author')
+				.selectAll()
 				.where('challenge_id', '=', challengeId)
 				.executeTakeFirst();
 
-			if (oldChallenge === undefined) {
+			if (currentChallenge === undefined) {
 				return fail(404, { message: 'Challenge not found' });
 			}
 
-			const isAuthor = oldChallenge.author === user.id;
+			const isAuthor = currentChallenge.author === user.id;
 
 			if (!user.is_admin && !isAuthor) {
 				return error(401, 'User not author of challenge or admin');
@@ -128,6 +128,10 @@ export const actions = {
 				selectedCategories as string[]
 			);
 
+			const authorAnonymous = isAuthor
+				? formData.get('privacy') === 'author_anonymous'
+				: currentChallenge.anonymous_author;
+
 			const updatedChallenge = await db
 				.updateTable('challenges')
 				.set({
@@ -136,7 +140,8 @@ export const actions = {
 					points,
 					challenge_category: mainCategory,
 					challenge_sub_categories: selectedCategoriesBitset,
-					approved: user.is_admin
+					approved: user.is_admin,
+					anonymous_author: authorAnonymous
 				})
 				.where('challenge_id', '=', challengeId)
 				.returning('flag')

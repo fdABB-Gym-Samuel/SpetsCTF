@@ -58,7 +58,9 @@
 </script>
 
 <p class="text-sm"><span class="text-primary-light">*</span>: Required</p>
-<p class="text-sm"><span class="text-point-500">*</span>: User lacks permissions to edit</p>
+{#if !isAuthor}
+	<p class="text-sm"><span class="text-point-500">*</span>: User lacks permissions to edit</p>
+{/if}
 <form
 	{action}
 	method="POST"
@@ -100,7 +102,7 @@
 		></Input>
 
 		<Checkbox
-			title={isAuthor ? 'Privacy' : 'Privacy (only author can change)'}
+			title={'Privacy'}
 			name={'privacy'}
 			options={privacyOptions}
 			bind:selected={privacySelected}
