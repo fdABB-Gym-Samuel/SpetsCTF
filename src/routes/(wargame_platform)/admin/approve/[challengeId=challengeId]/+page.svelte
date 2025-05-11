@@ -48,6 +48,9 @@
 	let files: FileList | undefined = $state();
 
 	let new_challenge_form: HTMLFormElement;
+
+	const isAuthor = unapprovedChallenge.author_id === data.user?.id;
+	console.log(isAuthor);
 </script>
 
 <div class="content">
@@ -57,7 +60,7 @@
 	{/if}
 	<ChallengeForm
 		formName="approveChallenge"
-		isAuthor={true}
+		{isAuthor}
 		editing={true}
 		challengeData={unapprovedChallenge}
 	></ChallengeForm>

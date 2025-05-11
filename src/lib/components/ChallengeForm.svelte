@@ -46,7 +46,10 @@
 		(_, index) => challengeData.challenge_sub_categories.split('').reverse().join('')[index] === '1'
 	);
 
-	let privacyOptions = $state([{ text: 'Author Anonymous', value: 'author_anonymous' }]);
+	let privacyOptions = $state([
+		{ text: 'Author Anonymous', value: 'author_anonymous', disabled: !isAuthor }
+	]);
+	console.log(privacyOptions);
 	let privacySelected = $state(['author_anonymous']);
 
 	let submitButtonDisabled = $derived(!displayName || !flag || !points || !mainCategory);
@@ -55,6 +58,7 @@
 </script>
 
 <p class="text-sm"><span class="text-primary-light">*</span>: Required</p>
+<p class="text-sm"><span class="text-point-500">*</span>: User lacks permissions to edit</p>
 <form
 	{action}
 	method="POST"
@@ -96,7 +100,7 @@
 		></Input>
 
 		<Checkbox
-			title="Privacy"
+			title={isAuthor ? 'Privacy' : 'Privacy (only author can change)'}
 			name={'privacy'}
 			options={privacyOptions}
 			bind:selected={privacySelected}

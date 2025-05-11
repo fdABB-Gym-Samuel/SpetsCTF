@@ -10,9 +10,14 @@
 				<div
 					class="border-bg-500 flex w-full flex-row items-center justify-between border-b-1 px-4 py-1"
 				>
-					<label for={`${name}_${option.text}`} class="text-white">
-						{option.text}
-					</label>
+					<div>
+						<label for={`${name}_${option.text}`} class="text-white">
+							{option.text}
+						</label>
+						{#if option.disabled && option.disabled === true}
+							<span class="text-point-500">*</span>
+						{/if}
+					</div>
 					<input
 						{name}
 						type="checkbox"
@@ -20,6 +25,7 @@
 						bind:group={selected}
 						value={option.value}
 						class="bg-bg-500 checked:bg-primary h-4 w-4 appearance-none rounded-sm"
+						disabled={option.disabled}
 					/>
 				</div>
 			{/each}
