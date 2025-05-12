@@ -157,7 +157,6 @@ export const actions = {
 				return fail(500, { message: 'Failed to save new flag' });
 			}
 
-			// const authorAnonymous = formData.get("stay_anonymous") === "1"
 			const originalFilesNew = formData.getAll('original_files') as string[];
 			const newFiles = formData.getAll('files') as File[];
 

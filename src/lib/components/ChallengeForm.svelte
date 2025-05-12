@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Input from '$lib/components/input/Input.svelte';
+	import Textarea from '$lib/components/input/Textarea.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Select from '$lib/components/input/Select.svelte';
 	import ResourceUpload from '$lib/components/ResourceUpload.svelte';
@@ -79,13 +80,19 @@
 			name="display_name"
 			required={true}
 		></Input>
-		<Input
+		<!-- <Input
 			label="Challenge description"
 			bind:value={description}
 			type="text"
 			placeholder="Write a description for your challenge"
 			name="description"
-		></Input>
+		></Input> -->
+		<Textarea
+			label="Challenge description"
+			placeholder="Write a description for your challenge"
+			name="description"
+			bind:value={description}
+		></Textarea>
 		<Input
 			label="Flag"
 			bind:value={flag}
