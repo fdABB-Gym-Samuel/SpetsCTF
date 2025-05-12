@@ -77,7 +77,7 @@
 	/**********  SIZES  **********/
 	/*****************************/
 
-	--nav-height: 4em;
+	--nav-height: calc(15 * 0.25em);
 	--main-height: calc(100vh - var(--nav-height));
 	--hero-height: calc(9 / 10 * var(--main-height));
 

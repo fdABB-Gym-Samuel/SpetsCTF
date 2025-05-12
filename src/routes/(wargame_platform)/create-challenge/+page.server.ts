@@ -80,7 +80,7 @@ export const actions = {
 
 			const description = formData.get('description')?.toString() ?? null;
 
-			const authorAnonymous = formData.get('stay_anonymous') === '1';
+			const authorAnonymous = formData.get('privacy') === 'author_anonymous';
 
 			const challenge: Insertable<Challenges> = {
 				challenge_category,

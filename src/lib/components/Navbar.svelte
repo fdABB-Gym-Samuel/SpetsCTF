@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import type { Users } from '$lib/db/db';
 	import type { Selectable } from 'kysely';
+	import { Menu } from '@lucide/svelte';
 
 	import { page } from '$app/state';
 
@@ -39,10 +40,10 @@
 
 <header class="z-40">
 	<nav
-		class="bg-bg-900 fixed top-0 left-0 z-40 flex h-15 w-full flex-row items-center justify-between gap-5 px-4 *:w-1/3 sm:px-6 md:px-10"
+		class="bg-bg-900 fixed top-0 left-0 z-40 flex h-15 w-full flex-row items-center justify-between gap-5 px-4 *:w-1/3 sm:px-4 md:px-4 lg:px-10"
 	>
 		<div class="left flex w-1/5 flex-grow-0 flex-row items-center sm:flex-grow">
-			<div class="logo-continer relative mr-4 flex justify-end sm:mr-0">
+			<div class="logo-continer relative flex justify-end sm:mr-0">
 				<svg
 					viewBox="0 0 180 100"
 					preserveAspectRatio="xMidYMin slice"
@@ -80,19 +81,24 @@
 					<img src="/assets/logo.svg" alt="SpetsCTF" class="logo h-5 min-w-25 select-none" />
 				</a>
 			</div>
-			<div class="mr-4 block sm:hidden">
+			<div class="mr-4 block {links.length > 3 ? 'md:hidden' : 'sm:hidden'}">
 				<button
-					class="ignore-default flex flex-col gap-1.5"
+					class="ignore-default ml-2 flex flex-col gap-1.5"
 					aria-label="Open Sidebar"
 					onclick={toggle_sidebar}
 				>
+					<Menu></Menu>
+					<!-- <span class="bg-foreground-light dark:bg-foreground-dark h-1 w-6 rounded-sm"></span>
 					<span class="bg-foreground-light dark:bg-foreground-dark h-1 w-6 rounded-sm"></span>
-					<span class="bg-foreground-light dark:bg-foreground-dark h-1 w-6 rounded-sm"></span>
-					<span class="bg-foreground-light dark:bg-foreground-dark h-1 w-6 rounded-sm"></span>
+					<span class="bg-foreground-light dark:bg-foreground-dark h-1 w-6 rounded-sm"></span> -->
 				</button>
 			</div>
 		</div>
-		<ul class="hidden h-full min-w-fit flex-row items-center justify-center gap-8 sm:flex">
+		<ul
+			class="hidden h-full min-w-fit flex-row items-center justify-center gap-8 {links.length > 3
+				? 'md:flex'
+				: 'sm:flex'}"
+		>
 			{#each links as nav_link}
 				<li>
 					<a
@@ -104,7 +110,7 @@
 				</li>
 			{/each}
 		</ul>
-		<div class="flex w-1/5 flex-grow justify-end overflow-y-hidden">
+		<div class="flex w-1/5 flex-grow justify-end overflow-y-hidden py-0.5 pr-0.5">
 			{#if user}
 				<a href="/user" class="ignore-default max-w-full space-x-4 truncate text-center underline">
 					<User class=" inline-block min-h-6 min-w-6" />
@@ -114,21 +120,17 @@
 				<Button
 					label={translations.login}
 					type="button"
+					responsiveStyles="!px-6 md:!px-8"
 					onClick={() => goto('/login')}
 					Icon={LogIn}
 					ariaLabel="Login"
 				/>
-				<!-- <button
-          onclick={() => goto('/login')}
-          class="login-btn bg-button-light dark:bg-button-dark rounded-[var(--button-radius)] px-6 py-2 font-semibold"
-          >{translations.login}</button
-        > -->
 			{/if}
 		</div>
 	</nav>
 	{#if showSidebar}
 		<div
-			class="backdrop bg-backdrop-light dark:bg-backdrop-dark fixed bottom-0 left-0 h-[var(--main-height)] w-screen"
+			class="backdrop bg-backdrop-light dark:bg-backdrop-dark fixed bottom-0 left-0 z-30 h-[var(--main-height)] w-screen"
 			onclick={(e: MouseEvent) => toggle_sidebar(e, true)}
 			onkeydown={(e) => {
 				if (e.key === ' ' || e.key === 'Enter') toggle_sidebar(e, true);
@@ -138,23 +140,55 @@
 			tabindex="0"
 		>
 			<nav
-				class="bg-background-light dark:bg-background-dark border-r-accent-light dark:border-r-accent-dark bottom-0 z-10 flex h-full w-120 max-w-9/10 flex-row border-2 pt-2"
+				class="bg-bg-900 dark:border-r-primary bottom-0 z-40 flex h-full w-120 max-w-9/10 flex-col justify-between border-r-2 px-4 pb-8"
 			>
-				<div class="pl-2">
-					<button aria-label="Close sidebar" class="ignore-default" onclick={toggle_sidebar}>
-						<ArrowLeft />
-					</button>
+				<div>
+					<div class="">
+						<button aria-label="Close sidebar" class="ignore-default" onclick={toggle_sidebar}>
+							<ArrowLeft />
+						</button>
+					</div>
+					<div class="w-full px-2">
+						<ul class="flex h-full flex-col items-stretch space-x-2 pr-5 pl-2">
+							{#each links as link}
+								<li class="border-primary-light m-0 border-b-2 py-2 pl-1">
+									<a
+										class="ignore-default hover:!text-primary"
+										href={link.href}
+										onclick={(e) => {
+											toggle_sidebar(e, false);
+										}}>{link.display}</a
+									>
+								</li>
+							{/each}
+						</ul>
+					</div>
 				</div>
-				<div class="w-full pt-4">
-					<ul
-						class="text-foreground-light dark:text-foreground-dark flex h-full flex-col items-stretch space-x-2 pr-5 pl-2 text-xl"
-					>
-						{#each links as link}
-							<li class="m-0 border-b-2 border-stone-400 py-2 pl-1">
-								<a class="ignore-default" href={link.href}>{link.display}</a>
-							</li>
-						{/each}
-					</ul>
+				<div class="px-4">
+					{#if user}
+						<a
+							href="/user"
+							onclick={(e) => {
+								toggle_sidebar(e, false);
+							}}
+							class="ignore-default max-w-full space-x-4 truncate text-center underline"
+						>
+							<User class=" inline-block min-h-6 min-w-6" />
+							{user.display_name || user.github_username}</a
+						>
+					{:else}
+						<Button
+							label={translations.login}
+							type="button"
+							responsiveStyles="!px-6 md:!px-8"
+							onClick={(e: MouseEvent) => {
+								goto('/login');
+								toggle_sidebar(e, false);
+							}}
+							Icon={LogIn}
+							ariaLabel="Login"
+						/>
+					{/if}
 				</div>
 			</nav>
 		</div>

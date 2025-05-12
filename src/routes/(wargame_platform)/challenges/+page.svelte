@@ -173,7 +173,7 @@
 										label=""
 										ariaLabel="Edit Challenge"
 										type="button"
-										styleType="action"
+										styleType="icon"
 										onClick={() => {
 											goto(`/edit-challenge/${challenge.challenge_id}`);
 										}}
@@ -183,7 +183,8 @@
 										label=""
 										ariaLabel="Delete challenge"
 										type="button"
-										styleType="action"
+										styleType="icon"
+										bgColor="bg-red-700"
 										onClick={() => {
 											openDeleteDialog(challenge.challenge_id, challenge.challenge_name);
 										}}

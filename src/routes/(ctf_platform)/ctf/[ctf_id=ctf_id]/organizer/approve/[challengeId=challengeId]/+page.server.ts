@@ -64,7 +64,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		.select([
 			'ch.challenge_id',
 			'ch.display_name as challenge_name',
-			'ch.description as challenge_description',
+			'ch.description',
 			'ch.challenge_category',
 			'ch.challenge_sub_categories',
 			'ch.points',
@@ -114,6 +114,18 @@ export const actions = {
 				return fail(401, { message: 'User not organizer for this CTF or admin' });
 			}
 
+			const currentChallenge = await db
+				.selectFrom('challenges')
+				.selectAll()
+				.where('challenge_id', '=', challengeId)
+				.executeTakeFirst();
+
+			if (currentChallenge === undefined) {
+				return fail(404, { message: 'Challenge not found' });
+			}
+
+			const isAuthor = currentChallenge.author === user.id;
+
 			const formData = await request.formData();
 			const displayName = formData.get('display_name') as string;
 			if (!displayName) {
@@ -150,6 +162,10 @@ export const actions = {
 				selectedCategories as string[]
 			);
 
+			const authorAnonymous = isAuthor
+				? formData.get('privacy') === 'author_anonymous'
+				: currentChallenge.anonymous_author;
+
 			const updatedChallenge = await db
 				.updateTable('challenges')
 				.set({
@@ -158,7 +174,8 @@ export const actions = {
 					points,
 					challenge_category: mainCategory,
 					challenge_sub_categories: selectedCategoriesBitset,
-					approved: true
+					approved: true,
+					anonymous_author: authorAnonymous
 				})
 				.where('challenge_id', '=', challengeId)
 				.where('ctf', '=', ctfId)
@@ -174,7 +191,6 @@ export const actions = {
 				return fail(500, { message: 'Failed to save new flag' });
 			}
 
-			// const authorAnonymous = formData.get("stay_anonymous") === "1"
 			const originalFilesNew = formData.getAll('original_files') as string[];
 			const newFiles = formData.getAll('files') as File[];
 

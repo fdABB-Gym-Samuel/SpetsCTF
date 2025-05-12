@@ -12,7 +12,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 	const ctfId = Number(event.params.ctf_id);
 	const userId = user ? user.id : undefined;
 
-	const challenges = await db
+	const allChallenges = await db
 		.with('unique_success', (qb) =>
 			qb
 				.selectFrom('ctf_submissions')
@@ -112,7 +112,32 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 		.orderBy('ch.points', 'asc')
 		.execute();
 
-	return { challenges };
+	const myChallengesQuery = db
+		.selectFrom('challenges as ch')
+		.where('ctf', '=', ctfId)
+		.leftJoin('flag as f', 'ch.flag', 'f.id')
+		.leftJoin('users as a', 'ch.author', 'a.id')
+		.select([
+			'ch.challenge_id',
+			'ch.display_name as challenge_name',
+			'ch.challenge_category',
+			'ch.challenge_sub_categories',
+			'ch.points',
+			sql<boolean>`ch.author = ${user?.id}`.as('is_author')
+		]);
+
+	let myChallenges;
+	if (user) {
+		if (!user?.is_admin) {
+			myChallenges = await myChallengesQuery.where('ch.author', '=', user?.id ?? '').execute();
+		} else {
+			myChallenges = await myChallengesQuery.execute();
+		}
+	} else {
+		myChallenges = null;
+	}
+
+	return { allChallenges, myChallenges };
 };
 
 export const actions = {
