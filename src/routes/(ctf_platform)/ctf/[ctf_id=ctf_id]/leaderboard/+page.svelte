@@ -1,13 +1,15 @@
 <script lang="ts">
-	let { data } = $props();
-	let { user, ctf, scores, team } = data;
-
 	import BackToTop from '$lib/components/BackToTop.svelte';
 
 	import { playAnimations } from '$lib/gsap/animations';
 	import { onDestroy, onMount } from 'svelte';
+	import gsap from 'gsap';
 
-	import { page } from '$app/state';
+	let { data } = $props();
+	let { user, ctf, scores, team } = data;
+
+	let podiumRefs: HTMLDivElement[] = $state([]);
+	let textRefs: HTMLSpanElement[] = $state([]);
 
 	let componentRoot: HTMLElement;
 	let gsapContext: gsap.Context | undefined;
@@ -16,6 +18,36 @@
 
 	onMount(() => {
 		gsapContext = playAnimations(componentRoot);
+
+		const max = Math.max(...scores.map((s) => s.total_points as number));
+		// heights[i] now corresponds to scores[i]
+		const heights = scores.map((s) => ((s.total_points as number) / max) * 100);
+		const speed = 60; // % per second
+		const tl = gsap.timeline();
+
+		// [2,0,1] is your display order: 3rd, 1st, 2nd
+		[2, 0, 1].forEach((idx, i) => {
+			const pct = heights[idx]; // ◀–– use idx, not i
+			const dur = pct / speed;
+
+			tl.fromTo(
+				podiumRefs[i],
+				{ height: '0%' },
+				{
+					height: `${pct}%`,
+					duration: dur,
+					ease: 'none',
+					onComplete: () => {
+						gsap.fromTo(
+							textRefs[i],
+							{ autoAlpha: 0, y: 20 },
+							{ autoAlpha: 1, y: 0, duration: 0.5 }
+						);
+					}
+				},
+				0
+			);
+		});
 	});
 
 	onDestroy(() => {
@@ -25,9 +57,50 @@
 </script>
 
 <main class="content m-auto w-full max-w-[1200px] pt-20" bind:this={componentRoot}>
-	{#if ctf?.end_time < new Date()}
-		<section>
-			<p>Imagine a beautiful podium here</p>
+	{#if ctf && ctf.end_time < new Date()}
+		<!-- <section class="flex flex-row justify-center items-end w-full h-80 mb-8">
+			<div class="flex flex-col w-1/3 h-full justify-end items-center">
+				<h5 class="text-lg">{scores[2]?.team_name}</h5>
+				<div class="text-center bg-amber-700 h-2/5 w-full">
+					<span class="text-black text-2xl">
+						({scores[2]?.total_points}pts)
+					</span>	
+				</div>
+			</div>
+			<div class="flex flex-col w-1/3 h-full justify-end items-center">
+				<h5 class="text-3xl font-extrabold flex flex-col text-center">{scores[0]?.team_name}</h5>
+				<div class="text-center bg-yellow-500 h-4/5 w-full pt-2">
+					<span class="text-black text-2xl">
+						({scores[0]?.total_points}pts)
+					</span>
+				</div>
+			</div>
+			<div class="flex flex-col w-1/3 h-full justify-end items-center">
+				<h5 class="text-lg">{scores[1]?.team_name}</h5>
+				<div class="text-center bg-slate-400 h-3/5 w-full">
+					<span class="text-black text-2xl">
+						({scores[1]?.total_points}pts)
+					</span>	
+				</div>
+			</div>
+		</section> -->
+		<section class="mb-8 flex h-80 w-full items-end justify-center">
+			{#each [2, 0, 1] as idx, i}
+				<div class="flex h-full w-1/3 flex-col items-center justify-end">
+					<h5 class="text-lg opacity-0" bind:this={textRefs[i]}>{scores[idx]?.team_name}</h5>
+					<div
+						class="w-full overflow-hidden text-center"
+						class:bg-yellow-500={i === 1}
+						class:bg-slate-400={i === 2}
+						class:bg-amber-700={i === 0}
+						bind:this={podiumRefs[i]}
+					>
+						<span class="text-2xl text-black">
+							({scores[idx]?.total_points}pts)
+						</span>
+					</div>
+				</div>
+			{/each}
 		</section>
 	{/if}
 
