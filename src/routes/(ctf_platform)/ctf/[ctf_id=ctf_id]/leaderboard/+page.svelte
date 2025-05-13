@@ -1,6 +1,6 @@
 <script lang="ts">
 	let { data } = $props();
-	let { user, scores, team } = data;
+	let { user, ctf, scores, team } = data;
 
 	import BackToTop from '$lib/components/BackToTop.svelte';
 
@@ -25,6 +25,12 @@
 </script>
 
 <main class="content m-auto w-full max-w-[1200px] pt-20" bind:this={componentRoot}>
+	{#if ctf?.end_time < new Date()}
+		<section>
+			<p>Imagine a beautiful podium here</p>
+		</section>
+	{/if}
+
 	<!-- TODO: add header with user info if logged in -->
 	{#if team && !user?.is_admin}
 		<header class="gsap-top-down-opacity mb-12">
