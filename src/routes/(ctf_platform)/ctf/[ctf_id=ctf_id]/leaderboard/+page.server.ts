@@ -2,10 +2,15 @@ import type { ServerLoadEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from '../$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
-import { Users } from '@lucide/svelte';
 
 export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 	const ctfId = Number(event.params.ctf_id);
+	const ctf = await db
+		.selectFrom('ctf_events')
+		.select('end_time')
+		.where('ctf_events.id', '=', ctfId)
+		.executeTakeFirst();
+
 	const scores = await db
 		.with('team_challenges', (qb) =>
 			qb
@@ -38,5 +43,5 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 		.orderBy('total_points', 'desc')
 		.execute();
 
-	return { scores };
+	return { ctf, scores };
 };

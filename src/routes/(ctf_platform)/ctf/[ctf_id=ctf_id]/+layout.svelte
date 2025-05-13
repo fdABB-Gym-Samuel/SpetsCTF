@@ -7,7 +7,7 @@
 	const links = [
 		{ display: translations.wargames, href: '/challenges' },
 		{ display: translations.challenges, href: `/ctf/${page.params.ctf_id}/challenges` },
-		{ display: translations.leaderboard, href: `/ctf/${page.params.ctf_id}/scoreboard` },
+		{ display: translations.leaderboard, href: `/ctf/${page.params.ctf_id}/leaderboard` },
 		isOrg === false
 			? team === undefined
 				? { display: translations.register_team, href: `/ctf/${page.params.ctf_id}/register_team` }
