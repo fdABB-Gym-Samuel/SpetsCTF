@@ -19,15 +19,14 @@
 	onMount(() => {
 		gsapContext = playAnimations(componentRoot);
 
-		const max = Math.max(...scores.map((s) => s.total_points as number));
-		// heights[i] now corresponds to scores[i]
-		const heights = scores.map((s) => ((s.total_points as number) / max) * 100);
+		// Height percentages
+		const heights = ['90', '70', '40'];
 		const speed = 60; // % per second
 		const tl = gsap.timeline();
 
 		// [2,0,1] is your display order: 3rd, 1st, 2nd
 		[2, 0, 1].forEach((idx, i) => {
-			const pct = heights[idx]; // ◀–– use idx, not i
+			const pct = Number(heights[idx]); // ◀–– use idx, not i
 			const dur = pct / speed;
 
 			tl.fromTo(
