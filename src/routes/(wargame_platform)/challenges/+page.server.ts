@@ -53,6 +53,7 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 		])
 		.select((eb) => [
 			'ch.challenge_id',
+			'ch.created_at',
 			'ch.display_name as challenge_name',
 			'ch.description as challenge_description',
 			'ch.challenge_category',

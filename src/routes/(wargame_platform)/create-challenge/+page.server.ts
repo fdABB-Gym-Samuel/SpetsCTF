@@ -82,11 +82,14 @@ export const actions = {
 
 			const authorAnonymous = formData.get('privacy') === 'author_anonymous';
 
+			const created_at = new Date();
+			
 			const challenge: Insertable<Challenges> = {
 				challenge_category,
 				challenge_sub_categories,
 				challenge_id,
 				points: pointsInt,
+				created_at,
 				flag: flagId.id,
 				display_name,
 				description,
@@ -172,4 +175,4 @@ export const actions = {
 			return { success: false, message: error.message };
 		}
 	}
-};
+} satisfied Actions;
