@@ -175,4 +175,4 @@ export const actions = {
 			return { success: false, message: error.message };
 		}
 	}
-} satisfied Actions;
+} satisfies Actions;
