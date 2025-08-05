@@ -1,5 +1,8 @@
 {
   "addnewchallenge": "Skapa ny utmaning",
+  "admin": "Administratör",
+  "admin_funny_text": "Grattis! Du har blivit tillagd till den extremt hemliga administratörsgruppen på SpetsCTF. Klicka på länken nedan för att gå till den topphemliga administratörssidan...",
+  "admin_page": "Administratörssida",
   "altersettings": "Ändra inställningar",
   "approve": "Godkänn",
   "apr": "April",

@@ -1,5 +1,8 @@
 {
   "addnewchallenge": "Add new challenge",
+  "admin": "Admin",
+  "admin_funny_text": "Congratulations! You have been added to the extremely secret administrator group at SpetsCTF. Click the link below to go to the top-secret admin page...",
+  "admin_page": "Administrator Page",
   "altersettings": "Alter settings",
   "approve": "Approve",
   "apr": "April",

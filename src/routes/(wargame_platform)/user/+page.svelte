@@ -86,4 +86,12 @@
 		</select>
 		<button type="submit" class="mt-3 flex w-fit flex-row duration-200 ease-linear items-center px-2 py-1 hover:cursor-pointer hover:border-purple-500 rounded border">{translations.save}</button>
 	</form>
+
+	<div class="h-12"></div>
+
+	{#if data.user && data.user.is_admin}
+		<h1 class="text-lg font-bold">{translations.admin}</h1>
+		<p class="w-72">{translations.admin_funny_text}</p>
+		<a class="text-gray-500 underline hover:text-white duration-200 ease-linear" href="/admin">{translations.admin_page}</a>
+	{/if}
 </div>
