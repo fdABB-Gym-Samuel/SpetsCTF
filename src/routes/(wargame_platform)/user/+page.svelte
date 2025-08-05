@@ -5,7 +5,29 @@
 	let { translations, user, availableClasses } = data;
 	import { onMount } from 'svelte';
 
-	import { LogOut } from '@lucide/svelte';
+	import { LogOut, Github } from '@lucide/svelte';
+
+	let displayName = $derived.by(() => {
+		if (form && form.display_name) {
+			return form.display_name
+		} else if (data.user !== undefined && data.user.display_name !== '') {
+			return data.user.display_name
+		} else {
+			return '';
+		}
+	})
+
+	let representedClass = $derived.by(() => {
+		if (form && form.represents_class) {
+			return form.represents_class
+		} else if (data.user && data.user.represents_class) {
+			return data.user.represents_class
+		} else {
+			return ''
+		}
+	})
+
+	$inspect(displayName)
 
 	onMount(async () => {
 		if (form?.justLoggedOut) {
@@ -25,7 +47,7 @@
 			<span class="font-bold text-red-600">{translations.settingsupdatefailed}.</span>
 		</div>
 	{/if}
-	<span>{translations.currentlyloggedinas} <b>{user.github_username}</b>.</span>
+	<span class="items-center">{translations.currentlyloggedinas} <Github class="inline-block ml-2 mr-0" /> <a target="_blank" class="hover:text-purple-400 underline duration-200 ease-linear" href={`https://github.com/${user.github_username}`}><b>{user.github_username}</b></a>.</span>
 	<form  method="POST" action="?/logout" use:enhance>
 		<button class="flex flex-row duration-200 ease-linear items-center px-2 py-1 hover:cursor-pointer hover:border-purple-500 rounded border" type="submit"><LogOut class="align-middle size-4 mr-2" />{translations.logout}</button>
 	</form>
@@ -37,7 +59,7 @@
 		<div>
 			<input
 				class="border border-black p-1 dark:border-white rounded"
-				value={form?.display_name ?? user.display_name ?? ''}
+				value={displayName}
 				name="display_name"
 				placeholder={translations.enterdisplayname}
 				id="display_name"
@@ -50,10 +72,10 @@
 		</label>
 		<br />
 		<select
-			class="border-accent-light dark:border-accent-dark bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark border p-1 rounded"
+			class="border-purple-500 dark:border-purple-600 bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark border-2 px-2 py-1 rounded"
 			name="represents_class"
 			id="represents_class"
-			value={form?.represents_class ?? user.represents_class ?? ''}
+			value={representedClass}
 		>
 			<option value="">{translations.selectclass}</option>
 			{#each availableClasses as availableClass}
@@ -62,6 +84,6 @@
 				>
 			{/each}
 		</select>
-		<button type="submit" class="mt-3 flex w-fit flex-row duration-200 ease-linear items-center px-2 py-1 hover:cursor-pointer hover:border-purple-500 rounded border">{translations.submit}</button>
+		<button type="submit" class="mt-3 flex w-fit flex-row duration-200 ease-linear items-center px-2 py-1 hover:cursor-pointer hover:border-purple-500 rounded border">{translations.save}</button>
 	</form>
 </div>
