@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { Frown } from '@lucide/svelte';
+
 	let { data } = $props();
 	let { translations, ctfs } = data;
 
@@ -41,11 +43,11 @@
 
 <div class="content flex flex-col gap-5">
 	<div>
-		<h1 class="route-title">{translations.ctf_events}</h1>
-		<p>{translations.to_play_ctf_is_a}</p>
+		<h1 class="font-bold text-3xl">{translations.ctf_events}</h1>
 	</div>
 	<section>
 		<h3 class="text-2xl">{translations.current_ctfs}</h3>
+		{#if ongoingCtfs.length > 0}
 		<ul>
 			{#each ongoingCtfs as ongoingCtf}
 				<li
@@ -79,9 +81,17 @@
 				</li>
 			{/each}
 		</ul>
+		{:else}
+			<div class="flex flex-row mt-4 ml-2 text-gray-500 w-fit">
+				<p class="">
+					{translations.nothing_here_yet}
+				</p>
+			</div>
+		{/if}
 	</section>
 	<section>
 		<h3 class="text-2xl">{translations.upcoming_ctfs}</h3>
+		{#if upcomingCtfs.length > 0}
 		<ul>
 			{#each upcomingCtfs as upcomingCtf}
 				<a class="ignore-default" href={`/ctf/${upcomingCtf.id}`}>
@@ -115,9 +125,17 @@
 				</a>
 			{/each}
 		</ul>
+		{:else}
+			<div class="flex flex-row mt-4 ml-2 text-gray-500 w-fit">
+				<p class="">
+					{translations.nothing_here_yet}
+				</p>
+			</div>
+		{/if}
 	</section>
 	<section>
 		<h3 class="text-2xl">{translations.past_ctfs}</h3>
+		{#if pastCtfs.length > 0}
 		<ul>
 			{#each pastCtfs as pastCtf}
 				<a class="ignore-default" href={`/ctf/${pastCtf.id}`}>
@@ -151,5 +169,12 @@
 				</a>
 			{/each}
 		</ul>
+		{:else}
+			<div class="flex flex-row mt-4 ml-2 text-gray-500 w-fit">
+				<p class="">
+					{translations.nothing_here_yet}
+				</p>
+			</div>
+		{/if}
 	</section>
 </div>
