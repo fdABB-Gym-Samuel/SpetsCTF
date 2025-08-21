@@ -72,5 +72,13 @@
           cp -r node_modules $out
         '';
       };
-    });
+    }) //
+    {
+      nixosConfigurations.services-vm = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./nix/vm-config.nix
+        ];
+      };
+    };
 }
