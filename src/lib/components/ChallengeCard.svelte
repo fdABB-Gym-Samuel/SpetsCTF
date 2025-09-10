@@ -46,7 +46,9 @@
 					{challenge_data.challenge_name}
 				</h3>
 				{#if challenge_data && challenge_data.created_at}
-					<p class="mt-1 mb-0.5 font-mono text-xs">{challenge_data.created_at.toLocaleDateString('sv-SE')}</p>
+					<p class="mt-1 mb-0.5 font-mono text-xs">
+						{challenge_data.created_at.toLocaleDateString('sv-SE')}
+					</p>
 				{/if}
 			</div>
 			<div class="mt-2 mb-4">

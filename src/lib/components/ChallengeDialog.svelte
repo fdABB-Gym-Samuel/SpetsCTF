@@ -116,9 +116,14 @@
 	>
 		<section class="-mt-2 mb-12 flex w-full justify-between">
 			{#if challenge_data.created_at}
-				<p class="text-primary-light mb-0.5 font-mono text-sm font-bold">{translations.uploaded} {challenge_data.created_at.toLocaleDateString('sv-SE')}</p>
+				<p class="text-primary-light mb-0.5 font-mono text-sm font-bold">
+					{translations.uploaded}
+					{challenge_data.created_at.toLocaleDateString('sv-SE')}
+				</p>
 			{:else}
-				<p class="text-primary-light mb-0.5 font-mono text-sm font-bold">{translations.unknown_creation_time}</p>
+				<p class="text-primary-light mb-0.5 font-mono text-sm font-bold">
+					{translations.unknown_creation_time}
+				</p>
 			{/if}
 			<button type="button" onclick={() => closeDialog()} class="cursor-pointer">
 				<CircleX

@@ -83,7 +83,7 @@ export const actions = {
 			const authorAnonymous = formData.get('privacy') === 'author_anonymous';
 
 			const created_at = new Date();
-			
+
 			const challenge: Insertable<Challenges> = {
 				challenge_category,
 				challenge_sub_categories,

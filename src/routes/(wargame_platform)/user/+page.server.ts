@@ -38,12 +38,20 @@ export const actions = {
 		}
 
 		// We want to return the new values for both display name and represents class.
-		const updatedUser = await db.selectFrom('users').select(['display_name', 'represents_class']).where('id', '=', userId).executeTakeFirst()
+		const updatedUser = await db
+			.selectFrom('users')
+			.select(['display_name', 'represents_class'])
+			.where('id', '=', userId)
+			.executeTakeFirst();
 
 		if (!updatedUser) {
-			fail(500, {success: false, message: 'Something went wrong on the server.'})
+			fail(500, { success: false, message: 'Something went wrong on the server.' });
 		} else {
-			return {success: true, display_name: updatedUser.display_name, represents_class: updatedUser.represents_class}
+			return {
+				success: true,
+				display_name: updatedUser.display_name,
+				represents_class: updatedUser.represents_class
+			};
 		}
 	},
 	logout: async (event) => {
