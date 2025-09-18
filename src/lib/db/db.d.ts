@@ -38,6 +38,7 @@ export interface Challenges {
 	challenge_category: Generated<Category>;
 	challenge_id: string;
 	challenge_sub_categories: string;
+	created_at: Timestamp | null;
 	ctf: number | null;
 	description: string | null;
 	display_name: string;
@@ -51,7 +52,7 @@ export interface Classes {
 }
 
 export interface CtfEvents {
-	display_name: string | null;
+	display_name: string;
 	end_time: Timestamp;
 	id: Generated<number>;
 	max_team_size: number | null;

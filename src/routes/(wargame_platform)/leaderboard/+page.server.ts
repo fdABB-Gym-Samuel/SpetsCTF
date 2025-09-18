@@ -92,7 +92,7 @@ const get_top_classes = async () => {
 			sql<number>`ROUND(COALESCE(SUM(scored.score), 0)::numeric, 1)`.as('totalPoints')
 		])
 		.groupBy('classes.name')
-		.orderBy('totalPoints desc')
+		.orderBy('totalPoints', 'desc')
 		.execute();
 
 	return result;

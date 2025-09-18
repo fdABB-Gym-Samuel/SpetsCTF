@@ -60,7 +60,7 @@
         inherit version;
 
         nodejs = pkgs.nodejs_22;
-        npmDepsHash = "sha256-6rWz/V81y44ouP3PoQJyh/1ACkfhNESn6T27laZZo3o=";
+        npmDepsHash = "sha256-dwlpXPRPqATB7lI7wsgHL2JOMpPJTuzdPVdbygJy7Bk=";
         # npmDepsHash = pkgs.lib.fakeHash;
         src = pkgs.lib.cleanSource ./.;
 

@@ -5,6 +5,8 @@
 	import { categories } from '$lib/db/constants';
 	import { capitalizeFirstLetter } from '$lib/utils/utils';
 
+	$inspect(challenge_data);
+
 	function getPointColor(points: number): string {
 		const lab_a = Math.floor(map(points, 0, 500, -128, 128));
 		return `lab(90% ${lab_a} 128)`;
@@ -43,8 +45,11 @@
 				<h3 class="challenge-name text-[18px] font-bold">
 					{challenge_data.challenge_name}
 				</h3>
-				<!-- TODO: add field for date -->
-				<p class="mt-1 mb-0.5 font-mono text-xs">2025-03-04</p>
+				{#if challenge_data && challenge_data.created_at}
+					<p class="mt-1 mb-0.5 font-mono text-xs">
+						{challenge_data.created_at.toLocaleDateString('sv-SE')}
+					</p>
+				{/if}
 			</div>
 			<div class="mt-2 mb-4">
 				<p class="font-mono text-sm font-bold">

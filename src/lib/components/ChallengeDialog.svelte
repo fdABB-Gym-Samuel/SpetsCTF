@@ -22,6 +22,7 @@
 			challenge_sub_categories: '',
 			points: 0,
 			flag_format: '',
+			created_at: null,
 			first_solvers: [],
 			num_solves: '0',
 			solved: false,
@@ -114,8 +115,16 @@
 		class="bg-bg-800 gsap-opacity relative m-auto flex w-[85%] max-w-[1000px] flex-col overflow-y-scroll rounded-lg px-4 py-12 sm:px-8 md:px-10 lg:px-16"
 	>
 		<section class="-mt-2 mb-12 flex w-full justify-between">
-			<!-- TODO: add field for date -->
-			<p class="text-primary-light mb-0.5 font-mono text-sm font-bold">Uploaded 2025-03-04</p>
+			{#if challenge_data.created_at}
+				<p class="text-primary-light mb-0.5 font-mono text-sm font-bold">
+					{translations.uploaded}
+					{challenge_data.created_at.toLocaleDateString('sv-SE')}
+				</p>
+			{:else}
+				<p class="text-primary-light mb-0.5 font-mono text-sm font-bold">
+					{translations.unknown_creation_time}
+				</p>
+			{/if}
 			<button type="button" onclick={() => closeDialog()} class="cursor-pointer">
 				<CircleX
 					color="var(--color-text-200)"

@@ -37,7 +37,22 @@ export const actions = {
 			await db.updateTable('users').set({ represents_class }).where('id', '=', userId).execute();
 		}
 
-		return { success: true, display_name, represents_class };
+		// We want to return the new values for both display name and represents class.
+		const updatedUser = await db
+			.selectFrom('users')
+			.select(['display_name', 'represents_class'])
+			.where('id', '=', userId)
+			.executeTakeFirst();
+
+		if (!updatedUser) {
+			fail(500, { success: false, message: 'Something went wrong on the server.' });
+		} else {
+			return {
+				success: true,
+				display_name: updatedUser.display_name,
+				represents_class: updatedUser.represents_class
+			};
+		}
 	},
 	logout: async (event) => {
 		if (!event.locals.session) {

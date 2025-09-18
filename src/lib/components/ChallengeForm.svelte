@@ -13,7 +13,6 @@
 		submitText,
 		action = '',
 		isAuthor,
-		editing,
 		challengeData = {
 			challenge_id: '',
 			challenge_name: '',

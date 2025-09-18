@@ -62,6 +62,7 @@ CREATE TABLE challenges (
     points INT NOT NULL,
     display_name VARCHAR(256) NOT NULL,
     description TEXT,
+    created_at TIMESTAMPTZ,
     challenge_category category DEFAULT 'misc' NOT NULL,
     -- This is basically a bitset storing the challenges
     -- The challenges are stored in an array, order matters!!! Its the same as the Enum for category, i.e alphabetical

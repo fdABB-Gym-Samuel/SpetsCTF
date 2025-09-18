@@ -132,7 +132,7 @@
 			label="Command"
 			type="text"
 			name="commands"
-			placeholder="eg. sudo rm -rf / --no-preserce-root"
+			placeholder="eg. sudo rm -rf / --no-preserve-root"
 			bind:value={currentResourceContent}
 		></Input>
 	{:else}

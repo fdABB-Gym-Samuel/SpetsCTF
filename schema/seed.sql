@@ -49,23 +49,24 @@ INSERT INTO users (github_id, github_username, display_name, represents_class, i
   (1028, 'yvonne', 'Yvonne Y', 'No Class', false),
   (1029, 'zara', 'Zara Z', 'No Class', true);
 
+
 -- 4. Challenges (15 total, distributed across 5 CTFs)
-INSERT INTO challenges (challenge_id, points, display_name, description, challenge_category, challenge_sub_categories, flag, ctf, approved) VALUES
-  ('crypto01', 100, 'Basic Crypto', 'Decrypt the message', 'crypto', '10000000', 1, 1, true),
-  ('forensics01', 200, 'Memory Forensic', 'Analyze the dump', 'forensics', '01000000', 2, 1, true),
-  ('intro01', 50, 'Welcome Challenge', 'Say hello', 'introduction', '00100000', 3, 1, true),
-  ('misc01', 150, 'Random Task', 'Just do something', 'misc', '00010000', 4, 1, true),
-  ('osint01', 120, 'Whois', 'Find the owner', 'osint', '00001000', 5, 1, true),
-  ('pwn01', 250, 'Heap Exploit', 'Exploit the binary', 'pwn', '00000100', 6, 1, true),
-  ('rev01', 300, 'Reverse Me', 'Reverse the code', 'reversing', '00000010', 7, 1, true),
-  ('web01', 80, 'SQL Injection', 'Bypass the login', 'web', '00000001', 8, 1, true),
-  ('crypto02', 110, 'XOR Crypto', 'Break XOR cipher', 'crypto', '10000000', 9, 1, true),
-  ('forensics02', 210, 'Image Forensic', 'Hidden data in image', 'forensics', '01000000', 10, 1, true),
-  ('intro02', 60, 'Second Intro', 'Intro part 2', 'introduction', '00100000', 11, 1, true),
-  ('misc02', 160, 'Fun Task', 'Misc fun', 'misc', '00010000', 12, 1, true),
-  ('osint02', 130, 'GeoLocate', 'Locate the tweet', 'osint', '00001000', 13, 2, true),
-  ('pwn02', 260, 'Stack Smash', 'Smash the stack', 'pwn', '00000100', 14, 3, true),
-  ('rev02', 310, 'Reverse v2', 'Harder reverse', 'reversing', '00000010', 15, 4, true);
+INSERT INTO challenges (challenge_id, points, display_name, description, challenge_category, challenge_sub_categories, flag, ctf, approved, created_at) VALUES
+  ('crypto01', 100, 'Basic Crypto', 'Decrypt the message', 'crypto', '10000000', 1, 1, true, NOW()),
+  ('forensics01', 200, 'Memory Forensic', 'Analyze the dump', 'forensics', '01000000', 2, 1, true, NOW()),
+  ('intro01', 50, 'Welcome Challenge', 'Say hello', 'introduction', '00100000', 3, 1, true, NOW()),
+  ('misc01', 150, 'Random Task', 'Just do something', 'misc', '00010000', 4, 1, true, NOW()),
+  ('osint01', 120, 'Whois', 'Find the owner', 'osint', '00001000', 5, 1, true, NOW()),
+  ('pwn01', 250, 'Heap Exploit', 'Exploit the binary', 'pwn', '00000100', 6, 1, true, NOW()),
+  ('rev01', 300, 'Reverse Me', 'Reverse the code', 'reversing', '00000010', 7, 1, true, NOW()),
+  ('web01', 80, 'SQL Injection', 'Bypass the login', 'web', '00000001', 8, 1, true, NOW()),
+  ('crypto02', 110, 'XOR Crypto', 'Break XOR cipher', 'crypto', '10000000', 9, 1, true, NOW()),
+  ('forensics02', 210, 'Image Forensic', 'Hidden data in image', 'forensics', '01000000', 10, 1, true, NOW()),
+  ('intro02', 60, 'Second Intro', 'Intro part 2', 'introduction', '00100000', 11, 1, true, NOW()),
+  ('misc02', 160, 'Fun Task', 'Misc fun', 'misc', '00010000', 12, 1, true, NOW()),
+  ('osint02', 130, 'GeoLocate', 'Locate the tweet', 'osint', '00001000', 13, 2, true, NOW()),
+  ('pwn02', 260, 'Stack Smash', 'Smash the stack', 'pwn', '00000100', 14, 3, true, NOW()),
+  ('rev02', 310, 'Reverse v2', 'Harder reverse', 'reversing', '00000010', 15, 4, true, NOW());
 
 -- 5. Teams (7 teams in total)
 INSERT INTO ctf_teams (id, website, name, ctf) VALUES
@@ -76,6 +77,17 @@ INSERT INTO ctf_teams (id, website, name, ctf) VALUES
   (5, 'http://teamepsilon.example', 'Team Epsilon', 1),
   (6, 'http://teamzeta.example', 'Team Zeta', 1),
   (7, 'http://teameta.example', 'Team Eta', 1);
+
+INSERT INTO challenges (challenge_id, points, display_name, description, challenge_category, challenge_sub_categories, flag, ctf, approved, created_at) VALUES
+('challenge2', 150, 'Crypto Cracking', 'Decrypt the given message using the provided hints.', 'crypto', '10010100', 2, 1, TRUE, NOW()),
+('challenge3', 200, 'Forensics Investigation', 'Analyze the provided data to find the hidden flag.', 'forensics', '10010100', 3, 2, TRUE, NOW()),
+('challenge4', 250, 'Intro to OSINT', 'Use open-source intelligence to gather information.', 'osint', '10010100', 4, 2, TRUE, NOW()),
+('challenge5', 300, 'Web Exploitation', 'Find vulnerabilities in the web application.', 'web', '10010100', 5, 3, TRUE, NOW()),
+('challenge6', 350, 'Pwn the Server', 'Gain access to the server and retrieve the flag.', 'pwn', '10010100', 6, 3, TRUE, NOW()),
+('challenge7', 400, 'Reversing Challenge', 'Reverse engineer the binary to find the flag.', 'reversing', '10010100', 7, 4, TRUE, NOW()),
+('challenge8', 450, 'Miscellaneous Challenge', 'A surprise challenge with various tasks.', 'misc', '10010100', 8, 4, TRUE, NOW()),
+('challenge9', 500, 'Advanced Crypto', 'Solve the complex cryptographic puzzle.', 'crypto', '10010100', 9, 5, TRUE, NOW())
+
 
 -- 6. Team memberships
 -- Assign first 14 users across teams
