@@ -86,7 +86,7 @@ INSERT INTO challenges (challenge_id, points, display_name, description, challen
 ('challenge6', 350, 'Pwn the Server', 'Gain access to the server and retrieve the flag.', 'pwn', '10010100', 6, 3, TRUE, NOW()),
 ('challenge7', 400, 'Reversing Challenge', 'Reverse engineer the binary to find the flag.', 'reversing', '10010100', 7, 4, TRUE, NOW()),
 ('challenge8', 450, 'Miscellaneous Challenge', 'A surprise challenge with various tasks.', 'misc', '10010100', 8, 4, TRUE, NOW()),
-('challenge9', 500, 'Advanced Crypto', 'Solve the complex cryptographic puzzle.', 'crypto', '10010100', 9, 5, TRUE, NOW())
+('challenge9', 500, 'Advanced Crypto', 'Solve the complex cryptographic puzzle.', 'crypto', '10010100', 9, 5, TRUE, NOW());
 
 
 -- 6. Team memberships
