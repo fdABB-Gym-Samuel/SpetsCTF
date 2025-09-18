@@ -156,7 +156,7 @@
 				<Button
 					label="Create Challenge"
 					type="button"
-					onClick={() => goto('/create-challenge')}
+					onClick={() => goto('create-challenge')}
 					Icon={Pen}
 					ariaLabel="Go to challenges"
 				></Button>
