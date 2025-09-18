@@ -37,7 +37,7 @@
 				/>
 				<button
 					type="submit"
-					class="ignore-default bg-button-light dark:bg-button-dark mt-2 w-full rounded-md border-2 py-0 text-sm"
+					class="ignore-default bg-primary-light dark:bg-primary mt-2 w-full rounded-md border-2 py-0 text-sm"
 				>
 					Submit flag that may or may not exist</button
 				>

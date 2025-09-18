@@ -80,7 +80,7 @@
 	<ul>
 		{#each adminLinks as adminLink}
 			<li>
-				<a class="text-accent-dark underline" href={adminLink.href}>
+				<a class="text-primary underline" href={adminLink.href}>
 					{adminLink.display}
 				</a>
 			</li>
