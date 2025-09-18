@@ -4,75 +4,78 @@ import type { PageServerLoad } from '../$types';
 import { sql, type Insertable } from 'kysely';
 import { get_flag_of_challenge, selectedCategoriesToBitset } from '$lib/db/functions';
 import type { CtfSubmissions } from '$lib/db/db';
-import { CssSyntaxError } from 'postcss';
-import { TvMinimal } from '@lucide/svelte';
 
 export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 	const user = event.locals.user;
 	const ctfId = Number(event.params.ctf_id);
 	const userId = user ? user.id : undefined;
 
-	const allChallenges = await db
-		.with('unique_success', (qb) =>
-			qb
-				.selectFrom('ctf_submissions')
-				.select(['challenge', 'user_id'])
-				.select(sql`MIN(time)`.as('first_time'))
-				.where('success', '=', true)
-				.groupBy(['challenge', 'user_id'])
-		)
-		// Second CTE: rank these unique successful submissions per challenge.
-		.with('ranked_submissions', (qb) =>
-			qb
-				.selectFrom('unique_success')
-				.select(['challenge', 'user_id', 'first_time'])
-				.select(sql`ROW_NUMBER() OVER (PARTITION BY challenge ORDER BY first_time)`.as('rn'))
-		)
-		// Main query: join challenges, ranked submissions, users, and flag.
-		.selectFrom('challenges as ch')
-		.where('ch.ctf', '=', ctfId)
-		.where('ch.approved', '=', true)
-		.leftJoin('ranked_submissions as rs', 'ch.challenge_id', 'rs.challenge')
-		.leftJoin('users as u', 'rs.user_id', 'u.id')
-		.where('u.is_admin', 'is not', true)
-		.leftJoin('flag as f', 'ch.flag', 'f.id')
-		.leftJoin('users as a', 'ch.author', 'a.id')
-		.groupBy([
-			'ch.challenge_id',
-			'ch.display_name',
-			'ch.description',
-			'ch.points',
-			'ch.challenge_category',
-			'ch.challenge_sub_categories',
-			'a.display_name',
-			'a.id',
-			'f.flag_format'
-		])
-		.select((eb) => [
-			'ch.challenge_id',
-			'ch.display_name as challenge_name',
-			'ch.description as challenge_description',
-			'ch.challenge_category',
-			'ch.challenge_sub_categories',
-			'ch.points',
-			'f.flag_format',
-			eb
-				.case()
-				.when(sql.ref('ch.anonymous_author'), '=', true)
-				.then(sql.lit('Anonymous'))
-				.else(sql.ref('a.display_name'))
-				.end()
-				.as('author'),
-			// 'a.id as author_id',
-			eb
-				.case()
-				.when(sql.ref('ch.anonymous_author'), '=', true)
-				.then(sql.lit(null))
-				.else(sql.ref('a.id'))
-				.end()
-				.as('author_id'),
-			// Aggregate up to the first 5 solver display_names into a JSON array, ordered by submission time.
-			sql`
+	const ctf = (await event.parent()).ctf_data;
+	// const ctf = (await event.parent).data.ctf_data
+
+	const allChallenges =
+		ctf && (new Date(ctf.start_time) < new Date() || user?.is_admin)
+			? await db
+					.with('unique_success', (qb) =>
+						qb
+							.selectFrom('ctf_submissions')
+							.select(['challenge', 'user_id'])
+							.select(sql`MIN(time)`.as('first_time'))
+							.where('success', '=', true)
+							.groupBy(['challenge', 'user_id'])
+					)
+					// Second CTE: rank these unique successful submissions per challenge.
+					.with('ranked_submissions', (qb) =>
+						qb
+							.selectFrom('unique_success')
+							.select(['challenge', 'user_id', 'first_time'])
+							.select(sql`ROW_NUMBER() OVER (PARTITION BY challenge ORDER BY first_time)`.as('rn'))
+					)
+					// Main query: join challenges, ranked submissions, users, and flag.
+					.selectFrom('challenges as ch')
+					.where('ch.ctf', '=', ctfId)
+					.where('ch.approved', '=', true)
+					.leftJoin('ranked_submissions as rs', 'ch.challenge_id', 'rs.challenge')
+					.leftJoin('users as u', 'rs.user_id', 'u.id')
+					.where('u.is_admin', 'is not', true)
+					.leftJoin('flag as f', 'ch.flag', 'f.id')
+					.leftJoin('users as a', 'ch.author', 'a.id')
+					.groupBy([
+						'ch.challenge_id',
+						'ch.display_name',
+						'ch.description',
+						'ch.points',
+						'ch.challenge_category',
+						'ch.challenge_sub_categories',
+						'a.display_name',
+						'a.id',
+						'f.flag_format'
+					])
+					.select((eb) => [
+						'ch.challenge_id',
+						'ch.display_name as challenge_name',
+						'ch.description as challenge_description',
+						'ch.challenge_category',
+						'ch.challenge_sub_categories',
+						'ch.points',
+						'f.flag_format',
+						eb
+							.case()
+							.when(sql.ref('ch.anonymous_author'), '=', true)
+							.then(sql.lit('Anonymous'))
+							.else(sql.ref('a.display_name'))
+							.end()
+							.as('author'),
+						// 'a.id as author_id',
+						eb
+							.case()
+							.when(sql.ref('ch.anonymous_author'), '=', true)
+							.then(sql.lit(null))
+							.else(sql.ref('a.id'))
+							.end()
+							.as('author_id'),
+						// Aggregate up to the first 5 solver display_names into a JSON array, ordered by submission time.
+						sql`
               COALESCE(
                 JSON_AGG(
                   json_build_object('display_name', u.display_name)
@@ -81,21 +84,21 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
                 '[]'::json
               )
             `.as('first_solvers'),
-			// Count the total number of unique successful solves for the challenge.
-			sql`(
+						// Count the total number of unique successful solves for the challenge.
+						sql`(
               SELECT COUNT(*)
               FROM unique_success us
               WHERE us.challenge = ch.challenge_id
             )`.as('num_solves'),
-			// Check if the current user has a successful submission on this challenge.
-			sql`EXISTS(
+						// Check if the current user has a successful submission on this challenge.
+						sql`EXISTS(
               SELECT 1 FROM ctf_submissions ws
               WHERE ws.challenge = ch.challenge_id
                 AND ws.user_id = ${userId}
                 AND ws.success = true
             )`.as('solved'),
-			// Get an array of resources for the challenge (ordered by resource id).
-			sql`
+						// Get an array of resources for the challenge (ordered by resource id).
+						sql`
               COALESCE(
                 (
                   SELECT JSON_AGG(
@@ -108,9 +111,10 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
                 '[]'::json
               )
             `.as('resources')
-		])
-		.orderBy('ch.points', 'asc')
-		.execute();
+					])
+					.orderBy('ch.points', 'asc')
+					.execute()
+			: [];
 
 	const myChallengesQuery = db
 		.selectFrom('challenges as ch')
