@@ -1,3 +1,4 @@
+BEGIN;
 -- Test Data for CTF platform schema
 
 -- 1. Flags (15 flags for 15 challenges)
@@ -123,3 +124,5 @@ INSERT INTO ctf_submissions (challenge, user_id, time, success, ctf, submitted_d
   ('osint02', (SELECT id FROM users WHERE github_username='peggy'), '2025-02-15 13:00:00+00', true, 1, 'FLAG{osint2}'),
   ('pwn02', (SELECT id FROM users WHERE github_username='trent'), '2025-02-15 14:00:00+00', false, 1, 'wrong'),
   ('rev02', (SELECT id FROM users WHERE github_username='victor'), '2025-02-15 15:00:00+00', true, 1, 'FLAG{rev2}');
+
+COMMIT;
