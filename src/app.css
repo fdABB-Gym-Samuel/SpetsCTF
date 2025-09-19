@@ -86,7 +86,7 @@
 
 	/* Dark mode: text is light. */
 	--color-text-100: oklch(0.92 0.0063 75.4);
-	--color-text-200: oklch(0.45 0.0089 80.7);
+	--color-text-200: oklch(0.7077 0.0089 80.7);
 
 	/* Light mode: text is dark. */
 	--color-text-800: oklch(0.1588 0.0173 321);
