@@ -68,7 +68,6 @@ export const load: PageServerLoad = async ({ locals, params }) => {
                   )
                 `.as('resources')
 		])
-		// .orderBy('ch.points', 'asc')
 		.executeTakeFirst();
 
 	if (unapprovedChallenge === undefined) {

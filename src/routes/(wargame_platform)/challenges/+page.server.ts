@@ -66,7 +66,6 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 				.else(sql.ref('a.display_name'))
 				.end()
 				.as('author'),
-			// 'a.id as author_id',
 			eb
 				.case()
 				.when(sql.ref('ch.anonymous_author'), '=', true)

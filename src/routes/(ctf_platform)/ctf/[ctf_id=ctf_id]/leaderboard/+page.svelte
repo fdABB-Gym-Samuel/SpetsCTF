@@ -25,7 +25,7 @@
 		const tl = gsap.timeline();
 
 		[2, 0, 1].forEach((idx, i) => {
-			const pct = Number(heights[idx]); // ◀–– use idx, not i
+			const pct = Number(heights[idx]);
 			const dur = pct / speed;
 
 			tl.fromTo(

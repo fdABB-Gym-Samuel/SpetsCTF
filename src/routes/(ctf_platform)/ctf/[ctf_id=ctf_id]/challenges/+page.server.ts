@@ -11,7 +11,6 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 	const userId = user ? user.id : undefined;
 
 	const ctf = (await event.parent()).ctf_data;
-	// const ctf = (await event.parent).data.ctf_data
 
 	const allChallenges =
 		ctf && (new Date(ctf.start_time) < new Date() || user?.is_admin)

@@ -26,10 +26,6 @@
 	let currentResourceContent: string = $state('');
 	let currentResourceFile: File | undefined = $state();
 
-	// let challenge_resources: Record<'command' | 'website', string[]> = $state({
-	// 	command: [],
-	// 	website: []
-	// });
 	let challenge_resources: Record<'command' | 'website', string[]> = $state({
 		command: resourceData
 			?.filter((res: { type: 'cmd' | 'web' | 'file'; content: string }) => res.type === 'cmd')

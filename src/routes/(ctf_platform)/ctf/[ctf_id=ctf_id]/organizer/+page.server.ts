@@ -65,7 +65,6 @@ export const actions = {
 							'exists',
 							db
 								.selectFrom('ctf_organizers')
-								// .select(sql`1`)
 								.whereRef('ctf_organizers.user_id', '=', db.dynamic.ref('users.id'))
 								.where('ctf_organizers.ctf', '=', ctfId)
 						)
@@ -98,7 +97,6 @@ export const actions = {
 						eb.exists(
 							db
 								.selectFrom('ctf_teams_members as mem')
-								// .select(sql`1`)
 								.whereRef('mem.team', '=', db.dynamic.ref('t.id'))
 								.where('mem.user_id', '=', newOrg)
 						)

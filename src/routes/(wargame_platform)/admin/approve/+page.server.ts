@@ -55,7 +55,6 @@ export const load: PageServerLoad = async ({ locals, params }) => {
                   )
                 `.as('resources')
 		])
-		// .orderBy('ch.points', 'asc')
 		.execute();
 
 	return { unapprovedChallenges };

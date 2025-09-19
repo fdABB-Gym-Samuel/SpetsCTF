@@ -157,7 +157,6 @@ export const actions = {
 				});
 			}
 
-			// if (resource_files && resource_commands && resource_websites) {
 			if (
 				resource_commands?.length > 0 ||
 				resource_files?.length > 0 ||
@@ -171,7 +170,6 @@ export const actions = {
 				const _ = await db.insertInto('challenge_resources').values(resources).execute();
 				console.log(`Here3: ${_}`);
 			}
-			// }
 			return { success: true, message: 'Challenge successfully submitted for review' };
 		} catch (err) {
 			const error = err as Error;
