@@ -109,7 +109,7 @@ export const actions = {
 			const commands: string[] | null = formData.getAll('commands') as string[] | null;
 			const websites: string[] | null = formData.getAll('websites') as string[] | null;
 
-			let resource_files;
+			let resource_files: { challenge: string; content: string; type: 'file' }[] = [];
 			if (files !== null) {
 				const challenge_dir = path.join(process.cwd(), `files/${challenge_id}`);
 				await mkdir(challenge_dir, { recursive: true });
@@ -146,14 +146,14 @@ export const actions = {
 				});
 			}
 
-			let resource_commands;
+			let resource_commands: { challenge: string; content: string; type: 'cmd' }[] = [];
 			if (commands !== null) {
 				resource_commands = commands.map((command) => {
 					return { challenge: challenge_id, content: command, type: 'cmd' };
 				});
 			}
 
-			let resource_websites;
+			let resource_websites: { challenge: string; content: string; type: 'web' }[] = [];
 			let allowedWebsites = websites?.filter((website) => website.match(linkPattern));
 			if (allowedWebsites !== undefined && allowedWebsites.length > 0) {
 				resource_websites = allowedWebsites.map((website) => {
@@ -161,19 +161,17 @@ export const actions = {
 				});
 			}
 
-			if (resource_files && resource_commands && resource_websites) {
-				if (
-					resource_commands?.length > 0 ||
-					resource_files?.length > 0 ||
-					resource_websites?.length > 0
-				) {
-					const resources = [
-						...resource_files,
-						...resource_commands,
-						...resource_websites
-					] as Insertable<ChallengeResources>[];
-					const _ = await db.insertInto('challenge_resources').values(resources).execute();
-				}
+			if (
+				resource_commands?.length > 0 ||
+				resource_files?.length > 0 ||
+				resource_websites?.length > 0
+			) {
+				const resources = [
+					...resource_files,
+					...resource_commands,
+					...resource_websites
+				] as Insertable<ChallengeResources>[];
+				const _ = await db.insertInto('challenge_resources').values(resources).execute();
 			}
 			return { success: true, message: 'Challenge uploaded successfully' };
 		} catch (err) {

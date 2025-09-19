@@ -18,7 +18,6 @@
 			return false;
 		}
 	});
-	$inspect(formValid);
 </script>
 
 <div class="content w-screen">

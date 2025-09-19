@@ -5,8 +5,6 @@
 	import { categories } from '$lib/db/constants';
 	import { capitalizeFirstLetter } from '$lib/utils/utils';
 
-	$inspect(challenge_data);
-
 	function getPointColor(points: number): string {
 		const lab_a = Math.floor(map(points, 0, 500, -128, 128));
 		return `lab(90% ${lab_a} 128)`;

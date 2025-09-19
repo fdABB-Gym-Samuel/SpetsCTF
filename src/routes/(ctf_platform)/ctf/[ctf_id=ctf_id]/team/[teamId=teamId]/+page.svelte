@@ -6,12 +6,10 @@
 	let { teamData, translations } = data;
 
 	let users = teamData?.users;
-	$inspect(users);
 
 	let inviteLink: string = $derived(
 		`${page.url.protocol}//${page.url.host}/ctf/${page.params.ctf_id}/join_team/${teamData?.join_code}`
 	);
-	$inspect(inviteLink);
 </script>
 
 <div class="content flex flex-col items-center">

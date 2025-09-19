@@ -27,8 +27,6 @@
 		}
 	});
 
-	$inspect(displayName);
-
 	onMount(async () => {
 		if (form?.justLoggedOut) {
 			await goto('/?justLoggedOut=true');
