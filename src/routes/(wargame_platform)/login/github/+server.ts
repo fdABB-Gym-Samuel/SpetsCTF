@@ -5,15 +5,15 @@ import type { RequestEvent } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
 
 export async function GET(event: RequestEvent): Promise<Response> {
-	const state = generateState();
-	const url = github.createAuthorizationURL(state, []);
+    const state = generateState();
+    const url = github.createAuthorizationURL(state, []);
 
-	event.cookies.set('github_oauth_state', state, {
-		path: '/',
-		httpOnly: true,
-		maxAge: 10 * 60,
-		sameSite: 'lax'
-	});
+    event.cookies.set('github_oauth_state', state, {
+        path: '/',
+        httpOnly: true,
+        maxAge: 10 * 60,
+        sameSite: 'lax',
+    });
 
-	return redirect(302, url);
+    return redirect(302, url);
 }

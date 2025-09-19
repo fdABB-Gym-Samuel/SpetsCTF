@@ -8,7 +8,6 @@ services:
     restart: always
     networks:
       - pg-network
-
   adminer:
     image: 'docker.io/library/adminer:5.0.6'
     container_name: adminer
@@ -17,6 +16,5 @@ services:
     restart: unless-stopped
     networks:
       - pg-network
-
 networks:
   pg-network:

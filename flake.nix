@@ -2,75 +2,86 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
   };
 
-  outputs = {
-    self,
-    utils,
-    nixpkgs,
-    ...
-  }:
-    utils.lib.eachDefaultSystem (system: let
-      pkgs = import nixpkgs {inherit system;};
-      version =
-        if (self ? rev)
-        then self.rev
-        else "dirty";
-    in rec {
-      devShells.default = pkgs.mkShell {
-        name = "spetsctf";
-        packages = with pkgs; [
-          # Node-specific
-          nodejs
-          nodePackages.npm
+  outputs =
+    {
+      self,
+      nixpkgs,
+      treefmt-nix,
+      utils,
+      ...
+    }:
+    utils.lib.eachDefaultSystem (
+      system:
+      let
+        pkgs = import nixpkgs { inherit system; };
+        version = if (self ? rev) then self.rev else "dirty";
 
-          # typescript-specific
-          typescript-language-server
+        treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
+      in
+      rec {
+        formatter = treefmtEval.config.build.wrapper;
+        checks = {
+          formatting = treefmtEval.config.build.check self;
+        };
 
-          # svelte-specific
-          svelte-language-server
+        devShells.default = pkgs.mkShell {
+          name = "spetsctf";
+          packages = with pkgs; [
+            # Node-specific
+            nodejs
+            nodePackages.npm
 
-          # superhtml
-          vscode-langservers-extracted
+            # typescript-specific
+            typescript-language-server
 
-          # Formatters
-          nodePackages.prettier
-          alejandra
+            # svelte-specific
+            svelte-language-server
 
-          # CLI Tools
-          ripgrep
-          fzf
-          git
+            # superhtml
+            vscode-langservers-extracted
 
-          # To interact with DB
-          postgresql
+            # Formatters
+            nodePackages.prettier
+            alejandra
 
-          helix
-          just
-        ];
+            # CLI Tools
+            ripgrep
+            fzf
+            git
 
-        shellHook = ''
-          echo CTF dev session started at $(date)
-          export PS1='[\[\e[38;5;27m\]spetsctf-dev\[\e[0m\]:\[\e[38;5;220m\]\w\[\e[0m\]]\\$ '
-        '';
-      };
+            # To interact with DB
+            postgresql
 
-      packages."spetsctf" = pkgs.buildNpmPackage {
-        pname = "spetsctf-bundle";
-        inherit version;
+            helix
+            just
+          ];
 
-        nodejs = pkgs.nodejs_22;
-        npmDepsHash = "sha256-dwlpXPRPqATB7lI7wsgHL2JOMpPJTuzdPVdbygJy7Bk=";
-        # npmDepsHash = pkgs.lib.fakeHash;
-        src = pkgs.lib.cleanSource ./.;
+          shellHook = ''
+            echo CTF dev session started at $(date)
+            export PS1='[\[\e[38;5;27m\]spetsctf-dev\[\e[0m\]:\[\e[38;5;220m\]\w\[\e[0m\]]\\$ '
+          '';
+        };
 
-        dontNpmInstall = true;
-        installPhase = ''
-          NODE_ENV=production npm ci # to generate production dependencies
-          mkdir $out
-          cp -r build/* $out
-          cp -r node_modules $out
-        '';
-      };
-    });
+        packages."spetsctf" = pkgs.buildNpmPackage {
+          pname = "spetsctf-bundle";
+          inherit version;
+
+          nodejs = pkgs.nodejs_22;
+          npmDepsHash = "sha256-dwlpXPRPqATB7lI7wsgHL2JOMpPJTuzdPVdbygJy7Bk=";
+          # npmDepsHash = pkgs.lib.fakeHash;
+          src = pkgs.lib.cleanSource ./.;
+
+          dontNpmInstall = true;
+          installPhase = ''
+            NODE_ENV=production npm ci # to generate production dependencies
+            mkdir $out
+            cp -r build/* $out
+            cp -r node_modules $out
+          '';
+        };
+      }
+    );
 }
