@@ -1,3 +1,5 @@
+BEGIN;
+
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 
@@ -141,3 +143,5 @@ CREATE TABLE user_sessions (
     user_id UUID NOT NULL REFERENCES users(id),
     expires_at TIMESTAMPTZ NOT NULL
 );
+
+COMMIT;

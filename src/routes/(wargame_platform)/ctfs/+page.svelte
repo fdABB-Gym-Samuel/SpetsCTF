@@ -51,7 +51,7 @@
 			<ul>
 				{#each ongoingCtfs as ongoingCtf}
 					<li
-						class="border-accent-light dark:border-accent-dark my-2 flex flex-col justify-between gap-2 rounded-2xl border-2 bg-white px-2 py-0.5 dark:bg-black"
+						class="border-primary-light dark:border-primary my-2 flex flex-col justify-between gap-2 rounded-2xl border-2 bg-white px-2 py-0.5 dark:bg-black"
 					>
 						<a class="ignore-default" href={`/ctf/${ongoingCtf.id}`}>
 							<h5>{ongoingCtf.display_name}</h5>
@@ -96,7 +96,7 @@
 				{#each upcomingCtfs as upcomingCtf}
 					<a class="ignore-default" href={`/ctf/${upcomingCtf.id}`}>
 						<li
-							class="border-accent-light dark:border-accent-dark my-2 flex flex-col justify-between gap-2 rounded-2xl border-2 bg-black px-2 py-0.5"
+							class="border-primary-light dark:border-primary my-2 flex flex-col justify-between gap-2 rounded-2xl border-2 bg-black px-2 py-0.5"
 						>
 							<h5>{upcomingCtf.display_name}</h5>
 							<div class="flex flex-row gap-2">
@@ -140,7 +140,7 @@
 				{#each pastCtfs as pastCtf}
 					<a class="ignore-default" href={`/ctf/${pastCtf.id}`}>
 						<li
-							class="border-accent-light dark:border-accent-dark my-2 flex flex-col justify-between gap-2 rounded-2xl border-2 bg-black px-2 py-0.5"
+							class="border-primary-light dark:border-primary my-2 flex flex-col justify-between gap-2 rounded-2xl border-2 bg-black px-2 py-0.5"
 						>
 							<h5>{pastCtf.display_name}</h5>
 							<div class="flex flex-row gap-2">

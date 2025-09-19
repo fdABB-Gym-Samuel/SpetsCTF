@@ -36,9 +36,4 @@
 		secondLabel="GitHub"
 		twStyles="gsap-top-down-opacity"
 	/>
-	<!-- <a
-    href="/login/github"
-    class="mx-auto w-fit rounded border-2 border-black p-2 dark:border-white"
-    >{translations.loginwithgithub}</a
-  > -->
 </div>

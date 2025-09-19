@@ -21,7 +21,7 @@
 		{#each adminLinks as adminLink}
 			<li class="flex flex-row">
 				<Wrench class="mr-3" />
-				<a class="text-accent-dark underline" href={adminLink.href}>
+				<a class="text-primary underline" href={adminLink.href}>
 					{adminLink.display}
 				</a>
 			</li>
