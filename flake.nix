@@ -2,12 +2,14 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
   };
 
   outputs = {
     self,
-    utils,
     nixpkgs,
+    treefmt-nix,
+    utils,
     ...
   }:
     utils.lib.eachDefaultSystem (system: let
@@ -16,7 +18,14 @@
         if (self ? rev)
         then self.rev
         else "dirty";
+
+      treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
     in rec {
+      formatter = treefmtEval.config.build.wrapper;
+      checks = {
+        formatting = treefmtEval.config.build.check self;
+      };
+      
       devShells.default = pkgs.mkShell {
         name = "spetsctf";
         packages = with pkgs; [
