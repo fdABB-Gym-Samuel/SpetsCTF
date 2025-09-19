@@ -1,5 +1,5 @@
 import type { PageServerLoad } from '../$types';
-import { error, redirect, fail, isRedirect } from '@sveltejs/kit';
+import { error, redirect, fail, isRedirect, type Actions } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
 import {
@@ -85,10 +85,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
                     ),
                     '[]'::json
                   )
-                `.as('resources'),
-        ])
-        // .orderBy('ch.points', 'asc')
-        .executeTakeFirst();
+                `.as('resources')
+		])
+		.executeTakeFirst();
 
     if (unapprovedChallenge === undefined) {
         return error(404, { message: 'Challenge not found' });
@@ -364,4 +363,4 @@ export const actions = {
             return fail(500, { message: errorTyped.message });
         }
     },
-};
+} satisfies Actions;

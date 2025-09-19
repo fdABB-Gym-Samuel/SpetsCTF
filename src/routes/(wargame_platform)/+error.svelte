@@ -44,7 +44,7 @@
 			</form>
 		{:else if page.status === 401 || page.status === 403}
 			<!-- <h3>As the Wizard of the Land i beseach you to leave, for ...</h3> -->
-			<h5 class="text-6xl">Thou Shall Not Pass</h5>
+			<h5 class="text-6xl">Thou Chall Not Pass</h5>
 
 			<a class="ignore-default bottom-0 mt-4 w-full text-center" href="/super_great_artist">
 				<img

@@ -5,8 +5,6 @@
 	import { categories } from '$lib/db/constants';
 	import { capitalizeFirstLetter } from '$lib/utils/utils';
 
-	$inspect(challenge_data);
-
 	function getPointColor(points: number): string {
 		const lab_a = Math.floor(map(points, 0, 500, -128, 128));
 		return `lab(90% ${lab_a} 128)`;
@@ -32,7 +30,7 @@
 </script>
 
 <article
-	class="card dark:bg-bg-800 before:bg-bg-750 relative h-full min-h-fit max-w-full overflow-hidden rounded-lg px-10
+	class="card challenge-cards dark:bg-bg-800 before:bg-bg-750 relative h-full min-h-fit max-w-full overflow-hidden rounded-lg px-10
   py-6 before:absolute before:inset-0 before:origin-center before:scale-0 before:rounded-lg before:transition-transform
   before:duration-500 before:ease-out before:content-[''] hover:before:scale-100"
 	class:bg-gradient-to-br={challenge_data.solved}
@@ -84,38 +82,10 @@
 				{/each}
 			</ul>
 			{#if extraCategoriesCount > 0}
-				<li class="text-text-100 text-sm">
-					<p>+{extraCategoriesCount}</p>
-				</li>
+				<div class="text-text-100 text-sm">
+					<span>+{extraCategoriesCount}</span>
+				</div>
 			{/if}
 		</section>
 	</div>
-
-	<!-- <section class="bottom flex flex-col justify-between">
-		<div class="author-wrapper"></div>
-		<div class="solution-stats flex flex-row justify-between text-sm">
-			{#if challenge_data.num_solves}
-				<div class="flex flex-row items-center gap-0.5">
-					<Flag class="size-4"></Flag>
-					<p
-						class="num-solves text-background-light dark:text-background-dark"
-						class:dark:text-background-dark={challenge_data.solved}
-						class:text-background-light={challenge_data.solved}
-					>
-						{challenge_data.num_solves}
-					</p>
-				</div>
-			{/if}
-			<div class="flex flex-row items-center gap-0.5">
-				<CirclePlus class="size-4"></CirclePlus>
-				<p
-					class="point-reward text-background-light dark:text-background-dark align-text-middle"
-					class:dark:text-background-dark={challenge_data.solved}
-					class:text-background-light={challenge_data.solved}
-				>
-					{challenge_data.points}
-				</p>
-			</div>
-		</div>
-	</section> -->
 </article>

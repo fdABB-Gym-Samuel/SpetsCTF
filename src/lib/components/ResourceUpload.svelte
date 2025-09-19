@@ -26,10 +26,6 @@
 	let currentResourceContent: string = $state('');
 	let currentResourceFile: File | undefined = $state();
 
-	// let challenge_resources: Record<'command' | 'website', string[]> = $state({
-	// 	command: [],
-	// 	website: []
-	// });
 	let challenge_resources: Record<'command' | 'website', string[]> = $state({
 		command: resourceData
 			?.filter((res: { type: 'cmd' | 'web' | 'file'; content: string }) => res.type === 'cmd')
@@ -173,6 +169,9 @@
 				}}
 				bgColor="bg-red-700"
 			></Button>
+			<div>
+				<input name="original_files" type="hidden" {form} value={filepath} />
+			</div>
 		</li>
 	{/each}
 	{#each files !== undefined ? files : [] as file, i}

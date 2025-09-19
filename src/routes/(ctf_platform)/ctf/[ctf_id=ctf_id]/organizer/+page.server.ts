@@ -1,4 +1,4 @@
-import { error, fail, redirect, type ServerLoadEvent } from '@sveltejs/kit';
+import { error, fail, redirect, type ServerLoadEvent, type Actions } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { getIsOrg } from '$lib/db/functions';
 
@@ -59,24 +59,19 @@ export const actions = {
                     // site‐wide admins
                     eb('users.is_admin', '=', true),
 
-                    // OR users who exist in ctf_organizers for this CTF
-                    eb
-                        .unary(
-                            'exists',
-                            db
-                                .selectFrom('ctf_organizers')
-                                // .select(sql`1`)
-                                .whereRef(
-                                    'ctf_organizers.user_id',
-                                    '=',
-                                    db.dynamic.ref('users.id')
-                                )
-                                .where('ctf_organizers.ctf', '=', ctfId)
-                        )
-                        .$castTo<boolean>(),
-                ])
-            )
-            .execute();
+					// OR users who exist in ctf_organizers for this CTF
+					eb
+						.unary(
+							'exists',
+							db
+								.selectFrom('ctf_organizers')
+								.whereRef('ctf_organizers.user_id', '=', db.dynamic.ref('users.id'))
+								.where('ctf_organizers.ctf', '=', ctfId)
+						)
+						.$castTo<boolean>()
+				])
+			)
+			.execute();
 
         const uniqueNewOrgs = newOrgs.filter(
             (newOrg) => !currentOrgs.some((oldOrg) => oldOrg.id === newOrg)
@@ -88,30 +83,29 @@ export const actions = {
             });
         }
 
-        let numOrgsAdded = 0;
-        for (let newOrg of uniqueNewOrgs) {
-            const team = await db
-                .selectFrom('ctf_teams as t')
-                // pull whatever team fields you need:
-                .select(['t.id'])
-                .innerJoin('ctf_teams_members as m', 'm.team', 't.id')
-                // count all members via the join alias "m":
-                .select(db.fn.count(db.dynamic.ref('m.user_id')).as('member_count'))
-                // now filter: same CTF AND user must be on that team
-                .where((eb) =>
-                    eb.and([
-                        eb('t.ctf', '=', ctfId),
-                        eb.exists(
-                            db
-                                .selectFrom('ctf_teams_members as mem')
-                                // .select(sql`1`)
-                                .whereRef('mem.team', '=', db.dynamic.ref('t.id'))
-                                .where('mem.user_id', '=', newOrg)
-                        ),
-                    ])
-                )
-                .groupBy('t.id')
-                .executeTakeFirst();
+		let numOrgsAdded = 0;
+		for (let newOrg of uniqueNewOrgs) {
+			const team = await db
+				.selectFrom('ctf_teams as t')
+				// pull whatever team fields you need:
+				.select(['t.id'])
+				.innerJoin('ctf_teams_members as m', 'm.team', 't.id')
+				// count all members via the join alias "m":
+				.select(db.fn.count(db.dynamic.ref('m.user_id')).as('member_count'))
+				// now filter: same CTF AND user must be on that team
+				.where((eb) =>
+					eb.and([
+						eb('t.ctf', '=', ctfId),
+						eb.exists(
+							db
+								.selectFrom('ctf_teams_members as mem')
+								.whereRef('mem.team', '=', db.dynamic.ref('t.id'))
+								.where('mem.user_id', '=', newOrg)
+						)
+					])
+				)
+				.groupBy('t.id')
+				.executeTakeFirst();
 
             if (team !== undefined) {
                 const _orgRemovedFromTeam = await db
@@ -147,4 +141,4 @@ export const actions = {
             message: `Successfully added ${numOrgsAdded}/${newOrgs.length} new organizers`,
         };
     },
-};
+} satisfies Actions;

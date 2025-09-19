@@ -130,10 +130,10 @@ export const actions = {
                 | string[]
                 | null;
 
-            let resource_files;
-            if (files !== null) {
-                const challenge_dir = path.join(process.cwd(), `files/${challenge_id}`);
-                await mkdir(challenge_dir, { recursive: true });
+			let resource_files: { challenge: string; content: string; type: 'file' }[] = [];
+			if (files !== null) {
+				const challenge_dir = path.join(process.cwd(), `files/${challenge_id}`);
+				await mkdir(challenge_dir, { recursive: true });
 
                 files.forEach((file) => {
                     return new File([file], sanitize(file.name), {
@@ -174,6 +174,7 @@ export const actions = {
                 });
             }
 
+<<<<<<< HEAD
             let resource_commands;
             if (commands !== null) {
                 resource_commands = commands.map((command) => {
@@ -214,4 +215,40 @@ export const actions = {
             return { success: false, message: error.message };
         }
     },
+=======
+			let resource_commands: { challenge: string; content: string; type: 'cmd' }[] = [];
+			if (commands !== null) {
+				resource_commands = commands.map((command) => {
+					return { challenge: challenge_id, content: command, type: 'cmd' };
+				});
+			}
+
+			let resource_websites: { challenge: string; content: string; type: 'web' }[] = [];
+			let allowedWebsites = websites?.filter((website) => website.match(linkPattern));
+			if (allowedWebsites !== undefined && allowedWebsites.length > 0) {
+				resource_websites = allowedWebsites.map((website) => {
+					return { challenge: challenge_id, content: website, type: 'web' };
+				});
+			}
+
+			if (
+				resource_commands?.length > 0 ||
+				resource_files?.length > 0 ||
+				resource_websites?.length > 0
+			) {
+				const resources = [
+					...resource_files,
+					...resource_commands,
+					...resource_websites
+				] as Insertable<ChallengeResources>[];
+				const _ = await db.insertInto('challenge_resources').values(resources).execute();
+			}
+
+			return { success: true, message: 'Challenge uploaded successfully' };
+		} catch (err) {
+			const error = err as Error;
+			return { success: false, message: error.message };
+		}
+	}
+>>>>>>> c5ca0ad52637051c10cfb596d5f783c93d6d4f22
 } satisfies Actions;

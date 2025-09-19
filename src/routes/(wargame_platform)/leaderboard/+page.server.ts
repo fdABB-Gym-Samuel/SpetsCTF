@@ -11,31 +11,36 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 };
 
 const get_top_users = async () => {
-    const result = await db
-        .selectFrom('users as u')
-        .where('is_admin', 'is not', true)
-        .leftJoin(
-            db
-                .selectFrom('wargame_submissions')
-                .select(['user_id', 'challenge'])
-                .where('success', '=', true)
-                .distinctOn(['user_id', 'challenge'])
-                .as('ws'),
-            'u.id',
-            'ws.user_id'
-        )
-        .leftJoin('challenges as c', 'ws.challenge', 'c.challenge_id')
-        .leftJoin('ctf_events as ctf', 'c.ctf', 'ctf.id')
-        .where(sql<boolean>`ctf.end_time IS NULL OR ctf.end_time < NOW()`)
-        .where('c.approved', '=', true)
-        .select(['u.id', 'u.display_name', 'u.represents_class'])
-        .where('u.is_admin', 'is not', true)
-        .select(({ fn }) => fn.coalesce(fn.sum('c.points'), sql`0`).as('total_points'))
-        .groupBy(['u.id', 'u.display_name', 'u.represents_class'])
-        .orderBy('total_points', 'desc')
-        .execute();
-
-    return result;
+	const result = await db
+		.selectFrom('users as u')
+		.where('is_admin', 'is not', true)
+		.leftJoin(
+			db
+				.selectFrom('wargame_submissions')
+				.select(['user_id', 'challenge'])
+				.where('success', '=', true)
+				.distinctOn(['user_id', 'challenge'])
+				.as('ws'),
+			'u.id',
+			'ws.user_id'
+		)
+		.leftJoin('challenges as c', 'ws.challenge', 'c.challenge_id')
+		.leftJoin('ctf_events as ctf', 'c.ctf', 'ctf.id')
+		.where(sql<boolean>`ctf.end_time IS NULL OR ctf.end_time < NOW()`)
+		.where('c.approved', '=', true)
+		.select([
+			sql<
+				string | null
+			>`CASE WHEN u.display_name = '' OR u.display_name IS NULL THEN NULL ELSE u.id END`.as('id'),
+			'u.display_name',
+			'u.represents_class'
+		])
+		.where('u.is_admin', 'is not', true)
+		.select(({ fn }) => fn.coalesce(fn.sum('c.points'), sql`0`).as('total_points'))
+		.groupBy(['u.id', 'u.display_name', 'u.represents_class'])
+		.orderBy('total_points', 'desc')
+		.execute();
+	return result;
 };
 
 const get_top_classes = async () => {

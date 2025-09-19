@@ -112,7 +112,7 @@
 		aria-label="Close challenge details"
 	></button>
 	<dialog
-		class="bg-bg-800 gsap-opacity relative m-auto flex w-[85%] max-w-[1000px] flex-col overflow-y-scroll rounded-lg px-4 py-12 sm:px-8 md:px-10 lg:px-16"
+		class="bg-bg-800 challenge-dialog gsap-opacity relative m-auto flex w-[85%] max-w-[1000px] flex-col overflow-y-scroll rounded-lg px-4 py-12 sm:px-8 md:px-10 lg:px-16"
 	>
 		<section class="-mt-2 mb-12 flex w-full justify-between">
 			{#if challenge_data.created_at}

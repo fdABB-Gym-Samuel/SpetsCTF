@@ -100,12 +100,12 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
             .where('users.id', '=', wantedUserId)
             .executeTakeFirst();
 
-        if (userInfo === undefined) {
-            throw error(404, { message: 'User not found' });
-        } else {
-            return { userInfo };
-        }
-    } catch (err) {
-        throw err;
-    }
+		if (userInfo === undefined || userInfo.displayName === '' || userInfo.displayName === null) {
+			throw error(404, { message: 'User not found' });
+		} else {
+			return { userInfo };
+		}
+	} catch (err) {
+		throw err;
+	}
 };

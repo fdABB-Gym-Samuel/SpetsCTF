@@ -12,7 +12,6 @@
 
 	import HSeperator from '$lib/components/HSeperator.svelte';
 	import Button from '$lib/components/Button.svelte';
-	// import type { H } from 'vitest/dist/chunks/environment.d8YfPkTm.js';
 
 	let countdown = $state({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 

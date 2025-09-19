@@ -58,10 +58,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
                     ),
                     '[]'::json
                   )
-                `.as('resources'),
-        ])
-        // .orderBy('ch.points', 'asc')
-        .execute();
+                `.as('resources')
+		])
+		.execute();
 
     return { unapprovedChallenges };
 };

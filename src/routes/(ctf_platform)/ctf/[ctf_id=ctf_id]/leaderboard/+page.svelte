@@ -6,7 +6,7 @@
 	import gsap from 'gsap';
 
 	let { data } = $props();
-	let { user, ctf, scores, team } = data;
+	let { user, ctf_data, scores, team } = data;
 
 	let podiumRefs: HTMLDivElement[] = $state([]);
 	let textRefs: HTMLSpanElement[] = $state([]);
@@ -24,9 +24,8 @@
 		const speed = 60; // % per second
 		const tl = gsap.timeline();
 
-		// [2,0,1] is your display order: 3rd, 1st, 2nd
 		[2, 0, 1].forEach((idx, i) => {
-			const pct = Number(heights[idx]); // ◀–– use idx, not i
+			const pct = Number(heights[idx]);
 			const dur = pct / speed;
 
 			tl.fromTo(
@@ -52,37 +51,10 @@
 	onDestroy(() => {
 		gsapContext?.revert();
 	});
-	console.log(scores);
 </script>
 
 <main class="content m-auto w-full max-w-[1200px] pt-20" bind:this={componentRoot}>
-	{#if ctf && ctf.end_time < new Date()}
-		<!-- <section class="flex flex-row justify-center items-end w-full h-80 mb-8">
-			<div class="flex flex-col w-1/3 h-full justify-end items-center">
-				<h5 class="text-lg">{scores[2]?.team_name}</h5>
-				<div class="text-center bg-amber-700 h-2/5 w-full">
-					<span class="text-black text-2xl">
-						({scores[2]?.total_points}pts)
-					</span>	
-				</div>
-			</div>
-			<div class="flex flex-col w-1/3 h-full justify-end items-center">
-				<h5 class="text-3xl font-extrabold flex flex-col text-center">{scores[0]?.team_name}</h5>
-				<div class="text-center bg-yellow-500 h-4/5 w-full pt-2">
-					<span class="text-black text-2xl">
-						({scores[0]?.total_points}pts)
-					</span>
-				</div>
-			</div>
-			<div class="flex flex-col w-1/3 h-full justify-end items-center">
-				<h5 class="text-lg">{scores[1]?.team_name}</h5>
-				<div class="text-center bg-slate-400 h-3/5 w-full">
-					<span class="text-black text-2xl">
-						({scores[1]?.total_points}pts)
-					</span>	
-				</div>
-			</div>
-		</section> -->
+	{#if ctf_data && ctf_data.end_time < new Date()}
 		<section class="mb-8 flex h-80 w-full items-end justify-center">
 			{#each [2, 0, 1] as idx, i}
 				<div class="flex h-full w-1/3 flex-col items-center justify-end">
@@ -109,12 +81,6 @@
 			<h1 class="text-xl font-bold">
 				{team?.teamName} <span class="text-text-200">#{teamPosition}</span>
 			</h1>
-			<!-- <p class="text-text-200">
-				You have <span class="text-text-100"
-					>{scores.filter((user_) => user_.id === user.id)[0]?.total_points}pts</span
-				>, currently in the
-				<span class="text-text-100">#{userClassPosition} class</span>.
-			</p> -->
 		</header>
 	{/if}
 	<div class="scoreboards flex w-full flex-col gap-16">

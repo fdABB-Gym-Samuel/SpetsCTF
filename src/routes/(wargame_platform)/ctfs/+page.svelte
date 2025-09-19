@@ -10,21 +10,18 @@
 			return ctf.start_time < current_time && current_time < ctf.end_time;
 		})
 	);
-	$inspect(ongoingCtfs);
 	let upcomingCtfs = $derived(
 		ctfs.filter((ctf) => {
 			const current_time = new Date();
 			return current_time < ctf.start_time;
 		})
 	);
-	$inspect(upcomingCtfs);
 	let pastCtfs = $derived(
 		ctfs.filter((ctf) => {
 			const current_time = new Date();
 			return ctf.end_time < current_time;
 		})
 	);
-	$inspect(pastCtfs);
 	const months: string[] = [
 		translations.jan,
 		translations.feb,
