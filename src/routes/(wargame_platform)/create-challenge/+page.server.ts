@@ -105,7 +105,6 @@ export const actions = {
 
 			let resource_files: { challenge: string; content: string; type: 'file' }[] = [];
 			if (files !== null) {
-				console.log(`Here: ${files}`);
 				const challenge_dir = path.join(process.cwd(), `files/${challenge_id}`);
 				await mkdir(challenge_dir, { recursive: true });
 
@@ -140,7 +139,6 @@ export const actions = {
 					};
 				});
 			}
-			console.log(`Here2: ${resource_files}`);
 
 			let resource_commands: { challenge: string; content: string; type: 'cmd' }[] = [];
 			if (commands !== null) {
@@ -168,7 +166,6 @@ export const actions = {
 					...resource_websites
 				] as Insertable<ChallengeResources>[];
 				const _ = await db.insertInto('challenge_resources').values(resources).execute();
-				console.log(`Here3: ${_}`);
 			}
 			return { success: true, message: 'Challenge successfully submitted for review' };
 		} catch (err) {

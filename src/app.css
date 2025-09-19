@@ -209,4 +209,16 @@ h2 {
 	.link:hover::after {
 		@apply origin-bottom-left scale-x-100;
 	}
+	.challenge-dialog::-webkit-scrollbar,
+	.challenge-dialog *::-webkit-scrollbar {
+		display: none;
+	}
+	.challenge-dialog::-webkit-scrollbar-thumb,
+	.challenge-dialog *::-webkit-scrollbar-thumb {
+		width: 5px;
+		border-radius: 100%;
+	}
+	*:has(.challenge-dialog) {
+		overflow-y: hidden;
+	}
 }

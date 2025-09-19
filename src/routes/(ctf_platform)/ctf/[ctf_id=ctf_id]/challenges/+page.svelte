@@ -107,12 +107,14 @@
 	<nav class="flex w-full flex-col gap-2">
 		<ul class="flex w-full flex-row gap-5">
 			{#each challengesTabs as tab}
-				<button
-					class:border-b-2={currentTab === tab.tab}
-					onclick={() => {
-						switchTab(tab.tab as 'all' | 'my');
-					}}>{tab.label}</button
-				>
+				<li>
+					<button
+						class:border-b-2={currentTab === tab.tab}
+						onclick={() => {
+							switchTab(tab.tab as 'all' | 'my');
+						}}>{tab.label}</button
+					>
+				</li>
 			{/each}
 		</ul>
 		<VSeperator></VSeperator>
