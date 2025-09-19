@@ -19,9 +19,23 @@
       popd
     '';
 
-    meta = {
-      license = pkgs.lib.licenses.mit;
+    meta.license = pkgs.lib.licenses.mit;
+  };
+  prettier-plugin-tailwindcss = pkgs.buildNpmPackage {
+    pname = "prettier-plugin-tailwindcss";
+    version = "0.6.14";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "tailwindlabs";
+      repo = "prettier-plugin-tailwindcss";
+      rev = "v0.6.14";
+      hash = "sha256-9zWZIHHDOBJQZZ25B8U3zbdcpsFLORmi5Xg5QCDzQ60=";
     };
+
+    npmDepsHash = "sha256-EozdfUJ50Gy5gXwbf/HHzko0uNG4WjO7DCO920y1fmY=";
+    dontNpmPrune = true;
+
+    meta.license = pkgs.lib.licenses.mit;
   };
 in {
   projectRootFile = "flake.nix";
@@ -35,6 +49,7 @@ in {
       editorconfig = false;
       plugins = [
         "${prettier-plugin-svelte}/lib/node_modules/prettier-plugin-svelte/plugin.js"
+        "${prettier-plugin-tailwindcss}/lib/node_modules/prettier-plugin-tailwindcss/dist/index.mjs"
       ];
       printWidth = 88;
       singleQuote = true;

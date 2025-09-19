@@ -133,7 +133,7 @@
 }
 
 body {
-    @apply bg-background-light dark:bg-bg-900 text-text-100 selection:bg-text-100 selection:text-bg-900 relative !m-0 box-border min-h-screen px-4 pt-12 font-sans font-normal lg:px-16 dark:text-text-100 text-text-800;
+    @apply bg-background-light dark:bg-bg-900 text-text-100 selection:bg-text-100 selection:text-bg-900 dark:text-text-100 text-text-800 relative !m-0 box-border min-h-screen px-4 pt-12 font-sans font-normal lg:px-16;
 }
 
 @keyframes noiseAnimation {
