@@ -43,11 +43,11 @@ export const load: LayoutServerLoad = async ({ locals, depends, params }) => {
     }
     depends('data:user');
 
-	return {
-		translations: locals.translations,
-		user,
-		team,
-		isOrg,
-		ctf_data
-	};
+    return {
+        translations: locals.translations,
+        user,
+        team,
+        isOrg,
+        ctf_data,
+    };
 };

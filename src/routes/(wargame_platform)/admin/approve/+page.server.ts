@@ -53,9 +53,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
                     ),
                     '[]'::json
                   )
-                `.as('resources')
-		])
-		.execute();
+                `.as('resources'),
+        ])
+        .execute();
 
     return { unapprovedChallenges };
 };

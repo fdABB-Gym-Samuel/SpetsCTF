@@ -46,5 +46,5 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
         .orderBy('total_points', 'desc')
         .execute();
 
-	return { scores };
+    return { scores };
 };

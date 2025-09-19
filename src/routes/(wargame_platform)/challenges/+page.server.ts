@@ -9,73 +9,77 @@ import { get_flag_of_challenge } from '$lib/db/functions';
 export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
     const user = locals.user;
 
-	const allChallenges = await db
-		// First CTE: get each user's earliest successful submission per challenge.
-		.with('unique_success', (qb) =>
-			qb
-				.selectFrom('wargame_submissions')
-				.innerJoin('users', 'wargame_submissions.user_id', 'users.id')
-				.where('is_admin', 'is not', true)
-				.select(['challenge', 'user_id'])
-				.select(sql`MIN(time)`.as('first_time'))
-				.where('success', '=', true)
-				.groupBy(['challenge', 'user_id'])
-		)
-		// Second CTE: rank these unique successful submissions per challenge.
-		.with('ranked_submissions', (qb) =>
-			qb
-				.selectFrom('unique_success')
-				.select(['challenge', 'user_id', 'first_time'])
-				.select(sql`ROW_NUMBER() OVER (PARTITION BY challenge ORDER BY first_time)`.as('rn'))
-		)
-		// Main query: join challenges, ranked submissions, users, flag, and ctf_events.
-		.selectFrom('challenges as ch')
-		.leftJoin('ranked_submissions as rs', 'ch.challenge_id', 'rs.challenge')
-		.leftJoin('users as u', 'rs.user_id', 'u.id')
-		.leftJoin('flag as f', 'ch.flag', 'f.id')
-		.leftJoin('ctf_events as ctf', 'ch.ctf', 'ctf.id')
-		.leftJoin('users as a', 'ch.author', 'a.id')
-		// For some reason both of the ch.approved are needed, or else there are some challs that slip through the gap
-		.where('ch.approved', '=', true)
-		.where(sql<boolean>`ctf.end_time IS NULL OR ctf.end_time < NOW()`)
-		.where('ch.approved', '=', true)
-		.groupBy([
-			'ch.challenge_id',
-			'ch.display_name',
-			'ch.description',
-			'ch.points',
-			'ch.challenge_category',
-			'ch.challenge_sub_categories',
-			'a.display_name',
-			'a.id',
-			'f.flag_format',
-			'ctf.end_time'
-		])
-		.select((eb) => [
-			'ch.challenge_id',
-			'ch.created_at',
-			'ch.display_name as challenge_name',
-			'ch.description as challenge_description',
-			'ch.challenge_category',
-			'ch.challenge_sub_categories',
-			'ch.points',
-			eb
-				.case()
-				.when(sql.ref('ch.anonymous_author'), '=', true)
-				.then(sql.lit('Anonymous'))
-				.else(sql.ref('a.display_name'))
-				.end()
-				.as('author'),
-			eb
-				.case()
-				.when(sql.ref('ch.anonymous_author'), '=', true)
-				.then(sql.lit(null))
-				.else(sql.ref('a.id'))
-				.end()
-				.as('author_id'),
-			'f.flag_format',
-			// Aggregate up to the first 5 solver display_names into a JSON array, ordered by submission time.
-			sql`
+    const allChallenges = await db
+        // First CTE: get each user's earliest successful submission per challenge.
+        .with('unique_success', (qb) =>
+            qb
+                .selectFrom('wargame_submissions')
+                .innerJoin('users', 'wargame_submissions.user_id', 'users.id')
+                .where('is_admin', 'is not', true)
+                .select(['challenge', 'user_id'])
+                .select(sql`MIN(time)`.as('first_time'))
+                .where('success', '=', true)
+                .groupBy(['challenge', 'user_id'])
+        )
+        // Second CTE: rank these unique successful submissions per challenge.
+        .with('ranked_submissions', (qb) =>
+            qb
+                .selectFrom('unique_success')
+                .select(['challenge', 'user_id', 'first_time'])
+                .select(
+                    sql`ROW_NUMBER() OVER (PARTITION BY challenge ORDER BY first_time)`.as(
+                        'rn'
+                    )
+                )
+        )
+        // Main query: join challenges, ranked submissions, users, flag, and ctf_events.
+        .selectFrom('challenges as ch')
+        .leftJoin('ranked_submissions as rs', 'ch.challenge_id', 'rs.challenge')
+        .leftJoin('users as u', 'rs.user_id', 'u.id')
+        .leftJoin('flag as f', 'ch.flag', 'f.id')
+        .leftJoin('ctf_events as ctf', 'ch.ctf', 'ctf.id')
+        .leftJoin('users as a', 'ch.author', 'a.id')
+        // For some reason both of the ch.approved are needed, or else there are some challs that slip through the gap
+        .where('ch.approved', '=', true)
+        .where(sql<boolean>`ctf.end_time IS NULL OR ctf.end_time < NOW()`)
+        .where('ch.approved', '=', true)
+        .groupBy([
+            'ch.challenge_id',
+            'ch.display_name',
+            'ch.description',
+            'ch.points',
+            'ch.challenge_category',
+            'ch.challenge_sub_categories',
+            'a.display_name',
+            'a.id',
+            'f.flag_format',
+            'ctf.end_time',
+        ])
+        .select((eb) => [
+            'ch.challenge_id',
+            'ch.created_at',
+            'ch.display_name as challenge_name',
+            'ch.description as challenge_description',
+            'ch.challenge_category',
+            'ch.challenge_sub_categories',
+            'ch.points',
+            eb
+                .case()
+                .when(sql.ref('ch.anonymous_author'), '=', true)
+                .then(sql.lit('Anonymous'))
+                .else(sql.ref('a.display_name'))
+                .end()
+                .as('author'),
+            eb
+                .case()
+                .when(sql.ref('ch.anonymous_author'), '=', true)
+                .then(sql.lit(null))
+                .else(sql.ref('a.id'))
+                .end()
+                .as('author_id'),
+            'f.flag_format',
+            // Aggregate up to the first 5 solver display_names into a JSON array, ordered by submission time.
+            sql`
 			  COALESCE(
 				JSON_AGG(
 				  json_build_object('display_name', u.display_name)
