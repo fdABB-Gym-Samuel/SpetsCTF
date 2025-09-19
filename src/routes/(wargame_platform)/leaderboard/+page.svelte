@@ -129,9 +129,14 @@
 									<td class="h-12 w-12 pl-4 text-left sm:w-18 sm:pl-10">{i + 1}</td>
 									<td
 										class="h-12 max-h-12 w-fit overflow-hidden text-left break-normal text-ellipsis"
-										><a class="ignore-default" href={`/user/${player.id}`}>{player.display_name}</a
-										></td
 									>
+										{#if player.display_name && player.id}
+											<a class="ignore-default" href={`/user/${player.id}`}>{player.display_name}</a
+											>
+										{:else}
+											<span>Anonymous</span>
+										{/if}
+									</td>
 									<td class="h-12 w-14 pl-1 text-left sm:w-20 md:w-30 md:text-center"
 										>{player?.represents_class}</td
 									>
