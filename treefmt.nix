@@ -58,4 +58,6 @@ in {
       useTabs = false;
     };
   };
+
+  programs.alejandra.enable = true;
 }

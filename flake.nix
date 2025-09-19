@@ -25,7 +25,7 @@
       checks = {
         formatting = treefmtEval.config.build.check self;
       };
-      
+
       devShells.default = pkgs.mkShell {
         name = "spetsctf";
         packages = with pkgs; [
