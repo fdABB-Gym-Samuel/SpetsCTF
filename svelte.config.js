@@ -8,7 +8,7 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		csrf: {
-			checkOrigin: true
+			trustedOrigins: ['https://ctf.spetsen.net']
 		},
 		csp: {
 			mode: 'auto',

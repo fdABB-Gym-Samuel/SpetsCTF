@@ -20,14 +20,14 @@
 			<h3>Members:</h3>
 
 			<ul class="users flex flex-row items-center">
-				<span class="bg-accent-dark h-8 w-0.5"></span>
+				<span class="bg-primary h-8 w-0.5"></span>
 
 				{#each users as string[] as user}
 					<!-- TODO investigate how kysely can infer types here -->
 					<li class=" w-full text-center">
 						<p>{user}</p>
 					</li>
-					<span class="bg-accent-dark h-8 w-0.5"></span>
+					<span class="bg-primary h-8 w-0.5"></span>
 				{/each}
 			</ul>
 		{/if}

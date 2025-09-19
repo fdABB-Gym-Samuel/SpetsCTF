@@ -6,7 +6,7 @@ export const load: PageServerLoad = async ({}) => {
 		.selectFrom('ctf_events')
 		.select('start_time')
 		.where('start_time', '>', new Date())
-		.orderBy('start_time asc')
+		.orderBy('start_time', 'asc')
 		.executeTakeFirst();
 
 	return { nextCtf };
