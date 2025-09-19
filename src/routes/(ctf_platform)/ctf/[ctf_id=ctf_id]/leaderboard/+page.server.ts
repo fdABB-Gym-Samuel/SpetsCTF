@@ -5,11 +5,6 @@ import { sql } from 'kysely';
 
 export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 	const ctfId = Number(event.params.ctf_id);
-	const ctf = await db
-		.selectFrom('ctf_events')
-		.select('end_time')
-		.where('ctf_events.id', '=', ctfId)
-		.executeTakeFirst();
 
 	const scores = await db
 		.with('team_challenges', (qb) =>
@@ -43,5 +38,5 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 		.orderBy('total_points', 'desc')
 		.execute();
 
-	return { ctf, scores };
+	return { scores };
 };

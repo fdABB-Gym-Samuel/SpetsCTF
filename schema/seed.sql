@@ -22,9 +22,9 @@ INSERT INTO flag (id, flag, flag_format) VALUES
 -- 2. CTF events (5 events, some ended, some ongoing/future)
 INSERT INTO ctf_events (id, short_name, display_name, start_time, end_time, max_team_size) VALUES
   (1, 'PastCTF1', 'Past CTF April', '2025-03-01 09:00:00+00', '2025-03-02 21:00:00+00', 4),
-  (2, 'PastCTF2', 'Early Bird CTF', '2024-09-15 10:00:00+00', '2024-09-15 18:00:00+00', 3),
-  (3, 'OngoingMay', 'May Madness CTF', '2025-05-01 08:00:00+00', '2025-06-01 20:00:00+00', 5),
-  (4, 'FutureCTF', 'Summer CTF 2025', '2025-06-01 00:00:00+00', '2025-06-30 23:59:59+00', 4),
+  (2, 'PastCTF2', 'Early Bird CTF', '2025-09-18 10:00:00+00', '2025-09-19 18:00:00+00', 3),
+  (3, 'OngoingMay', 'May Madness CTF', '2025-10-01 08:00:00+00', '2025-10-01 20:00:00+00', 5),
+  (4, 'FutureCTF', 'Summer CTF 2025', '2025-10-01 00:00:00+00', '2025-10-30 23:59:59+00', 4),
   (5, 'PastMar', 'March Mayhem', '2025-02-15 12:00:00+00', '2025-02-16 12:00:00+00', 2);
 
 -- 3. Users (20 users across classes)

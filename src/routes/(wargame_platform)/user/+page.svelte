@@ -50,13 +50,13 @@
 		<Github class="mr-0 ml-2 inline-block" />
 		<a
 			target="_blank"
-			class="underline duration-200 ease-linear hover:text-primary-light"
+			class="hover:text-primary-light underline duration-200 ease-linear"
 			href={`https://github.com/${user.github_username}`}><b>{user.github_username}</b></a
 		>.</span
 	>
 	<form method="POST" action="?/logout" use:enhance>
 		<button
-			class="flex flex-row items-center rounded border px-2 py-1 duration-200 ease-linear hover:cursor-pointer hover:border-primary"
+			class="hover:border-primary flex flex-row items-center rounded border px-2 py-1 duration-200 ease-linear hover:cursor-pointer"
 			type="submit"><LogOut class="mr-2 size-4 align-middle" />{translations.logout}</button
 		>
 	</form>
@@ -81,7 +81,7 @@
 		</label>
 		<br />
 		<select
-			class="bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark rounded border-2 border-primary-light px-2 py-1 dark:border-primary"
+			class="bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark border-primary-light dark:border-primary rounded border-2 px-2 py-1"
 			name="represents_class"
 			id="represents_class"
 			value={representedClass}
@@ -95,7 +95,7 @@
 		</select>
 		<button
 			type="submit"
-			class="mt-3 flex w-fit flex-row items-center rounded border px-2 py-1 duration-200 ease-linear hover:cursor-pointer hover:border-primary"
+			class="hover:border-primary mt-3 flex w-fit flex-row items-center rounded border px-2 py-1 duration-200 ease-linear hover:cursor-pointer"
 			>{translations.save}</button
 		>
 	</form>
