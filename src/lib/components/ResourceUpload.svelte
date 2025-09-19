@@ -173,6 +173,9 @@
 				}}
 				bgColor="bg-red-700"
 			></Button>
+			<div>
+				<input name="original_files" type="hidden" {form} value={filepath} />
+			</div>
 		</li>
 	{/each}
 	{#each files !== undefined ? files : [] as file, i}
