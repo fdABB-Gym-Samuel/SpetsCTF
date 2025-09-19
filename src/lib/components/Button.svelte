@@ -7,13 +7,13 @@
 		type,
 		disabled = false,
 		ariaLabel,
-		bgColor = 'dark:bg-bg-700',
+		bgColor = 'bg-bg-700',
 		disabledBgColor = 'bg-bg-850',
 		disabledTextColor = 'text-gradient-100',
 		responsiveStyles = '',
 		textColor = '',
-		hoverColor = 'dark:hover:bg-bg-600 hover:bg-primary-light',
-		outlineColor = 'dark:outline-bg-500 outlint-bg-800',
+		hoverColor = 'hover:bg-bg-600',
+		outlineColor = 'outline-bg-500',
 		Icon = undefined,
 		iconSize = '16',
 		twStyles = '',
@@ -33,14 +33,14 @@
 		{type}
 		onclick={() => onClick()}
 		aria-label={ariaLabel}
-		class="rounded-xl px-16 py-1.5 my-1 outline-2 {disabled
+		class="rounded-xl px-16 py-1.5 outline-2 {disabled
 			? disabledBgColor
 			: bgColor} {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {twStyles} {responsiveStyles} text-nowrap"
 		{form}
 	>
 		{#if secondLabel !== ''}
 			<span class="mr-0.5 {disabled ? disabledTextColor : textColor}"
-				>{label}<span class="text-primary">{secondLabel}</span></span
+				>{label}<span class="text-primary-light">{secondLabel}</span></span
 			>
 		{:else}
 			<span class="mr-0.5 {disabled ? disabledTextColor : textColor}">{label}</span>
@@ -50,7 +50,7 @@
 				size={iconSize}
 				strokeWidth="2.5"
 				class="{disabled ? disabledTextColor : textColor} {secondLabel !== ''
-					? 'text-primary'
+					? 'text-primary-light'
 					: ''}"
 			/>
 		{/if}
