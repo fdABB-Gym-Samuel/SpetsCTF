@@ -1,4 +1,5 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   prettier-plugin-svelte = pkgs.buildNpmPackage {
     pname = "prettier-plugin-svelte";
     version = "3.3.2";
@@ -37,7 +38,8 @@
 
     meta.license = pkgs.lib.licenses.mit;
   };
-in {
+in
+{
   projectRootFile = "flake.nix";
 
   programs.prettier = {
@@ -59,5 +61,5 @@ in {
     };
   };
 
-  programs.alejandra.enable = true;
+  programs.nixfmt.enable = true;
 }
