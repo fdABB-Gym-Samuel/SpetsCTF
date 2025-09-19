@@ -63,4 +63,8 @@ in
 
   programs.nixfmt.enable = true;
   programs.yamlfmt.enable = true;
+  # programs.sqlfluff = {
+  #   enable = true;
+  #   dialect = "postgres";
+  # };
 }
