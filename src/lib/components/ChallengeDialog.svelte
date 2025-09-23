@@ -148,7 +148,7 @@
 						{#each challenge_data.resources as resource}
 							{#if resource.type === 'web'}
 								<li
-									class="challenge-resource text-foreground-light dark:text-foreground-dark flex h-fit flex-row items-center gap-1 underline"
+									class="challenge-resource text-text-100 flex h-fit flex-row items-center gap-1 underline"
 								>
 									<Link class="size-4"></Link>
 									<a href={resource.content} class="ignore-default h-fit"
@@ -217,7 +217,7 @@
 				<div class="description">
 					<p class="text-text-200 inline-block text-sm">Description:&nbsp;</p>
 					<p
-						class="challenge-description text-foreground-light dark:text-foreground-dark mr-1 max-h-full overflow-scroll"
+						class="challenge-description text-text-100 mr-1 max-h-full overflow-scroll"
 					>
 						{challenge_data.challenge_description}
 					</p>
@@ -255,7 +255,7 @@
 					</p>
 				{/if}
 				<div
-					class="first-solvers-wrapper text-foreground-light dark:text-foreground-dark flex flex-col justify-start"
+					class="first-solvers-wrapper text-text-100 flex flex-col justify-start"
 				>
 					{#if challenge_data.num_solves != 0}
 						<h5 class="text-text-200">First Solvers:</h5>

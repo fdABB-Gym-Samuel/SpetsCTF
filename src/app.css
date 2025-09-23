@@ -77,33 +77,25 @@
         /*****************************/ --challenge-padding-inline: 5%;
     --main-padding-inline: 10%;
 
-    --color-backdrop-light: rgba(255, 255, 255, 0.9);
-    --color-backdrop-dark: rgba(0, 0, 0, 0.8);
+    --color-backdrop: var(--color-backdrop);
+	--color-overlay: var(--color-backdrop);
 
-    --color-bg-900: oklch(0.19 0.002 106.59);
-    --color-bg-850: oklch(0.21 0.0019 106.57);
-    --color-bg-800: oklch(0.23 0.0015 17.27);
-    --color-bg-750: oklch(0.25 0.0015 17.27);
-    --color-bg-700: oklch(0.26 0.0018 17.27);
-    --color-bg-600: oklch(0.29 0.0039 84.58);
-    --color-bg-500: oklch(0.36 0.0058 78.26);
+    --color-bg-900: var(--color-bg-900);
+    --color-bg-850: var(--color-bg-850);
+    --color-bg-800: var(--color-bg-800);
+    --color-bg-750: var(--color-bg-750);
+    --color-bg-700: var(--color-bg-700);
+    --color-bg-600: var(--color-bg-600);
+    --color-bg-500: var(--color-bg-500);
 
-    /* Dark mode: text is light. */
-    --color-text-100: oklch(0.92 0.0063 75.4);
-    --color-text-200: oklch(0.7077 0.0089 80.7);
+    --color-text-100: var(--color-text-100);
+    --color-text-200: var(--color-text-200);
 
-    /* Light mode: text is dark. */
-    --color-text-800: oklch(0.1588 0.0173 321);
-    --color-text-900: oklch(0.2181 0.0173 321);
+    --color-primary: var(--color-primary); 
+    --color-primary-light: var(--color-primary-light); 
+    --color-primary-extra-light: var(--color-primary-extra-light);
+    --color-primary-dark: var(--color-primary-dark);
 
-    --color-primary: oklch(0.55 0.2503 297.91);
-    --color-primary-light: oklch(0.67 0.1821 302.65);
-    --color-primary-extra-light: oklch(0.86 0.0724 305.79);
-    --color-primary-dark: oklch(0.4265 0.2195 297.91);
-
-    --color-secondary: oklch(0.68 0.1945 36.96);
-
-    --color-seperator: oklch(0.22 0.0025 67.7);
     --color-inner-shadow: oklch(0.55 0.0091 73.68 / 25%);
 
     --color-point-100: oklch(0.86 0.2297 148.84);
@@ -116,7 +108,6 @@
     --color-gradient-200: oklch(0.33 0.0045 67.67);
     --color-gradient-300: oklch(0.29 0.0039 84.58);
 
-    --color-overlay: oklch(0.19 0.0026 67.67 / 70%);
 
     --font-main: 'Bricolage Grotesque', sans-serif;
     --font-sans: 'Bricolage Grotesque', sans-serif;
@@ -135,8 +126,57 @@
     --font-weight-bold: 600;
 }
 
+@layer base {
+		:root {
+	    	--color-bg-900: oklch(0.96 0.002 106.59);
+			--color-bg-850: oklch(0.90 0.0019 106.57);
+			--color-bg-800: oklch(0.85 0.0015 17.27);
+			--color-bg-750: oklch(0.77 0.0015 17.27);
+			--color-bg-700: oklch(0.70 0.0018 17.27);
+			--color-bg-600: oklch(0.66 0.0039 84.58);
+			--color-bg-500: oklch(0.60 0.0058 78.26);
+
+			--color-text-100: oklch(0.1588 0.0173 321);
+			--color-text-200: oklch(0.2181 0.0173 321);
+
+			--color-primary: oklch(0.55 0.2503 297.91);
+    		--color-primary-light: oklch(0.67 0.1821 302.65);
+    		--color-primary-extra-light: oklch(0.86 0.0724 305.79);
+    		--color-primary-dark: oklch(0.4265 0.2195 297.91);
+
+
+			--color-backdrop: rgba(255, 255, 255, 0.9);
+		}
+}
+
+@layer base {
+	@media (prefers-color-scheme: dark) {
+			:root {
+	    --color-bg-900: oklch(0.19 0.002 106.59);
+		--color-bg-850: oklch(0.21 0.0019 106.57);
+		--color-bg-800: oklch(0.23 0.0015 17.27);
+		--color-bg-750: oklch(0.25 0.0015 17.27);
+		--color-bg-700: oklch(0.26 0.0018 17.27);
+		--color-bg-600: oklch(0.29 0.0039 84.58);
+		--color-bg-500: oklch(0.36 0.0058 78.26);
+
+		--color-text-100: oklch(0.92 0.0063 75.4);
+		--color-text-200: oklch(0.7077 0.0089 80.7);
+
+		--color-primary: oklch(0.55 0.2503 297.91);
+    	--color-primary-light: oklch(0.67 0.1821 302.65);
+    	--color-primary-extra-light: oklch(0.86 0.0724 305.79);
+    	--color-primary-dark: oklch(0.4265 0.2195 297.91);
+
+		--color-backdrop: rgba(0, 0, 0 ,0.8);
+
+	}
+
+	}
+}
+
 body {
-    @apply bg-background-light dark:bg-bg-900 text-text-100 selection:bg-text-100 selection:text-bg-900 dark:text-text-100 text-text-800 relative !m-0 box-border min-h-screen px-4 pt-12 font-sans font-normal lg:px-16;
+    @apply bg-background-light dark:bg-bg-900 text-text-100 selection:bg-text-100 selection:text-bg-900 relative !m-0 box-border min-h-screen px-4 pt-12 font-sans font-normal lg:px-16;
 }
 
 @keyframes noiseAnimation {
