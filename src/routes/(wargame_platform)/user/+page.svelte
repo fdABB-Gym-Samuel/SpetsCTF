@@ -105,7 +105,7 @@
 	{#if data.user && data.user.is_admin}
 		<h1 class="text-lg font-bold">{translations.admin}</h1>
 		<p class="w-72">{translations.admin_funny_text}</p>
-		<a class="text-gray-500 underline duration-200 ease-linear hover:text-white" href="/admin"
+		<a class="text-gray-500 underline duration-200 ease-linear hover:text-text-100" href="/admin"
 			>{translations.admin_page}</a
 		>
 	{/if}

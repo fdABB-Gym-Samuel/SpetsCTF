@@ -210,7 +210,7 @@
 					<UserRoundPen class="mb-0.5 inline-block" color="var(--color-text-200)" size="16"
 					></UserRoundPen>
 					<p class="text-text-200 inline-block text-sm">Author:&nbsp;</p>
-					<p class="inline-block text-sm font-bold">
+					<p class="inline-block text-sm font-bold text-text-100">
 						{challenge_data.author ? challenge_data.author : 'Anonymous'}
 					</p>
 				</div>
@@ -226,12 +226,12 @@
 			<div class="right w-1/2 min-w-70 flex-grow">
 				{#if !challenge_data.solved && (!form || !form.success)}
 					<form action="?/submit" method="POST" class="flag-submission-form max-w-full" use:enhance>
-						<label for="flag" class="text-sm">Submit flag</label>
+						<label for="flag" class="text-sm text-text-100">Submit flag</label>
 						<div class="relative mt-2 mb-8">
 							<input
 								type="text"
 								name="flag"
-								class="flag bg-bg-600 w-full rounded-xl px-6 py-1.5 font-mono focus:outline-none"
+								class="flag bg-bg-600 w-full rounded-xl px-6 py-1.5 font-mono focus:outline-none text-text-100"
 								placeholder={challenge_data.flag_format}
 							/>
 							<input type="hidden" value={challenge_data.challenge_id} name="challenge_id" />
@@ -290,7 +290,7 @@
 			</ul>
 			<div class="flex flex-row gap-10">
 				<p class="font-mono text-sm font-bold" bind:this={pointElement}>
-					{challenge_data.points}&nbsp;&nbsp;<span class="text-text-200">POINTS</span>
+					<span class="bg-black mx-1 rounded-2xl">&nbsp;{challenge_data.points}&nbsp;</span>&nbsp;<span class="text-text-200">POINTS</span>
 				</p>
 				<p class="text-text-100 font-mono text-sm font-bold">
 					{challenge_data.num_solves}&nbsp;&nbsp;<span class="text-text-200">SOLVERS</span>

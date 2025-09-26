@@ -77,7 +77,7 @@
 						class:!text-gradient-200={index === 1 && challenge_data.solved}
 						class:!text-gradient-300={index === 2 && challenge_data.solved}
 					>
-						<p class="text-bg-900"># {capitalizeFirstLetter(category)}</p>
+						<p class="text-text-100"># {capitalizeFirstLetter(category)}</p>
 					</li>
 				{/each}
 			</ul>

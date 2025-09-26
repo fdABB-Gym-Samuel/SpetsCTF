@@ -102,7 +102,7 @@ export const actions = {
             const description = formData.get('description')?.toString() ?? null;
 
             const authorAnonymous = formData.get('privacy') === 'author_anonymous';
-
+            console.log(flagId.id);
             const challenge: Insertable<Challenges> = {
                 challenge_category,
                 challenge_sub_categories,
