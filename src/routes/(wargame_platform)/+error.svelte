@@ -7,7 +7,7 @@
 	<div class="absolute left-0 block -rotate-90">
 		<a
 			href="/what_is_this_a_secret_challenge?"
-			class="ignore-default text-background-light dark:text-background-dark cursor-help select-none"
+			class="ignore-default text-bg-900 cursor-help select-none"
 			>or is there</a
 		>
 	</div>
@@ -32,12 +32,12 @@
 				<input
 					type="text"
 					name="flag"
-					class="bg-foreground-light dark:bg-foreground-dark text-background-light dark:text-background-dark pl-2"
+					class="bg-text-100 text-bg-900 pl-2"
 					placeholder="???"
 				/>
 				<button
 					type="submit"
-					class="ignore-default bg-primary-light dark:bg-primary mt-2 w-full rounded-md border-2 py-0 text-sm"
+					class="ignore-default bg-primary mt-2 w-full rounded-md border-2 py-0 text-sm"
 				>
 					Submit flag that may or may not exist</button
 				>

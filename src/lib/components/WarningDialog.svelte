@@ -68,8 +68,8 @@
 		{/if}
 		<section class="flex w-full flex-col justify-between gap-y-8">
 			<div>
-				<h3 class="text-2xl text-white">{warningTitle}</h3>
-				<p class="text-white">{warningDescription}</p>
+				<h3 class="text-2xl text-text-100">{warningTitle}</h3>
+				<p class="text-text-100">{warningDescription}</p>
 			</div>
 			<div class="flex flex-row justify-end">
 				<form {action} method="POST" use:enhance class="flex gap-2">
@@ -80,7 +80,7 @@
 						type="button"
 						styleType="small"
 						onClick={closeDialog}
-						textColor="text-white"
+						textColor="text-text-100"
 					></Button>
 					<Button
 						label={confirmationButtonText}
@@ -90,7 +90,7 @@
 						Icon={confirmationButtonIcon}
 						bgColor="bg-red-700"
 						hoverColor="hover:bg-red-500"
-						textColor="text-white"
+						textColor="text-text-100"
 					></Button>
 				</form>
 			</div>

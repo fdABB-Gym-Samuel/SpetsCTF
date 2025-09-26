@@ -67,7 +67,7 @@
 		</label>
 		<div>
 			<input
-				class="rounded border border-black p-1 dark:border-white"
+				class="rounded border border-text-100 p-1 "
 				value={displayName}
 				name="display_name"
 				placeholder={translations.enterdisplayname}
@@ -81,7 +81,7 @@
 		</label>
 		<br />
 		<select
-			class="bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark border-primary-light dark:border-primary rounded border-2 px-2 py-1"
+			class="bg-bg-900 text-text-100 border-primary rounded border-2 px-2 py-1"
 			name="represents_class"
 			id="represents_class"
 			value={representedClass}
@@ -105,7 +105,7 @@
 	{#if data.user && data.user.is_admin}
 		<h1 class="text-lg font-bold">{translations.admin}</h1>
 		<p class="w-72">{translations.admin_funny_text}</p>
-		<a class="text-gray-500 underline duration-200 ease-linear hover:text-white" href="/admin"
+		<a class="text-gray-500 underline duration-200 ease-linear hover:text-text-100" href="/admin"
 			>{translations.admin_page}</a
 		>
 	{/if}

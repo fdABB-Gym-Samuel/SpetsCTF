@@ -88,9 +88,6 @@
 					onclick={toggle_sidebar}
 				>
 					<Menu></Menu>
-					<!-- <span class="bg-foreground-light dark:bg-foreground-dark h-1 w-6 rounded-sm"></span>
-					<span class="bg-foreground-light dark:bg-foreground-dark h-1 w-6 rounded-sm"></span>
-					<span class="bg-foreground-light dark:bg-foreground-dark h-1 w-6 rounded-sm"></span> -->
 				</button>
 			</div>
 		</div>
@@ -130,7 +127,7 @@
 	</nav>
 	{#if showSidebar}
 		<div
-			class="backdrop bg-backdrop-light dark:bg-backdrop-dark fixed bottom-0 left-0 z-30 h-[var(--main-height)] w-screen"
+			class="backdrop bg-backdrop fixed bottom-0 left-0 z-30 h-[var(--main-height)] w-screen"
 			onclick={(e: MouseEvent) => toggle_sidebar(e, true)}
 			onkeydown={(e) => {
 				if (e.key === ' ' || e.key === 'Enter') toggle_sidebar(e, true);
@@ -140,7 +137,7 @@
 			tabindex="0"
 		>
 			<nav
-				class="bg-bg-900 dark:border-r-primary bottom-0 z-40 flex h-full w-120 max-w-9/10 flex-col justify-between border-r-2 px-4 pb-8"
+				class="bg-bg-900 border-r-primary bottom-0 z-40 flex h-full w-120 max-w-9/10 flex-col justify-between border-r-2 px-4 pb-8"
 			>
 				<div>
 					<div class="">

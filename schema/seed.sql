@@ -79,15 +79,6 @@ INSERT INTO ctf_teams (id, website, name, ctf) VALUES
   (6, 'http://teamzeta.example', 'Team Zeta', 1),
   (7, 'http://teameta.example', 'Team Eta', 1);
 
-INSERT INTO challenges (challenge_id, points, display_name, description, challenge_category, challenge_sub_categories, flag, ctf, approved, created_at) VALUES
-('challenge2', 150, 'Crypto Cracking', 'Decrypt the given message using the provided hints.', 'crypto', '10010100', 2, 1, TRUE, NOW()),
-('challenge3', 200, 'Forensics Investigation', 'Analyze the provided data to find the hidden flag.', 'forensics', '10010100', 3, 2, TRUE, NOW()),
-('challenge4', 250, 'Intro to OSINT', 'Use open-source intelligence to gather information.', 'osint', '10010100', 4, 2, TRUE, NOW()),
-('challenge5', 300, 'Web Exploitation', 'Find vulnerabilities in the web application.', 'web', '10010100', 5, 3, TRUE, NOW()),
-('challenge6', 350, 'Pwn the Server', 'Gain access to the server and retrieve the flag.', 'pwn', '10010100', 6, 3, TRUE, NOW()),
-('challenge7', 400, 'Reversing Challenge', 'Reverse engineer the binary to find the flag.', 'reversing', '10010100', 7, 4, TRUE, NOW()),
-('challenge8', 450, 'Miscellaneous Challenge', 'A surprise challenge with various tasks.', 'misc', '10010100', 8, 4, TRUE, NOW()),
-('challenge9', 500, 'Advanced Crypto', 'Solve the complex cryptographic puzzle.', 'crypto', '10010100', 9, 5, TRUE, NOW());
 
 
 -- 6. Team memberships
