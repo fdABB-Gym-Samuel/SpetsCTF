@@ -102,7 +102,6 @@ export const actions = {
             const description = formData.get('description')?.toString() ?? null;
 
             const authorAnonymous = formData.get('privacy') === 'author_anonymous';
-
             const challenge: Insertable<Challenges> = {
                 challenge_category,
                 challenge_sub_categories,
@@ -126,8 +125,11 @@ export const actions = {
                 | string[]
                 | null;
 
-            let resource_files: { challenge: string; content: string; type: 'file' }[] =
-                [];
+            let resource_files: {
+                challenge: string;
+                content: string;
+                type: 'file';
+            }[] = [];
             if (files !== null) {
                 const challenge_dir = path.join(process.cwd(), `files/${challenge_id}`);
                 await mkdir(challenge_dir, { recursive: true });

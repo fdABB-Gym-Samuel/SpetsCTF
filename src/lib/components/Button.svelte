@@ -40,7 +40,7 @@
 	>
 		{#if secondLabel !== ''}
 			<span class="mr-0.5 {disabled ? disabledTextColor : textColor}"
-				>{label}<span class="text-primary-light">{secondLabel}</span></span
+				>{label}<span class="dark:text-primary-light text-primary">{secondLabel}</span></span
 			>
 		{:else}
 			<span class="mr-0.5 {disabled ? disabledTextColor : textColor}">{label}</span>
@@ -50,7 +50,7 @@
 				size={iconSize}
 				strokeWidth="2.5"
 				class="{disabled ? disabledTextColor : textColor} {secondLabel !== ''
-					? 'text-primary-light'
+					? 'dark:text-primary-light text-primary'
 					: ''}"
 			/>
 		{/if}

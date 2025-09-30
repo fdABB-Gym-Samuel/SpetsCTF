@@ -30,7 +30,7 @@
 </script>
 
 <article
-	class="card challenge-cards dark:bg-bg-800 before:bg-bg-750 relative h-full min-h-fit max-w-full overflow-hidden rounded-lg px-10
+	class="card challenge-cards bg-bg-800 before:bg-bg-750 relative h-full min-h-fit max-w-full overflow-hidden rounded-lg px-10
   py-6 before:absolute before:inset-0 before:origin-center before:scale-0 before:rounded-lg before:transition-transform
   before:duration-500 before:ease-out before:content-[''] hover:before:scale-100"
 	class:bg-gradient-to-br={challenge_data.solved}
@@ -57,7 +57,7 @@
 					>
 				</p>
 				<p class="font-mono text-sm font-bold">
-					<span class="bg-bg-800 mx-1 rounded-2xl" bind:this={pointElement}
+					<span class="bg-black mx-1 rounded-2xl" bind:this={pointElement}
 						>&nbsp;{challenge_data.points}&nbsp;</span
 					><span class="text-text-200" class:!text-text-100={challenge_data.solved}>POINTS</span>
 				</p>
@@ -77,7 +77,7 @@
 						class:!text-gradient-200={index === 1 && challenge_data.solved}
 						class:!text-gradient-300={index === 2 && challenge_data.solved}
 					>
-						<p># {capitalizeFirstLetter(category)}</p>
+						<p class="text-text-100"># {capitalizeFirstLetter(category)}</p>
 					</li>
 				{/each}
 			</ul>
