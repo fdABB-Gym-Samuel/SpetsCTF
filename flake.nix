@@ -1,71 +1,89 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    utils.url = "github:numtide/flake-utils";
-    treefmt-nix.url = "github:numtide/treefmt-nix";
+    systems.url = "github:nix-systems/default";
+    treefmt-nix = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:numtide/treefmt-nix";
+    };
+    bun2nix = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:nix-community/bun2nix";
+    };
   };
 
   outputs =
     {
       self,
+      bun2nix,
       nixpkgs,
+      systems,
       treefmt-nix,
-      utils,
       ...
     }:
-    utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = import nixpkgs { inherit system; };
-        version = if (self ? rev) then self.rev else "dirty";
+    let
+      eachSystem = f: nixpkgs.lib.genAttrs (import systems) (system: f nixpkgs.legacyPackages.${system});
+      treefmtEval = eachSystem (pkgs: treefmt-nix.lib.evalModule pkgs ./treefmt.nix);
+      version = if (self ? rev) then self.rev else "dirty";
+    in
 
-        treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
-      in
-      rec {
-        formatter = treefmtEval.config.build.wrapper;
-        checks = {
-          formatting = treefmtEval.config.build.check self;
-        };
+    {
+      formatter = eachSystem (pkgs: treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper);
+      checks = eachSystem (pkgs: {
+        formatting = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.check self;
+      });
 
-        devShells.default = pkgs.mkShell {
+      devShells = eachSystem (pkgs: {
+        default = pkgs.mkShell {
           name = "spetsctf";
           packages = with pkgs; [
-            # Node-specific
-            nodejs
-            nodePackages.npm
-
-            # typescript-specific
-            typescript-language-server
-
-            # svelte-specific
-            svelte-language-server
-
-            # superhtml
-            vscode-langservers-extracted
-
-            # Formatters
-            nodePackages.prettier
-            alejandra
-
-            # CLI Tools
-            ripgrep
+            bun
+            bun2nix.packages.${stdenv.hostPlatform.system}.default
+            curl
             fzf
+            getent
             git
-
-            # To interact with DB
-            postgresql
-
+            groff
             helix
+            jq
             just
+            less
+            man
+            ncurses
+            neovim-unwrapped
+            nixd
+            nixfmt
+            npm-check-updates
+            openssh
+            postgresql.out
+            prefetch-npm-deps
+            procps
+            python3
+            ripgrep
+            sops
+            svelte-language-server
+            tmux
+            tokei
+            typescript-language-server
+            uutils-coreutils-noprefix
+            vscode-langservers-extracted
           ];
 
           shellHook = ''
-            echo CTF dev session started at $(date)
-            export PS1='[\[\e[38;5;27m\]spetsctf-dev\[\e[0m\]:\[\e[38;5;220m\]\w\[\e[0m\]]\\$ '
+            # ${treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper}
+
+            export TERM=linux
+            export HOME=$(getent passwd $(id -u) | cut -d: -f6)
+            export SOPS_EDITOR=nvim
+
+            export PS1='[\[\e[38;5;92m\]spetsctf-dev\[\e[0m\]:\[\e[97m\]\w\[\e[0m\]]\\$ '
           '';
         };
 
-        packages."spetsctf" = pkgs.buildNpmPackage {
+      });
+
+      packages = eachSystem (pkgs: {
+        "spetsctf" = pkgs.buildNpmPackage {
           pname = "spetsctf-bundle";
           inherit version;
 
@@ -82,6 +100,7 @@
             cp -r node_modules $out
           '';
         };
-      }
-    );
+
+      });
+    };
 }
