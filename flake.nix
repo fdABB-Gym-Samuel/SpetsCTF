@@ -101,6 +101,7 @@
           installPhase = ''
             mkdir -p "$out"
             cp -r "./build/"* "$out"
+            cp -r "node_modules" "$out"
           '';
         };
       });
