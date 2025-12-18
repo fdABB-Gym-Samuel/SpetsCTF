@@ -82,25 +82,27 @@
 
       });
 
-      packages = eachSystem (pkgs: {
-        "spetsctf" = pkgs.buildNpmPackage {
+      packages = eachSystem (pkgs: rec {
+        default = spetsctf;
+        spetsctf = bun2nix.packages.${pkgs.stdenv.hostPlatform.system}.default.mkDerivation {
           pname = "spetsctf-bundle";
           inherit version;
 
-          nodejs = pkgs.nodejs_22;
-          npmDepsHash = "sha256-dwlpXPRPqATB7lI7wsgHL2JOMpPJTuzdPVdbygJy7Bk=";
-          # npmDepsHash = pkgs.lib.fakeHash;
           src = pkgs.lib.cleanSource ./.;
 
-          dontNpmInstall = true;
+          bunDeps = bun2nix.packages.${pkgs.stdenv.hostPlatform.system}.default.fetchBunDeps {
+            bunNix = ./bun.nix;
+          };
+
+          buildPhase = ''
+            bun --bun run build  
+          '';
+
           installPhase = ''
-            NODE_ENV=production npm ci # to generate production dependencies
-            mkdir $out
-            cp -r build/* $out
-            cp -r node_modules $out
+            mkdir -p "$out"
+            cp -r "./build/"* "$out"
           '';
         };
-
       });
     };
 }
