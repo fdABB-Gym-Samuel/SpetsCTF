@@ -134,8 +134,11 @@ export const actions = {
             const commands = formData.getAll('commands') as string[] | null;
             const websites = formData.getAll('websites') as string[] | null;
 
-            let resource_files: { challenge: string; content: string; type: 'file' }[] =
-                [];
+            let resource_files: {
+                challenge: string;
+                content: string;
+                type: 'file';
+            }[] = [];
             if (files !== null) {
                 const challenge_dir = path.join(process.cwd(), `files/${challenge_id}`);
                 await mkdir(challenge_dir, { recursive: true });

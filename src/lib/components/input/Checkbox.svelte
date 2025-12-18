@@ -11,7 +11,7 @@
 					class="border-bg-500 flex w-full flex-row items-center justify-between border-b-1 px-4 py-1"
 				>
 					<div>
-						<label for={`${name}_${option.text}`} class="text-white">
+						<label for={`${name}_${option.text}`} class="text-text-100">
 							{option.text}
 						</label>
 						{#if option.disabled && option.disabled === true}
