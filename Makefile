@@ -12,7 +12,7 @@
 
 codegen:
 	mkdir -p ./src/lib/generated
-	bunx kysely-codegen --out-file src/lib/db/db.d.ts
+	bun run db:generate
 
 dev-clean:
 	rm -rf ./src/lib/generated
@@ -20,8 +20,8 @@ dev-clean:
 
 clean: postgres-clean dev-clean
 	if [ -L ./tmp ]; then \
-		rm -rf $$(readlink ./tmp)
-		unlink ./tmp \
+		rm -rf $$(readlink ./tmp); \
+		unlink ./tmp; \
 	fi
 
 deps:
@@ -33,7 +33,7 @@ dev: deps postgres
 ./tmp:
 	ln -sf $$(mktemp -d) ./tmp
 
-psql: postgres
+psql:
 	psql -U spetsctf postgresql:///spetsctf?host=$$(readlink ./tmp)
 
 ./tmp/.pgdata: ./tmp
@@ -47,6 +47,8 @@ postgres: ./tmp/.pgdata
 		pg_ctl -D ./tmp/.pgdata start -o "-c unix_socket_directories=$$(pwd)/tmp -c listen_addresses=''"; \
 		psql -h $$(readlink ./tmp) -U spetsctf postgres -c "CREATE DATABASE spetsctf;" 2>/dev/null || true; \
 	fi
+	psql -U spetsctf postgresql:///spetsctf?host=$$(readlink ./tmp) < ./schema/schema.sql
+	while [ ! -S ./tmp/.s.PGSQL.5432 ]; do sleep 0.5; done
 
 postgres-kill:
 	if [ -f ./tmp/.pgdata/postmaster.pid ]; then \
