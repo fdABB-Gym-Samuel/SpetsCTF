@@ -4,6 +4,7 @@
     "version": "0.0.1",
     "type": "module",
     "scripts": {
+        "db:generate": "kysely-codegen --out-file ./src/lib/generated/db.d.ts",
         "build": "vite build",
         "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
         "dev": "vite dev",

@@ -69,11 +69,11 @@
           shellHook = ''
             # ${treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper}
 
-            export TERM=linux
+            export DATABASE_URL=postgresql://spetsctf@/spetsctf?host=$(pwd)/tmp
             export HOME=$(getent passwd $(id -u) | cut -d: -f6)
-            export SOPS_EDITOR=nvim
-
             export PS1='[\[\e[38;5;92m\]spetsctf-dev\[\e[0m\]:\[\e[97m\]\w\[\e[0m\]]\\$ '
+            export SOPS_EDITOR=nvim
+            export TERM=linux
 
             alias make='pdpmake --posix'
           '';
