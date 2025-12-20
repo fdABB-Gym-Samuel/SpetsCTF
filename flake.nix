@@ -46,7 +46,6 @@
             groff
             helix
             jq
-            just
             less
             man
             ncurses
@@ -55,12 +54,10 @@
             nixfmt
             npm-check-updates
             openssh
+            pdpmake
             postgresql.out
-            prefetch-npm-deps
             procps
-            python3
             ripgrep
-            sops
             svelte-language-server
             tmux
             tokei
@@ -77,6 +74,8 @@
             export SOPS_EDITOR=nvim
 
             export PS1='[\[\e[38;5;92m\]spetsctf-dev\[\e[0m\]:\[\e[97m\]\w\[\e[0m\]]\\$ '
+
+            alias make='pdpmake --posix'
           '';
         };
 

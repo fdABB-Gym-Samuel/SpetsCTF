@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 let
   prettier-plugin-svelte = pkgs.buildNpmPackage {
     pname = "prettier-plugin-svelte";
@@ -42,29 +42,54 @@ in
 {
   projectRootFile = "flake.nix";
 
-  programs.prettier = {
-    enable = true;
-    settings = {
-      arrowParens = "always";
-      bracketSameLine = true;
-      bracketSpacing = true;
-      editorconfig = false;
-      plugins = [
-        "${prettier-plugin-svelte}/lib/node_modules/prettier-plugin-svelte/plugin.js"
-        "${prettier-plugin-tailwindcss}/lib/node_modules/prettier-plugin-tailwindcss/dist/index.mjs"
-      ];
-      printWidth = 88;
-      singleQuote = true;
-      tabWidth = 4;
-      trailingComma = "es5";
-      useTabs = false;
+  programs = {
+    black.enable = true;
+    deadnix.enable = true;
+    dos2unix.enable = true;
+    mdformat.enable = true;
+    nixfmt.enable = true;
+    shfmt.enable = true;
+    statix.enable = true;
+    yamlfmt.enable = true;
+    prettier = {
+      enable = true;
+      settings = {
+        arrowParens = "always";
+        bracketSameLine = true;
+        bracketSpacing = true;
+        editorconfig = false;
+        plugins = [
+          "${prettier-plugin-svelte}/lib/node_modules/prettier-plugin-svelte/plugin.js"
+          "${prettier-plugin-tailwindcss}/lib/node_modules/prettier-plugin-tailwindcss/dist/index.mjs"
+        ];
+        printWidth = 88;
+        singleQuote = true;
+        tabWidth = 4;
+        trailingComma = "es5";
+        useTabs = false;
+      };
+    };
+    sql-formatter = {
+      enable = true;
+      dialect = "postgresql";
     };
   };
 
-  programs.nixfmt.enable = true;
-  programs.yamlfmt.enable = true;
-  # programs.sqlfluff = {
-  #   enable = true;
-  #   dialect = "postgres";
-  # };
+  settings.formatter = {
+    "mbake" = {
+      command = "${lib.getBin pkgs.bash}/bin/bash";
+      options = [
+        "-euc"
+        ''
+          for file in "$@"; do
+            ${lib.getBin pkgs.mbake}/bin/mbake format $file
+          done
+        ''
+        "--"
+      ];
+      includes = [
+        "Makefile"
+      ];
+    };
+  };
 }
