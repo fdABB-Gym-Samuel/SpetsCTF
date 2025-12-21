@@ -22,7 +22,7 @@
 			return ctf.end_time < current_time;
 		})
 	);
-	const months: string[] = [
+	const months: string[] = $derived([
 		translations.jan,
 		translations.feb,
 		translations.mar,
@@ -35,7 +35,7 @@
 		translations.oct,
 		translations.nov,
 		translations.dec
-	]; // the index of the month becomes the index of the translation
+	]); // the index of the month becomes the index of the translation
 </script>
 
 <div class="content flex flex-col gap-5">
