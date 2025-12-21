@@ -1,6 +1,6 @@
 <script lang="ts">
 	let { data } = $props();
-	let { message } = data;
+	let message = $derived(data.message);
 </script>
 
 <div class="content">

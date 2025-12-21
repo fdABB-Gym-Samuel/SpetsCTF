@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 
 	let { data } = $props();
-	let { translations } = data;
+	let translations = $derived(data.translations);
 
 	let start_time: Date | undefined = $state(undefined);
 	let end_time: Date | undefined = $state(undefined);

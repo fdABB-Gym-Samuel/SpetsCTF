@@ -1,6 +1,7 @@
 <script lang="ts">
 	let { data, form } = $props();
-	let { translations } = data;
+	let translations = $derived(data.translations);
+
 	import ChallengeForm from '$lib/components/ChallengeForm.svelte';
 
 	let formName = 'newChallengeForm';

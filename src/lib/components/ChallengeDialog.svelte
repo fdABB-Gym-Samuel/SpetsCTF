@@ -14,7 +14,7 @@
 	import { categories } from '$lib/db/constants';
 
 	let {
-		challenge_data = {
+		challengeData = {
 			challenge_id: '',
 			challenge_name: '',
 			challenge_description: '',
@@ -40,13 +40,13 @@
 	let pointElement: HTMLElement;
 	$effect(() => {
 		if (pointElement !== undefined) {
-			pointElement.style.color = getPointColor(challenge_data.points);
+			pointElement.style.color = getPointColor(challengeData.points);
 		}
 	});
 
 	let filteredCategories = categories.filter(
 		(_, index) =>
-			challenge_data.challenge_sub_categories.split('').reverse().join('')[index] === '1'
+			challengeData.challenge_sub_categories.split('').reverse().join('')[index] === '1'
 	);
 
 	// Needs to be changed to handle when there are multiple commands that can be copied
@@ -119,10 +119,10 @@
 		class="bg-bg-800 challenge-dialog gsap-opacity relative m-auto flex w-[85%] max-w-[1000px] flex-col overflow-y-scroll rounded-lg px-4 py-12 sm:px-8 md:px-10 lg:px-16"
 	>
 		<section class="-mt-2 mb-12 flex w-full justify-between">
-			{#if challenge_data.created_at}
+			{#if challengeData.created_at}
 				<p class="text-primary-light mb-0.5 font-mono text-sm font-bold">
 					{translations.uploaded}
-					{challenge_data.created_at.toLocaleDateString('sv-SE')}
+					{challengeData.created_at.toLocaleDateString('sv-SE')}
 				</p>
 			{:else}
 				<p class="text-primary-light mb-0.5 font-mono text-sm font-bold">
@@ -139,7 +139,7 @@
 		</section>
 		<section class="top mb-6 flex w-full items-center justify-between">
 			<h3 class="challenge-name text-text-100 text-xl font-bold">
-				{challenge_data.challenge_name}
+				{challengeData.challenge_name}
 			</h3>
 		</section>
 		<section
@@ -149,7 +149,7 @@
 				<div class="mb-4 flex flex-col">
 					<p class="text-text-200">Resources:</p>
 					<ul class="resources flex flex-col gap-0 pl-4">
-						{#each challenge_data.resources as resource (resource)}
+						{#each challengeData.resources as resource (resource)}
 							{#if resource.type === 'web'}
 								<li
 									class="challenge-resource text-text-100 flex h-fit flex-row items-center gap-1 underline"
@@ -215,7 +215,7 @@
 					></UserRoundPen>
 					<p class="text-text-200 inline-block text-sm">Author:&nbsp;</p>
 					<p class="inline-block text-sm font-bold text-text-100">
-						{challenge_data.author ? challenge_data.author : 'Anonymous'}
+						{challengeData.author ? challengeData.author : 'Anonymous'}
 					</p>
 				</div>
 				<div class="description">
@@ -223,12 +223,12 @@
 					<p
 						class="challenge-description text-text-100 mr-1 max-h-full overflow-scroll"
 					>
-						{challenge_data.challenge_description}
+						{challengeData.challenge_description}
 					</p>
 				</div>
 			</div>
 			<div class="right w-1/2 min-w-70 flex-grow">
-				{#if !challenge_data.solved && (!form || !form.success)}
+				{#if !challengeData.solved && (!form || !form.success)}
 					<form action="?/submit" method="POST" class="flag-submission-form max-w-full" use:enhance>
 						<label for="flag" class="text-sm text-text-100">Submit flag</label>
 						<div class="relative mt-2 mb-8">
@@ -236,9 +236,9 @@
 								type="text"
 								name="flag"
 								class="flag bg-bg-600 w-full rounded-xl px-6 py-1.5 font-mono focus:outline-none text-text-100"
-								placeholder={challenge_data.flag_format}
+								placeholder={challengeData.flag_format}
 							/>
-							<input type="hidden" value={challenge_data.challenge_id} name="challenge_id" />
+							<input type="hidden" value={challengeData.challenge_id} name="challenge_id" />
 							<div class="absolute top-1/2 right-0 -translate-y-1/2 transform">
 								<Button
 									label="Submit"
@@ -261,10 +261,10 @@
 				<div
 					class="first-solvers-wrapper text-text-100 flex flex-col justify-start"
 				>
-					{#if challenge_data.num_solves != 0}
+					{#if challengeData.num_solves != 0}
 						<h5 class="text-text-200">First Solvers:</h5>
 						<ol class="first-solvers flex list-inside list-decimal flex-col justify-start">
-							{#each challenge_data.first_solvers as solver (solver.id)}
+							{#each challengeData.first_solvers as solver (solver.id)}
 								<li class="solver">{solver.display_name}</li>
 							{/each}
 						</ol>
@@ -294,10 +294,10 @@
 			</ul>
 			<div class="flex flex-row gap-10">
 				<p class="font-mono text-sm font-bold" bind:this={pointElement}>
-					<span class="bg-black mx-1 rounded-2xl">&nbsp;{challenge_data.points}&nbsp;</span>&nbsp;<span class="text-text-200">POINTS</span>
+					<span class="bg-black mx-1 rounded-2xl">&nbsp;{challengeData.points}&nbsp;</span>&nbsp;<span class="text-text-200">POINTS</span>
 				</p>
 				<p class="text-text-100 font-mono text-sm font-bold">
-					{challenge_data.num_solves}&nbsp;&nbsp;<span class="text-text-200">SOLVERS</span>
+					{challengeData.num_solves}&nbsp;&nbsp;<span class="text-text-200">SOLVERS</span>
 				</p>
 			</div>
 		</section>

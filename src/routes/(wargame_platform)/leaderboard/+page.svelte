@@ -2,13 +2,15 @@
   import { resolve } from '$app/paths';
 
 	let { data } = $props();
-	let { user, users_scoreboard, classes_scoreboard } = data;
+	let user = $derived(data.user)
+	let usersScoreboard = $derived(data.usersScoreboard)
+	let classesScoreboard = $derived(data.classesScoreboard)
 
-	let original_classes = classes_scoreboard.map((class_obj) => class_obj.className);
+	let original_classes = $derived(classesScoreboard.map((class_obj) => class_obj.className));
 	let include_classes = $state(original_classes);
 
 	let filtered_users = $derived(
-		users_scoreboard
+		usersScoreboard
 			.filter((user_) => user_.represents_class && include_classes.includes(user_.represents_class))
 			.slice(0, 15)
 	);
@@ -21,9 +23,9 @@
 	let componentRoot: HTMLElement;
 	let gsapContext: gsap.Context | undefined;
 
-	let userPosition = $derived(users_scoreboard.findIndex((user_) => user_.id === user?.id) + 1);
+	let userPosition = $derived(usersScoreboard.findIndex((user_) => user_.id === user?.id) + 1);
 	let userClassPosition = $derived(
-		classes_scoreboard.findIndex((class_) => class_.className === user?.represents_class) + 1
+		classesScoreboard.findIndex((class_) => class_.className === user?.represents_class) + 1
 	);
 	onMount(() => {
 		gsapContext = playAnimations(componentRoot);
@@ -43,7 +45,7 @@
 			</h1>
 			<p class="text-text-200">
 				You have <span class="text-text-100"
-					>{users_scoreboard.filter((user_) => user_.id === user.id)[0]?.total_points}pts</span
+					>{usersScoreboard.filter((user_) => user_.id === user.id)[0]?.total_points}pts</span
 				>, currently in the
 				<span class="text-text-100">#{userClassPosition} class</span>.
 			</p>
@@ -110,7 +112,7 @@
 								<tr
 									class="*:border-bg-700 max-h-12 w-full text-wrap break-words *:border-t-0 [&>th:first-child]:rounded-l-lg [&>th:last-child]:rounded-r-lg
                         {i ===
-									users_scoreboard
+									usersScoreboard
 										.filter(
 											(user) =>
 												user.represents_class && include_classes.includes(user.represents_class)
@@ -151,7 +153,7 @@
 					</table>
 				{/if}
 			</div>
-			<p class="text-text-200 gsap-top-down-opacity mt-2 ml-0.5">{users_scoreboard.length} users</p>
+			<p class="text-text-200 gsap-top-down-opacity mt-2 ml-0.5">{usersScoreboard.length} users</p>
 		</section>
 
 		<section>
@@ -179,11 +181,11 @@
 				<!-- body only -->
 				<table class="gsap-top-down-opacity w-full table-fixed">
 					<tbody>
-						{#each classes_scoreboard.filter((class_) => class_.className !== 'No Class') as curr_class, i (String(curr_class.className))}
+						{#each classesScoreboard.filter((class_) => class_.className !== 'No Class') as curr_class, i (String(curr_class.className))}
 							<tr
 								class="*:border-bg-700 w-full text-wrap break-words
                        *:border-t-0
-                       {i === classes_scoreboard.length - 1 ? '' : '*:border-b-3'}
+                       {i === classesScoreboard.length - 1 ? '' : '*:border-b-3'}
                        {i === 0 ? 'text-secondary' : ''}"
 							>
 								<td class="h-12 w-1/6 px-2 pl-4 text-left sm:pl-10">{i + 1}</td>

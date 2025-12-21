@@ -7,7 +7,11 @@
 	import { categories } from '$lib/db/constants';
 	import { goto } from '$app/navigation';
 	let { data, form } = $props();
-	let { translations, user, allChallenges, myChallenges } = data;
+
+	let allChallenges = $derived(data.allChallenges)
+	let myChallenges = $derived(data.myChallenges)
+	let translations = $derived(data.translations)
+	let user = $derived(data.user)
 
 	import { capitalizeFirstLetter } from '$lib/utils/utils.js';
 	import { Search, ChevronDown, Pen, Trash2, LogIn } from '@lucide/svelte';
@@ -130,13 +134,13 @@
 						<ul
 							class="grid grid-cols-[repeat(auto-fill,minmax(305px,1fr))] gap-4 sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(390px,1fr))]"
 						>
-							{#each allChallenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challenge_data (challenge_data.challenge_id)}
+							{#each allChallenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challengeData (challengeData.challenge_id)}
 								<li class="gsap-left-right-opacity min-h-fit min-w-65">
 									<a
-										href={`challenges?show=${challenge_data.challenge_id}`}
+										href={`challenges?show=${challengeData.challenge_id}`}
 										data-sveltekit-noscroll
 										class="ignore-default block h-full w-full"
-										><ChallengeCard data={{ challenge_data: challenge_data }}></ChallengeCard></a
+										><ChallengeCard data={{ challengeData: challengeData }}></ChallengeCard></a
 									>
 								</li>
 							{/each}
@@ -207,7 +211,7 @@
 	{/if}
 </main>
 {#if challengeId}
-	<ChallengeDialog challenge_data={modalData} {translations} {form}></ChallengeDialog>
+	<ChallengeDialog challengeData={modalData} {translations} {form}></ChallengeDialog>
 {/if}
 
 {#if challengeIdToDelete}

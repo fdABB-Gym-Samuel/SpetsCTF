@@ -73,7 +73,7 @@ export const actions = {
             event.locals.user = undefined;
             event.locals.session = undefined;
             deleteSessionTokenCookie(event);
-            return { justLoggedOut: true };
+            return { success: true };
         }
     },
 } satisfies Actions;

@@ -2,7 +2,7 @@
 	import { resolve } from "$app/paths";
 	
 	let { data } = $props();
-	let { nextCtf } = data;
+	let nextCtf = $derived(data.nextCtf);
 
 	import { Brain } from '@lucide/svelte';
 

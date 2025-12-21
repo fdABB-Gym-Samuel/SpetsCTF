@@ -6,7 +6,7 @@
 	import Input from '$lib/components/input/Input.svelte';
 	import { Trash2 } from '@lucide/svelte';
 	let { data, form } = $props();
-	let { translations } = data;
+	let translations = $derived(data.translations);
 
 	interface user {
 		id: string;

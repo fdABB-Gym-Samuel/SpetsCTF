@@ -1,27 +1,27 @@
 <script lang="ts">
 	let { data } = $props();
-	let { challenge_data } = data;
+	let challengeData = $derived(data.challengeData);
 	import { map } from '$lib/utils/utils';
 	import { categories } from '$lib/db/constants';
 	import { capitalizeFirstLetter } from '$lib/utils/utils';
 
 	function getPointColor(points: number): string {
-		const lab_a = Math.floor(map(points, 0, 500, -128, 128));
-		return `lab(90% ${lab_a} 128)`;
+		const labA = Math.floor(map(points, 0, 500, -128, 128));
+		return `lab(90% ${labA} 128)`;
 	}
 	let pointElement: HTMLElement;
 	$effect(() => {
-		if (pointElement && !challenge_data.solved) {
-			pointElement.style.color = getPointColor(challenge_data.points);
-		} else if (pointElement && challenge_data.solved) {
-			pointElement.style.backgroundColor = getPointColor(challenge_data.points);
+		if (pointElement && !challengeData.solved) {
+			pointElement.style.color = getPointColor(challengeData.points);
+		} else if (pointElement && challengeData.solved) {
+			pointElement.style.backgroundColor = getPointColor(challengeData.points);
 			pointElement.classList.add('text-bg-700');
 		}
 	});
 
 	let filteredCategories = categories.filter(
 		(_, index) =>
-			challenge_data.challenge_sub_categories.split('').reverse().join('')[index] === '1'
+			challengeData.challenge_sub_categories.split('').reverse().join('')[index] === '1'
 	);
 
 	let displayedCategories = filteredCategories.slice(0, 3);
@@ -33,33 +33,33 @@
 	class="card challenge-cards bg-bg-800 before:bg-bg-750 relative h-full min-h-fit max-w-full overflow-hidden rounded-lg px-10
   py-6 before:absolute before:inset-0 before:origin-center before:scale-0 before:rounded-lg before:transition-transform
   before:duration-500 before:ease-out before:content-[''] hover:before:scale-100"
-	class:bg-gradient-to-br={challenge_data.solved}
-	class:from-primary={challenge_data.solved}
-	class:to-primary-light={challenge_data.solved}
+	class:bg-gradient-to-br={challengeData.solved}
+	class:from-primary={challengeData.solved}
+	class:to-primary-light={challengeData.solved}
 >
 	<div class="relative z-10 flex h-full flex-col justify-between">
 		<section class="top *:flex *:items-center *:justify-between">
 			<div class="flex !items-start justify-start">
 				<h3 class="challenge-name text-[18px] font-bold">
-					{challenge_data.challenge_name}
+					{challengeData.challenge_name}
 				</h3>
-				{#if challenge_data && challenge_data.created_at}
+				{#if challengeData && challengeData.created_at}
 					<p class="mt-1 mb-0.5 font-mono text-xs">
-						{challenge_data.created_at.toLocaleDateString('sv-SE')}
+						{challengeData.created_at.toLocaleDateString('sv-SE')}
 					</p>
 				{/if}
 			</div>
 			<div class="mt-2 mb-4">
 				<p class="font-mono text-sm font-bold">
-					{challenge_data.num_solves}&nbsp;&nbsp;<span
+					{challengeData.num_solves}&nbsp;&nbsp;<span
 						class="text-text-200"
-						class:!text-text-100={challenge_data.solved}>SOLVERS</span
+						class:!text-text-100={challengeData.solved}>SOLVERS</span
 					>
 				</p>
 				<p class="font-mono text-sm font-bold">
 					<span class="bg-black mx-1 rounded-2xl" bind:this={pointElement}
-						>&nbsp;{challenge_data.points}&nbsp;</span
-					><span class="text-text-200" class:!text-text-100={challenge_data.solved}>POINTS</span>
+						>&nbsp;{challengeData.points}&nbsp;</span
+					><span class="text-text-200" class:!text-text-100={challengeData.solved}>POINTS</span>
 				</p>
 			</div>
 		</section>
@@ -72,10 +72,10 @@
             {index === 1 ? 'bg-gradient-200' : ''}
             {index === 2 ? 'bg-gradient-300 rounded-r-xl rounded-br-xl' : ''}
             {index === displayedCategories.length - 1 ? 'rounded-r-xl rounded-br-xl' : ''}"
-						class:bg-text-100={challenge_data.solved}
-						class:!text-gradient-100={index === 0 && challenge_data.solved}
-						class:!text-gradient-200={index === 1 && challenge_data.solved}
-						class:!text-gradient-300={index === 2 && challenge_data.solved}
+						class:bg-text-100={challengeData.solved}
+						class:!text-gradient-100={index === 0 && challengeData.solved}
+						class:!text-gradient-200={index === 1 && challengeData.solved}
+						class:!text-gradient-300={index === 2 && challengeData.solved}
 					>
 						<p class="text-text-100"># {capitalizeFirstLetter(category)}</p>
 					</li>

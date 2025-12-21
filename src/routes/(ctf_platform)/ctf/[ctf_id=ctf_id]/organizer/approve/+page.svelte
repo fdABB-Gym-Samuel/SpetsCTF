@@ -4,7 +4,7 @@
 	import ChallengeCard from '$lib/components/ChallengeCard.svelte';
 
 	let { data } = $props();
-	let { unapprovedChallenges } = data;
+	let unapprovedChallenges = $derived(data.unapprovedChallenges);
 </script>
 
 <div class="content">
@@ -23,13 +23,13 @@
 		<h3>All Challenges</h3>
 
 		<ul class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
-			{#each unapprovedChallenges as challenge_data (challenge_data.challenge_id)}
+			{#each unapprovedChallenges as challengeData (challengeData.challenge_id)}
 				<li>
 					<a
-						href={resolve(`/ctf/${page.params.ctf_id}/organizer/approve/${challenge_data.challenge_id}`)}
+						href={resolve(`/ctf/${page.params.ctf_id}/organizer/approve/${challengeData.challenge_id}`)}
 						data-sveltekit-noscroll
 						class="ignore-default h-38 w-full"
-						><ChallengeCard data={{ challenge_data }}></ChallengeCard></a
+						><ChallengeCard data={{ challengeData }}></ChallengeCard></a
 					>
 				</li>
 			{/each}

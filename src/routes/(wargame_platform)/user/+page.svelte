@@ -2,8 +2,6 @@
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	let { data, form } = $props();
-	let { translations, user, availableClasses } = data;
-	import { onMount } from 'svelte';
 
 	import { LogOut, Github } from '@lucide/svelte';
     import { resolve } from '$app/paths';
@@ -27,58 +25,58 @@
 			return '';
 		}
 	});
-
-	onMount(async () => {
-		if (form?.justLoggedOut) {
-			await goto(resolve('/'), {invalidateAll: true});
-		}
-	});
 </script>
 
 <div class="content flex flex-col space-y-4 p-4 pt-0">
-	<h1 class="mt-2 text-2xl font-bold">{translations.settings}</h1>
+	<h1 class="mt-2 text-2xl font-bold">{data.translations.settings}</h1>
 	{#if form && form?.success}
 		<div class="w-fit rounded-md border-2 border-green-400 p-2">
-			<span class="text-md font-bold text-green-600">{translations.settingsupdated}.</span>
+			<span class="text-md font-bold text-green-600">{data.translations.settingsupdated}.</span>
 		</div>
 	{:else if form && !form?.success}
 		<div class="w-fit rounded-md border-2 border-red-400 p-2">
-			<span class="font-bold text-red-600">{translations.settingsupdatefailed}.</span>
+			<span class="font-bold text-red-600">{data.translations.settingsupdatefailed}.</span>
 		</div>
 	{/if}
 	<span class="items-center"
-		>{translations.currentlyloggedinas}
+		>{data.translations.currentlyloggedinas}
 		<Github class="mr-0 ml-2 inline-block" />
 		<a
 			target="_blank"
 			class="hover:text-primary-light underline duration-200 ease-linear"
-			href={`https://github.com/${user.github_username}`}><b>{user.github_username}</b></a
+			href={`https://github.com/${data.user.github_username}`}><b>{data.user.github_username}</b></a
 		>.</span
 	>
-	<form method="POST" action="?/logout" use:enhance>
+	<form method="POST" action="?/logout" use:enhance={() => {
+			return async ({result}) => {
+				if (result.type === 'success') {
+					await goto(resolve("/"), {invalidateAll: true});
+				}
+			}
+		}}>
 		<button
 			class="hover:border-primary flex flex-row items-center rounded border px-2 py-1 duration-200 ease-linear hover:cursor-pointer"
-			type="submit"><LogOut class="mr-2 size-4 align-middle" />{translations.logout}</button
+			type="submit"><LogOut class="mr-2 size-4 align-middle" />{data.translations.logout}</button
 		>
 	</form>
-	<h2 class="text-xl font-bold">{translations.altersettings}</h2>
+	<h2 class="text-xl font-bold">{data.translations.altersettings}</h2>
 	<form class="flex w-min flex-col space-y-1" method="POST" action="?/settings" use:enhance>
 		<label for="display_name">
-			{translations.displayname}
+			{data.translations.displayname}
 		</label>
 		<div>
 			<input
 				class="rounded border border-text-100 p-1 "
 				value={displayName}
 				name="display_name"
-				placeholder={translations.enterdisplayname}
+				placeholder={data.translations.enterdisplayname}
 				id="display_name"
 			/>
 		</div>
 
 		<br />
 		<label for="represents_class">
-			{translations.representclass}
+			{data.translations.representclass}
 		</label>
 		<br />
 		<select
@@ -87,8 +85,8 @@
 			id="represents_class"
 			value={representedClass}
 		>
-			<option value="">{translations.selectclass}</option>
-			{#each availableClasses as availableClass (availableClass.name)}
+			<option value="">{data.translations.selectclass}</option>
+			{#each data.availableClasses as availableClass (availableClass.name)}
 				<option value={availableClass.name}
 					>{availableClass.name} {availableClass.school ? `(${availableClass.school})` : ''}</option
 				>
@@ -97,17 +95,17 @@
 		<button
 			type="submit"
 			class="hover:border-primary mt-3 flex w-fit flex-row items-center rounded border px-2 py-1 duration-200 ease-linear hover:cursor-pointer"
-			>{translations.save}</button
+			>{data.translations.save}</button
 		>
 	</form>
 
 	<div class="h-12"></div>
 
 	{#if data.user && data.user.is_admin}
-		<h1 class="text-lg font-bold">{translations.admin}</h1>
-		<p class="w-72">{translations.admin_funny_text}</p>
+		<h1 class="text-lg font-bold">{data.translations.admin}</h1>
+		<p class="w-72">{data.translations.admin_funny_text}</p>
 		<a class="text-gray-500 underline duration-200 ease-linear hover:text-text-100" href={resolve("/admin")}
-			>{translations.admin_page}</a
+			>{data.translations.admin_page}</a
 		>
 	{/if}
 </div>

@@ -1,9 +1,10 @@
 <script lang="ts">
 	import ChallengeForm from '$lib/components/ChallengeForm.svelte';
 	let { data, form } = $props();
-	let { translations, unapprovedChallenge } = data;
+	let translations = $derived(data.translations)
+	let unapprovedChallenge = $derived(data.unapprovedChallenge)
 
-	const isAuthor = unapprovedChallenge.author_id === data.user?.id;
+	const isAuthor = $derived(unapprovedChallenge.author_id === data.user?.id);
 </script>
 
 <div class="content mb-4">

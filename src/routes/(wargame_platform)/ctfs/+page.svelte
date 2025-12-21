@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { resolve } from "$app/paths";
 	let { data } = $props();
-	let { translations, ctfs } = data;
+	let translations = $derived(data.translations)
+	let ctfs = $derived(data.ctfs)
 
 	let ongoingCtfs = $derived(
 		ctfs.filter((ctf) => {

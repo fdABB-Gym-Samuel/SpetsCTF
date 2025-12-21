@@ -3,9 +3,10 @@
 	import { page } from '$app/state';
 
 	let { data } = $props();
-	let { teamData, translations } = data;
+	let teamData = $derived(data.teamData)
+	let translations = $derived(data.translations)
 
-	let users = teamData?.users;
+	let users = $derived(teamData?.users);
 
 	let inviteLink: string = $derived(
 		`${page.url.protocol}//${page.url.host}/ctf/${page.params.ctf_id}/join_team/${teamData?.join_code}`

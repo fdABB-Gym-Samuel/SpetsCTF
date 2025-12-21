@@ -1,7 +1,8 @@
 <script lang="ts">
 	import ChallengeForm from '$lib/components/ChallengeForm.svelte';
 	let { data, form } = $props();
-	let { translations, unapprovedChallenge } = data;
+	let translations = $derived(data.translations);
+	let unapprovedChallenge = $derived(data.unapprovedChallenge);
 </script>
 
 <div class="content mb-4">

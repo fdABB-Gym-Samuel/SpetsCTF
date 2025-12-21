@@ -157,7 +157,7 @@ export const actions = {
             );
 
             if (updatedFlag === undefined) {
-                return fail(500, { message: 'Failed to save new flag' });
+                return error(500, { message: 'Failed to save new flag' });
             }
 
             const originalFilesNew = formData.getAll('original_files') as string[];

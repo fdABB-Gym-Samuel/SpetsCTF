@@ -2,7 +2,7 @@
 	import { resolve } from "$app/paths";
 
 	let { data } = $props();
-	let { translations } = data;
+	let translations = $derived(data.translations);
 	import { Wrench } from '@lucide/svelte';
 </script>
 

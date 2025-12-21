@@ -1,6 +1,6 @@
 <script lang="ts">
 	let { data } = $props();
-	let { translations } = data;
+	let translations = $derived(data.translations);
 
 	import { goto } from '$app/navigation';
 	import { resolve } from "$app/paths";

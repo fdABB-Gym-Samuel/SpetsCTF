@@ -6,16 +6,15 @@
 	import { resolve } from "$app/paths";
 
 	let { data } = $props();
-	let { user, translations } = data;
 
 	const links = [
 		{ display: 'Challenges', href: resolve('/challenges') },
 		{ display: 'CTFs', href: resolve('/ctfs') },
-		{ display: 'Leaderboard', href: resolve(`/(wargame_platform)/leaderboard`) }
+		{ display: 'Leaderboard', href: resolve(`/leaderboard`) }
 	];
 </script>
 
-<Navbar {links} {translations} {user}></Navbar>
+<Navbar {links} translations={data.translations} user={data.user}></Navbar>
 
 <main
 	class="content text-text-100 flex min-h-[var(--main-height)] w-screen flex-col items-stretch py-[var(--nav-height)]"

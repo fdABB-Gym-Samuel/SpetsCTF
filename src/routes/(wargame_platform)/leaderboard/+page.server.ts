@@ -3,13 +3,13 @@ import { db } from '$lib/db/database';
 import { sql } from 'kysely';
 
 export const load: PageServerLoad = async () => {
-    const top_users = await get_top_users();
-    const top_classes = await get_top_classes();
+    const topUsers = await getTopUsers();
+    const topClasses = await getTopClasses();
 
-    return { users_scoreboard: top_users, classes_scoreboard: top_classes };
+    return { usersScoreboard: topUsers, classesScoreboard: topClasses };
 };
 
-const get_top_users = async () => {
+const getTopUsers = async () => {
     const result = await db
         .selectFrom('users as u')
         .where('is_admin', 'is not', true)
@@ -44,7 +44,7 @@ const get_top_users = async () => {
     return result;
 };
 
-const get_top_classes = async () => {
+const getTopClasses = async () => {
     const result = await db
         .with('solved', (eb) =>
             eb

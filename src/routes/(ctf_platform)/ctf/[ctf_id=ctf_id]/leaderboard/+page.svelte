@@ -5,8 +5,14 @@
 	import { onDestroy, onMount } from 'svelte';
 	import gsap from 'gsap';
 
+  import { resolve } from '$app/paths';
+  import { page } from '$app/state';
+
 	let { data } = $props();
-	let { user, ctf_data, scores, team } = data;
+	let ctf_data = $derived(data.ctf_data);
+	let scores = $derived(data.scores);
+	let team = $derived(data.team);
+	let user = $derived(data.user);
 
 	let podiumRefs: HTMLDivElement[] = $state([]);
 	let textRefs: HTMLSpanElement[] = $state([]);
@@ -14,7 +20,7 @@
 	let componentRoot: HTMLElement;
 	let gsapContext: gsap.Context | undefined;
 
-	let teamPosition = $state(scores.findIndex((team_) => team_.team_id === team?.teamId) + 1);
+	let teamPosition = $derived(scores.findIndex((team_) => team_.team_id === team?.teamId) + 1);
 
 	onMount(() => {
 		gsapContext = playAnimations(componentRoot);
@@ -122,7 +128,10 @@
 									<td class="h-12 w-12 pl-4 text-left sm:w-18 sm:pl-10">{i + 1}</td>
 									<td
 										class="h-12 max-h-12 w-fit overflow-hidden text-left break-normal text-ellipsis"
-										><a class="ignore-default" href={`team/${team?.teamId ?? ''}`}>{teamInside.team_name}</a
+										><a class="ignore-default" href={resolve("/(ctf_platform)/ctf/[ctf_id=ctf_id]/team/[teamId=teamId]", {
+													ctf_id: page.params.ctf_id ?? '',
+													teamId: String(team?.teamId) ?? '',
+												})}>{teamInside.team_name}</a
 										></td
 									>
 									<td class="h-12 w-18 pr-4 text-right sm:w-24 sm:pr-10"

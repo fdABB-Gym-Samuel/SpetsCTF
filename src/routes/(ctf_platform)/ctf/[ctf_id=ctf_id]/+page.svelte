@@ -1,6 +1,6 @@
 <script lang="ts">
 	let { data } = $props();
-	let { ctf_data } = data;
+	let ctf_data = $derived(data.ctf_data);
 
 	import { page } from '$app/state';
 	import { Swords } from '@lucide/svelte';

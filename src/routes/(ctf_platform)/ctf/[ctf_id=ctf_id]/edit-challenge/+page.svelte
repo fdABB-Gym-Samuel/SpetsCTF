@@ -1,8 +1,8 @@
 <script lang="ts">
 	import ChallengeCard from '$lib/components/ChallengeCard.svelte';
-	// import { resolve } from "$app/paths";
 	let { data } = $props();
-	let { user, editableChallenges } = data;
+	let user = $derived(data.user);
+	let editableChallenges = $derived(data.editableChallenges);
 </script>
 
 <div class="content">
@@ -13,13 +13,13 @@
 	<div>
 		<h3>My Challenges</h3>
 		<ul class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
-			{#each editableChallenges.filter((challenge) => challenge.is_author) as challenge_data (challenge_data.challenge_id)}
+			{#each editableChallenges.filter((challenge) => challenge.is_author) as challengeData (challengeData.challenge_id)}
 				<li>
 					<a
-						href={`edit-challenge/${challenge_data.challenge_id}`}
+						href={`edit-challenge/${challengeData.challenge_id}`}
 						data-sveltekit-noscroll
 						class="ignore-default h-38 w-full"
-						><ChallengeCard data={{ challenge_data }}></ChallengeCard></a
+						><ChallengeCard data={{ challengeData }}></ChallengeCard></a
 					>
 				</li>
 			{/each}
@@ -30,13 +30,13 @@
 			<h3>All Challenges</h3>
 
 			<ul class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
-				{#each editableChallenges as challenge_data (challenge_data.challenge_id)}
+				{#each editableChallenges as challengeData (challengeData.challenge_id)}
 					<li>
 						<a
-							href={`edit-challenge/${challenge_data.challenge_id}`}
+							href={`edit-challenge/${challengeData.challenge_id}`}
 							data-sveltekit-noscroll
 							class="ignore-default h-38 w-full"
-							><ChallengeCard data={{ challenge_data }}></ChallengeCard></a
+							><ChallengeCard data={{ challengeData }}></ChallengeCard></a
 						>
 					</li>
 				{/each}
