@@ -8,7 +8,8 @@
 	postgres \
 	postgres-clean \
 	postgres-kill \
-	psql
+	psql \
+	seed
 
 codegen:
 	mkdir -p ./src/lib/generated
@@ -27,7 +28,7 @@ clean: postgres-clean dev-clean
 deps:
 	bun install
 
-dev: deps postgres
+dev: deps postgres seed
 	bun --bun run dev
 
 ./tmp:
@@ -41,6 +42,9 @@ psql:
 		--username=spetsctf \
 		-D ./tmp/.pgdata \
 		--auth-local=trust
+
+seed:
+	psql -U spetsctf postgresql:///spetsctf?host=$$(pwd)/tmp < ./schema/seed.sql
 
 postgres: ./tmp/.pgdata
 	if [ ! -f ./tmp/.pgdata/postmaster.pid ]; then \

@@ -8,22 +8,16 @@
         "build": "vite build",
         "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
         "dev": "vite dev",
-        "format": "prettier --write .",
-        "lint": "prettier --check . && eslint .",
         "postinstall": "bun2nix -o bun.nix; echo '' >> bun.nix",
         "prepare": "svelte-kit sync || echo ''"
     },
     "devDependencies": {
-        "@eslint/compat": "^1.3.2",
-        "@eslint/js": "^9.35.0",
         "@lucide/svelte": "^0.543.0",
         "@sveltejs/kit": "^2.37.1",
         "@sveltejs/vite-plugin-svelte": "^6.2.0",
         "@tailwindcss/vite": "^4.1.13",
         "@types/bun": "^1.3.5",
         "autoprefixer": "^10.4.21",
-        "eslint": "^9.35.0",
-        "eslint-plugin-svelte": "^3.12.2",
         "globals": "^16.4.0",
         "jsdom": "^26.1.0",
         "kysely-codegen": "^0.19.0",
@@ -33,7 +27,6 @@
         "svelte-check": "^4.3.1",
         "tailwindcss": "^4.1.13",
         "typescript": "^5.9.2",
-        "typescript-eslint": "^8.43.0",
         "vite": "^7.3.0"
     },
     "dependencies": {
