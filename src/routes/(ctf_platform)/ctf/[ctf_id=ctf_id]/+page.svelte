@@ -119,7 +119,7 @@
 					<div
 						class="bg-bg-800 inner-shadow flex items-center justify-between rounded-lg px-10 py-2 pb-3 select-none"
 					>
-						{#each Object.entries(countdown) as [label, number], index (number)}
+						{#each Object.entries(countdown) as [label, number], index (index)}
 							<div class="flex flex-col items-center">
 								<p class="-mb-2 flex-1 text-center text-lg">{number}</p>
 								<p class="text-text-200 text-sm">{label}</p>
