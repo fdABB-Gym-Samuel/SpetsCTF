@@ -149,102 +149,96 @@ export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
 };
 
 export const actions = {
-    submit: async ({ request, locals, params }) => {
-        try {
-            const user = locals.user;
+    submit: async ({ request, locals }) => {
+        const user = locals.user;
 
-            if (!user) {
-                return redirect(304, '/login');
-            }
+        if (!user) {
+            return redirect(304, '/login');
+        }
 
-            const formData = await request.formData();
-            const challengeId = formData.get('challenge_id') as string;
-            const submittedFlag = formData.get('flag') as string;
+        const formData = await request.formData();
+        const challengeId = formData.get('challenge_id') as string;
+        const submittedFlag = formData.get('flag') as string;
 
-            if (!challengeId) {
-                return fail(400, { message: 'Challenge_id parameter missing' });
-            }
+        if (!challengeId) {
+            return fail(400, { message: 'Challenge_id parameter missing' });
+        }
 
-            const challengeCtf = await db
-                .selectFrom('challenges')
-                .select('ctf')
-                .where('challenge_id', '=', challengeId)
+        const challengeCtf = await db
+            .selectFrom('challenges')
+            .select('ctf')
+            .where('challenge_id', '=', challengeId)
+            .executeTakeFirst();
+
+        let submissionTable: 'wargame_submissions' | 'ctf_submissions' =
+            'wargame_submissions';
+        if (challengeCtf && challengeCtf.ctf) {
+            const ctf = await db
+                .selectFrom('ctf_events')
+                .select(['end_time'])
+                .where('id', '=', challengeCtf.ctf)
                 .executeTakeFirst();
 
-            let submissionTable: 'wargame_submissions' | 'ctf_submissions' =
-                'wargame_submissions';
-            if (challengeCtf && challengeCtf.ctf) {
-                const ctf = await db
-                    .selectFrom('ctf_events')
-                    .select(['end_time'])
-                    .where('id', '=', challengeCtf.ctf)
-                    .executeTakeFirst();
-
-                if (ctf === undefined) {
-                    return fail(404, {
-                        message: 'Challenge belongs to CTF that could not be found',
-                    });
-                }
-                const currentTime = new Date();
-                const ctfHasEnded = currentTime > ctf?.end_time;
-                // User should submit this request through the ctf route
-                if (!ctfHasEnded) {
-                    throw redirect(307, `/ctf/${challengeCtf.ctf}/challenges?/submit`);
-                }
-
-                submissionTable = 'ctf_submissions';
-            }
-
-            const successfulSubmission = await db
-                .selectFrom(submissionTable)
-                .where('user_id', '=', user.id)
-                .where('challenge', '=', challengeId)
-                .where('success', '=', true)
-                .executeTakeFirst();
-
-            if (successfulSubmission !== undefined)
-                return fail(403, { message: 'User has already solved challenge' });
-
-            const correctFlag = await get_flag_of_challenge(challengeId);
-            if (!correctFlag.challengeExists) {
-                return fail(404, { message: 'Challenge not found' });
-            }
-            if (!correctFlag.flagExists) {
-                return fail(404, { message: 'Flag of challenge not found' });
-            }
-
-            if (!correctFlag.flag)
-                return fail(404, { message: 'Flag of challenge not found' });
-
-            const flagIsCorrect = submittedFlag === correctFlag.flag;
-
-            const submission: Insertable<WargameSubmissions> = {
-                challenge: challengeId,
-                user_id: user.id,
-                time: new Date(),
-                success: flagIsCorrect,
-                submitted_data: submittedFlag,
-            };
-
-            const submissionResult = await db
-                .insertInto('wargame_submissions')
-                .values(submission)
-                .executeTakeFirst();
-
-            if (submissionResult === undefined) {
-                return fail(500, {
-                    message:
-                        'Youre submission could not be recorded, please try again.',
+            if (ctf === undefined) {
+                return fail(404, {
+                    message: 'Challenge belongs to CTF that could not be found',
                 });
             }
+            const currentTime = new Date();
+            const ctfHasEnded = currentTime > ctf?.end_time;
+            // User should submit this request through the ctf route
+            if (!ctfHasEnded) {
+                throw redirect(307, `/ctf/${challengeCtf.ctf}/challenges?/submit`);
+            }
 
-            let message;
-            flagIsCorrect ? (message = 'Correct flag') : (message = 'Incorrect flag');
-
-            return { success: flagIsCorrect, message };
-        } catch (err) {
-            throw err;
+            submissionTable = 'ctf_submissions';
         }
+
+        const successfulSubmission = await db
+            .selectFrom(submissionTable)
+            .where('user_id', '=', user.id)
+            .where('challenge', '=', challengeId)
+            .where('success', '=', true)
+            .executeTakeFirst();
+
+        if (successfulSubmission !== undefined)
+            return fail(403, { message: 'User has already solved challenge' });
+
+        const correctFlag = await get_flag_of_challenge(challengeId);
+        if (!correctFlag.challengeExists) {
+            return fail(404, { message: 'Challenge not found' });
+        }
+        if (!correctFlag.flagExists) {
+            return fail(404, { message: 'Flag of challenge not found' });
+        }
+
+        if (!correctFlag.flag)
+            return fail(404, { message: 'Flag of challenge not found' });
+
+        const flagIsCorrect = submittedFlag === correctFlag.flag;
+
+        const submission: Insertable<WargameSubmissions> = {
+            challenge: challengeId,
+            user_id: user.id,
+            time: new Date(),
+            success: flagIsCorrect,
+            submitted_data: submittedFlag,
+        };
+
+        const submissionResult = await db
+            .insertInto('wargame_submissions')
+            .values(submission)
+            .executeTakeFirst();
+
+        if (submissionResult === undefined) {
+            return fail(500, {
+                message: 'Youre submission could not be recorded, please try again.',
+            });
+        }
+
+        const message = flagIsCorrect ? 'Correct flag' : 'Incorrect flag';
+
+        return { success: flagIsCorrect, message };
     },
     delete: async ({ request, locals }) => {
         const user = locals.user;
@@ -269,7 +263,7 @@ export const actions = {
             return fail(401, { message: 'User not author of challenge or admin' });
         }
 
-        const deletedChallenge = await db
+        await db
             .deleteFrom('challenges')
             .where('challenge_id', '=', challengeId)
             .executeTakeFirst();

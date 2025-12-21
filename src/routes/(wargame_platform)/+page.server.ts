@@ -1,7 +1,7 @@
 import { db } from '$lib/db/database';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({}) => {
+export const load: PageServerLoad = async () => {
     const nextCtf = await db
         .selectFrom('ctf_events')
         .select('start_time')

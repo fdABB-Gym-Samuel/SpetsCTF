@@ -17,6 +17,7 @@ VALUES
   ('V220S', 'Hitachigymnasiet Västerås'),
   ('V230S', 'Hitachigymnasiet Västerås'),
   ('V240S', 'Hitachigymnasiet Västerås'),
+  ('V250S', 'Hitachigymnasiet Västerås'),
   ('No Class', '');
 
 CREATE TABLE users (

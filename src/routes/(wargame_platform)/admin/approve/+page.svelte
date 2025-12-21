@@ -1,9 +1,10 @@
 <script lang="ts">
+	import { resolve } from "$app/paths";
 	import { page } from '$app/state';
 	import ChallengeCard from '$lib/components/ChallengeCard.svelte';
 
 	let { data } = $props();
-	let { translations, unapprovedChallenges } = data;
+	let { unapprovedChallenges } = data;
 </script>
 
 <div class="content">
@@ -24,10 +25,10 @@
 		<ul
 			class="grid grid-cols-[repeat(auto-fill,minmax(305px,1fr))] gap-4 sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(390px,1fr))]"
 		>
-			{#each unapprovedChallenges as challenge_data}
+			{#each unapprovedChallenges as challenge_data (challenge_data.challenge_id)}
 				<li>
 					<a
-						href={`approve/${challenge_data.challenge_id}`}
+						href={resolve(`/admin/approve/${challenge_data.challenge_id}`)}
 						data-sveltekit-noscroll
 						class="ignore-default h-38 w-full"
 						><ChallengeCard data={{ challenge_data }}></ChallengeCard></a

@@ -9,7 +9,7 @@ import {
     insertFlag,
 } from '$lib/db/functions';
 import type { Category, ChallengeResources, Challenges } from '$lib/generated/db';
-import { createFunctionModule, type Insertable } from 'kysely';
+import { type Insertable } from 'kysely';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import sanitize from 'sanitize-filename';
@@ -213,10 +213,7 @@ export const actions = {
                     ...resource_commands,
                     ...resource_websites,
                 ] as Insertable<ChallengeResources>[];
-                const _ = await db
-                    .insertInto('challenge_resources')
-                    .values(resources)
-                    .execute();
+                await db.insertInto('challenge_resources').values(resources).execute();
             }
 
             return { success: true, message: 'Challenge uploaded successfully' };

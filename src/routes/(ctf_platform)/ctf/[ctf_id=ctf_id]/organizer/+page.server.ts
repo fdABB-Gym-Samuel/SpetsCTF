@@ -118,14 +118,14 @@ export const actions = {
                 .executeTakeFirst();
 
             if (team !== undefined) {
-                const _orgRemovedFromTeam = await db
+                await db
                     .deleteFrom('ctf_teams_members')
                     .where('team', '=', team.id)
                     .where('user_id', '=', newOrg)
                     .executeTakeFirstOrThrow();
 
                 if (Number(team.member_count) < 2) {
-                    const _deletedTeam = await db
+                    await db
                         .deleteFrom('ctf_teams')
                         .where('ctf_teams.id', '=', team.id)
                         .executeTakeFirstOrThrow();

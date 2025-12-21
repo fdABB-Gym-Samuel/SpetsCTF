@@ -106,7 +106,7 @@
 	</header>
 	<nav class="flex w-full flex-col gap-2">
 		<ul class="flex w-full flex-row gap-5">
-			{#each challengesTabs as tab}
+			{#each challengesTabs as tab (tab.tab)}
 				<li>
 					<button
 						class:border-b-2={currentTab === tab.tab}
@@ -121,7 +121,7 @@
 	</nav>
 	{#if currentTab === 'all'}
 		<section class="challenge-container w-full">
-			{#each categories as category}
+			{#each categories as category (category)}
 				<div class="category-container mb-16">
 					<h3 class="category-header gsap-top-down-opacity mb-2 text-lg font-bold">
 						{capitalizeFirstLetter(category)}
@@ -130,10 +130,7 @@
 						<ul
 							class="grid grid-cols-[repeat(auto-fill,minmax(305px,1fr))] gap-4 sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(390px,1fr))]"
 						>
-							<!-- <ul class="grid grid-cols-[repeat(auto-fill,minmax(320px,clamp(400px,25%,20vw)))] gap-4"> -->
-
-							<!-- <ul class="mb-12 flex flex-wrap gap-8"> -->
-							{#each allChallenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challenge_data}
+							{#each allChallenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challenge_data (challenge_data.challenge_id)}
 								<li class="gsap-left-right-opacity min-h-fit min-w-65">
 									<a
 										href={`challenges?show=${challenge_data.challenge_id}`}
@@ -164,7 +161,7 @@
 				></Button>
 				{#if myChallenges !== null && myChallenges?.length > 0}
 					<ul class="flex flex-col">
-						{#each myChallenges as challenge}
+						{#each myChallenges as challenge (challenge.challenge_id)}
 							<li
 								class="border-bg-500 flex h-16 w-full flex-row items-center justify-between border-b-2 px-4 py-2"
 							>

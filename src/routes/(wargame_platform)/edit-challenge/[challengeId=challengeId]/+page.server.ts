@@ -197,7 +197,7 @@ export const actions = {
                     const filename = path.basename(filepath.content);
                     const completeFilepath = path.join(challengeDir, filename);
                     unlink(completeFilepath);
-                } catch (_) {
+                } catch {
                     console.error('Error deleting file', filepath.content);
                 }
             });
@@ -322,11 +322,9 @@ export const actions = {
                     .execute();
             }
 
-            let message;
-            locals.user?.is_admin
-                ? (message = 'Challenge successfully edited')
-                : (message =
-                      'Challenge successfully edited and has been submitted for review');
+            const message: string = locals.user?.is_admin
+                ? 'Challenge successfully edited'
+                : 'Challenge successfully edited and has been submitted for review';
             return { success: true, message };
         } catch (err) {
             const errorTyped = err as Error;

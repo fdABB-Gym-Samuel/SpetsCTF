@@ -145,7 +145,7 @@
 				<div class="mb-4 flex flex-col">
 					<p class="text-text-200">Resources:</p>
 					<ul class="resources flex flex-col gap-0 pl-4">
-						{#each challenge_data.resources as resource}
+						{#each challenge_data.resources as resource (resource)}
 							{#if resource.type === 'web'}
 								<li
 									class="challenge-resource text-text-100 flex h-fit flex-row items-center gap-1 underline"

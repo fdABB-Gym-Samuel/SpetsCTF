@@ -88,7 +88,7 @@ export const actions = {
                 .executeTakeFirst();
 
             if (team_id === undefined) {
-                return fail(500, { success: false, message: 'Unknown error' });
+                return fail(500, { success: false, message: 'Unknown error.' });
             }
 
             await db
@@ -100,17 +100,8 @@ export const actions = {
                 .execute();
 
             redirect(303, `/ctf/${ctf_id}/team/${team_id.id}`);
-        } catch (err) {
-            if (
-                err &&
-                typeof err === 'object' &&
-                'status' in err &&
-                (err as any).status === 303
-            ) {
-                throw err;
-            }
-
-            return fail(500, { success: false, message: 'Something went wrong' });
+        } catch {
+            return fail(500, { success: false, message: 'Unknown server error.' });
         }
     },
 } satisfies Actions;

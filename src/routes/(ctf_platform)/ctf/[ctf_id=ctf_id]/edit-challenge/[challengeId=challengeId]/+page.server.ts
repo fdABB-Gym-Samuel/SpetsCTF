@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import { error, redirect, fail, type ServerLoadEvent } from '@sveltejs/kit';
+import { error, redirect, fail } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
 import {
@@ -8,7 +8,7 @@ import {
     selectedCategoriesToBitset,
     validateCategory,
 } from '$lib/db/functions';
-import type { Category, ChallengeResources, Challenges } from '$lib/generated/db';
+import type { Category, ChallengeResources } from '$lib/generated/db';
 import { writeFile, mkdir, unlink } from 'fs/promises';
 import sanitize from 'sanitize-filename';
 import path from 'path';
@@ -209,7 +209,7 @@ export const actions = {
                     const filename = path.basename(filepath.content);
                     const completeFilepath = path.join(challengeDir, filename);
                     unlink(completeFilepath);
-                } catch (err) {
+                } catch {
                     console.error('Error deleting file', filepath.content);
                 }
             });
@@ -257,7 +257,7 @@ export const actions = {
                 }) as Insertable<ChallengeResources>[];
 
                 if (resource_files.length > 0) {
-                    const _ = await db
+                    await db
                         .insertInto('challenge_resources')
                         .values(resource_files)
                         .execute();
@@ -265,16 +265,15 @@ export const actions = {
             }
 
             const commands = formData.getAll('commands') as string[];
-            let _deleteCommands;
             if (commands.length > 0) {
-                _deleteCommands = await db
+                await db
                     .deleteFrom('challenge_resources')
                     .where('challenge', '=', challengeId)
                     .where('type', '=', 'cmd')
                     .where('content', 'not in', commands)
                     .execute();
             } else {
-                _deleteCommands = await db
+                await db
                     .deleteFrom('challenge_resources')
                     .where('challenge', '=', challengeId)
                     .where('type', '=', 'cmd')
@@ -282,7 +281,7 @@ export const actions = {
             }
 
             if (commands.length > 0) {
-                const newCommands = await db
+                await db
                     .insertInto('challenge_resources')
                     .columns(['challenge', 'type', 'content'])
                     .values(
@@ -299,9 +298,8 @@ export const actions = {
             }
 
             const websites = formData.getAll('websites') as string[];
-            let _deleteWebsites;
             if (websites.length > 0) {
-                _deleteWebsites = await db
+                await db
                     .deleteFrom('challenge_resources')
                     .where('challenge', '=', challengeId)
                     .where('type', '=', 'web')
@@ -309,7 +307,7 @@ export const actions = {
                     .returning('content')
                     .execute();
             } else {
-                _deleteWebsites = await db
+                await db
                     .deleteFrom('challenge_resources')
                     .where('challenge', '=', challengeId)
                     .where('type', '=', 'web')
@@ -320,7 +318,7 @@ export const actions = {
                 website.match(linkPattern)
             );
             if (allowedWebsites.length > 0) {
-                const _newWebsites = await db
+                await db
                     .insertInto('challenge_resources')
                     .columns(['challenge', 'type', 'content'])
                     .values(
@@ -338,11 +336,11 @@ export const actions = {
                     .execute();
             }
 
-            let message;
-            user.is_admin || isOrg
-                ? (message = 'Challenge successfully edited')
-                : (message =
-                      'Challenge successfully edited and has been submitted for review');
+            const message =
+                user.is_admin || isOrg
+                    ? 'Challenge successfully edited'
+                    : 'Challenge successfully edited and has been submitted for review';
+
             return { success: true, message };
         } catch (err) {
             const errorTyped = err as Error;

@@ -3,7 +3,7 @@ import { error, redirect } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
 
-export const load: PageServerLoad = async ({ locals, params }) => {
+export const load: PageServerLoad = async ({ locals }) => {
     const user = locals.user;
 
     if (!user) {

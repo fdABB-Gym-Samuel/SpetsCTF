@@ -6,7 +6,6 @@ import { sql } from 'kysely';
 import type { Insertable, Selectable } from 'kysely';
 import sanitize from 'sanitize-filename';
 import { randomUUID } from 'crypto';
-import { Flag } from '@lucide/svelte';
 
 export function validateCategory(value: any): Category {
     if (

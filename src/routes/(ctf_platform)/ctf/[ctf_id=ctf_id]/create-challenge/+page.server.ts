@@ -1,10 +1,4 @@
-import {
-    fail,
-    error,
-    redirect,
-    type ServerLoadEvent,
-    type Actions,
-} from '@sveltejs/kit';
+import { fail, redirect, type ServerLoadEvent, type Actions } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import {
     validateCategory,
@@ -217,10 +211,7 @@ export const actions = {
                     ...resource_commands,
                     ...resource_websites,
                 ] as Insertable<ChallengeResources>[];
-                const _ = await db
-                    .insertInto('challenge_resources')
-                    .values(resources)
-                    .execute();
+                await db.insertInto('challenge_resources').values(resources).execute();
             }
 
             return {

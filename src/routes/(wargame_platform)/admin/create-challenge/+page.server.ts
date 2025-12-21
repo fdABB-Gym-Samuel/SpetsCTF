@@ -208,10 +208,7 @@ export const actions = {
                     ...resource_commands,
                     ...resource_websites,
                 ] as Insertable<ChallengeResources>[];
-                const _ = await db
-                    .insertInto('challenge_resources')
-                    .values(resources)
-                    .execute();
+                await db.insertInto('challenge_resources').values(resources).execute();
             }
             return { success: true, message: 'Challenge uploaded successfully' };
         } catch (err) {

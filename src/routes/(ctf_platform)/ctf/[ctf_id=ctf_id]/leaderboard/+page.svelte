@@ -56,7 +56,7 @@
 <main class="content m-auto w-full max-w-[1200px] pt-20" bind:this={componentRoot}>
 	{#if ctf_data && ctf_data.end_time < new Date()}
 		<section class="mb-8 flex h-80 w-full items-end justify-center">
-			{#each [2, 0, 1] as idx, i}
+			{#each [2, 0, 1] as idx, i (idx)}
 				<div class="flex h-full w-1/3 flex-col items-center justify-end">
 					<h5 class="text-lg opacity-0" bind:this={textRefs[i]}>{scores[idx]?.team_name}</h5>
 					<div

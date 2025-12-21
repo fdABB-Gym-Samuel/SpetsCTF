@@ -1,6 +1,6 @@
 <script lang="ts">
 	let { data } = $props();
-	let { translations, ctf_data } = data;
+	let { ctf_data } = data;
 
 	import { page } from '$app/state';
 	import { Swords } from '@lucide/svelte';
@@ -13,6 +13,7 @@
 
 	import HSeperator from '$lib/components/HSeperator.svelte';
 	import Button from '$lib/components/Button.svelte';
+    import { resolve } from '$app/paths';
 	// import type { H } from 'vitest/dist/chunks/environment.d8YfPkTm.js';
 
 	let countdown = $state({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -118,7 +119,7 @@
 					<div
 						class="bg-bg-800 inner-shadow flex items-center justify-between rounded-lg px-10 py-2 pb-3 select-none"
 					>
-						{#each Object.entries(countdown) as [label, number], index}
+						{#each Object.entries(countdown) as [label, number], index (number)}
 							<div class="flex flex-col items-center">
 								<p class="-mb-2 flex-1 text-center text-lg">{number}</p>
 								<p class="text-text-200 text-sm">{label}</p>
@@ -140,7 +141,7 @@
 				<Button
 					label="See Challenges"
 					type="button"
-					onClick={() => goto(`${page.url}/challenges`)}
+					onClick={() => goto(resolve(`/(ctf_platform)/ctf/[ctf_id=ctf_id]/challenges`, {ctf_id: page.params.ctf_id ?? ''}))}
 					Icon={Swords}
 					ariaLabel="Go to challenges"
 				/>

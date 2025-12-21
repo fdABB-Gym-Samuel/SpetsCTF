@@ -65,7 +65,7 @@
 		</section>
 		<section class="justify arounditems-center flex">
 			<ul class="categroies flex w-full flex-row flex-wrap">
-				{#each displayedCategories as category, index}
+				{#each displayedCategories as category, index (category)}
 					<li
 						class="text-text-100 px-4 py-1 text-xs
             {index === 0 ? 'bg-gradient-100 rounded-l-xl rounded-bl-xl' : ''}

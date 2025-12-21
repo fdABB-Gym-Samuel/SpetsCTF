@@ -155,7 +155,7 @@
 
 <h5 class="border-bg-600 mb-2 border-b-2 text-lg">Files</h5>
 <ul class="flex flex-col gap-2">
-	{#each original_files as filepath, i}
+	{#each original_files as filepath, i (filepath)}
 		<li class="itmes-center flex flex-row justify-start gap-2">
 			<p>{filepath.split('/')[filepath.split('/').length - 1]}</p>
 			<Button
@@ -174,7 +174,7 @@
 			</div>
 		</li>
 	{/each}
-	{#each files !== undefined ? files : [] as file, i}
+	{#each files !== undefined ? files : [] as file, i (file.name)}
 		<li class="itmes-center flex flex-row justify-start gap-2">
 			<p>{file instanceof File ? file.name : file}</p>
 
@@ -200,7 +200,7 @@
 	{#if ['command', 'website', 'file'].includes(type)}
 		<h5 class="border-bg-600 mb-2 border-b-2 text-lg">{type}s</h5>
 		<ul class="flex flex-col gap-2">
-			{#each resource_list as resource, i}
+			{#each resource_list as resource, i (resource)}
 				<li class="flex flex-row items-center gap-2">
 					<p>{resource}</p>
 					<Button

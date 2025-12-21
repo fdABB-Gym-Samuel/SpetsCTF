@@ -88,8 +88,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
             success: true,
             message: `Successfully joined team, ${team?.displayName}`,
         };
-    } catch (err) {
-        const errorTyped = err as Error;
+    } catch {
         return error(500, { message: 'Something went wrong' });
     }
 };

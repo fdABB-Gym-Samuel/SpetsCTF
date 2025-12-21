@@ -1,4 +1,4 @@
-import type { PageServerLoad } from '../$types';
+import type { PageServerLoad } from './$types';
 import { error, redirect, fail, type Actions, isRedirect } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
@@ -7,7 +7,7 @@ import {
     selectedCategoriesToBitset,
     validateCategory,
 } from '$lib/db/functions';
-import type { Category, ChallengeResources, Challenges } from '$lib/generated/db';
+import type { Category, ChallengeResources } from '$lib/generated/db';
 import { writeFile, mkdir, unlink } from 'fs/promises';
 import sanitize from 'sanitize-filename';
 import path from 'path';
@@ -17,8 +17,8 @@ import { linkPattern } from '$lib/utils/utils';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
     const user = locals.user;
-    // @ts-expect-error
-    const challengeId = params.challengeId;
+    const challengeId = params.challengeId ?? '';
+    if (challengeId === '') error(404);
 
     if (!user) {
         return redirect(303, '/login');
@@ -85,7 +85,8 @@ export const actions = {
     default: async ({ request, params, locals }) => {
         try {
             const user = locals.user;
-            const challengeId = params.challengeId;
+            const challengeId = params.challengeId ?? '';
+            if (challengeId === '') fail(400);
 
             if (!user) {
                 return redirect(304, '/login');
@@ -207,7 +208,7 @@ export const actions = {
                     const filename = path.basename(filepath.content);
                     const completeFilepath = path.join(challengeDir, filename);
                     unlink(completeFilepath);
-                } catch (err) {
+                } catch {
                     console.error('Error deleting file', filepath.content);
                 }
             });
@@ -255,7 +256,7 @@ export const actions = {
                 }) as Insertable<ChallengeResources>[];
 
                 if (resource_files.length > 0) {
-                    const _ = await db
+                    await db
                         .insertInto('challenge_resources')
                         .values(resource_files)
                         .execute();
@@ -263,16 +264,15 @@ export const actions = {
             }
 
             const commands = formData.getAll('commands') as string[];
-            let _deleteCommands;
             if (commands.length > 0) {
-                _deleteCommands = await db
+                await db
                     .deleteFrom('challenge_resources')
                     .where('challenge', '=', challengeId)
                     .where('type', '=', 'cmd')
                     .where('content', 'not in', commands)
                     .execute();
             } else {
-                _deleteCommands = await db
+                await db
                     .deleteFrom('challenge_resources')
                     .where('challenge', '=', challengeId)
                     .where('type', '=', 'cmd')
@@ -280,7 +280,7 @@ export const actions = {
             }
 
             if (commands.length > 0) {
-                const newCommands = await db
+                await db
                     .insertInto('challenge_resources')
                     .columns(['challenge', 'type', 'content'])
                     .values(
@@ -296,9 +296,8 @@ export const actions = {
                     .executeTakeFirst();
             }
             const websites = formData.getAll('websites') as string[];
-            let _deleteWebsites;
             if (websites.length > 0) {
-                _deleteWebsites = await db
+                await db
                     .deleteFrom('challenge_resources')
                     .where('challenge', '=', challengeId)
                     .where('type', '=', 'web')
@@ -306,7 +305,7 @@ export const actions = {
                     .returning('content')
                     .execute();
             } else {
-                _deleteWebsites = await db
+                await db
                     .deleteFrom('challenge_resources')
                     .where('challenge', '=', challengeId)
                     .where('type', '=', 'web')
@@ -317,7 +316,7 @@ export const actions = {
                 website.match(linkPattern)
             );
             if (allowedWebsites.length > 0) {
-                const _newWebsites = await db
+                await db
                     .insertInto('challenge_resources')
                     .columns(['challenge', 'type', 'content'])
                     .values(

@@ -22,8 +22,7 @@
 			<ul class="users flex flex-row items-center">
 				<span class="bg-primary h-8 w-0.5"></span>
 
-				{#each users as string[] as user}
-					<!-- TODO investigate how kysely can infer types here -->
+				{#each users as string[] as user (user)}
 					<li class=" w-full text-center">
 						<p>{user}</p>
 					</li>
@@ -35,7 +34,7 @@
 
 	<div>
 		<h3>{translations.invite}</h3>
-		<a href={inviteLink}>{inviteLink}</a>
+		<pre><code>{inviteLink}</code></pre>
 		<button
 			onclick={async () => {
 				if (browser) {

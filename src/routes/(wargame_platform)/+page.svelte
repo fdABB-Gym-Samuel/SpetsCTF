@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { resolve } from "$app/paths";
+	
 	let { data } = $props();
-	let { translations, nextCtf } = data;
+	let { nextCtf } = data;
 
 	import { Brain } from '@lucide/svelte';
 
@@ -103,10 +105,10 @@
 		<h2 class="gsap-top-down-opacity">Who are we?</h2>
 		<p class="gsap-top-down-opacity">
 			SpetsCTF is a CTF and wargames platform. You can play <a
-				href="/challenges"
+				href={resolve("/challenges")}
 				class="text-primary-light underline">Challenges</a
 			>
-			or join <a href="/ctfs" class="text-primary-light underline">SpetsCTF</a> when it is time.
+			or join <a href={resolve("/ctfs")} class="text-primary-light underline">SpetsCTF</a> when it is time.
 		</p>
 	</div>
 	<div class="w-full perspective-midrange">
@@ -119,7 +121,7 @@
 				<div
 					class="bg-bg-800 inner-shadow flex items-center justify-between rounded-lg px-10 py-2 pb-3 select-none"
 				>
-					{#each Object.entries(countdown) as [label, number], index}
+					{#each Object.entries(countdown) as [label, number], index (label)}
 						<div class="flex flex-col items-center">
 							<p class="-mb-2 flex-1 text-center text-lg">{number}</p>
 							<p class="text-text-200 text-sm">{label}</p>
@@ -139,7 +141,7 @@
 		<Button
 			label="Start practicing"
 			type="button"
-			onClick={() => goto('/challenges')}
+			onClick={() => goto(resolve('/challenges'))}
 			Icon={Brain}
 			ariaLabel="Go to challenges"
 		/>
