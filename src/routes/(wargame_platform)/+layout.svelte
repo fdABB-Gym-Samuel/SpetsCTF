@@ -1,13 +1,13 @@
 <script lang="ts">
-	import '../../app.css';
+	import { resolve } from "$app/paths";
 	import Navbar from '$lib/components/Navbar.svelte';
 	let { children, data } = $props();
 	let { user, translations } = data;
 
 	const links = [
-		{ display: translations.challenges, href: '/challenges' },
-		{ display: translations.ctfs, href: `/ctfs` },
-		{ display: translations.leaderboard, href: `/leaderboard` }
+		{ display: translations.challenges, href: resolve('/challenges') },
+		{ display: translations.ctfs, href: resolve('/ctfs') },
+		{ display: translations.leaderboard, href: resolve('/leaderboard') }
 	];
 </script>
 

@@ -47,7 +47,7 @@
 		class="{width} bg-bg-850 border-bg-500 focus:border-primary-light rounded-lg border-2 px-6 py-2 outline-0 {heightStyles}"
 		{rows}
 		onfocus={() => (textareaFocused = true)}
-		onblur={(e) => (textareaFocused = false)}
+		onblur={() => (textareaFocused = false)}
 		oninput={() => handleInput()}
 		{required}
 	></textarea>

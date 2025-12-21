@@ -18,7 +18,7 @@
 		bind:value
 		{required}
 	>
-		{#each options as option}
+		{#each options as option (option.value)}
 			<option value={option.value}>{option.text}</option>
 		{/each}
 	</select>

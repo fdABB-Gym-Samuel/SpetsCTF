@@ -5,15 +5,8 @@ import {
     setSessionTokenCookie,
     validateSessionToken,
 } from '$lib/db/functions';
-import { dev } from '$app/environment';
 
 export const handle: Handle = async ({ event, resolve }) => {
-    if (
-        dev &&
-        event.url.pathname === '/.well-known/appspecific/com.chrome.devtools.json'
-    ) {
-        return new Response(undefined, { status: 404 });
-    }
     const token = event.cookies.get('session') ?? null;
 
     event.locals.translations = getTranslations(

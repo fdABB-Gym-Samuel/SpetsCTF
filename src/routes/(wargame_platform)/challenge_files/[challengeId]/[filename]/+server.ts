@@ -1,6 +1,6 @@
 import { db } from '$lib/db/database.js';
 import { error, type RequestEvent } from '@sveltejs/kit';
-import fs from 'fs/promises';
+import { createReadableStream } from '@sveltejs/kit/node';
 import { sql } from 'kysely';
 import path from 'path';
 
@@ -36,9 +36,11 @@ export async function GET({ params }: RequestEvent) {
                     "Challenge hasn't been approved, all resources belonging to this file have not been confirmed to be safe.",
             });
         }
+
         const filepath = path.join(process.cwd(), 'files', challengeId, filename);
-        const file = await fs.readFile(filepath);
-        return new Response(file, {
+
+        const reader = createReadableStream(filepath);
+        return new Response(reader, {
             status: 200,
             headers: {
                 'Content-Type': 'application/octet-stream',

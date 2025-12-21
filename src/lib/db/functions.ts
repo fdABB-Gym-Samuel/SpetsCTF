@@ -7,7 +7,7 @@ import type { Insertable, Selectable } from 'kysely';
 import sanitize from 'sanitize-filename';
 import { randomUUID } from 'crypto';
 
-export function validateCategory(value: any): Category {
+export function validateCategory(value: string): Category {
     if (
         [
             'crypto',

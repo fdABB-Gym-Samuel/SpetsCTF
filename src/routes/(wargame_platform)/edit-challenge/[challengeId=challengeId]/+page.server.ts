@@ -7,7 +7,6 @@ import {
     selectedCategoriesToBitset,
     validateCategory,
 } from '$lib/db/functions';
-import type { Category } from '$lib/db/schema';
 import type { ChallengeResources } from '$lib/generated/db';
 import { writeFile, mkdir, unlink } from 'fs/promises';
 import sanitize from 'sanitize-filename';
@@ -115,7 +114,7 @@ export const actions = {
                 return fail(404, { message: 'Points must be a non-negative integer' });
             }
 
-            const mainCategory: Category = validateCategory(
+            const mainCategory = validateCategory(
                 formData.get('challenge_category')?.toString() ?? ''
             );
 

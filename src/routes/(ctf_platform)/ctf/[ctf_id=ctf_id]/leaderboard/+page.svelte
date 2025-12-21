@@ -106,7 +106,7 @@
 					<div class="h-4"></div>
 					<table class="gsap-top-down-opacity w-full table-fixed">
 						<tbody>
-							{#each scores as team_, i}
+							{#each scores as teamInside, i (teamInside.team_id)}
 								<tr
 									class="*:border-bg-700 max-h-12 w-full text-wrap break-words *:border-t-0 [&>th:first-child]:rounded-l-lg [&>th:last-child]:rounded-r-lg
 
@@ -117,16 +117,16 @@
 											: i === 2
 												? 'text-primary-extra-light'
 												: ''}"
-									class:bg-bg-700={team && team.teamId === team_.team_id}
+									class:bg-bg-700={team && team.teamId === teamInside.team_id}
 								>
 									<td class="h-12 w-12 pl-4 text-left sm:w-18 sm:pl-10">{i + 1}</td>
 									<td
 										class="h-12 max-h-12 w-fit overflow-hidden text-left break-normal text-ellipsis"
-										><a class="ignore-default" href={`team/${team_.team_id}`}>{team_.team_name}</a
+										><a class="ignore-default" href={`team/${team?.teamId ?? ''}`}>{teamInside.team_name}</a
 										></td
 									>
 									<td class="h-12 w-18 pr-4 text-right sm:w-24 sm:pr-10"
-										>{team_.total_points == null ? 0 : team_.total_points}</td
+										>{teamInside.total_points == null ? 0 : teamInside.total_points}</td
 									>
 								</tr>
 							{/each}

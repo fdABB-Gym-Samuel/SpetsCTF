@@ -9,9 +9,9 @@
 	let { user, translations } = data;
 
 	const links = [
-		{ display: 'Challenges', href: '/challenges' },
-		{ display: 'CTFs', href: `/ctfs` },
-		{ display: 'Leaderboard', href: `/scoreboard` }
+		{ display: 'Challenges', href: resolve('/challenges') },
+		{ display: 'CTFs', href: resolve('/ctfs') },
+		{ display: 'Leaderboard', href: resolve(`/(wargame_platform)/leaderboard`) }
 	];
 </script>
 

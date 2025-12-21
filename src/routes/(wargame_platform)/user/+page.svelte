@@ -30,8 +30,7 @@
 
 	onMount(async () => {
 		if (form?.justLoggedOut) {
-			// TODO: Make this not use a searchParam.
-			await goto(resolve('/') + '?justLoggedOut=true');
+			await goto(resolve('/'), {invalidateAll: true});
 		}
 	});
 </script>

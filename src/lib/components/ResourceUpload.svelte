@@ -196,7 +196,7 @@
 		<input type="file" name="files" {form} bind:files hidden />
 	{/if}
 </ul>
-{#each Object.entries(challenge_resources) as [type, resource_list]: ["website"|"command", resource[]]}
+{#each Object.entries(challenge_resources) as [type, resource_list]: ["website"|"command", resource[]], index (index)}
 	{#if ['command', 'website', 'file'].includes(type)}
 		<h5 class="border-bg-600 mb-2 border-b-2 text-lg">{type}s</h5>
 		<ul class="flex flex-col gap-2">

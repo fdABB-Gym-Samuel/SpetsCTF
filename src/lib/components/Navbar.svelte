@@ -5,6 +5,8 @@
 	import { Menu } from '@lucide/svelte';
 
 	import { page } from '$app/state';
+	import { resolve } from "$app/paths";
+	import type { ResolvedPathname } from "$app/types";
 
 	import { gsap } from 'gsap';
 
@@ -14,7 +16,7 @@
 
 	interface NavLink {
 		display: string;
-		href: string;
+		href: ResolvedPathname;
 	}
 
 	interface Props {
@@ -27,7 +29,7 @@
 
 	let { user, translations, links }: Props = $props();
 
-	const toggle_sidebar = (e: MouseEvent | KeyboardEvent, isBackdrop: boolean = false) => {
+	const toggleSidebar = (e: MouseEvent | KeyboardEvent, isBackdrop: boolean = false) => {
 		if (isBackdrop) {
 			if (e.currentTarget === e.target) {
 				showSidebar = !showSidebar;
@@ -72,7 +74,7 @@
 				<a
 					class="nav-option link"
 					style="filter: url(#turbulance);"
-					href="/"
+					href={resolve("/")}
 					aria-label="Home"
 					onmouseenter={() =>
 						gsap.to('#turbulance', { attr: { baseFrequency: 0.01 }, duration: 1.2 })}
@@ -85,7 +87,7 @@
 				<button
 					class="ignore-default ml-2 flex flex-col gap-1.5"
 					aria-label="Open Sidebar"
-					onclick={toggle_sidebar}
+					onclick={toggleSidebar}
 				>
 					<Menu></Menu>
 				</button>
@@ -96,13 +98,13 @@
 				? 'md:flex'
 				: 'sm:flex'}"
 		>
-			{#each links as nav_link}
+			{#each links as navLink, index (index)}
 				<li>
 					<a
-						class="nav-option link {page.url.pathname === nav_link.href
+						class="nav-option link {page.url.pathname === navLink.href
 							? 'decoration-bg-700 underline decoration-3 underline-offset-4'
 							: ''}"
-						href={nav_link.href}>{nav_link.display}</a
+						href={navLink.href}>{navLink.display}</a
 					>
 				</li>
 			{/each}
@@ -128,9 +130,9 @@
 	{#if showSidebar}
 		<div
 			class="backdrop bg-backdrop fixed bottom-0 left-0 z-30 h-[var(--main-height)] w-screen"
-			onclick={(e: MouseEvent) => toggle_sidebar(e, true)}
+			onclick={(e: MouseEvent) => toggleSidebar(e, true)}
 			onkeydown={(e) => {
-				if (e.key === ' ' || e.key === 'Enter') toggle_sidebar(e, true);
+				if (e.key === ' ' || e.key === 'Enter') toggleSidebar(e, true);
 			}}
 			aria-label="close-sidebar"
 			role="button"
@@ -141,19 +143,19 @@
 			>
 				<div>
 					<div class="">
-						<button aria-label="Close sidebar" class="ignore-default" onclick={toggle_sidebar}>
+						<button aria-label="Close sidebar" class="ignore-default" onclick={toggleSidebar}>
 							<ArrowLeft />
 						</button>
 					</div>
 					<div class="w-full px-2">
 						<ul class="flex h-full flex-col items-stretch space-x-2 pr-5 pl-2">
-							{#each links as link}
+							{#each links as link (link.href)}
 								<li class="border-primary-light m-0 border-b-2 py-2 pl-1">
 									<a
 										class="ignore-default hover:!text-primary"
 										href={link.href}
 										onclick={(e) => {
-											toggle_sidebar(e, false);
+											toggleSidebar(e, false);
 										}}>{link.display}</a
 									>
 								</li>
@@ -166,7 +168,7 @@
 						<a
 							href="/user"
 							onclick={(e) => {
-								toggle_sidebar(e, false);
+								toggleSidebar(e, false);
 							}}
 							class="ignore-default max-w-full space-x-4 truncate text-center underline"
 						>
@@ -180,7 +182,7 @@
 							responsiveStyles="!px-6 md:!px-8"
 							onClick={(e: MouseEvent) => {
 								goto('/login');
-								toggle_sidebar(e, false);
+								toggleSidebar(e, false);
 							}}
 							Icon={LogIn}
 							ariaLabel="Login"

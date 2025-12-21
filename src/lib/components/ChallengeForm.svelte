@@ -6,35 +6,38 @@
 	import ResourceUpload from '$lib/components/ResourceUpload.svelte';
 	import Checkbox from '$lib/components/input/Checkbox.svelte';
 
+	import type { Challenges,Flag, Category, ChallengeResources } from '$lib/generated/db';
+
 	import { categories } from '$lib/db/constants';
 	import { enhance } from '$app/forms';
+
+	interface Props {
+		action: string;
+		challengeData: Challenges & {flag: Flag} & {challenge_category: Category} & {resources: ChallengeResources} | undefined;
+		editing: boolean;
+		formName: string;
+		isAuthor: boolean;
+		submitText: string;
+	};
+	
 	let {
 		formName,
 		submitText,
-		action = '',
+		action,
+		editing,
 		isAuthor,
-		challengeData = {
-			challenge_id: '',
-			challenge_name: '',
-			challenge_description: '',
-			challenge_category: 'misc',
-			challenge_sub_categories: '00000000',
-			points: undefined,
-			flag_format: '',
-			flag: '',
-			author: undefined,
-			author_id: undefined,
-			resources: []
-		}
-	} = $props();
+		challengeData,
+	}: Props = $props();
 
-	let displayName = $state(challengeData.challenge_name);
-	let description = $state(challengeData.description);
-	let flag = $state(challengeData.flag);
-	let flagFormat = $state(challengeData.flag_format);
-	let points = $state(challengeData.points);
+	void editing;
 
-	let mainCategory = $state(challengeData.challenge_category);
+	let displayName = $state(challengeData?.display_name ?? '');
+	let description = $state(challengeData?.description ?? '');
+	let flag = $state(challengeData?.flag.flag ?? '');
+	let flagFormat = $state(challengeData?.flag.flag_format ?? '');
+	let points = $state(challengeData?.points ?? 0);
+
+	let mainCategory = $state(challengeData?.challenge_category ?? 'misc');
 	let categoryOptions = categories.map((category) => ({
 		value: category,
 		text: category.charAt(0).toUpperCase() + category.slice(1)
@@ -44,7 +47,7 @@
 	);
 	let selectedSubCategories: string[] = $state([]);
 	selectedSubCategories = categories.filter(
-		(_, index) => challengeData.challenge_sub_categories.split('').reverse().join('')[index] === '1'
+		(_, index) => challengeData?.challenge_sub_categories.split('').reverse().join('')[index] === '1'
 	);
 
 	let privacyOptions = $state([
@@ -55,7 +58,7 @@
 
 	let submitButtonDisabled = $derived(!displayName || !flag || !points || !mainCategory);
 
-	let resources = challengeData.resources;
+	let resources = challengeData?.resources;
 </script>
 
 <p class="text-sm"><span class="text-primary-light">*</span>: Required</p>

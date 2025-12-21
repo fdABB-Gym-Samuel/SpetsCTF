@@ -260,7 +260,7 @@
 					{#if challenge_data.num_solves != 0}
 						<h5 class="text-text-200">First Solvers:</h5>
 						<ol class="first-solvers flex list-inside list-decimal flex-col justify-start">
-							{#each challenge_data.first_solvers as solver}
+							{#each challenge_data.first_solvers as solver (solver.id)}
 								<li class="solver">{solver.display_name}</li>
 							{/each}
 						</ol>
@@ -275,7 +275,7 @@
 				class="categories @container flex h-fit w-fit flex-row flex-wrap"
 				style="container-type:normal"
 			>
-				{#each filteredCategories as category, index}
+				{#each filteredCategories as category, index (index)}
 					<li
 						class="text-text-100 px-7 py-1 text-xs
             {index === 0 ? 'bg-gradient-100 rounded-l-xl rounded-bl-xl' : ''}

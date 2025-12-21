@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+  import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/input/Input.svelte';
@@ -44,16 +45,6 @@
 		organizersToAdd = organizersToAdd.filter((org) => org.id !== id);
 	};
 
-	interface adminLink {
-		display: string;
-		href: string;
-	}
-
-	const adminLinks: adminLink[] = [
-		{ href: 'organizer/create-challenge', display: translations.createchallenge },
-		{ href: 'organizer/approve', display: translations.approve }
-	];
-
 	let dropdownData = $derived({
 		id: 'matchingUsers',
 		results: matchingUsers,
@@ -78,13 +69,16 @@
 <div class="content">
 	<h1 class="route-title">{translations.cuttingedgeadmintools}</h1>
 	<ul>
-		{#each adminLinks as adminLink}
 			<li>
-				<a class="text-primary underline" href={adminLink.href}>
-					{adminLink.display}
+				<a class="text-primary underline" href={resolve("/(ctf_platform)/ctf/[ctf_id=ctf_id]/organizer/create-challenge", {ctf_id: page.params.ctf_id ?? ''})}>
+					{translations.createchallenge}
 				</a>
 			</li>
-		{/each}
+			<li>
+				<a class="text-primary underline" href={resolve("/(ctf_platform)/ctf/[ctf_id=ctf_id]/organizer/approve", {ctf_id: page.params.ctf_id ?? ''})}>
+					{translations.approve}
+				</a>
+			</li>
 	</ul>
 
 	<h3 class="text-2xl">Add new organizer</h3>
@@ -106,7 +100,7 @@
 	</div>
 	<form action="?/addOrg" method="POST" use:enhance>
 		<ul class="mb-4 flex max-h-50 w-full flex-col items-center overflow-y-scroll px-4">
-			{#each organizersToAdd.slice().reverse() as newOrg, i}
+			{#each organizersToAdd.slice().reverse() as newOrg, i (newOrg.id)}
 				<li
 					class="flex w-full items-center justify-between gap-1 border-y-1 px-4 py-1.5"
 					class:bg-bg-600={i % 2 == 1}

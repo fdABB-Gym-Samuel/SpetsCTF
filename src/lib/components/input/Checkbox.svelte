@@ -6,7 +6,7 @@
 	<fieldset>
 		<legend>{title}</legend>
 		<ul class="gap-x-4 px-4 pt-2 [&>*:first-child]:border-t-1">
-			{#each options as option}
+			{#each options as option (option.text)}
 				<div
 					class="border-bg-500 flex w-full flex-row items-center justify-between border-b-1 px-4 py-1"
 				>

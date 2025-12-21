@@ -59,7 +59,7 @@
 		class="{width} bg-bg-850 border-bg-500 focus:border-primary-light rounded-full border-2 px-6 py-2 outline-0"
 		onkeydown={(e) => handleKeyDown(e)}
 		onfocus={() => (inputFocused = true)}
-		onblur={(e) => (inputFocused = false)}
+		onblur={() => (inputFocused = false)}
 		{multiple}
 		{required}
 	/>
