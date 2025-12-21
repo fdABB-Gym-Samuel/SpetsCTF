@@ -17,7 +17,7 @@
 	]);
 </script>
 
-<Navbar {data.user} {data.translations} {links}></Navbar>
+<Navbar user={data.user} translations={data.translations} {links}></Navbar>
 
 <main>
 	{@render children()}
