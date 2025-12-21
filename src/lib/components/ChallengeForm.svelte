@@ -12,8 +12,8 @@
 	import { enhance } from '$app/forms';
 
 	interface Props {
-		action: string;
-		challengeData: Challenges & {flag: Flag} & {challenge_category: Category} & {resources: ChallengeResources} | undefined;
+		action?: string;
+		challengeData?: Challenges & {flag: Flag} & {challenge_category: Category} & {resources: ChallengeResources};
 		editing: boolean;
 		formName: string;
 		isAuthor: boolean;

@@ -1,7 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { error, redirect, fail, type Actions } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
-import { sql } from 'kysely';
 import {
     insertFlag,
     selectedCategoriesToBitset,
@@ -14,6 +13,7 @@ import path from 'path';
 import { type Insertable } from 'kysely';
 import { categories } from '$lib/db/constants';
 import { linkPattern } from '$lib/utils/utils';
+import { jsonBuildObject, jsonArrayFrom } from 'kysely/helpers/postgres';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
     const user = locals.user;
@@ -28,32 +28,25 @@ export const load: PageServerLoad = async ({ locals, params }) => {
         .where('challenge_id', '=', challengeId)
         .leftJoin('flag as f', 'ch.flag', 'f.id')
         .leftJoin('users as a', 'ch.author', 'a.id')
-        .select([
-            'ch.challenge_id',
-            'ch.display_name as challenge_name',
-            'ch.description',
-            'ch.challenge_category',
-            'ch.challenge_sub_categories',
-            'ch.points',
-            'f.flag_format',
-            'f.flag',
-            'a.display_name as author',
-            'a.id as author_id',
-            sql<boolean>`ch.author = ${user.id}`.as('is_author'),
-            // Get an array of resources for the challenge (ordered by resource id).
-            sql<Pick<ChallengeResources, 'type' | 'content'>[]>`
-                COALESCE(
-                    (
-                      SELECT JSON_AGG(
-                        json_build_object('type', cr.type, 'content', cr.content)
-                        ORDER BY cr.id
-                      )
-                      FROM challenge_resources cr
-                      WHERE cr.challenge = ch.challenge_id
-                    ),
-                    '[]'::json
-                  )
-                `.as('resources'),
+        .selectAll('ch')
+        .select((eb) => [
+            jsonBuildObject({
+                id: eb.ref('f.id'),
+                flag: eb.ref('f.flag'),
+                flag_format: eb.ref('f.flag_format'),
+            }).as('flag'),
+            jsonBuildObject({
+                id: eb.ref('a.id'),
+                display_name: eb.ref('a.display_name'),
+            }).as('author_info'),
+            eb(eb.ref('ch.author'), '=', user.id).as('is_author'),
+            jsonArrayFrom(
+                eb
+                    .selectFrom('challenge_resources as cr')
+                    .selectAll('cr')
+                    .whereRef('cr.challenge', '=', 'ch.challenge_id')
+                    .orderBy('cr.id')
+            ).as('resources'),
         ])
         .executeTakeFirst();
 
@@ -61,7 +54,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
         return error(404, { message: 'Challenge not found' });
     }
 
-    if (!user.is_admin && editableChallenge.author_id !== user.id) {
+    if (!user.is_admin && !editableChallenge.is_author) {
         return error(401, {
             message:
                 'Challenges can only be edited by the author of a specific challenge or an admin',

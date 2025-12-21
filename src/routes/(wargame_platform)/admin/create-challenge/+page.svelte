@@ -14,6 +14,5 @@
 		<span class="text-red-600">{translations.failure}: {form.message}</span>
 	{/if}
 
-	<ChallengeForm submitText="Create Challenge" {formName} isAuthor={true} editing={false}
-	></ChallengeForm>
+	<ChallengeForm submitText="Create Challenge" {formName} isAuthor={true} editing={false}></ChallengeForm>
 </div>

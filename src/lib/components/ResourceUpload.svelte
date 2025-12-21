@@ -10,12 +10,6 @@
 
 	type resource_type = 'file' | 'command' | 'website';
 
-	interface resource {
-		resource_type: resource_type;
-		resource_content?: string;
-		resource_file?: File;
-	}
-
 	const resourceTypeOptions = [
 		{ text: 'Website', value: 'website' },
 		{ text: 'Command', value: 'command' },
@@ -26,7 +20,7 @@
 	let currentResourceContent: string = $state('');
 	let currentResourceFile: File | undefined = $state();
 
-	let challenge_resources: Record<'command' | 'website', string[]> = $state({
+	let challengeResources: Record<'command' | 'website', string[]> = $state({
 		command: resourceData
 			?.filter((res: { type: 'cmd' | 'web' | 'file'; content: string }) => res.type === 'cmd')
 			.map((res: { type: 'cmd' | 'web' | 'file'; content: string }) => res.content),
@@ -55,7 +49,7 @@
 		let resources: File[] | string[];
 		if (type !== 'file') {
 			resources = formData.getAll(type_formdata) as string[];
-			challenge_resources[type] = [...challenge_resources[type], ...resources];
+			challengeResources[type] = [...challengeResources[type], ...resources];
 		} else {
 			resources = formData.getAll(type_formdata) as File[];
 			if (files !== undefined) {
@@ -75,16 +69,16 @@
 		}
 	};
 	const remove_resource = (type: resource_type, index: number) => {
-		if (type !== 'file') challenge_resources[type].splice(index, 1);
+		if (type !== 'file') challengeResources[type].splice(index, 1);
 		// Files are a little more complicated, needing a DataTransfer (actually the FileList in it),
 		// this is because i want to insert a "hidden" input element conatining all the files
 		// in order to not have to send my own formdata directly to the sveltekit action, which interferes
 		// with small parts of the form implementation (status at the top, which is done through form prop)
 		else {
 			if (files !== undefined) {
-				let new_files: File[] = Array.from(files).filter((file, i) => i !== index);
+				let newFiles: File[] = Array.from(files).filter((_, i) => i !== index);
 				let dt = new DataTransfer();
-				new_files.forEach((file: File) => {
+				newFiles.forEach((file: File) => {
 					dt.items.add(file);
 				});
 				files = dt.files;
@@ -196,7 +190,7 @@
 		<input type="file" name="files" {form} bind:files hidden />
 	{/if}
 </ul>
-{#each Object.entries(challenge_resources) as [type, resource_list]: ["website"|"command", resource[]], index (index)}
+{#each Object.entries(challengeResources) as [type, resource_list]: ["website"|"command", resource[]], index (index)}
 	{#if ['command', 'website', 'file'].includes(type)}
 		<h5 class="border-bg-600 mb-2 border-b-2 text-lg">{type}s</h5>
 		<ul class="flex flex-col gap-2">
