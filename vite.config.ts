@@ -8,5 +8,8 @@ export default defineConfig({
         fs: {
             allow: ['./static'],
         },
+        watch: {
+            ignored: ['**/tmp', '**/tmp/**'],
+        },
     },
 });
