@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import type { Users } from '$lib/db/db';
+	import type { Users } from '$lib/generated/db';
 	import type { Selectable } from 'kysely';
 	import { Menu } from '@lucide/svelte';
 

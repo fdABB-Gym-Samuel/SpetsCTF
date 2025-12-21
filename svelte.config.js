@@ -17,7 +17,7 @@ const config = {
                 'manifest-src': ['none'],
                 'script-src-elem': ['self'],
                 'script-src': ['self'],
-                'worker-src': ['none'],
+                'worker-src': ['self'],
             },
         },
     },

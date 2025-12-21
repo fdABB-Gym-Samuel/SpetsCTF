@@ -3,6 +3,7 @@
 	import Navbar from '$lib/components/Navbar.svelte';
 	import { page } from '$app/state';
 	import { enhance } from '$app/forms';
+	import { resolve } from "$app/paths";
 
 	let { data } = $props();
 	let { user, translations } = data;
@@ -22,7 +23,7 @@
 	<div class="flex flex-row items-center justify-center">
 		<div class="absolute left-0 block -rotate-90">
 			<a
-				href="/what_is_this_a_secret_challenge?"
+				href={resolve("/what_is_this_a_secret_challenge")}
 				class="ignore-default text-text-100 cursor-help select-none"
 				>or is there</a
 			>
@@ -31,7 +32,7 @@
 			<h1 class="ignore-default text-center font-mono text-9xl">{page.status}</h1>
 			{#if page.status === 404}
 				<h3 class="ignore-default text-center">No flag here, nor is there a page?</h3>
-				<a href="/super_great_artist">
+				<a href={resolve("/super_great_artist")}>
 					<img
 						src="/no_flag_no_page.png"
 						alt="Super cool 'No Flag, No Page'"
@@ -59,7 +60,7 @@
 				</form>
 			{:else if page.status === 401 || page.status === 403}
 				<h3>As the Wizard of the Land i beseach you to leave, for ...</h3>
-				<a href="/super_great_artist">
+				<a href={resolve("/super_great_artist")}>
 					<img
 						src="/thou_shall_not_pass.png"
 						alt="Super cool 'No Flag, No Page'"

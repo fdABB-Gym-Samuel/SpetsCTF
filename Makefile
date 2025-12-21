@@ -28,7 +28,7 @@ clean: postgres-clean dev-clean
 deps:
 	bun install
 
-dev: deps postgres seed
+dev: deps postgres codegen seed
 	bun --bun run dev
 
 ./tmp:

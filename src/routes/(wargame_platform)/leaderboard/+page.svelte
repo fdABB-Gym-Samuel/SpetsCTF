@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { resolve } from '$app/paths';
+
 	let { data } = $props();
 	let { user, users_scoreboard, classes_scoreboard } = data;
 
@@ -55,7 +57,7 @@
 					class="class-filtering gsap-top-down-opacity flex flex-row flex-wrap items-center gap-1.5"
 				>
 					<p class="text-text-200 mr-2 text-sm">Filter:</p>
-					{#each original_classes as cls}
+					{#each original_classes as cls (cls)}
 						<label class="gsap-right-left-opacity relative cursor-pointer px-4 select-none">
 							<input
 								type="checkbox"
@@ -104,7 +106,7 @@
 					<div class="h-4"></div>
 					<table class="gsap-top-down-opacity w-full table-fixed">
 						<tbody>
-							{#each filtered_users as player, i}
+							{#each filtered_users as player, i (player.id)}
 								<tr
 									class="*:border-bg-700 max-h-12 w-full text-wrap break-words *:border-t-0 [&>th:first-child]:rounded-l-lg [&>th:last-child]:rounded-r-lg
                         {i ===
@@ -131,7 +133,7 @@
 										class="h-12 max-h-12 w-fit overflow-hidden text-left break-normal text-ellipsis"
 									>
 										{#if player.display_name && player.id}
-											<a class="ignore-default" href={`/user/${player.id}`}>{player.display_name}</a
+											<a class="ignore-default" href={resolve(`/user/${player.id}`)}>{player.display_name}</a
 											>
 										{:else}
 											<span>Anonymous</span>
@@ -177,7 +179,7 @@
 				<!-- body only -->
 				<table class="gsap-top-down-opacity w-full table-fixed">
 					<tbody>
-						{#each classes_scoreboard.filter((class_) => class_.className !== 'No Class') as curr_class, i}
+						{#each classes_scoreboard.filter((class_) => class_.className !== 'No Class') as curr_class, i (String(curr_class.className))}
 							<tr
 								class="*:border-bg-700 w-full text-wrap break-words
                        *:border-t-0

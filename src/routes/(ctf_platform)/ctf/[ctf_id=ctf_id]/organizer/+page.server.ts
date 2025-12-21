@@ -94,7 +94,7 @@ export const actions = {
         }
 
         let numOrgsAdded = 0;
-        for (let newOrg of uniqueNewOrgs) {
+        for (const newOrg of uniqueNewOrgs) {
             const team = await db
                 .selectFrom('ctf_teams as t')
                 // pull whatever team fields you need:

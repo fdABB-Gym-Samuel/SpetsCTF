@@ -9,7 +9,7 @@ import {
 import type { PageServerLoad } from '../$types';
 import { sql, type Insertable } from 'kysely';
 import { get_flag_of_challenge, selectedCategoriesToBitset } from '$lib/db/functions';
-import type { CtfSubmissions } from '$lib/db/db';
+import type { CtfSubmissions } from '$lib/generated/db';
 
 export const load: PageServerLoad = async (event: ServerLoadEvent) => {
     const user = event.locals.user;
@@ -241,7 +241,7 @@ export const actions = {
 
             const flagIsCorrect = submittedFlag === correctFlag.flag;
 
-            let submission: Insertable<CtfSubmissions> = {
+            const submission: Insertable<CtfSubmissions> = {
                 ctf: ctfId,
                 challenge: challengeId,
                 user_id: user.id,

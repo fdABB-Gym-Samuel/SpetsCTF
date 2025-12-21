@@ -8,7 +8,7 @@ import {
     getIsOrg,
     insertFlag,
 } from '$lib/db/functions';
-import type { Category, ChallengeResources, Challenges } from '$lib/db/db';
+import type { Category, ChallengeResources, Challenges } from '$lib/generated/db';
 import { createFunctionModule, type Insertable } from 'kysely';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
@@ -145,8 +145,8 @@ export const actions = {
                         lastModified: file.lastModified,
                     });
                 });
-                let currently_used_filenames: string[] = [];
-                for (let [index, file] of files.entries()) {
+                const currently_used_filenames: string[] = [];
+                for (const [index, file] of files.entries()) {
                     if (currently_used_filenames.includes(file.name)) {
                         files[index] = new File(
                             [file],
@@ -160,8 +160,8 @@ export const actions = {
                     currently_used_filenames.push(file.name);
                 }
 
-                for (let file of files) {
-                    let filepath = path.join(challenge_dir, sanitize(file.name));
+                for (const file of files) {
+                    const filepath = path.join(challenge_dir, sanitize(file.name));
 
                     await writeFile(filepath, Buffer.from(await file.arrayBuffer()));
                 }
@@ -194,7 +194,7 @@ export const actions = {
                 content: string;
                 type: 'web';
             }[] = [];
-            let allowedWebsites = websites?.filter((website) =>
+            const allowedWebsites = websites?.filter((website) =>
                 website.match(linkPattern)
             );
             if (allowedWebsites !== undefined && allowedWebsites.length > 0) {

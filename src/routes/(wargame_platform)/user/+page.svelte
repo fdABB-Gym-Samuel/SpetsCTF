@@ -6,6 +6,7 @@
 	import { onMount } from 'svelte';
 
 	import { LogOut, Github } from '@lucide/svelte';
+    import { resolve } from '$app/paths';
 
 	let displayName = $derived.by(() => {
 		if (form && form.display_name) {
@@ -29,7 +30,8 @@
 
 	onMount(async () => {
 		if (form?.justLoggedOut) {
-			await goto('/?justLoggedOut=true');
+			// TODO: Make this not use a searchParam.
+			await goto(resolve('/') + '?justLoggedOut=true');
 		}
 	});
 </script>
@@ -87,7 +89,7 @@
 			value={representedClass}
 		>
 			<option value="">{translations.selectclass}</option>
-			{#each availableClasses as availableClass}
+			{#each availableClasses as availableClass (availableClass.name)}
 				<option value={availableClass.name}
 					>{availableClass.name} {availableClass.school ? `(${availableClass.school})` : ''}</option
 				>
@@ -105,7 +107,7 @@
 	{#if data.user && data.user.is_admin}
 		<h1 class="text-lg font-bold">{translations.admin}</h1>
 		<p class="w-72">{translations.admin_funny_text}</p>
-		<a class="text-gray-500 underline duration-200 ease-linear hover:text-text-100" href="/admin"
+		<a class="text-gray-500 underline duration-200 ease-linear hover:text-text-100" href={resolve("/admin")}
 			>{translations.admin_page}</a
 		>
 	{/if}

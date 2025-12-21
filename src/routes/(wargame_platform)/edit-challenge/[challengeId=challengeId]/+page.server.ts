@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import { error, redirect, fail } from '@sveltejs/kit';
+import { error, redirect, fail, type Actions } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
 import {
@@ -7,7 +7,8 @@ import {
     selectedCategoriesToBitset,
     validateCategory,
 } from '$lib/db/functions';
-import type { Category, ChallengeResources, Challenges } from '$lib/db/db';
+import type { Category } from '$lib/db/schema';
+import type { ChallengeResources } from '$lib/generated/db';
 import { writeFile, mkdir, unlink } from 'fs/promises';
 import sanitize from 'sanitize-filename';
 import path from 'path';
@@ -23,7 +24,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
         return redirect(303, '/login');
     }
 
-    let editableChallenge = await db
+    const editableChallenge = await db
         .selectFrom('challenges as ch')
         .where('challenge_id', '=', challengeId)
         .leftJoin('flag as f', 'ch.flag', 'f.id')
@@ -75,11 +76,10 @@ export const actions = {
     default: async ({ request, params, locals }) => {
         try {
             const user = locals.user;
-            const challengeId = params.challengeId;
+            const challengeId = params.challengeId ?? '';
+            if (challengeId === '') fail(404);
 
-            if (!user) {
-                return redirect(304, '/login');
-            }
+            if (!user) return redirect(304, '/login');
 
             const currentChallenge = await db
                 .selectFrom('challenges')
@@ -197,7 +197,7 @@ export const actions = {
                     const filename = path.basename(filepath.content);
                     const completeFilepath = path.join(challengeDir, filename);
                     unlink(completeFilepath);
-                } catch (err) {
+                } catch (_) {
                     console.error('Error deleting file', filepath.content);
                 }
             });
@@ -212,8 +212,8 @@ export const actions = {
                         lastModified: file.lastModified,
                     });
                 });
-                let currentlyUsedFilenames: string[] = originalFilesNew;
-                for (let [index, file] of newFiles.entries()) {
+                const currentlyUsedFilenames: string[] = originalFilesNew;
+                for (const [index, file] of newFiles.entries()) {
                     if (currentlyUsedFilenames.includes(file.name)) {
                         newFiles[index] = new File(
                             [file],
@@ -227,8 +227,8 @@ export const actions = {
                     currentlyUsedFilenames.push(file.name);
                 }
 
-                for (let file of newFiles) {
-                    let filepath = path.join(challengeDir, sanitize(file.name));
+                for (const file of newFiles) {
+                    const filepath = path.join(challengeDir, sanitize(file.name));
 
                     await writeFile(filepath, Buffer.from(await file.arrayBuffer()));
                 }
@@ -245,7 +245,7 @@ export const actions = {
                 }) as Insertable<ChallengeResources>[];
 
                 if (resource_files.length > 0) {
-                    const _ = await db
+                    await db
                         .insertInto('challenge_resources')
                         .values(resource_files)
                         .execute();
@@ -253,16 +253,15 @@ export const actions = {
             }
 
             const commands = formData.getAll('commands') as string[];
-            let _deleteCommands;
             if (commands.length > 0) {
-                _deleteCommands = await db
+                await db
                     .deleteFrom('challenge_resources')
                     .where('challenge', '=', challengeId)
                     .where('type', '=', 'cmd')
                     .where('content', 'not in', commands)
                     .execute();
             } else {
-                _deleteCommands = await db
+                await db
                     .deleteFrom('challenge_resources')
                     .where('challenge', '=', challengeId)
                     .where('type', '=', 'cmd')
@@ -270,7 +269,7 @@ export const actions = {
             }
 
             if (commands.length > 0) {
-                let newCommands = await db
+                await db
                     .insertInto('challenge_resources')
                     .columns(['challenge', 'type', 'content'])
                     .values(
@@ -287,9 +286,8 @@ export const actions = {
             }
 
             const websites = formData.getAll('websites') as string[];
-            let _deleteWebsites;
             if (websites.length > 0) {
-                _deleteWebsites = await db
+                await db
                     .deleteFrom('challenge_resources')
                     .where('challenge', '=', challengeId)
                     .where('type', '=', 'web')
@@ -297,18 +295,18 @@ export const actions = {
                     .returning('content')
                     .execute();
             } else {
-                _deleteWebsites = await db
+                await db
                     .deleteFrom('challenge_resources')
                     .where('challenge', '=', challengeId)
                     .where('type', '=', 'web')
                     .returning('content')
                     .execute();
             }
-            let allowedWebsites = websites?.filter((website) =>
+            const allowedWebsites = websites?.filter((website) =>
                 website.match(linkPattern)
             );
             if (allowedWebsites.length > 0) {
-                let _newWebsites = await db
+                await db
                     .insertInto('challenge_resources')
                     .columns(['challenge', 'type', 'content'])
                     .values(
@@ -335,4 +333,4 @@ export const actions = {
             return fail(500, { message: errorTyped.message });
         }
     },
-};
+} satisfies Actions;

@@ -7,7 +7,7 @@ import {
     selectedCategoriesToBitset,
     validateCategory,
 } from '$lib/db/functions';
-import type { Category, ChallengeResources, Challenges } from '$lib/db/db';
+import type { Category, ChallengeResources, Challenges } from '$lib/generated/db';
 import { writeFile, mkdir, unlink } from 'fs/promises';
 import sanitize from 'sanitize-filename';
 import path from 'path';
@@ -222,8 +222,8 @@ export const actions = {
                         lastModified: file.lastModified,
                     });
                 });
-                let currentlyUsedFilenames: string[] = originalFilesNew;
-                for (let [index, file] of newFiles.entries()) {
+                const currentlyUsedFilenames: string[] = originalFilesNew;
+                for (const [index, file] of newFiles.entries()) {
                     if (currentlyUsedFilenames.includes(file.name)) {
                         newFiles[index] = new File(
                             [file],
@@ -237,8 +237,8 @@ export const actions = {
                     currentlyUsedFilenames.push(file.name);
                 }
 
-                for (let file of newFiles) {
-                    let filepath = path.join(challengeDir, sanitize(file.name));
+                for (const file of newFiles) {
+                    const filepath = path.join(challengeDir, sanitize(file.name));
 
                     await writeFile(filepath, Buffer.from(await file.arrayBuffer()));
                 }
@@ -280,7 +280,7 @@ export const actions = {
             }
 
             if (commands.length > 0) {
-                let newCommands = await db
+                const newCommands = await db
                     .insertInto('challenge_resources')
                     .columns(['challenge', 'type', 'content'])
                     .values(
@@ -313,11 +313,11 @@ export const actions = {
                     .returning('content')
                     .execute();
             }
-            let allowedWebsites = websites?.filter((website) =>
+            const allowedWebsites = websites?.filter((website) =>
                 website.match(linkPattern)
             );
             if (allowedWebsites.length > 0) {
-                let _newWebsites = await db
+                const _newWebsites = await db
                     .insertInto('challenge_resources')
                     .columns(['challenge', 'type', 'content'])
                     .values(

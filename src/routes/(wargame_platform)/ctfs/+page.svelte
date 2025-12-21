@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { Frown } from '@lucide/svelte';
-
+	import { resolve } from "$app/paths";
 	let { data } = $props();
 	let { translations, ctfs } = data;
 
@@ -46,11 +45,11 @@
 		<h3 class="text-2xl">{translations.current_ctfs}</h3>
 		{#if ongoingCtfs.length > 0}
 			<ul>
-				{#each ongoingCtfs as ongoingCtf}
+				{#each ongoingCtfs as ongoingCtf (ongoingCtf.id)}
 					<li
 						class="border-primary my-2 flex flex-col justify-between gap-2 rounded-2xl border-2 bg-bg-900 px-2 py-0.5 "
 					>
-						<a class="ignore-default" href={`/ctf/${ongoingCtf.id}`}>
+						<a class="ignore-default" href={resolve(`/ctf/${ongoingCtf.id}`)}>
 							<h5>{ongoingCtf.display_name}</h5>
 							<div class="flex flex-row gap-2">
 								<span
@@ -90,8 +89,8 @@
 		<h3 class="text-2xl">{translations.upcoming_ctfs}</h3>
 		{#if upcomingCtfs.length > 0}
 			<ul>
-				{#each upcomingCtfs as upcomingCtf}
-					<a class="ignore-default" href={`/ctf/${upcomingCtf.id}`}>
+				{#each upcomingCtfs as upcomingCtf (upcomingCtf.id)}
+					<a class="ignore-default" href={resolve(`/ctf/${upcomingCtf.id}`)}>
 						<li
 							class="border-primary my-2 flex flex-col justify-between gap-2 rounded-2xl border-2 bg-black px-2 py-0.5"
 						>
@@ -134,8 +133,8 @@
 		<h3 class="text-2xl">{translations.past_ctfs}</h3>
 		{#if pastCtfs.length > 0}
 			<ul>
-				{#each pastCtfs as pastCtf}
-					<a class="ignore-default" href={`/ctf/${pastCtf.id}`}>
+				{#each pastCtfs as pastCtf (pastCtf.id)}
+					<a class="ignore-default" href={resolve(`/ctf/${pastCtf.id}`)}>
 						<li
 							class="border-primary my-2 flex flex-col justify-between gap-2 rounded-2xl border-2 bg-black px-2 py-0.5"
 						>

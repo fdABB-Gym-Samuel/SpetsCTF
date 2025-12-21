@@ -6,7 +6,7 @@ import {
     type ServerLoadEvent,
 } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
-import type { CtfEvents } from '$lib/db/db';
+import type { CtfEvents } from '$lib/generated/db';
 import type { Insertable } from 'kysely';
 
 export const load = async ({ locals }: ServerLoadEvent) => {

@@ -109,8 +109,8 @@
 		></Input>
 
 		<Checkbox
-			title={'Privacy'}
-			name={'privacy'}
+			title="Privacy"
+			name="privacy"
 			options={privacyOptions}
 			bind:selected={privacySelected}
 		></Checkbox>

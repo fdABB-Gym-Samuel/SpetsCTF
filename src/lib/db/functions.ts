@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import type { RequestEvent } from '@sveltejs/kit';
-import type { Category, UserSessions, Users } from './db';
+import type { Category, UserSessions, Users } from '../generated/db';
 import { db } from './database';
 import { sql } from 'kysely';
 import type { Insertable, Selectable } from 'kysely';

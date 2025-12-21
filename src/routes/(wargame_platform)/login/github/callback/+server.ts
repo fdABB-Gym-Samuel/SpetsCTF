@@ -27,7 +27,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
 
     try {
         tokens = await github.validateAuthorizationCode(code);
-    } catch (e) {
+    } catch {
         // Invalid code or client credentials
         return error(400);
     }

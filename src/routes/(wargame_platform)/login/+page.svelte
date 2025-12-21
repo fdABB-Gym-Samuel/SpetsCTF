@@ -3,6 +3,7 @@
 	let { translations } = data;
 
 	import { goto } from '$app/navigation';
+	import { resolve } from "$app/paths";
 	import Button from '$lib/components/Button.svelte';
 	import { Github } from '@lucide/svelte';
 
@@ -30,7 +31,7 @@
 	<Button
 		label="Log in with "
 		type="button"
-		onClick={() => goto('/login/github')}
+		onClick={() => goto(resolve('/login/github'))}
 		ariaLabel="Login with GitHub"
 		Icon={Github}
 		secondLabel="GitHub"

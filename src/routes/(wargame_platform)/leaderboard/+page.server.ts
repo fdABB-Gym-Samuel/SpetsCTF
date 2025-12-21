@@ -1,9 +1,8 @@
-import type { ServerLoadEvent } from '@sveltejs/kit';
-import type { PageServerLoad } from '../user/$types';
+import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
 
-export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
+export const load: PageServerLoad = async () => {
     const top_users = await get_top_users();
     const top_classes = await get_top_classes();
 

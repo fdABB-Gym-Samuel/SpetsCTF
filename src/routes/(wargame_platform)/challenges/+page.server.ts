@@ -3,7 +3,7 @@ import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
 import { type Insertable } from 'kysely';
-import type { WargameSubmissions } from '$lib/db/db';
+import type { WargameSubmissions } from '$lib/generated/db';
 import { get_flag_of_challenge } from '$lib/db/functions';
 
 export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
@@ -218,7 +218,7 @@ export const actions = {
 
             const flagIsCorrect = submittedFlag === correctFlag.flag;
 
-            let submission: Insertable<WargameSubmissions> = {
+            const submission: Insertable<WargameSubmissions> = {
                 challenge: challengeId,
                 user_id: user.id,
                 time: new Date(),

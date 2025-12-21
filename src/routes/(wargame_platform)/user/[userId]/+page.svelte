@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { resolve } from '$app/paths';
 	import ChallengeCard from '$lib/components/ChallengeCard.svelte';
 	let { data } = $props();
 	let { userInfo, translations } = data;
@@ -36,15 +37,15 @@
 		<h3>{translations.competed_in}:</h3>
 		<ul id="ctfs" class="flex flex-col">
 			{#if userInfo && userInfo.ctfs}
-				{#each userInfo?.ctfs as ctf, i}
+				{#each userInfo?.ctfs as ctf, i (ctf.ctfId)}
 					<li
 						class="flex flex-row items-center justify-between border-b-1 py-2"
 						class:border-t-1={i % 2 === 0}
 					>
-						<a class="w-full" href={`/ctf/${ctf.ctfId}`}>{ctf.ctfName}</a>
+						<a class="w-full" href={resolve(`/ctf/${ctf.ctfId}`)}>{ctf.ctfName}</a>
 						<div class="flex w-full flex-row justify-between gap-2">
 							<p>{translations.with}:</p>
-							<a href={`/ctf/${ctf.ctfId}/team/${ctf.teamId}`}>{ctf.teamName}</a>
+							<a href={resolve(`/ctf/${ctf.ctfId}/team/${ctf.teamId}`)}>{ctf.teamName}</a>
 						</div>
 					</li>
 				{/each}
@@ -55,7 +56,7 @@
 		<h3>{translations.has_solved}:</h3>
 		<ul class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
 			{#if userInfo && userInfo.solves}
-				{#each userInfo.solves as solve}
+				{#each userInfo.solves as solve (solve.id)}
 					<li>
 						<ChallengeCard data={{ challenge_data: solve }}></ChallengeCard>
 					</li>
@@ -67,7 +68,7 @@
 		<h3>{translations.has_authored}:</h3>
 		<ul class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
 			{#if userInfo && userInfo?.authoredChallenges}
-				{#each userInfo?.authoredChallenges as authoredChallenge}
+				{#each userInfo?.authoredChallenges as authoredChallenge (authoredChallenge.id)}
 					<li>
 						<ChallengeCard data={{ challenge_data: authoredChallenge }}></ChallengeCard>
 					</li>

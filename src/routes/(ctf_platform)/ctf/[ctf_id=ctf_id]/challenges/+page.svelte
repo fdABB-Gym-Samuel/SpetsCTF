@@ -215,9 +215,9 @@
 
 {#if challengeIdToDelete}
 	<WarningDialog
-		warningTitle={'Delete Challenge?'}
+		warningTitle="Delete Challenge?"
 		warningDescription={`Are you sure you want to delete ${challengeNameToDelete}`}
-		confirmationButtonText={'Delete'}
+		confirmationButtonText="Delete"
 		confirmationButtonIcon={Trash2}
 		action="?/delete"
 		close={closeDeleteDialog}
