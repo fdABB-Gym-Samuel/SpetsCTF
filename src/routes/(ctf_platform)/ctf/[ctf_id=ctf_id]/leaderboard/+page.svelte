@@ -60,14 +60,14 @@
 				<div class="flex h-full w-1/3 flex-col items-center justify-end">
 					<h5 class="text-lg opacity-0" bind:this={textRefs[i]}>{scores[idx]?.team_name}</h5>
 					<div
-						class="w-full overflow-hidden text-center"
+						class="w-full overflow-hidden text-center rounded-t-md"
 						class:bg-yellow-500={i === 1}
 						class:bg-slate-400={i === 2}
 						class:bg-amber-700={i === 0}
 						bind:this={podiumRefs[i]}
 					>
 						<span class="text-2xl text-black">
-							({scores[idx]?.total_points}pts)
+							({scores[idx]?.total_points} points)
 						</span>
 					</div>
 				</div>

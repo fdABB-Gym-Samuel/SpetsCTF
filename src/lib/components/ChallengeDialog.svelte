@@ -34,8 +34,8 @@
 	} = $props();
 
 	function getPointColor(points: number): string {
-		const lab_a = Math.floor(map(points, 0, 500, -128, 128));
-		return `lab(90% ${lab_a} 128)`;
+		const labA = Math.floor(map(points, 0, 500, -128, 128));
+		return `lab(90% ${labA} 128)`;
 	}
 	let pointElement: HTMLElement;
 	$effect(() => {
@@ -50,14 +50,14 @@
 	);
 
 	// Needs to be changed to handle when there are multiple commands that can be copied
-	let show_copied_message = $state(false);
+	let showCopiedMessage = $state(false);
 
 	async function copyToClipboard(text_to_copy: string) {
 		try {
 			await navigator.clipboard.writeText(text_to_copy).then(() => {
-				show_copied_message = true;
+				showCopiedMessage = true;
 				setTimeout(() => {
-					show_copied_message = false;
+					showCopiedMessage = false;
 				}, 1000);
 			});
 		} catch (err) {
@@ -70,6 +70,10 @@
 		newUrl.searchParams.delete('show');
 		goto(newUrl, { replaceState: true, noScroll: true });
 	}
+	// import {resolve} from "$app/paths";
+	// function closeDialog() {
+	// 	goto(resolve(page.route.id, page.params))
+	// }
 
 	let keydownHandler: (e: KeyboardEvent) => void;
 
@@ -193,7 +197,7 @@
 										}}
 									>
 										<Copy class="size-4"></Copy>
-										{#if show_copied_message}
+										{#if showCopiedMessage}
 											<div
 												class="bg-background-dark text-background-light absolute bottom-6 -translate-x-5 rounded-md px-2 py-2 text-xs"
 											>
