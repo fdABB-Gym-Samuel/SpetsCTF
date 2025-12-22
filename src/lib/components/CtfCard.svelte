@@ -11,8 +11,10 @@
 
 	let {ctfData, organizers, teams}: Props = $props();
 
-	let startTimeText = $derived(new Date(ctfData.start_time).toLocaleDateString())
-	let endTimeText = $derived(new Date(ctfData.end_time).toLocaleDateString())
+	let startDateText = $derived(new Date(ctfData.start_time).toLocaleDateString())
+	let startTimeText = $derived(new Date(ctfData.start_time).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}))
+	let endDateText = $derived(new Date(ctfData.end_time).toLocaleDateString())
+	let endTimeText = $derived(new Date(ctfData.end_time).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}))
 
 	let numberOfTeams = $derived(teams?.length);
 
@@ -50,8 +52,9 @@
 			</div>
 			<div class="mt-2 mb-4">
 				<p class="font-mono text-sm font-bold">
-					{startTimeText} - {endTimeText}
+					{startDateText} {startTimeText} - {endDateText} {endTimeText}
 				</p>
+				{#if teams && !isNaN(numberOfTeams ?? NaN)}
 				<p class="font-mono text-sm font-bold">
 					{numberOfTeams}
 					{#if numberOfTeams === 1}
@@ -60,6 +63,7 @@
 						teams
 					{/if}
 				</p>
+				{/if}
 			</div>
 		</section>
 		{#if organizers && displayedOrganizerNames}
