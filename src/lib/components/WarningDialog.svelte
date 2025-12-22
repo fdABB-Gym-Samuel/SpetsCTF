@@ -18,7 +18,7 @@
 		form
 	} = $props();
 
-	const closeDialog = close;
+	let closeDialog = $derived(close);
 
 	let keydownHandler: (e: KeyboardEvent) => void;
 

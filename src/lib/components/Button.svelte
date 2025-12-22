@@ -1,6 +1,29 @@
 <script lang="ts">
+	import type {Icon as IconType} from "@lucide/svelte";
+
+	interface Props {
+		onClick?: () => void;
+		label: string;
+		secondLabel?: string;
+		styleType?: "normal" | "small" | "icon";
+		type: HTMLButtonElement["type"];
+		disabled?: boolean;
+		ariaLabel: string;
+		bgColor?: string;
+		disabledBgColor?: string;
+		disabledTextColor?: string;
+		responsiveStyles?: string;
+		textColor?: string;
+		hoverColor?: string;
+		outlineColor?: string;
+		Icon?: typeof IconType;
+		iconSize?: string;
+		twStyles?: string;
+		form?: string | null;
+	};
+
 	let {
-		onClick = undefined,
+		onClick = () => {},
 		label,
 		secondLabel = '',
 		styleType = 'normal',
@@ -18,13 +41,7 @@
 		iconSize = '16',
 		twStyles = '',
 		form = undefined
-	} = $props();
-
-	if (onClick === undefined && type.toLowerCase() !== 'submit') {
-		onClick = () => console.log('No action specified for this button');
-	} else if (onClick === undefined) {
-		onClick = () => {};
-	}
+	}: Props = $props();
 </script>
 
 {#if styleType === 'normal'}
