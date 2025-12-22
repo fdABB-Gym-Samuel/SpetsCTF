@@ -5,6 +5,9 @@
 	codegen \
 	deps \
 	dev \
+	garage \
+	garage-clean \
+	garage-kill \
 	postgres \
 	postgres-clean \
 	postgres-kill \
@@ -62,3 +65,20 @@ postgres-kill:
 
 postgres-clean: postgres-kill
 	rm -rf ./tmp/postgres ./tmp/.pgdata
+
+garage: ./tmp
+	daemonize \
+		-c . \
+		-p ./tmp/garage.pid \
+		-l ./tmp/garage.lock \
+		$$(which garage) \
+		--config ./config/garage/garage.toml \
+		server
+
+garage-kill:
+	if [ -f ./tmp/garage.pid ]; then \
+		kill $$(head -n1 ./tmp/garage.pid); \
+	fi
+
+garage-clean: garage-kill
+	rm -rf ./tmp/garage

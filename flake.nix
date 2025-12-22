@@ -40,7 +40,9 @@
             bun
             bun2nix.packages.${stdenv.hostPlatform.system}.default
             curl
+            daemonize
             fzf
+            garage
             getent
             git
             groff
@@ -64,6 +66,7 @@
             typescript-language-server
             uutils-coreutils-noprefix
             vscode-langservers-extracted
+            which
           ];
 
           shellHook = ''
