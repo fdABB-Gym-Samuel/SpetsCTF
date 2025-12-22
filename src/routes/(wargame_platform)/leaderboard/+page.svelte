@@ -6,13 +6,18 @@
 	let usersScoreboard = $derived(data.usersScoreboard)
 	let classesScoreboard = $derived(data.classesScoreboard)
 
-	let original_classes = $derived(classesScoreboard.map((class_obj) => class_obj.className));
-	let include_classes = $state(original_classes);
+	let originalClasses = $derived(classesScoreboard.map((elem) => elem.className));
+	let includeClasses: string[] = $state([]);
 
-	let filtered_users = $derived(
-		usersScoreboard
-			.filter((user_) => user_.represents_class && include_classes.includes(user_.represents_class))
-			.slice(0, 15)
+	let filteredUsers = $derived.by(() => {
+			if (includeClasses.length >= 1) {
+				return usersScoreboard
+					.filter((u) => u.represents_class && includeClasses.includes(u.represents_class))
+					.slice(0, 15)
+			} else {
+				return usersScoreboard
+			}
+		}
 	);
 
 	import BackToTop from '$lib/components/BackToTop.svelte';
@@ -37,7 +42,6 @@
 </script>
 
 <main class="content m-auto w-full max-w-[1200px] pt-20" bind:this={componentRoot}>
-	<!-- TODO: add header with user info if logged in -->
 	{#if user && !user.is_admin}
 		<header class="gsap-top-down-opacity mb-12">
 			<h1 class="text-xl font-bold">
@@ -59,11 +63,11 @@
 					class="class-filtering gsap-top-down-opacity flex flex-row flex-wrap items-center gap-1.5"
 				>
 					<p class="text-text-200 mr-2 text-sm">Filter:</p>
-					{#each original_classes as cls (cls)}
+					{#each originalClasses as cls (cls)}
 						<label class="gsap-right-left-opacity relative cursor-pointer px-4 select-none">
 							<input
 								type="checkbox"
-								bind:group={include_classes}
+								bind:group={includeClasses}
 								value={cls}
 								id={cls}
 								class="peer sr-only"
@@ -82,7 +86,7 @@
 			<div
 				class="bg-bg-850 gsap-top-down-opacity max-h-[600px] w-full min-w-20 overflow-auto rounded-lg px-8 py-4"
 			>
-				{#if filtered_users.length === 0}
+				{#if filteredUsers.length === 0}
 					<p class="text-center text-sm text-red-500">
 						No users, please toggle at least one class.
 					</p>
@@ -108,14 +112,14 @@
 					<div class="h-4"></div>
 					<table class="gsap-top-down-opacity w-full table-fixed">
 						<tbody>
-							{#each filtered_users as player, i (player.id)}
+							{#each filteredUsers as player, i (player.id)}
 								<tr
 									class="*:border-bg-700 max-h-12 w-full text-wrap break-words *:border-t-0 [&>th:first-child]:rounded-l-lg [&>th:last-child]:rounded-r-lg
                         {i ===
 									usersScoreboard
 										.filter(
 											(user) =>
-												user.represents_class && include_classes.includes(user.represents_class)
+												user.represents_class && includeClasses.includes(user.represents_class)
 										)
 										.slice(0, 15).length -
 										1
