@@ -50,18 +50,18 @@ VALUES
   ),
   (
     3,
-    'OngoingMay',
-    'May Madness CTF',
-    '2025-10-01 08:00:00+00',
-    '2025-10-01 20:00:00+00',
+    'Ongoing',
+    'Ongoing CTF',
+    now(),
+    now() + interval '3 hours',
     5
   ),
   (
     4,
     'FutureCTF',
-    'Summer CTF 2025',
-    '2025-10-01 00:00:00+00',
-    '2025-10-30 23:59:59+00',
+    'Future CTF',
+    now() + interval '2 months',
+    now() + interval '2 months' + interval '12 hours',
     4
   ),
   (
