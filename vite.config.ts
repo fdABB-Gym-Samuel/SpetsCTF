@@ -7,7 +7,15 @@ export default defineConfig({
     plugins: [tailwindcss(), sveltekit(), devtoolsJson()],
 
     server: {
-        fs: { allow: ['./static'] },
-        watch: { ignored: ['**/tmp', '**/tmp/**'] },
+        fs: {
+            allow: ['./static'],
+        },
+        hmr: {
+            overlay: true,
+        },
+        watch: {
+            ignored: ['**/tmp', '**/tmp/**'],
+            usePolling: true,
+        },
     },
 });

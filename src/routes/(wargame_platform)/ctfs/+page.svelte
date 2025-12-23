@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { resolve } from "$app/paths";
 	import CtfCard from "$lib/components/CtfCard.svelte";
 	let { data } = $props();
 	let translations = $derived(data.translations)
@@ -7,36 +6,22 @@
 
 	let ongoingCtfs = $derived(
 		ctfs.filter((ctf) => {
-			const current_time = new Date();
-			return ctf.start_time < current_time && current_time < ctf.end_time;
+			const currentTime = new Date();
+			return ctf.start_time < currentTime && currentTime < ctf.end_time;
 		})
 	);
 	let upcomingCtfs = $derived(
 		ctfs.filter((ctf) => {
-			const current_time = new Date();
-			return current_time < ctf.start_time;
+			const currentTime = new Date();
+			return currentTime < ctf.start_time;
 		})
 	);
 	let pastCtfs = $derived(
 		ctfs.filter((ctf) => {
-			const current_time = new Date();
-			return ctf.end_time < current_time;
+			const currentTime = new Date();
+			return ctf.end_time < currentTime;
 		})
 	);
-	const months: string[] = $derived([
-		translations.jan,
-		translations.feb,
-		translations.mar,
-		translations.apr,
-		translations.may,
-		translations.jun,
-		translations.jul,
-		translations.aug,
-		translations.sep,
-		translations.oct,
-		translations.nov,
-		translations.dec
-	]);
 </script>
 
 <div class="content flex flex-col gap-5">

@@ -1,39 +1,25 @@
 <script lang="ts">
 	import ChallengeCard from '$lib/components/ChallengeCard.svelte';
-	import ChallengeDialog from '$lib/components/ChallengeDialog.svelte';
 	import WarningDialog from '$lib/components/WarningDialog.svelte';
 	import Button from '$lib/components/Button.svelte';
-	import { page } from '$app/state';
 	import { categories } from '$lib/db/constants';
 	import { goto } from '$app/navigation';
+
 	let { data, form } = $props();
 
-	let allChallenges = $derived(data.allChallenges)
-	let myChallenges = $derived(data.myChallenges)
-	let translations = $derived(data.translations)
-	let user = $derived(data.user)
+	let allChallenges = $derived(data.allChallenges);
+	let myChallenges = $derived(data.myChallenges);
+	let translations = $derived(data.translations);
+	let user = $derived(data.user);
 
 	import { capitalizeFirstLetter } from '$lib/utils/utils.js';
 	import { Search, ChevronDown, Pen, Trash2, LogIn } from '@lucide/svelte';
 	import VSeperator from '$lib/components/VSeperator.svelte';
 	import BackToTop from '$lib/components/BackToTop.svelte';
-
-	let challengeId = $derived(page.url.searchParams.get('show'));
-
-	let showChallengeDialog: boolean = $derived(challengeId !== null);
-
 	import { playAnimations } from '$lib/gsap/animations';
 	import { onDestroy, onMount } from 'svelte';
 	import HSeperator from '$lib/components/HSeperator.svelte';
-    import { resolve } from '$app/paths';
-
-	let modalData = $derived.by(() => {
-		if (showChallengeDialog) {
-			return allChallenges.find((chall) => String(chall.challenge_id) === challengeId);
-		} else {
-			return undefined;
-		}
-	});
+	import { resolve } from '$app/paths';
 
 	let componentRoot: HTMLElement;
 	let gsapContext: gsap.Context | undefined;
@@ -43,7 +29,7 @@
 		{ label: 'My Challenges', tab: 'my' }
 	];
 
-	let currentTab = $state('all');
+	let currentTab: 'all' | 'my' = $state('all');
 
 	const switchTab = (newTab: 'all' | 'my') => {
 		currentTab = newTab;
@@ -61,6 +47,7 @@
 
 	let challengeIdToDelete = $state('');
 	let challengeNameToDelete = $state('');
+	
 	onMount(() => {
 		gsapContext = playAnimations(componentRoot);
 	});
@@ -137,8 +124,8 @@
 						>
 							{#each allChallenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challengeData (challengeData.challenge_id)}
 								<li class="gsap-left-right-opacity min-h-fit min-w-65">
-									<a
-										href={`/challenges?show=${challengeData.challenge_id}`}
+								<a						
+										href={`/challenges/${challengeData.challenge_id}`}
 										data-sveltekit-noscroll
 										class="ignore-default block h-full w-full"
 										><ChallengeCard data={{ challengeData: challengeData }}></ChallengeCard></a
@@ -211,9 +198,6 @@
 		{/if}
 	{/if}
 </main>
-{#if challengeId}
-	<ChallengeDialog challengeData={modalData} {translations} {form}></ChallengeDialog>
-{/if}
 
 {#if challengeIdToDelete}
 	<WarningDialog

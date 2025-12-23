@@ -50,7 +50,7 @@
 		(_, index) => challengeData?.challenge_sub_categories.split('').reverse().join('')[index] === '1'
 	);
 
-	let privacyOptions = $state([
+	let privacyOptions = $derived([
 		{ text: 'Author Anonymous', value: 'author_anonymous', disabled: !isAuthor }
 	]);
 

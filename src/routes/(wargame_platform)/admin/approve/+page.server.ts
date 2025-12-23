@@ -1,7 +1,6 @@
 import type { PageServerLoad } from '../$types';
 import { error, redirect } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
-import { sql } from 'kysely';
 import { jsonArrayFrom, jsonBuildObject } from 'kysely/helpers/postgres';
 
 export const load: PageServerLoad = async ({ locals }) => {

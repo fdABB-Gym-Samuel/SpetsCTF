@@ -44,6 +44,8 @@
 		}
 	});
 
+	$inspect(challengeData)
+
 	let filteredCategories = categories.filter(
 		(_, index) =>
 			challengeData.challenge_sub_categories.split('').reverse().join('')[index] === '1'
@@ -297,7 +299,7 @@
 					<span class="bg-black mx-1 rounded-2xl">&nbsp;{challengeData.points}&nbsp;</span>&nbsp;<span class="text-text-200">POINTS</span>
 				</p>
 				<p class="text-text-100 font-mono text-sm font-bold">
-					{challengeData.num_solves}&nbsp;&nbsp;<span class="text-text-200">SOLVERS</span>
+					{challengeData.num_solvers}&nbsp;&nbsp;<span class="text-text-200">SOLVERS</span>
 				</p>
 			</div>
 		</section>

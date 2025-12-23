@@ -130,7 +130,7 @@
 										class="h-12 max-h-12 w-fit overflow-hidden text-left break-normal text-ellipsis"
 										><a class="ignore-default" href={resolve("/(ctf_platform)/ctf/[ctf_id=ctf_id]/team/[teamId=teamId]", {
 													ctf_id: page.params.ctf_id ?? '',
-													teamId: String(team?.teamId) ?? '',
+													teamId: String(team?.teamId ?? ''),
 												})}>{teamInside.team_name}</a
 										></td
 									>
