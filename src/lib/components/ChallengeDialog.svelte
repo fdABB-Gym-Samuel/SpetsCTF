@@ -72,10 +72,6 @@
 		newUrl.searchParams.delete('show');
 		goto(newUrl, { replaceState: true, noScroll: true });
 	}
-	// import {resolve} from "$app/paths";
-	// function closeDialog() {
-	// 	goto(resolve(page.route.id, page.params))
-	// }
 
 	let keydownHandler: (e: KeyboardEvent) => void;
 
@@ -141,7 +137,7 @@
 		</section>
 		<section class="top mb-6 flex w-full items-center justify-between">
 			<h3 class="challenge-name text-text-100 text-xl font-bold">
-				{challengeData.challenge_name}
+				{challengeData.display_name}
 			</h3>
 		</section>
 		<section
@@ -225,7 +221,7 @@
 					<p
 						class="challenge-description text-text-100 mr-1 max-h-full overflow-scroll"
 					>
-						{challengeData.challenge_description}
+						{challengeData.description}
 					</p>
 				</div>
 			</div>

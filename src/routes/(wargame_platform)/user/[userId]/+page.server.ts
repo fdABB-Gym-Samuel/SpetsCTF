@@ -8,7 +8,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
     const session = event.locals.user;
     const wantedUserId = event.params.userId;
 
-    if (session && wantedUserId === session.id) throw redirect(303, '/user');
+    if (session && wantedUserId === session.id) redirect(303, '/user');
 
     if (!wantedUserId) return;
 
@@ -104,7 +104,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
         userInfo.displayName === '' ||
         userInfo.displayName === null
     ) {
-        throw error(404, { message: 'User not found' });
+        error(404, { message: 'User not found' });
     } else {
         return { userInfo };
     }

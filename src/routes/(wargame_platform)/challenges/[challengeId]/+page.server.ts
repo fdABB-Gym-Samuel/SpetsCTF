@@ -7,12 +7,14 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 
     const challengeData = await db
         .selectFrom('challenges')
+        .innerJoin('flag', 'challenges.flag', 'flag.id')
         .where('challenge_id', '=', params.challengeId)
-        .selectAll()
+        .selectAll(['challenges'])
+        .select('flag.flag_format')
         .executeTakeFirst();
 
     if (!challengeData) {
-        throw error(404, 'Challenge not found');
+        error(404, 'Challenge not found');
     }
 
     const firstSolvers = await db
