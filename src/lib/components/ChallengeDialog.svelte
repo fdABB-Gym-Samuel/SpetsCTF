@@ -29,6 +29,7 @@
 			resources: [],
 			author: null
 		},
+		closeDialog,
 		translations,
 		form
 	} = $props();
@@ -65,12 +66,6 @@
 		} catch (err) {
 			console.error('Failed to copy!', err);
 		}
-	}
-
-	function closeDialog() {
-		const newUrl = new URL(page.url);
-		newUrl.searchParams.delete('show');
-		goto(newUrl, { replaceState: true, noScroll: true });
 	}
 
 	let keydownHandler: (e: KeyboardEvent) => void;

@@ -6,6 +6,7 @@
 	import { page } from '$app/state';
 	import { categories } from '$lib/db/constants';
 	import { goto } from '$app/navigation';
+	import { resolve } from "$app/paths";
 	let { data, form } = $props();
 
 	let allChallenges = $derived(data.allChallenges)
@@ -33,6 +34,10 @@
 			return undefined;
 		}
 	});
+
+	function closeDialog() {
+		goto(resolve('/(ctf_platform)/ctf/[ctf_id=ctf_id]/challenges', {ctf_id: page.params.challengeId ?? ''}))
+	}
 
 	let componentRoot: HTMLElement;
 	let gsapContext: gsap.Context | undefined;
@@ -211,7 +216,7 @@
 	{/if}
 </main>
 {#if challengeId}
-	<ChallengeDialog challengeData={modalData} {translations} {form}></ChallengeDialog>
+	<ChallengeDialog {closeDialog} challengeData={modalData} {translations} {form}></ChallengeDialog>
 {/if}
 
 {#if challengeIdToDelete}

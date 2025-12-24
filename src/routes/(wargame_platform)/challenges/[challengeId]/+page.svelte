@@ -15,6 +15,12 @@
 		num_solvers: numSolvers.count,
 		resources: resources,
 	})
+
+	import { resolve } from "$app/paths";
+	import { goto } from "$app/navigation";
+	function closeDialog() {
+		goto(resolve('/challenges'), {invalidate: ['data:challenges']})
+	}
 </script>
 
-<ChallengeDialog challengeData={challengeDataJoined} {translations} {form}></ChallengeDialog>
+<ChallengeDialog {closeDialog} challengeData={challengeDataJoined} {translations} {form}></ChallengeDialog>

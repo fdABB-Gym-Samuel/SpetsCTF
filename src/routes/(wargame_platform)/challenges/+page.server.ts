@@ -1,4 +1,4 @@
-import { type ServerLoadEvent, fail, redirect, type Actions } from '@sveltejs/kit';
+import { fail, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
@@ -6,8 +6,10 @@ import { type Insertable } from 'kysely';
 import type { WargameSubmissions } from '$lib/generated/db';
 import { get_flag_of_challenge } from '$lib/db/functions';
 
-export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
+export const load: PageServerLoad = async ({ locals, depends }) => {
     const user = locals.user;
+
+    depends('data:challenges');
 
     const allChallenges = await db
         // First CTE: get each user's earliest successful submission per challenge.
