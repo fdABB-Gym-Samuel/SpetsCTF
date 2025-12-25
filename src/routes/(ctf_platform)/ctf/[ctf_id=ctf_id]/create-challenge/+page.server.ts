@@ -2,7 +2,7 @@ import { fail, redirect, type ServerLoadEvent, type Actions } from '@sveltejs/ki
 import { db } from '$lib/db/database';
 import {
     validateCategory,
-    get_challenge_id_from_display_name,
+    getChallengeIdFromDisplayName,
     selectedCategoriesToBitset,
     getIsOrg,
 } from '$lib/db/functions';
@@ -51,7 +51,7 @@ export const actions = {
             if (!display_name) {
                 return fail(422, { message: 'No display name' });
             }
-            const challenge_id = await get_challenge_id_from_display_name(display_name);
+            const challenge_id = await getChallengeIdFromDisplayName(display_name);
 
             const challenge_category: Category = validateCategory(
                 formData.get('challenge_category')?.toString() ?? ''

@@ -8,7 +8,7 @@ import {
 import { db } from '$lib/db/database';
 import {
     validateCategory,
-    get_challenge_id_from_display_name,
+    getChallengeIdFromDisplayName,
     selectedCategoriesToBitset,
 } from '$lib/db/functions';
 import type { Category, ChallengeResources, Challenges } from '$lib/generated/db';
@@ -45,7 +45,7 @@ export const actions = {
             if (!display_name) {
                 return fail(422, { message: 'No display name' });
             }
-            const challenge_id = await get_challenge_id_from_display_name(display_name);
+            const challenge_id = await getChallengeIdFromDisplayName(display_name);
 
             const challenge_category: Category = validateCategory(
                 formData.get('challenge_category')?.toString() ?? ''

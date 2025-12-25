@@ -25,7 +25,7 @@ export function validateCategory(value: string): Category {
         return 'misc' as Category;
     }
 }
-export async function get_challenge_id_from_display_name(display_name: string) {
+export async function getChallengeIdFromDisplayName(display_name: string) {
     const unsanitzed_challenge_id = display_name.toLowerCase().replace(/ /g, '_');
     const query = await db
         .selectFrom('challenges')
