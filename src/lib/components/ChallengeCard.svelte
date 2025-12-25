@@ -1,15 +1,24 @@
 <script lang="ts">
-	let { data } = $props();
-	let challengeData = $derived(data.challengeData);
+	import type { Challenges } from '$lib/generated/db';
+
+	interface Props {
+		challengeData: Selectable<Challenges> & {num_solvers?: number} & {solved?: boolean}
+	};
+
+	let { challengeData }: Props = $props();
+
 	import { map } from '$lib/utils/utils';
 	import { categories } from '$lib/db/constants';
 	import { capitalizeFirstLetter } from '$lib/utils/utils';
+  import type { Selectable } from 'kysely';
 
 	function getPointColor(points: number): string {
 		const labA = Math.floor(map(points, 0, 500, -128, 128));
 		return `lab(90% ${labA} 128)`;
 	}
-	let pointElement: HTMLElement;
+
+	let pointElement: HTMLSpanElement | undefined = $state(undefined);
+
 	$effect(() => {
 		if (pointElement && !challengeData.solved) {
 			pointElement.style.color = getPointColor(challengeData.points);
@@ -25,8 +34,8 @@
 	);
 
 	let displayedCategories = filteredCategories.slice(0, 3);
-
 	let extraCategoriesCount = filteredCategories.length > 3 ? filteredCategories.length - 3 : 0;
+
 </script>
 
 <article
@@ -41,27 +50,35 @@
 		<section class="top *:flex *:items-center *:justify-between">
 			<div class="flex !items-start justify-start">
 				<h3 class="challenge-name text-[18px] font-bold">
-					{challengeData.challenge_name}
+					{challengeData.display_name}
 				</h3>
-				{#if challengeData && challengeData.created_at}
+				{#if challengeData.created_at}
 					<p class="mt-1 mb-0.5 font-mono text-xs">
 						{challengeData.created_at.toLocaleDateString('sv-SE')}
 					</p>
 				{/if}
 			</div>
-			<div class="mt-2 mb-4">
-				<p class="font-mono text-sm font-bold">
-					{challengeData.num_solves}&nbsp;&nbsp;<span
-						class="text-text-200"
-						class:!text-text-100={challengeData.solved}>SOLVERS</span
-					>
-				</p>
-				<p class="font-mono text-sm font-bold">
-					<span class="bg-black mx-1 rounded-2xl" bind:this={pointElement}
-						>&nbsp;{challengeData.points}&nbsp;</span
-					><span class="text-text-200" class:!text-text-100={challengeData.solved}>POINTS</span>
-				</p>
-			</div>
+			{#if challengeData.num_solvers}
+				<div class="mt-2 mb-4">
+					<p class="font-mono text-sm font-bold">
+						{challengeData.num_solvers}&nbsp;&nbsp;<span
+							class="text-text-200"
+							class:!text-text-100={challengeData.solved}>
+							{#if challengeData.num_solvers == 1}
+								SOLVER
+							{:else}
+								SOLVERS
+							{/if}
+						</span
+						>
+					</p>
+					<p class="font-mono text-sm font-bold">
+						<span class="bg-black mx-1 rounded-2xl" bind:this={pointElement}
+							>&nbsp;{challengeData.points}&nbsp;</span
+						><span class="text-text-200" class:!text-text-100={challengeData.solved}>POINTS</span>
+					</p>
+				</div>
+			{/if}
 		</section>
 		<section class="justify arounditems-center flex">
 			<ul class="categroies flex w-full flex-row flex-wrap">
@@ -77,7 +94,7 @@
 						class:!text-gradient-200={index === 1 && challengeData.solved}
 						class:!text-gradient-300={index === 2 && challengeData.solved}
 					>
-						<p class="text-text-100"># {capitalizeFirstLetter(category)}</p>
+						# {capitalizeFirstLetter(category)}
 					</li>
 				{/each}
 			</ul>

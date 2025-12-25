@@ -10,27 +10,20 @@
 	import { map } from '$lib/utils/utils';
 	import { onMount, onDestroy } from 'svelte';
 	import { categories } from '$lib/db/constants';
+  import type { Selectable } from 'kysely';
+  import type { ChallengeResources, Challenges, Flag, Users } from '$lib/generated/db';
+
+	interface Props {
+		challengeData: Selectable<Challenges> & {first_solvers: Selectable<Users>[]} & { flag_format: Selectable<Flag>["flag_format"] } & { num_solvers: number } & { resources: Selectable<ChallengeResources>[] } & { solved?: boolean};
+		closeDialog: () => void;
+		translations: Record<string, string>;
+	}
 
 	let {
-		challengeData = {
-			challenge_id: '',
-			challenge_name: '',
-			challenge_description: '',
-			challenge_category: null,
-			challenge_sub_categories: '',
-			points: 0,
-			flag_format: '',
-			created_at: null,
-			first_solvers: [],
-			num_solves: '0',
-			solved: false,
-			resources: [],
-			author: null
-		},
+		challengeData,
 		closeDialog,
 		translations,
-		form
-	} = $props();
+	}: Props = $props();
 
 	function getPointColor(points: number): string {
 		const labA = Math.floor(map(points, 0, 500, -128, 128));
@@ -42,8 +35,6 @@
 			pointElement.style.color = getPointColor(challengeData.points);
 		}
 	});
-
-	$inspect(challengeData)
 
 	let filteredCategories = categories.filter(
 		(_, index) =>
@@ -219,7 +210,7 @@
 				</div>
 			</div>
 			<div class="right w-1/2 min-w-70 flex-grow">
-				{#if !challengeData.solved && (!form || !form.success)}
+				{#if !challengeData.solved}
 					<form action="?/submit" method="POST" class="flag-submission-form max-w-full" use:enhance>
 						<label for="flag" class="text-sm text-text-100">Submit flag</label>
 						<div class="relative mt-2 mb-8">
@@ -252,7 +243,7 @@
 				<div
 					class="first-solvers-wrapper text-text-100 flex flex-col justify-start"
 				>
-					{#if challengeData.num_solves != 0}
+					{#if challengeData.num_solvers != 0}
 						<h5 class="text-text-200">First Solvers:</h5>
 						<ol class="first-solvers flex list-inside list-decimal flex-col justify-start">
 							{#each challengeData.first_solvers as solver (solver.id)}
@@ -288,7 +279,13 @@
 					<span class="bg-black mx-1 rounded-2xl">&nbsp;{challengeData.points}&nbsp;</span>&nbsp;<span class="text-text-200">POINTS</span>
 				</p>
 				<p class="text-text-100 font-mono text-sm font-bold">
-					{challengeData.num_solvers}&nbsp;&nbsp;<span class="text-text-200">SOLVERS</span>
+					{challengeData.num_solvers}&nbsp;&nbsp;<span class="text-text-200">
+						{#if challengeData.num_solvers == 1}
+							SOLVER
+						{:else}
+							SOLVERS
+						{/if}
+					</span>
 				</p>
 			</div>
 		</section>

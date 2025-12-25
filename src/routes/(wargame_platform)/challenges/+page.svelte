@@ -1,9 +1,8 @@
 <script lang="ts">
-	import ChallengeCard from '$lib/components/ChallengeCard.svelte';
-	import WarningDialog from '$lib/components/WarningDialog.svelte';
 	import Button from '$lib/components/Button.svelte';
-	import { categories } from '$lib/db/constants';
+	import WarningDialog from '$lib/components/WarningDialog.svelte';
 	import { goto } from '$app/navigation';
+  import ChallengeList from '$lib/components/ChallengeList.svelte';
 
 	let { data, form } = $props();
 
@@ -12,7 +11,6 @@
 	let translations = $derived(data.translations);
 	let user = $derived(data.user);
 
-	import { capitalizeFirstLetter } from '$lib/utils/utils.js';
 	import { Search, ChevronDown, Pen, Trash2, LogIn } from '@lucide/svelte';
 	import VSeperator from '$lib/components/VSeperator.svelte';
 	import BackToTop from '$lib/components/BackToTop.svelte';
@@ -112,35 +110,7 @@
 		<VSeperator></VSeperator>
 	</nav>
 	{#if currentTab === 'all'}
-		<section class="challenge-container w-full">
-			{#each categories as category (category)}
-				<div class="category-container mb-16">
-					<h3 class="category-header gsap-top-down-opacity mb-2 text-lg font-bold">
-						{capitalizeFirstLetter(category)}
-					</h3>
-					{#if allChallenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()).length > 0}
-						<ul
-							class="grid grid-cols-[repeat(auto-fill,minmax(305px,1fr))] gap-4 sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(390px,1fr))]"
-						>
-							{#each allChallenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challengeData (challengeData.challenge_id)}
-								<li class="gsap-left-right-opacity min-h-fit min-w-65">
-								<a						
-										href={`/challenges/${challengeData.challenge_id}`}
-										data-sveltekit-noscroll
-										class="ignore-default block h-full w-full"
-										><ChallengeCard data={{ challengeData: challengeData }}></ChallengeCard></a
-									>
-								</li>
-							{/each}
-						</ul>
-					{:else}
-						<p class="mb-4">No challenges yet</p>
-					{/if}
-					<br />
-					<VSeperator />
-				</div>
-			{/each}
-		</section>
+		<ChallengeList gotoChallenge={(challengeId) => {goto(resolve('/challenges/[challengeId]', {challengeId}))}} challenges={allChallenges}></ChallengeList>
 	{:else if currentTab === 'my'}
 		{#if user}
 			<section>
