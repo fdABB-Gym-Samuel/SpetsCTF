@@ -12,7 +12,7 @@
 	let challengeDataJoined = $derived({
 		...challengeData,
 		first_solvers: firstSolvers,
-		num_solvers: numSolvers.count,
+		num_solvers: numSolvers.count ?? 0,
 		resources: resources,
 	})
 

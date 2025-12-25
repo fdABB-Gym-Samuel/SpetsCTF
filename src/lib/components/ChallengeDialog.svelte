@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { Link, SquareTerminal, Copy, File, UserRoundPen, CircleX } from '@lucide/svelte';
-	import { goto } from '$app/navigation';
 	import { enhance } from '$app/forms';
-	import { page } from '$app/state';
 
 	import { capitalizeFirstLetter } from '$lib/utils/utils';
 
