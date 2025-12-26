@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import { goto } from '$app/navigation';
+	import { applyAction, enhance } from '$app/forms';
+	import { goto, invalidate } from '$app/navigation';
 	let { data, form } = $props();
 
 	import { LogOut, Github } from '@lucide/svelte';
@@ -60,7 +60,12 @@
 		>
 	</form>
 	<h2 class="text-xl font-bold">{data.translations.altersettings}</h2>
-	<form class="flex w-min flex-col space-y-1" method="POST" action="?/settings" use:enhance>
+	<form class="flex w-min flex-col space-y-1" method="POST" action="?/settings" use:enhance={() => {
+			return async ({result}) => {
+				invalidate('data:user')
+				applyAction(result)
+			}
+		}}>
 		<label for="display_name">
 			{data.translations.displayname}
 		</label>

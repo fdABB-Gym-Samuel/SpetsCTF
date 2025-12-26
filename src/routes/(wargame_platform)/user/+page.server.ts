@@ -1,12 +1,14 @@
-import { fail, redirect, type Actions, type ServerLoadEvent } from '@sveltejs/kit';
+import { fail, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { deleteSessionTokenCookie, invalidateSession } from '$lib/db/functions';
 
-export const load: PageServerLoad = async ({ locals }: ServerLoadEvent) => {
+export const load: PageServerLoad = async ({ locals, depends }) => {
     if (!locals.user) {
         redirect(302, '/login');
     }
+
+    depends('data:user');
 
     const availableClasses = await db.selectFrom('classes').selectAll().execute();
 
@@ -51,6 +53,8 @@ export const actions = {
             .select(['display_name', 'represents_class'])
             .where('id', '=', userId)
             .executeTakeFirst();
+
+        console.log(updatedUser?.display_name);
 
         if (!updatedUser) {
             fail(500, {
