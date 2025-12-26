@@ -1,27 +1,33 @@
 <script lang="ts">
-	import ChallengeDialog from '$lib/components/ChallengeDialog.svelte';
-	
-	let { data, form } = $props();
-	
-	let challengeData = $derived(data.challengeData);
-	let firstSolvers = $derived(data.firstSolvers)
-	let resources = $derived(data.resources);
-	let translations = $derived(data.translations);
-	let numSolvers = $derived(data.numSolvers)
+    import ChallengeDialog from '$lib/components/ChallengeDialog.svelte';
 
-	let challengeDataJoined = $derived({
-		...challengeData,
-		first_solvers: firstSolvers,
-		num_solvers: numSolvers.count ?? 0,
-		resources: resources,
-	})
+    let { data, form } = $props();
 
-	import { page } from "$app/state";
-	import { resolve } from "$app/paths";
-	import { goto } from "$app/navigation";
-	function closeDialog() {
-		goto(resolve('/(ctf_platform)/ctf/[ctf_id=ctf_id]/challenges', {ctf_id: page.params.ctf_id ?? ''}), {invalidate: ['data:challenges']})
-	}
+    let challengeData = $derived(data.challengeData);
+    let firstSolvers = $derived(data.firstSolvers);
+    let resources = $derived(data.resources);
+    let translations = $derived(data.translations);
+    let numSolvers = $derived(data.numSolvers);
+
+    let challengeDataJoined = $derived({
+        ...challengeData,
+        first_solvers: firstSolvers,
+        num_solvers: numSolvers.count ?? 0,
+        resources: resources,
+    });
+
+    import { page } from '$app/state';
+    import { resolve } from '$app/paths';
+    import { goto } from '$app/navigation';
+    function closeDialog() {
+        goto(
+            resolve('/(ctf_platform)/ctf/[ctf_id=ctf_id]/challenges', {
+                ctf_id: page.params.ctf_id ?? '',
+            }),
+            { invalidate: ['data:challenges'] }
+        );
+    }
 </script>
 
-<ChallengeDialog {closeDialog} challengeData={challengeDataJoined} {translations} {form}></ChallengeDialog>
+<ChallengeDialog {closeDialog} challengeData={challengeDataJoined} {translations} {form}
+></ChallengeDialog>

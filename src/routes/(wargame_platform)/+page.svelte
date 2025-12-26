@@ -1,149 +1,146 @@
 <script lang="ts">
-	import { resolve } from "$app/paths";
-	
-	let { data } = $props();
-	let nextCtf = $derived(data.nextCtf);
+    import { resolve } from '$app/paths';
 
-	import { Brain } from '@lucide/svelte';
+    let { data } = $props();
+    let nextCtf = $derived(data.nextCtf);
 
-	import { onMount, onDestroy } from 'svelte';
-	import gsap from 'gsap';
-	import { goto } from '$app/navigation';
+    import { Brain } from '@lucide/svelte';
 
-	import { playAnimations } from '$lib/gsap/animations';
+    import { onMount, onDestroy } from 'svelte';
+    import gsap from 'gsap';
+    import { goto } from '$app/navigation';
 
-	import HSeperator from '$lib/components/HSeperator.svelte';
-	import Button from '$lib/components/Button.svelte';
+    import { playAnimations } from '$lib/gsap/animations';
 
-	let countdown = $state({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+    import HSeperator from '$lib/components/HSeperator.svelte';
+    import Button from '$lib/components/Button.svelte';
 
-	type Timeout = ReturnType<typeof setInterval>;
-	let interval: Timeout;
+    let countdown = $state({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
-	function updateCountdown(): void {
-		if (nextCtf === undefined) {
-			countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
-			return;
-		}
-		const now = new Date();
-		const diff = nextCtf?.start_time.getTime() - now.getTime();
+    type Timeout = ReturnType<typeof setInterval>;
+    let interval: Timeout;
 
-		if (diff <= 0) {
-			countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
-			clearInterval(interval);
-			return;
-		}
+    function updateCountdown(): void {
+        if (nextCtf === undefined) {
+            countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+            return;
+        }
+        const now = new Date();
+        const diff = nextCtf?.start_time.getTime() - now.getTime();
 
-		const totalSeconds = Math.floor(diff / 1000);
-		const days = Math.floor(totalSeconds / (3600 * 24));
-		const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
-		const minutes = Math.floor((totalSeconds % 3600) / 60);
-		const seconds = totalSeconds % 60;
+        if (diff <= 0) {
+            countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+            clearInterval(interval);
+            return;
+        }
 
-		countdown = { days, hours, minutes, seconds };
-	}
+        const totalSeconds = Math.floor(diff / 1000);
+        const days = Math.floor(totalSeconds / (3600 * 24));
+        const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
 
-	let componentRoot: HTMLElement;
-	let gsapContext: gsap.Context | undefined;
+        countdown = { days, hours, minutes, seconds };
+    }
 
-	let countdownContainer: HTMLElement;
-	const maxRotate: number = 1.5;
+    let componentRoot: HTMLElement;
+    let gsapContext: gsap.Context | undefined;
 
-	function handleMouseMove(event: MouseEvent): void {
-		const rect = countdownContainer.getBoundingClientRect();
-		const xRel = event.clientX - (rect.left + rect.width / 2);
-		const yRel = event.clientY - (rect.top + rect.height / 2);
+    let countdownContainer: HTMLElement;
+    const maxRotate: number = 1.5;
 
-		// Normalize to range [-1, 1]
-		const xNorm = xRel / (rect.width / 2);
-		const yNorm = yRel / (rect.height / 2);
+    function handleMouseMove(event: MouseEvent): void {
+        const rect = countdownContainer.getBoundingClientRect();
+        const xRel = event.clientX - (rect.left + rect.width / 2);
+        const yRel = event.clientY - (rect.top + rect.height / 2);
 
-		const rotY = xNorm * maxRotate; // mouse right → positive Y-rotation
-		const rotX = -yNorm * maxRotate; // mouse down → positive X-rotation
+        // Normalize to range [-1, 1]
+        const xNorm = xRel / (rect.width / 2);
+        const yNorm = yRel / (rect.height / 2);
 
-		// Smoothly tween to the new rotation
-		gsap.to(countdownContainer, {
-			rotationX: rotX,
-			rotationY: rotY,
-			duration: 0.5
-		});
-	}
+        const rotY = xNorm * maxRotate; // mouse right → positive Y-rotation
+        const rotX = -yNorm * maxRotate; // mouse down → positive X-rotation
 
-	function handleMouseLeave() {
-		// reset back to flat
-		gsap.to(countdownContainer, {
-			rotationX: 0,
-			rotationY: 0,
-			duration: 0.5
-		});
-	}
+        // Smoothly tween to the new rotation
+        gsap.to(countdownContainer, {
+            rotationX: rotX,
+            rotationY: rotY,
+            duration: 0.5,
+        });
+    }
 
-	onMount(() => {
-		updateCountdown();
-		interval = setInterval(updateCountdown, 1000);
+    function handleMouseLeave() {
+        // reset back to flat
+        gsap.to(countdownContainer, {
+            rotationX: 0,
+            rotationY: 0,
+            duration: 0.5,
+        });
+    }
 
-		gsapContext = playAnimations(componentRoot);
-	});
+    onMount(() => {
+        updateCountdown();
+        interval = setInterval(updateCountdown, 1000);
 
-	onDestroy(() => {
-		clearInterval(interval);
+        gsapContext = playAnimations(componentRoot);
+    });
 
-		gsapContext?.revert();
-	});
+    onDestroy(() => {
+        clearInterval(interval);
+
+        gsapContext?.revert();
+    });
 </script>
 
 <svelte:body on:mousemove={handleMouseMove} on:mouseleave={handleMouseLeave} />
 
 <main
-	class="m-auto flex max-w-[520px] flex-col items-center justify-center pt-48"
-	bind:this={componentRoot}
->
-	<header class="gsap-top-down-opacity">
-		<img src="/assets/logo.svg" alt="SpetsCTF" class="select-none" />
-	</header>
-	<div class="mt-8">
-		<h2 class="gsap-top-down-opacity">Who are we?</h2>
-		<p class="gsap-top-down-opacity">
-			SpetsCTF is a CTF and wargames platform. You can play <a
-				href={resolve("/challenges")}
-				class="text-primary-light underline">Challenges</a
-			>
-			or join <a href={resolve("/ctfs")} class="text-primary-light underline">SpetsCTF</a> when it is time.
-		</p>
-	</div>
-	<div class="w-full perspective-midrange">
-		<article
-			bind:this={countdownContainer}
-			class="gsap-opacity-slow mt-12 w-full will-change-transform transform-3d"
-		>
-			<p class="text-text-200 mb-2 text-sm">Next SpetsCTF is in</p>
-			<div class="rounded-lg shadow-xl">
-				<div
-					class="bg-bg-800 inner-shadow flex items-center justify-between rounded-lg px-10 py-2 pb-3 select-none"
-				>
-					{#each Object.entries(countdown) as [label, number], index (label)}
-						<div class="flex flex-col items-center">
-							<p class="-mb-2 flex-1 text-center text-lg">{number}</p>
-							<p class="text-text-200 text-sm">{label}</p>
-						</div>
-						{#if index !== Object.entries(countdown).length - 1}
-							<div class="h-5">
-								<HSeperator color="bg-bg-600" />
-							</div>
-						{/if}
-					{/each}
-				</div>
-			</div>
-		</article>
-	</div>
+    class="m-auto flex max-w-[520px] flex-col items-center justify-center pt-48"
+    bind:this={componentRoot}>
+    <header class="gsap-top-down-opacity">
+        <img src="/assets/logo.svg" alt="SpetsCTF" class="select-none" />
+    </header>
+    <div class="mt-8">
+        <h2 class="gsap-top-down-opacity">Who are we?</h2>
+        <p class="gsap-top-down-opacity">
+            SpetsCTF is a CTF and wargames platform. You can play <a
+                href={resolve('/challenges')}
+                class="text-primary-light underline">Challenges</a>
+            or join
+            <a href={resolve('/ctfs')} class="text-primary-light underline">SpetsCTF</a>
+            when it is time.
+        </p>
+    </div>
+    <div class="w-full perspective-midrange">
+        <article
+            bind:this={countdownContainer}
+            class="gsap-opacity-slow mt-12 w-full will-change-transform transform-3d">
+            <p class="text-text-200 mb-2 text-sm">Next SpetsCTF is in</p>
+            <div class="rounded-lg shadow-xl">
+                <div
+                    class="bg-bg-800 inner-shadow flex items-center justify-between rounded-lg px-10 py-2 pb-3 select-none">
+                    {#each Object.entries(countdown) as [label, number], index (label)}
+                        <div class="flex flex-col items-center">
+                            <p class="-mb-2 flex-1 text-center text-lg">{number}</p>
+                            <p class="text-text-200 text-sm">{label}</p>
+                        </div>
+                        {#if index !== Object.entries(countdown).length - 1}
+                            <div class="h-5">
+                                <HSeperator color="bg-bg-600" />
+                            </div>
+                        {/if}
+                    {/each}
+                </div>
+            </div>
+        </article>
+    </div>
 
-	<div class="gsap-bottom-up-opacity mt-24">
-		<Button
-			label="Start practicing"
-			type="button"
-			onClick={() => goto(resolve('/challenges'))}
-			Icon={Brain}
-			ariaLabel="Go to challenges"
-		/>
-	</div>
+    <div class="gsap-bottom-up-opacity mt-24">
+        <Button
+            label="Start practicing"
+            type="button"
+            onClick={() => goto(resolve('/challenges'))}
+            Icon={Brain}
+            ariaLabel="Go to challenges" />
+    </div>
 </main>

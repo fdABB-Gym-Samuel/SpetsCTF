@@ -2,16 +2,16 @@
 let
   prettier-plugin-svelte = pkgs.buildNpmPackage {
     pname = "prettier-plugin-svelte";
-    version = "3.3.2";
+    version = "3.4.1";
 
     src = pkgs.fetchFromGitHub {
       owner = "sveltejs";
       repo = "prettier-plugin-svelte";
-      rev = "v3.3.2";
-      hash = "sha256-+ThmdCHSiq2xG4Az88oWX++Moh9t7oHmtkZXDzct0Dw=";
+      rev = "v3.4.1";
+      hash = "sha256-K6NJELgNVs5/hBDps2KHizm/Hk5MKAyRcqTqg/L/gKY=";
     };
 
-    npmDepsHash = "sha256-D+gDdKiIG38jV+M/BqTKf0yYj1KXpbIodtQFdzocpn8=";
+    npmDepsHash = "sha256-zJf4gQmd38RUD91XcpymACY5Z7WAk1LFbdo7QCIgYvs=";
     dontNpmPrune = true;
 
     postInstall = ''
@@ -24,16 +24,16 @@ let
   };
   prettier-plugin-tailwindcss = pkgs.buildNpmPackage {
     pname = "prettier-plugin-tailwindcss";
-    version = "0.6.14";
+    version = "0.7.2";
 
     src = pkgs.fetchFromGitHub {
       owner = "tailwindlabs";
       repo = "prettier-plugin-tailwindcss";
-      rev = "v0.6.14";
-      hash = "sha256-9zWZIHHDOBJQZZ25B8U3zbdcpsFLORmi5Xg5QCDzQ60=";
+      rev = "v0.7.2";
+      hash = "sha256-/zRz0mP2P8xX8n0UQmzWt0eYNYA5S4RrD0lRzQYt03M=";
     };
 
-    npmDepsHash = "sha256-EozdfUJ50Gy5gXwbf/HHzko0uNG4WjO7DCO920y1fmY=";
+    npmDepsHash = "sha256-J2TTD4rsEG2CYtGWfksbGdTD/yFOX/WeVwaUdlyjuPQ=";
     dontNpmPrune = true;
 
     meta.license = pkgs.lib.licenses.mit;
@@ -52,11 +52,11 @@ in
     yamlfmt.enable = true;
     prettier = {
       enable = true;
+      includes = [ "*.svelte" ];
       settings = {
         arrowParens = "always";
         bracketSameLine = true;
         bracketSpacing = true;
-        editorconfig = false;
         plugins = [
           "${prettier-plugin-svelte}/lib/node_modules/prettier-plugin-svelte/plugin.js"
           "${prettier-plugin-tailwindcss}/lib/node_modules/prettier-plugin-tailwindcss/dist/index.mjs"
