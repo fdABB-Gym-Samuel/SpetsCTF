@@ -52,7 +52,13 @@ in
     yamlfmt.enable = true;
     prettier = {
       enable = true;
-      includes = [ "*.svelte" ];
+      includes = [
+        "*.svelte"
+        "*.html"
+        "*.ts"
+        "*.js"
+        "*.css"
+      ];
       settings = {
         arrowParens = "always";
         bracketSameLine = true;
