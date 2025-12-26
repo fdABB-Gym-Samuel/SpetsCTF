@@ -254,7 +254,7 @@
 						<h5 class="text-text-200">First Solvers:</h5>
 						<ol class="first-solvers flex list-inside list-decimal flex-col justify-start">
 							{#each challengeData.first_solvers as solver (solver.id)}
-								<li class="solver">{solver.display_name}</li>
+								<li class="solver">{solver.display_name || solver.github_username}</li>
 							{/each}
 						</ol>
 					{:else}

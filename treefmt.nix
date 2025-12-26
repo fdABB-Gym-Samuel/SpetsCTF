@@ -43,7 +43,6 @@ in
   projectRootFile = "flake.nix";
 
   programs = {
-    black.enable = true;
     deadnix.enable = true;
     dos2unix.enable = true;
     mdformat.enable = true;

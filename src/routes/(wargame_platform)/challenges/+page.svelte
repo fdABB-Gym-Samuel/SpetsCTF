@@ -23,15 +23,11 @@
 	let gsapContext: gsap.Context | undefined;
 
 	let challengesTabs = [
-		{ label: 'All Challenges', tab: 'all' },
-		{ label: 'My Challenges', tab: 'my' }
+		{ label: 'All Challenges', tab: '#all' },
+		{ label: 'My Challenges', tab: '#my' }
 	];
 
-	let currentTab: 'all' | 'my' = $state('all');
-
-	const switchTab = (newTab: 'all' | 'my') => {
-		currentTab = newTab;
-	};
+	import { page } from "$app/state";
 
 	const openDeleteDialog = (challengeId: string, challengeName: string) => {
 		challengeIdToDelete = challengeId;
@@ -97,21 +93,21 @@
 	<nav class="flex w-full flex-col gap-2">
 		<ul class="flex w-full flex-row gap-5">
 			{#each challengesTabs as tab (tab.tab)}
-				<li>
-					<button
-						class:border-b-2={currentTab === tab.tab}
-						onclick={() => {
-							switchTab(tab.tab as 'all' | 'my');
-						}}>{tab.label}</button
-					>
-				</li>
-			{/each}
+			<li>
+				<a
+					href={tab.tab}
+					class:border-b-2={page.url.hash === tab.tab || tab.tab === '#all' && !page.url.hash}
+				>
+					{tab.label}
+				</a>
+			</li>
+		{/each}
 		</ul>
 		<VSeperator></VSeperator>
 	</nav>
-	{#if currentTab === 'all'}
+	{#if page.url.hash === '#all' || !page.url.hash}
 		<ChallengeList gotoChallenge={(challengeId) => {goto(resolve('/challenges/[challengeId]', {challengeId}))}} challenges={allChallenges}></ChallengeList>
-	{:else if currentTab === 'my'}
+	{:else if page.url.hash === '#my'}
 		{#if user}
 			<section>
 				<Button
