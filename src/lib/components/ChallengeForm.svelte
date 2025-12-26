@@ -1,15 +1,17 @@
 <script lang="ts">
-	import Input from '$lib/components/input/Input.svelte';
-	import Textarea from '$lib/components/input/Textarea.svelte';
 	import Button from '$lib/components/Button.svelte';
-	import Select from '$lib/components/input/Select.svelte';
-	import ResourceUpload from '$lib/components/ResourceUpload.svelte';
 	import Checkbox from '$lib/components/input/Checkbox.svelte';
+	import Input from '$lib/components/input/Input.svelte';
+	import ResourceUpload from '$lib/components/ResourceUpload.svelte';
+	import Select from '$lib/components/input/Select.svelte';
+	import Textarea from '$lib/components/input/Textarea.svelte';
 
 	import type { Challenges,Flag, Category, ChallengeResources } from '$lib/generated/db';
 
 	import { categories } from '$lib/db/constants';
 	import { enhance } from '$app/forms';
+  import type { Selectable } from 'kysely';
+  import { onMount } from 'svelte';
 
 	interface Props {
 		action?: string;
@@ -29,15 +31,24 @@
 		challengeData,
 	}: Props = $props();
 
-	void editing;
+	let description: string = $state('');
+	let displayName: string = $state('');
+	let flag: string = $state('');
+	let flagFormat: string = $state('');
+	let points: number = $state(0);
+	let mainCategory: Selectable<Challenges>['challenge_category'] = $state('misc');
+	let resources: Selectable<ChallengeResources>[] = $state([]);
 
-	let displayName = $state(challengeData?.display_name ?? '');
-	let description = $state(challengeData?.description ?? '');
-	let flag = $state(challengeData?.flag.flag ?? '');
-	let flagFormat = $state(challengeData?.flag.flag_format ?? '');
-	let points = $state(challengeData?.points ?? 0);
+	onMount(() => {
+		description = challengeData?.description ?? '';
+		displayName = challengeData?.display_name ?? '';
+		flag = challengeData?.flag.flag ?? '';
+		flagFormat = challengeData?.flag.flag_format ?? '';
+		mainCategory = challengeData?.challenge_category ?? 'misc';
+		points = challengeData?.points ?? 0;
+		resources = challengeData?.resources ?? [];
+	});
 
-	let mainCategory = $state(challengeData?.challenge_category ?? 'misc');
 	let categoryOptions = categories.map((category) => ({
 		value: category,
 		text: category.charAt(0).toUpperCase() + category.slice(1)
@@ -58,7 +69,6 @@
 
 	let submitButtonDisabled = $derived(!displayName || !flag || !points || !mainCategory);
 
-	let resources = challengeData?.resources;
 </script>
 
 <p class="text-sm"><span class="text-primary-light">*</span>: Required</p>

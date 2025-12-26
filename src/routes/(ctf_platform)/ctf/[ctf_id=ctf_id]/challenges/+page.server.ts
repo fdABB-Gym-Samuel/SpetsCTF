@@ -8,12 +8,6 @@ export const load: PageServerLoad = async ({ locals, depends, params }) => {
 
     depends(`data:ctf-${params.ctf_id}-challenges`);
 
-    const ctf = await db
-        .selectFrom('ctf_events')
-        .where('ctf_events.id', '=', params.ctf_id)
-        .selectAll()
-        .executeTakeFirst();
-
     const allChallenges = await db
         .with('unique_success', (qb) =>
             qb

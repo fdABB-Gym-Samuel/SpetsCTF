@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
         .where('challenge_id', '=', params.challengeId)
         .selectAll(['challenges'])
         .select('flag.flag_format')
-        .select((_) =>
+        .select(() =>
             sql<boolean>`EXISTS(
                 SELECT 1 FROM wargame_submissions ws
                 WHERE ws.challenge = challenges.challenge_id

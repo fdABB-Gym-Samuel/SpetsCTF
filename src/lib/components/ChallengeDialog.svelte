@@ -15,7 +15,7 @@
   import { invalidate } from '$app/navigation';
 
 	interface Props {
-		challengeData: Selectable<Challenges> & {first_solvers: Selectable<Users>[]} & { flag_format: Selectable<Flag>["flag_format"] } & { num_solvers: number } & { resources: Selectable<ChallengeResources>[] } & { solved?: boolean};
+		challengeData: Selectable<Challenges> & {first_solvers: Selectable<Users>[]} & { flag_format: Selectable<Flag>["flag_format"] } & { num_solvers: string | number } & { resources: Selectable<ChallengeResources>[] } & { solved?: boolean};
 		closeDialog: () => void;
 		translations: Record<string, string>;
 	}
