@@ -5,7 +5,7 @@ import type { WargameSubmissions } from '$lib/generated/db';
 import { get_flag_of_challenge } from '$lib/db/functions';
 import { db } from '$lib/db/database';
 
-export const load: PageServerLoad = async ({ params, parent, locals }) => {
+export const load: PageServerLoad = async ({ params, parent, locals, depends }) => {
     const { translations } = await parent();
 
     const user = locals.user;
@@ -65,11 +65,24 @@ export const load: PageServerLoad = async ({ params, parent, locals }) => {
         .execute();
 
     const numSolvers = await db
-        .selectFrom('ctf_submissions')
+        .with('all_submissions', (qb) =>
+            qb
+                .selectFrom('wargame_submissions')
+                .select(['challenge', 'user_id', 'time'])
+                .where('success', '=', true)
+                .union(
+                    qb
+                        .selectFrom('ctf_submissions')
+                        .select(['challenge', 'user_id', 'time'])
+                        .where('success', '=', true)
+                )
+        )
+        .selectFrom('all_submissions')
         .where('challenge', '=', challengeData.challenge_id)
-        .where('success', '=', true)
         .select((eb) => eb.fn.countAll().as('count'))
         .executeTakeFirstOrThrow();
+
+    depends(`data:challenge-${challengeData.challenge_id}`);
 
     return {
         challengeData,

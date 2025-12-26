@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Link, SquareTerminal, Copy, File, UserRoundPen, CircleX } from '@lucide/svelte';
-	import { enhance } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
 
 	import { capitalizeFirstLetter } from '$lib/utils/utils';
 
@@ -12,12 +12,14 @@
 	import { categories } from '$lib/db/constants';
   import type { Selectable } from 'kysely';
   import type { ChallengeResources, Challenges, Flag, Users } from '$lib/generated/db';
+  import { invalidate } from '$app/navigation';
 
 	interface Props {
 		challengeData: Selectable<Challenges> & {first_solvers: Selectable<Users>[]} & { flag_format: Selectable<Flag>["flag_format"] } & { num_solvers: number } & { resources: Selectable<ChallengeResources>[] } & { solved?: boolean};
 		closeDialog: () => void;
 		translations: Record<string, string>;
 	}
+
 
 	let {
 		challengeData,
@@ -211,7 +213,12 @@
 			</div>
 			<div class="right w-1/2 min-w-70 flex-grow">
 				{#if !challengeData.solved}
-					<form action="?/submit" method="POST" class="flag-submission-form max-w-full" use:enhance>
+					<form action="?/submit" method="POST" class="flag-submission-form max-w-full" use:enhance={() => {
+							return async ({result}) => {
+								invalidate(`data:challenge-${challengeData.challenge_id}`)
+								applyAction(result)
+							}
+						}}>
 						<label for="flag" class="text-sm text-text-100">Submit flag</label>
 						<div class="relative mt-2 mb-8">
 							<input
