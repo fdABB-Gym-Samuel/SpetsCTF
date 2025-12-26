@@ -62,8 +62,6 @@ export const load: PageServerLoad = async ({ locals, depends, params }) => {
         .orderBy('challenges.points', 'asc')
         .execute();
 
-    console.log(allChallenges);
-
     const myChallengesQuery = db
         .selectFrom('challenges as ch')
         .leftJoin('flag as f', 'ch.flag', 'f.id')

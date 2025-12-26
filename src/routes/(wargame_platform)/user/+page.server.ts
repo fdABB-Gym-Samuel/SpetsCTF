@@ -54,8 +54,6 @@ export const actions = {
             .where('id', '=', userId)
             .executeTakeFirst();
 
-        console.log(updatedUser?.display_name);
-
         if (!updatedUser) {
             fail(500, {
                 success: false,
