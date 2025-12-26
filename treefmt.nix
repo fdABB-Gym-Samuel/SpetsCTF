@@ -66,6 +66,15 @@ in
         tabWidth = 4;
         trailingComma = "es5";
         useTabs = false;
+        # tailwindStylesheet = "./src/routes/layout.css";
+        overrides = [
+          {
+            files = "*.svelte";
+            options = {
+              parser = "svelte";
+            };
+          }
+        ];
       };
     };
     sql-formatter = {
