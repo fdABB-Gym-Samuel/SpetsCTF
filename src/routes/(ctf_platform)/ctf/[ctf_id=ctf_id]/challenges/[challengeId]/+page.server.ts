@@ -147,11 +147,11 @@ export const actions = {
             .executeTakeFirst();
 
         if (successfulSubmission !== undefined)
-            fail(403, { message: 'User has already solved challenge' });
+            return fail(403, { message: 'User has already solved challenge' });
 
         const correctFlag = await get_flag_of_challenge(challengeId);
         if (!correctFlag.challengeExists) {
-            fail(404, { message: 'Challenge not found' });
+            return fail(404, { message: 'Challenge not found' });
         }
         if (!correctFlag.flagExists) {
             return fail(404, { message: 'Flag of challenge not found' });

@@ -1,5 +1,4 @@
 <script lang="ts">
-    import ChallengeForm from '$lib/components/ChallengeForm.svelte';
     let { data, form } = $props();
     let translations = $derived(data.translations);
 </script>
@@ -11,9 +10,4 @@
     {:else if form && !form?.success}
         <span class="text-red-600">{translations.failure}: {form.message}</span>
     {/if}
-    <ChallengeForm
-        submitText="Create Challenge"
-        formName="newChallengeForm"
-        isAuthor={true}
-        editing={false}></ChallengeForm>
 </div>

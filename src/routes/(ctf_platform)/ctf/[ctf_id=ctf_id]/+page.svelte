@@ -138,14 +138,14 @@
                 <Button
                     label="See Challenges"
                     type="button"
-                    onClick={() =>
+                    onclick={() =>
                         goto(
                             resolve(`/(ctf_platform)/ctf/[ctf_id=ctf_id]/challenges`, {
                                 ctf_id: page.params.ctf_id ?? '',
                             })
                         )}
                     Icon={Swords}
-                    ariaLabel="Go to challenges" />
+                    aria-label="Go to challenges" />
             </div>
         {/if}
     </div>

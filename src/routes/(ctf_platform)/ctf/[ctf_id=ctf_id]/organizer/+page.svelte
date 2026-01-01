@@ -132,9 +132,9 @@
                         type="button"
                         styleType="icon"
                         bgColor="bg-red-700"
-                        onClick={() => removeNewOrg(newOrg.id)}
+                        onclick={() => removeNewOrg(newOrg.id)}
                         label=""
-                        ariaLabel="Remove organizer"></Button>
+                        aria-label="Remove organizer"></Button>
                 </li>
             {/each}
         </ul>
@@ -142,7 +142,7 @@
             label="Add orgs"
             type="submit"
             styleType="normal"
-            ariaLabel="Add orgs"
+            aria-label="Add orgs"
             disabled={searchFocused}></Button>
     </form>
 </div>

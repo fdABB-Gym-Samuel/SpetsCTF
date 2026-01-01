@@ -109,12 +109,7 @@
     {#if page.url.hash === '#all' || !page.url.hash}
         <ChallengeList
             gotoChallenge={(challengeId) => {
-                goto(
-                    resolve('/ctf/[ctf_id=ctf_id]/challenges/[challengeId]', {
-                        challengeId,
-                        ctf_id: page.params.ctf_id,
-                    })
-                );
+                goto(resolve(`/ctf/${page.params.ctf_id}/challenges/${challengeId}`));
             }}
             challenges={allChallenges}></ChallengeList>
     {:else if page.url.hash === '#my'}
@@ -123,9 +118,9 @@
                 <Button
                     label="Create Challenge"
                     type="button"
-                    onClick={() => goto(resolve('/create-challenge'))}
+                    onclick={() => goto(resolve('/create-challenge'))}
                     Icon={Pen}
-                    ariaLabel="Go to challenges"></Button>
+                    aria-label="Go to challenges"></Button>
                 {#if myChallenges !== null && myChallenges?.length > 0}
                     <ul class="flex flex-col">
                         {#each myChallenges as challenge (challenge.challenge_id)}
@@ -137,10 +132,10 @@
                                     class="ml-4 flex h-full flex-row items-center gap-2">
                                     <Button
                                         label=""
-                                        ariaLabel="Edit Challenge"
+                                        aria-label="Edit Challenge"
                                         type="button"
                                         styleType="icon"
-                                        onClick={() => {
+                                        onclick={() => {
                                             goto(
                                                 resolve(
                                                     `/edit-challenge/${challenge.challenge_id}`
@@ -150,11 +145,11 @@
                                         Icon={Pen}></Button>
                                     <Button
                                         label=""
-                                        ariaLabel="Delete challenge"
+                                        aria-label="Delete challenge"
                                         type="button"
                                         styleType="icon"
                                         bgColor="bg-red-700"
-                                        onClick={() => {
+                                        onclick={() => {
                                             openDeleteDialog(
                                                 challenge.challenge_id,
                                                 challenge.challenge_name
@@ -171,9 +166,9 @@
             <Button
                 label={translations.login}
                 type="button"
-                onClick={() => goto(resolve('/login'))}
+                onclick={() => goto(resolve('/login'))}
                 Icon={LogIn}
-                ariaLabel="Login" />
+                aria-label="Login" />
         {/if}
     {/if}
 </main>
