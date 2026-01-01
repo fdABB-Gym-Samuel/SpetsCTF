@@ -41,6 +41,7 @@
             bun2nix.packages.${stdenv.hostPlatform.system}.default
             curl
             daemonize
+            file
             fzf
             garage
             getent
@@ -77,6 +78,7 @@
             export PS1='[\[\e[38;5;92m\]spetsctf-dev\[\e[0m\]:\[\e[97m\]\w\[\e[0m\]]\\$ '
             export SOPS_EDITOR=nvim
             export TERM=linux
+            export STATE_DIRECTORY="$(pwd)/tmp"
 
             alias make='pdpmake --posix'
           '';

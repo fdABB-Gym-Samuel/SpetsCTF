@@ -13,6 +13,7 @@
 	postgres-kill \
 	psql \
 	seed \
+	state \
 	t
 
 codegen:
@@ -32,7 +33,10 @@ clean: postgres-clean dev-clean
 deps:
 	bun install
 
-dev: deps postgres codegen seed
+state: ./tmp
+	mkdir -p ./tmp/state
+
+dev: deps postgres codegen seed state
 	bun --bun run dev
 
 ./tmp:
