@@ -12,7 +12,8 @@
 	postgres-clean \
 	postgres-kill \
 	psql \
-	seed
+	seed \
+	t
 
 codegen:
 	mkdir -p ./src/lib/generated
@@ -82,3 +83,6 @@ garage-kill:
 
 garage-clean: garage-kill
 	rm -rf ./tmp/garage
+
+t:
+	./src/lib/translations/addtranslation.sh
