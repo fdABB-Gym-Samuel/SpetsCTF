@@ -4,45 +4,44 @@ BEGIN;
 -- 1. FLAGS (30 flags for various challenges)
 -- ============================================================================
 INSERT INTO
-  flag (id, flag, flag_format)
+  flag (flag, flag_format)
 VALUES
-  (1, 'FLAG{welcome_to_ctf}', 'string'),
-  (2, 'FLAG{basic_crypto_rocks}', 'string'),
-  (3, 'FLAG{find_the_hidden_file}', 'string'),
-  (4, 'FLAG{steganography_master}', 'string'),
-  (5, 'FLAG{osint_detective_level1}', 'string'),
-  (6, 'FLAG{buffer_overflow_pwned}', 'string'),
-  (7, 'FLAG{reverse_engineering_101}', 'string'),
-  (8, 'FLAG{sql_injection_success}', 'string'),
-  (9, 'FLAG{xor_cipher_decoded}', 'string'),
-  (10, 'FLAG{memory_dump_analyzed}', 'string'),
-  (11, 'FLAG{first_steps_completed}', 'string'),
-  (12, 'FLAG{network_forensics_win}', 'string'),
-  (13, 'FLAG{social_media_sleuth}', 'string'),
-  (14, 'FLAG{heap_exploitation_master}', 'string'),
-  (15, 'FLAG{obfuscated_code_cracked}', 'string'),
-  (16, 'FLAG{xss_vulnerability_found}', 'string'),
-  (17, 'FLAG{rsa_broken}', 'string'),
-  (18, 'FLAG{pcap_analysis_expert}', 'string'),
-  (19, 'FLAG{getting_started}', 'string'),
-  (20, 'FLAG{misc_challenge_solved}', 'string'),
-  (21, 'FLAG{geolocation_expert}', 'string'),
-  (22, 'FLAG{format_string_exploited}', 'string'),
-  (23, 'FLAG{assembly_decoded}', 'string'),
-  (24, 'FLAG{jwt_token_forged}', 'string'),
-  (25, 'FLAG{aes_decrypted}', 'string'),
-  (26, 'FLAG{disk_image_recovered}', 'string'),
-  (27, 'FLAG{beginner_champion}', 'string'),
-  (28, 'FLAG{zip_password_cracked}', 'string'),
-  (29, 'FLAG{metadata_revealed}', 'string'),
-  (30, 'FLAG{shellcode_executed}', 'string');
+  ('FLAG{welcome_to_ctf}', 'string'),
+  ('FLAG{basic_crypto_rocks}', 'string'),
+  ('FLAG{find_the_hidden_file}', 'string'),
+  ('FLAG{steganography_master}', 'string'),
+  ('FLAG{osint_detective_level1}', 'string'),
+  ('FLAG{buffer_overflow_pwned}', 'string'),
+  ('FLAG{reverse_engineering_101}', 'string'),
+  ('FLAG{sql_injection_success}', 'string'),
+  ('FLAG{xor_cipher_decoded}', 'string'),
+  ('FLAG{memory_dump_analyzed}', 'string'),
+  ('FLAG{first_steps_completed}', 'string'),
+  ('FLAG{network_forensics_win}', 'string'),
+  ('FLAG{social_media_sleuth}', 'string'),
+  ('FLAG{heap_exploitation_master}', 'string'),
+  ('FLAG{obfuscated_code_cracked}', 'string'),
+  ('FLAG{xss_vulnerability_found}', 'string'),
+  ('FLAG{rsa_broken}', 'string'),
+  ('FLAG{pcap_analysis_expert}', 'string'),
+  ('FLAG{getting_started}', 'string'),
+  ('FLAG{misc_challenge_solved}', 'string'),
+  ('FLAG{geolocation_expert}', 'string'),
+  ('FLAG{format_string_exploited}', 'string'),
+  ('FLAG{assembly_decoded}', 'string'),
+  ('FLAG{jwt_token_forged}', 'string'),
+  ('FLAG{aes_decrypted}', 'string'),
+  ('FLAG{disk_image_recovered}', 'string'),
+  ('FLAG{beginner_champion}', 'string'),
+  ('FLAG{zip_password_cracked}', 'string'),
+  ('FLAG{metadata_revealed}', 'string'),
+  ('FLAG{shellcode_executed}', 'string');
 
 -- ============================================================================
 -- 2. CTF EVENTS (8 events:  past, ongoing, and future)
 -- ============================================================================
 INSERT INTO
   ctf_events (
-    id,
     short_name,
     display_name,
     start_time,
@@ -52,7 +51,6 @@ INSERT INTO
 VALUES
   -- Past events
   (
-    1,
     'winter2025',
     'Winter Warmup CTF 2025',
     now() - interval '10 months',
@@ -60,7 +58,6 @@ VALUES
     4
   ),
   (
-    2,
     'spring2025',
     'Spring Security Challenge',
     now() - interval '7 months',
@@ -68,7 +65,6 @@ VALUES
     5
   ),
   (
-    3,
     'summer2025',
     'Summer Hacking Festival',
     now() - interval '4 months',
@@ -76,7 +72,6 @@ VALUES
     6
   ),
   (
-    4,
     'fall2025',
     'Autumn Attack Challenge',
     now() - interval '2 months',
@@ -85,7 +80,6 @@ VALUES
   ),
   -- Ongoing event
   (
-    5,
     'current',
     'December Cyber Showdown',
     now() - interval '2 hours',
@@ -94,7 +88,6 @@ VALUES
   ),
   -- Future events
   (
-    6,
     'newyear2026',
     'New Year CTF 2026',
     now() + interval '1 week',
@@ -102,7 +95,6 @@ VALUES
     4
   ),
   (
-    7,
     'winter2026',
     'Winter Championship 2026',
     now() + interval '2 months',
@@ -111,7 +103,6 @@ VALUES
   ),
   -- Permanent wargame (no specific CTF, NULL)
   (
-    8,
     'wargames',
     'Permanent Wargames',
     now() - interval '1 year',
