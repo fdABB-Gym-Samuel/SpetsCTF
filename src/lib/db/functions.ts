@@ -169,19 +169,6 @@ export async function getUserFromGithubId(github_id: number) {
     return res;
 }
 
-export function selectedCategoriesToBitset(
-    standardCategories: string[],
-    selectedCateories: string[]
-) {
-    let bitset = 0;
-    standardCategories.forEach((category: string, index: number) => {
-        if (selectedCateories.includes(category)) {
-            bitset |= 1 << index;
-        }
-    });
-    return bitset.toString(2).padStart(8, '0');
-}
-
 export const get_flag_of_challenge = async (challenge_id: string) => {
     const flag_object = await db
         .selectFrom('challenges')

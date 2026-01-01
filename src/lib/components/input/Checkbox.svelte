@@ -1,5 +1,11 @@
 <script lang="ts">
-    let { title, options, selected = $bindable([]), name } = $props();
+    interface Props {
+        title: string;
+        options: { text: string; disabled: boolean; value: string }[];
+        selected: string[];
+        name: string;
+    }
+    let { title, options, selected = $bindable([]), name }: Props = $props();
 </script>
 
 <div>
@@ -13,7 +19,7 @@
                         <label for={`${name}_${option.text}`} class="text-text-100">
                             {option.text}
                         </label>
-                        {#if option.disabled && option.disabled === true}
+                        {#if option.disabled}
                             <span class="text-point-500">*</span>
                         {/if}
                     </div>

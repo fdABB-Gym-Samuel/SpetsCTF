@@ -114,7 +114,7 @@
         class="bg-bg-800 challenge-dialog gsap-opacity relative m-auto flex w-[85%] max-w-[1000px] flex-col overflow-y-scroll rounded-lg px-4 py-12 sm:px-8 md:px-10 lg:px-16">
         <section class="-mt-2 mb-12 flex w-full justify-between">
             {#if challengeData.created_at}
-                <p class="text-primary-light mb-0.5 font-mono text-sm font-bold">
+                <p class="text-primary-light text-md mb-0.5 font-mono font-bold">
                     {translations.uploaded}
                     {challengeData.created_at.toLocaleDateString('sv-SE')}
                 </p>
@@ -123,10 +123,14 @@
                     {translations.unknown_creation_time}
                 </p>
             {/if}
-            <button type="button" onclick={() => closeDialog()} class="cursor-pointer">
+            <button
+                type="button"
+                onclick={() => closeDialog()}
+                class="cursor-pointer"
+                title="Close the challenge dialog.">
                 <CircleX
                     color="var(--color-text-200)"
-                    size="20"
+                    size="24"
                     class="hover:stroke-text-100 transition-colors" />
             </button>
         </section>
@@ -255,7 +259,7 @@
                                 <Button
                                     label="Submit"
                                     type="submit"
-                                    ariaLabel="Submit flag"
+                                    aria-label="Submit flag"
                                     bgColor="bg-bg-500"
                                     outlineColor="outline-transparent"
                                     hoverColor="hover:bg-secondary" />

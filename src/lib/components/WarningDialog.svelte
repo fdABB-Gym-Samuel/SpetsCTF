@@ -75,14 +75,14 @@
                     <input type="hidden" name={hiddenName} value={hiddenData} />
                     <Button
                         label="Cancel"
-                        ariaLabel="Cancel"
+                        aria-label="Cancel"
                         type="button"
                         styleType="small"
-                        onClick={closeDialog}
+                        onclick={closeDialog}
                         textColor="text-text-100"></Button>
                     <Button
                         label={confirmationButtonText}
-                        ariaLabel={warningAria}
+                        aria-label={warningAria}
                         type="submit"
                         styleType="small"
                         Icon={confirmationButtonIcon}

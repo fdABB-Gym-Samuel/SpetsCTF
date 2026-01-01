@@ -5,9 +5,10 @@
         challengeData: Selectable<Challenges> & { num_solvers?: number } & {
             solved?: boolean;
         };
+        solveDate?: Date;
     }
 
-    let { challengeData }: Props = $props();
+    let { challengeData, solveDate }: Props = $props();
 
     import { map } from '$lib/utils/utils';
     import { categories } from '$lib/db/constants';
@@ -55,11 +56,13 @@
                 <h3 class="challenge-name text-[18px] font-bold">
                     {challengeData.display_name}
                 </h3>
-                {#if challengeData.created_at}
-                    <p class="mt-1 mb-0.5 font-mono text-xs">
+                <p class="mt-1 mb-0.5 font-mono text-xs">
+                    {#if solveDate}
+                        {solveDate.toLocaleDateString('sv-SE')}
+                    {:else if challengeData.created_at}
                         {challengeData.created_at.toLocaleDateString('sv-SE')}
-                    </p>
-                {/if}
+                    {/if}
+                </p>
             </div>
             {#if challengeData.num_solvers}
                 <div class="mt-2 mb-4">

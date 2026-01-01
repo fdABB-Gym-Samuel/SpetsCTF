@@ -1,59 +1,48 @@
 <script lang="ts">
     import type { Icon as IconType } from '@lucide/svelte';
+    import type { HTMLButtonAttributes } from 'svelte/elements';
 
-    interface Props {
-        onClick?: () => void;
-        label: string;
-        secondLabel?: string;
-        styleType?: 'normal' | 'small' | 'icon';
-        type: HTMLButtonElement['type'];
-        disabled?: boolean;
-        ariaLabel: string;
+    interface Props extends HTMLButtonAttributes {
+        Icon?: typeof IconType;
         bgColor?: string;
         disabledBgColor?: string;
         disabledTextColor?: string;
-        responsiveStyles?: string;
-        textColor?: string;
         hoverColor?: string;
-        outlineColor?: string;
-        Icon?: typeof IconType;
         iconSize?: string;
+        label: string;
+        outlineColor?: string;
+        responsiveStyles?: string;
+        secondLabel?: string;
+        styleType?: 'normal' | 'small' | 'icon';
+        textColor?: string;
         twStyles?: string;
-        form?: string | null;
     }
 
     let {
-        onClick = () => {},
-        label,
-        secondLabel = '',
-        styleType = 'normal',
-        type,
-        disabled = false,
-        ariaLabel,
+        Icon = undefined,
         bgColor = 'bg-bg-700',
+        disabled,
         disabledBgColor = 'bg-bg-850',
         disabledTextColor = 'text-gradient-100',
-        responsiveStyles = '',
-        textColor = '',
         hoverColor = 'hover:bg-bg-600',
-        outlineColor = 'outline-bg-500',
-        Icon = undefined,
         iconSize = '16',
+        label,
+        outlineColor = 'outline-bg-500',
+        responsiveStyles = '',
+        secondLabel = '',
+        styleType = 'normal',
+        textColor = '',
         twStyles = '',
-        form = undefined,
+        ...restProps
     }: Props = $props();
 </script>
 
 {#if styleType === 'normal'}
     <button
-        {disabled}
-        {type}
-        onclick={() => onClick()}
-        aria-label={ariaLabel}
+        {...restProps}
         class="rounded-xl px-16 py-1.5 outline-2 {disabled
             ? disabledBgColor
-            : bgColor} {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {twStyles} {responsiveStyles} text-nowrap"
-        {form}>
+            : bgColor} {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {twStyles} {responsiveStyles} text-nowrap">
         {#if secondLabel !== ''}
             <span class="mr-0.5 {disabled ? disabledTextColor : textColor}"
                 >{label}<span class="dark:text-primary-light text-primary"
@@ -74,14 +63,10 @@
     </button>
 {:else if styleType === 'small'}
     <button
-        {disabled}
-        {type}
-        onclick={onClick}
-        aria-label={ariaLabel}
+        {...restProps}
         class="rounded-sm px-4 py-1 text-sm {disabled
             ? disabledBgColor
-            : bgColor} outline-2 {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {responsiveStyles} {twStyles}"
-        {form}>
+            : bgColor} outline-2 {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {responsiveStyles} {twStyles}">
         {#if secondLabel !== ''}
             <span class="mr-0.5 {disabled ? disabledTextColor : textColor}"
                 >{label}<span class="text-primary-light">{secondLabel}</span></span>
@@ -100,14 +85,10 @@
     </button>
 {:else if styleType === 'icon'}
     <button
-        {disabled}
-        {type}
-        onclick={() => onClick()}
-        aria-label={ariaLabel}
+        {...restProps}
         class="h-fit rounded-sm px-1 py-1 text-left {disabled
             ? disabledBgColor
-            : bgColor} outline-2 {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {responsiveStyles} {twStyles} flex"
-        {form}>
+            : bgColor} outline-2 {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {responsiveStyles} {twStyles} flex">
         {#if Icon}
             <Icon
                 size={iconSize}

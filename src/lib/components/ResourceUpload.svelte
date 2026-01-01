@@ -5,8 +5,15 @@
 
     import { linkPattern } from '$lib/utils/utils.js';
     import { Trash2 } from '@lucide/svelte';
+    import type { Selectable } from 'kysely';
+    import type { ChallengeResources } from '$lib/generated/db';
 
-    let { form, resourceData } = $props();
+    interface Props {
+        form?: string;
+        resourceData: Selectable<ChallengeResources>[];
+    }
+
+    let { form, resourceData }: Props = $props();
 
     type resource_type = 'file' | 'command' | 'website';
 
@@ -146,7 +153,7 @@
         <Button
             type="submit"
             label="Add Resource"
-            ariaLabel="Add resource"
+            aria-label="Add resource"
             styleType="small"
             disabled={resourceButtonDisabled}
             disabledBgColor="bg-bg-900 text-gradient-100"></Button>
@@ -162,9 +169,9 @@
                 label=""
                 Icon={Trash2}
                 type="button"
-                ariaLabel="Remove File"
+                aria-label="Remove File"
                 styleType="icon"
-                onClick={() => {
+                onclick={() => {
                     original_files.splice(i, 1);
                 }}
                 bgColor="bg-red-700"></Button>
@@ -181,9 +188,9 @@
                 label=""
                 Icon={Trash2}
                 type="button"
-                ariaLabel="Remove File"
+                aria-label="Remove File"
                 styleType="icon"
-                onClick={() => {
+                onclick={() => {
                     remove_resource('file', i);
                 }}
                 bgColor="bg-red-700"></Button>
@@ -206,8 +213,8 @@
                         label=""
                         styleType="icon"
                         Icon={Trash2}
-                        ariaLabel={`Remove ${type}`}
-                        onClick={() => {
+                        aria-label={`Remove ${type}`}
+                        onclick={() => {
                             if (type === 'website' || type === 'command')
                                 remove_resource(type, i);
                         }}
