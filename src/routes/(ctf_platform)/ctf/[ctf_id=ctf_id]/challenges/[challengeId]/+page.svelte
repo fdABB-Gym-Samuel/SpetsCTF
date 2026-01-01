@@ -29,5 +29,5 @@
     }
 </script>
 
-<ChallengeDialog {closeDialog} challengeData={challengeDataJoined} {translations} {form}
+<ChallengeDialog {closeDialog} challengeData={challengeDataJoined} {translations}
 ></ChallengeDialog>

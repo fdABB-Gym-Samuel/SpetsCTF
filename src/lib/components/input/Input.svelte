@@ -1,19 +1,27 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import Dropdown from '$lib/components/input/Dropdown.svelte';
+    import type { HTMLInputAttributes } from 'svelte/elements';
+
+    interface Props extends HTMLInputAttributes {
+        label: string;
+        inputFocused?: boolean;
+        widthClass?: string;
+        dropdownData?: any;
+    }
+
     let {
         label,
         type,
         placeholder,
         name,
+        required,
         value = $bindable(),
         inputFocused = $bindable(false),
-        width = 'w-full',
+        widthClass = 'w-full',
         dropdownData = null,
-        pattern = undefined,
-        multiple = false,
-        required = false,
-    } = $props();
+        ...restProps
+    }: Props = $props();
 
     const handleKeyDown = (e: KeyboardEvent) => {
         if (dropdownData) {
@@ -50,18 +58,15 @@
     </div>
     <input
         bind:this={inputElement}
-        {pattern}
         {name}
         autocomplete="off"
         id="input"
-        {type}
         bind:value
-        {placeholder}
-        class="{width} bg-bg-850 border-bg-500 focus:border-primary-light rounded-full border-2 px-6 py-2 outline-0"
+        class="{widthClass} bg-bg-850 border-bg-500 focus:border-primary-light rounded-full border-2 px-6 py-2 outline-0"
         onkeydown={(e) => handleKeyDown(e)}
         onfocus={() => (inputFocused = true)}
         onblur={() => (inputFocused = false)}
-        {multiple}
+        {...restProps}
         {required} />
     {#if dropdownData && inputFocused}
         <Dropdown {...dropdownData} bind:currentSelected></Dropdown>
