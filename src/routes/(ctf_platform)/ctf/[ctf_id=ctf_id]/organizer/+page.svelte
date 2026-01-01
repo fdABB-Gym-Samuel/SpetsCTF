@@ -111,7 +111,7 @@
             bind:inputFocused={searchFocused}
             {dropdownData}></Input>
     </div>
-    <form action="?/addOrg" method="POST" use:enhance>
+    <form action="?/addOrg" method="post" use:enhance>
         <ul
             class="mb-4 flex max-h-50 w-full flex-col items-center overflow-y-scroll px-4">
             {#each organizersToAdd.slice().reverse() as newOrg, i (newOrg.id)}

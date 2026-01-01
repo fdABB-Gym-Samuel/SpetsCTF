@@ -6,7 +6,16 @@ import type { Insertable, Selectable, Updateable } from 'kysely';
 import type { ChallengeResources, Challenges, Flag } from '$lib/generated/db';
 import { validateCategory } from '$lib/db/functions';
 import { selectedCategoriesToBitset } from '$lib/bitset';
-import { categories, resourceTypes } from '$lib/db/constants';
+import { categories } from '$lib/db/constants';
+import { spawn } from 'node:child_process';
+import { env } from '$env/dynamic/private';
+import path from 'node:path';
+import sanitize from 'sanitize-filename';
+import { stat } from 'node:fs/promises';
+import { writeFile } from 'node:fs/promises';
+import { mkdir } from 'node:fs/promises';
+import { unlink } from 'node:fs/promises';
+import { linkPattern } from '$lib/utils/utils';
 
 export const load: PageServerLoad = async ({ locals, params, depends }) => {
     const user = locals.user;
@@ -53,6 +62,64 @@ export const load: PageServerLoad = async ({ locals, params, depends }) => {
 };
 
 export const actions = {
+    approveChallenge: async ({ request, locals }) => {
+        const user = locals.user;
+        if (!user) redirect(303, resolve('/login'));
+
+        const form = await request.formData();
+        const challengeId = form.get('challenge_id')?.toString() ?? '';
+        if (!challengeId) {
+            return fail(404, { success: false, message: 'Challenge ID not provided.' });
+        }
+
+        if (user.is_admin) {
+            try {
+                await db
+                    .updateTable('challenges')
+                    .set({ approved: true })
+                    .where('challenge_id', '=', challengeId)
+                    .executeTakeFirstOrThrow();
+            } catch {
+                error(500, { message: 'Failed to set approved bit.' });
+            }
+        } else {
+            return fail(401, { success: false, message: 'Not authorized to approve.' });
+        }
+
+        return {
+            success: true,
+            message: '',
+        };
+    },
+    disapproveChallenge: async ({ request, locals }) => {
+        const user = locals.user;
+        if (!user) redirect(303, resolve('/login'));
+
+        const form = await request.formData();
+        const challengeId = form.get('challenge_id')?.toString() ?? '';
+        if (!challengeId) {
+            return fail(404, { success: false, message: 'Challenge ID not provided.' });
+        }
+
+        if (user.is_admin) {
+            try {
+                await db
+                    .updateTable('challenges')
+                    .set({ approved: false })
+                    .where('challenge_id', '=', challengeId)
+                    .executeTakeFirstOrThrow();
+            } catch {
+                error(500, { message: 'Failed to set approved bit.' });
+            }
+        } else {
+            return fail(401, { success: false, message: 'Not authorized to approve.' });
+        }
+
+        return {
+            success: true,
+            message: '',
+        };
+    },
     createResource: async ({ request, locals, params }) => {
         const user = locals.user;
         if (!user) redirect(303, resolve('/login'));
@@ -88,6 +155,12 @@ export const actions = {
                 content: form.get('content')?.toString() ?? '',
             };
 
+            if (resourceType === 'web') {
+                if (linkPattern.test(insertableResource.content)) {
+                    return fail(422, { success: false, message: 'Invalid link.' });
+                }
+            }
+
             try {
                 await db
                     .insertInto('challenge_resources')
@@ -102,7 +175,119 @@ export const actions = {
                 message: '',
             };
         } else if (resourceType === 'file') {
-            error(501);
+            const fileBufferFormEntry = form.get('file');
+            if (fileBufferFormEntry === null) {
+                return fail(422, {
+                    success: false,
+                    message:
+                        'You need to attach a file to use with the file resource type.',
+                });
+            }
+
+            const fileBuffer = fileBufferFormEntry.valueOf();
+            if (!(fileBuffer instanceof File)) {
+                return fail(422, {
+                    success: false,
+                    message: 'The file field must be of type File.',
+                });
+            }
+
+            if (fileBuffer.size > 1e7) {
+                return fail(422, {
+                    success: false,
+                    message: 'The file must be no larger than 10^7 bytes.',
+                });
+            }
+
+            const arrayBuffer = await fileBuffer.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+
+            const mimeType = await new Promise<string>((resolve, reject) => {
+                const fileProcess = spawn('file', ['-b', '--mime-type', '-']);
+                let output = '';
+                fileProcess.stdout.on('data', (data) => {
+                    output += data.toString();
+                });
+
+                fileProcess.stderr.on('data', (data) => {
+                    reject(new Error(data.toString()));
+                });
+
+                fileProcess.on('close', (code) => {
+                    if (code === 0) {
+                        resolve(output.trim());
+                    } else {
+                        reject(new Error(`file command exited with code ${code}`));
+                    }
+                });
+
+                fileProcess.stdin.write(buffer);
+                fileProcess.stdin.end();
+            });
+
+            if (fileBuffer.type.split(';').at(0)?.trim() !== mimeType) {
+                return fail(422, {
+                    success: false,
+                    message: 'Stop lying about the mimetype!',
+                });
+            }
+
+            const stateDirectoryPath = env.STATE_DIRECTORY;
+            if (!stateDirectoryPath || !path.isAbsolute(stateDirectoryPath))
+                error(500, {
+                    message:
+                        'Could not determine file save location. Contact an admin if the issue persists.',
+                });
+
+            const filePath = path.join(
+                stateDirectoryPath,
+                'files',
+                challengeId,
+                sanitize(fileBuffer.name)
+            );
+
+            let fileExists: boolean = false;
+            try {
+                await stat(filePath);
+                fileExists = true;
+            } catch (err) {
+                const errTyped = err as NodeJS.ErrnoException;
+                if (errTyped.code === 'ENOENT') {
+                    fileExists = false;
+                } else {
+                    throw err;
+                }
+            }
+
+            if (fileExists) {
+                return fail(422, { success: false, message: 'File already exists.' });
+            }
+
+            try {
+                await mkdir(path.dirname(filePath), { recursive: true });
+                await writeFile(filePath, buffer);
+            } catch {
+                error(500, {
+                    message:
+                        'Could not write file to disk. Contact an admin if the issue persists.',
+                });
+            }
+
+            const fileResource: Insertable<ChallengeResources> = {
+                challenge: challengeId,
+                content: path.relative(stateDirectoryPath, filePath),
+                type: 'file',
+            };
+
+            try {
+                await db
+                    .insertInto('challenge_resources')
+                    .values(fileResource)
+                    .execute();
+            } catch {
+                await unlink(filePath);
+                error(500, { message: 'Failed to register file in database.' });
+            }
         } else {
             return fail(422, {
                 success: false,
@@ -140,10 +325,13 @@ export const actions = {
 
         if (user.id === resourceData.author || user.is_admin) {
             try {
-                await db
+                const stateDirectoryPath = env.STATE_DIRECTORY ?? '';
+                const filePathToDelete = await db
                     .deleteFrom('challenge_resources')
                     .where('id', '=', parsedResourceId)
-                    .execute();
+                    .returning('content')
+                    .executeTakeFirstOrThrow();
+                await unlink(path.join(stateDirectoryPath, filePathToDelete.content));
             } catch {
                 error(500, { message: 'Failed to delete resource.' });
             }
@@ -180,10 +368,8 @@ export const actions = {
 
         const form = await request.formData();
 
-        console.log(Array.from(form.entries()));
-
-        let flagUpdate: Updateable<Flag> = {};
-        let challengeUpdate: Updateable<Challenges> = {};
+        const flagUpdate: Updateable<Flag> = {};
+        const challengeUpdate: Updateable<Challenges> = {};
 
         const displayName = form.get('display_name');
         if (!displayName || displayName.toString() === '') {

@@ -1,11 +1,13 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
+    import { resolve } from '$app/paths';
+    import { page } from '$app/state';
     let { data, form } = $props();
 
     import Button from '$lib/components/Button.svelte';
+    import ButtonLink from '$lib/components/ButtonLink.svelte';
     import Checkbox from '$lib/components/input/Checkbox.svelte';
     import Input from '$lib/components/input/Input.svelte';
-    // import ResourceUpload from '$lib/components/ResourceUpload.svelte';
     import Select from '$lib/components/input/Select.svelte';
     import Textarea from '$lib/components/input/Textarea.svelte';
 
@@ -13,7 +15,16 @@
     import { onMount } from 'svelte';
 
     import { bitsetToSelectedCategories } from '$lib/bitset';
-    import { FileTerminal, Globe, Paperclip, Trash } from '@lucide/svelte';
+    import {
+        X,
+        Check,
+        FileTerminal,
+        Globe,
+        Paperclip,
+        Trash,
+        UserCog,
+        Download,
+    } from '@lucide/svelte';
 
     const uid = $props.id();
     const formId = `form-${uid}`;
@@ -32,6 +43,13 @@
             disabled: false,
         },
     ];
+
+    let showApproveForm = $derived(
+        data.user && data.user.is_admin && !data.challenge.approved
+    );
+    let showDisapproveForm = $derived(
+        data.user && data.user.is_admin && data.challenge.approved
+    );
 
     let mainCategory = $state('misc');
     let selectedSubCategories: string[] = $state([]);
@@ -55,25 +73,56 @@
             })
     );
 
-    let newResourceFormType = $state('web');
+    let newResourceFormType = $state('cmd');
 </script>
 
 <main class="pt-8">
+    {#if showApproveForm}
+        <section id="approve">
+            <div class="flex flex-row items-center space-x-3">
+                <UserCog />
+                <h2>Admin: Approve Challenge</h2>
+            </div>
+            <form method="post" use:enhance action="?/approveChallenge">
+                <input
+                    type="hidden"
+                    value={page.params.challengeId}
+                    name="challenge_id" />
+                <Button type="submit" Icon={Check} label="Approve Challenge" />
+            </form>
+        </section>
+    {/if}
+    {#if showDisapproveForm}
+        <section id="disapprove">
+            <div class="flex flex-row items-center space-x-3">
+                <UserCog />
+                <h2>Admin: Disapprove Challenge</h2>
+            </div>
+            <form method="post" use:enhance action="?/disapproveChallenge">
+                <input
+                    type="hidden"
+                    value={page.params.challengeId}
+                    name="challenge_id" />
+                <Button type="submit" Icon={X} label="Disapprove Challenge" />
+            </form>
+        </section>
+    {/if}
     {#if form}
         <div
-            class:border-green-600={form?.success}
-            class:border-red-600={!form?.success}
-            class="w-min rounded border-2 px-2 py-1">
-            {#if form?.success}
+            class:border-green-600={form.success}
+            class:border-red-600={!form.success}
+            class="rounded-md border-3 px-2 py-1">
+            {#if form.success}
                 Success
             {:else}
-                {form?.message}
+                {form.message}
             {/if}
         </div>
     {/if}
     <p class="text-sm"><span class="text-primary-light">*</span>: Required</p>
     <form
         id={formId}
+        action="?/editChallenge"
         method="post"
         enctype="multipart/form-data"
         class="grid grid-cols-1 justify-around gap-x-10 gap-y-4 lg:grid-cols-2"
@@ -132,12 +181,6 @@
                 options={possibleSubCategories}
                 bind:selected={selectedSubCategories}></Checkbox>
         </section>
-        <!--
-            <section class="mb-4">
-                <ResourceUpload form={formId} resourceData={data.resources}
-                ></ResourceUpload>
-            </section>
-        -->
         <Button label="Save" type="submit"></Button>
     </form>
 
@@ -147,7 +190,7 @@
         <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
             {#each data.resources as resource (resource.id)}
                 <div class="bg-bg-700 border-bg-500 rounded-lg border-2 p-4">
-                    <div class="flex flex-row space-x-2">
+                    <div class="flex flex-row items-center space-x-4">
                         {#if resource.type === 'web'}
                             <Globe />
                         {:else if resource.type === 'file'}
@@ -156,13 +199,23 @@
                             <FileTerminal />
                         {/if}
                         {#if resource.type === 'web'}
-                            <a href={resource.content}>{resource.content}</a>
+                            <a href={`${resource.content}`}>{resource.content}</a>
                         {:else if resource.type === 'file'}
                             {resource.content}
                         {:else if resource.type === 'cmd'}
                             <span class="font-mono">{resource.content}</span>
                         {/if}
                         <div class="flex-grow"></div>
+                        {#if resource.type === 'file'}
+                            <ButtonLink
+                                label=""
+                                styleType="icon"
+                                iconSize="20"
+                                href={resolve(
+                                    `/files/${data.challenge.challenge_id}/${resource.content.split('/').at(-1)}`
+                                )}
+                                Icon={Download} />
+                        {/if}
                         <form method="post" action="?/deleteResource" use:enhance>
                             <input
                                 type="hidden"
@@ -172,7 +225,7 @@
                                 type="submit"
                                 label=""
                                 styleType="icon"
-                                iconSize={'20'}
+                                iconSize="20"
                                 Icon={Trash} />
                         </form>
                     </div>
@@ -180,7 +233,11 @@
             {/each}
         </div>
 
-        <form method="post" action="?/createResource" use:enhance>
+        <form
+            method="post"
+            action="?/createResource"
+            enctype="multipart/form-data"
+            use:enhance>
             <Select
                 bind:value={newResourceFormType}
                 name="resource_type"
@@ -205,11 +262,7 @@
                     label="Content"
                     placeholder="Enter the resource content" />
             {:else if newResourceFormType === 'file'}
-                <Input
-                    type="file"
-                    name="challenge_file"
-                    label="Choose a file"
-                    placeholder="" />
+                <Input type="file" name="file" label="Choose a file" placeholder="" />
             {/if}
             <Button type="submit" label="Create resource" />
         </form>

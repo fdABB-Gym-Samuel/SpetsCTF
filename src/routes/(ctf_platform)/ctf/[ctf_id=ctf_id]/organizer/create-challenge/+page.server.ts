@@ -169,10 +169,7 @@ export const actions = {
                 resource_files = files.map((file) => {
                     return {
                         challenge: challenge_id,
-                        content: path.join(
-                            `/challenge_files/${challenge_id}`,
-                            file?.name
-                        ),
+                        content: path.join(`/files/${challenge_id}`, file?.name),
                         type: 'file',
                     };
                 });

@@ -22,7 +22,7 @@
 
 <div class="content w-screen">
     <h1>{translations.createctf}</h1>
-    <form method="POST" class="mx-auto flex w-1/2 flex-col space-y-2" use:enhance>
+    <form method="post" class="mx-auto flex w-1/2 flex-col space-y-2" use:enhance>
         <div>
             <label for="display_name">{translations.ctf_display_name_label}</label>
             <input

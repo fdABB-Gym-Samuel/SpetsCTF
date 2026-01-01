@@ -50,7 +50,7 @@
             ><b>{data.user.github_username}</b></a
         >.</span>
     <form
-        method="POST"
+        method="post"
         action="?/logout"
         use:enhance={() => {
             return async ({ result }) => {
@@ -68,7 +68,7 @@
     <h2 class="text-xl font-bold">{data.translations.altersettings}</h2>
     <form
         class="flex w-min flex-col space-y-3"
-        method="POST"
+        method="post"
         action="?/settings"
         use:enhance={() => {
             return async ({ result }) => {

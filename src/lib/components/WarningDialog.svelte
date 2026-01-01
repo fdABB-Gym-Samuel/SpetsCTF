@@ -71,7 +71,7 @@
                 <p class="text-text-100">{warningDescription}</p>
             </div>
             <div class="flex flex-row justify-end">
-                <form {action} method="POST" use:enhance class="flex gap-2">
+                <form {action} method="post" use:enhance class="flex gap-2">
                     <input type="hidden" name={hiddenName} value={hiddenData} />
                     <Button
                         label="Cancel"

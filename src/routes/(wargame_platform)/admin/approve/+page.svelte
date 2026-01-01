@@ -14,26 +14,22 @@
         </div>
     {/if}
     <div class="mb-4">
-        <h1 class="route-title text-4xl">Approve challenges</h1>
-        <p>
-            This is where you as an organizer can approve challenges users have
-            submitted for your CTF
-        </p>
+        <h1 class="route-title text-4xl">Approve Challenges</h1>
     </div>
-    <div>
-        <h3 class="text-2xl">All Challenges</h3>
-
-        <ul
-            class="grid grid-cols-[repeat(auto-fill,minmax(305px,1fr))] gap-4 sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(390px,1fr))]">
-            {#each unapprovedChallenges as challengeData (challengeData.challenge_id)}
+    <ul
+        class="grid grid-cols-[repeat(auto-fill,minmax(305px,1fr))] gap-4 sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(390px,1fr))]">
+        {#if unapprovedChallenges.length > 0}
+            {#each unapprovedChallenges as challenge (challenge.challenge_id)}
                 <li>
                     <a
-                        href={resolve(`/admin/approve/${challengeData.challenge_id}`)}
+                        href={resolve(`/challenges/${challenge.challenge_id}/edit`)}
                         data-sveltekit-noscroll
                         class="ignore-default h-38 w-full"
-                        ><ChallengeCard data={{ challengeData }}></ChallengeCard></a>
+                        ><ChallengeCard challengeData={challenge}></ChallengeCard></a>
                 </li>
             {/each}
-        </ul>
-    </div>
+        {:else}
+            No challenges to approve.
+        {/if}
+    </ul>
 </div>

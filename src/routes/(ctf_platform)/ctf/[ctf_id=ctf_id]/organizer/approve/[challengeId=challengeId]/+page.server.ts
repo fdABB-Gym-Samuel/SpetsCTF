@@ -267,10 +267,7 @@ export const actions = {
                 resource_files = newFiles.map((file) => {
                     return {
                         challenge: challengeId,
-                        content: path.join(
-                            `/challenge_files/${challengeId}`,
-                            file?.name
-                        ),
+                        content: path.join(`/files/${challengeId}`, file?.name),
                         type: 'file',
                     };
                 }) as Insertable<ChallengeResources>[];

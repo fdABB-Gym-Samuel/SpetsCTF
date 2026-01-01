@@ -1,12 +1,10 @@
-import { error, redirect } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { sql, type Selectable } from 'kysely';
-import { Category } from '$lib/db/schema';
 import type { Challenges, CtfTeams } from '$lib/generated/db';
 
 export const load: PageServerLoad = async (event) => {
-    const user = event.locals.user;
     const wantedUserId = event.params.userId;
 
     if (!wantedUserId) error(404);

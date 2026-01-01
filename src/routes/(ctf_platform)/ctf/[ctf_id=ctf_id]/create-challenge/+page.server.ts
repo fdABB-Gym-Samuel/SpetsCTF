@@ -3,9 +3,9 @@ import { db } from '$lib/db/database';
 import {
     validateCategory,
     getChallengeIdFromDisplayName,
-    selectedCategoriesToBitset,
     getIsOrg,
 } from '$lib/db/functions';
+import { selectedCategoriesToBitset } from '$lib/bitset';
 import type { Category, ChallengeResources, Challenges } from '$lib/generated/db';
 import type { Insertable } from 'kysely';
 import { writeFile, mkdir } from 'fs/promises';
@@ -167,10 +167,7 @@ export const actions = {
                 resource_files = files.map((file) => {
                     return {
                         challenge: challenge_id,
-                        content: path.join(
-                            `/challenge_files/${challenge_id}`,
-                            file?.name
-                        ),
+                        content: path.join(`/files/${challenge_id}`, file?.name),
                         type: 'file',
                     };
                 });

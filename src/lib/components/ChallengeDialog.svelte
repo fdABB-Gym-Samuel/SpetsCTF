@@ -25,12 +25,13 @@
         Users,
     } from '$lib/generated/db';
     import { invalidate } from '$app/navigation';
+    import { resolve } from '$app/paths';
 
     interface Props {
         challengeData: Selectable<Challenges> & {
             first_solvers: Selectable<Users>[];
         } & { flag_format: Selectable<Flag>['flag_format'] } & {
-            num_solvers: string | number;
+            num_solvers: string | number | bigint;
         } & { resources: Selectable<ChallengeResources>[] } & { solved?: boolean };
         closeDialog: () => void;
         translations: Record<string, string>;
@@ -173,15 +174,19 @@
                                     class="challenge-resource flex flex-row items-center gap-1">
                                     <File class="size-4"></File>
                                     <a
-                                        href={resource.content}
-                                        class="ignore-default h-fit"
-                                        >{resource.content
-                                            .split('/')[3]
-                                            .slice(0, 35)}{resource.content.split(
-                                            '/'
-                                        )[3].length > 35
+                                        href={resolve(
+                                            `/files/${resource.challenge}/${resource.content.split('/').at(-1)}`
+                                        )}
+                                        class="ignore-default h-fit">
+                                        {resource.content
+                                            .split('/')
+                                            .at(-1)
+                                            ?.slice(0, 35) ?? ''}
+                                        {(resource.content.split('/').at(-1)?.length ??
+                                            0) > 35
                                             ? '...'
-                                            : ''}</a>
+                                            : ''}
+                                    </a>
                                 </li>
                             {:else}
                                 <li
@@ -232,7 +237,7 @@
                 {#if !challengeData.solved}
                     <form
                         action="?/submit"
-                        method="POST"
+                        method="post"
                         class="flag-submission-form max-w-full"
                         use:enhance={() => {
                             return async ({ result }) => {

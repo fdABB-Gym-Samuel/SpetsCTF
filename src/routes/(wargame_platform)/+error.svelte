@@ -23,7 +23,7 @@
                     class="max-h-120 object-contain" />
             </a>
             <form
-                method="POST"
+                method="post"
                 class="text-center"
                 action="/api/submit/super_secret_super_flag_challenge_that_no_one_knows_about"
                 use:enhance>
