@@ -1,111 +1,56 @@
-import { error, redirect, type ServerLoadEvent } from '@sveltejs/kit';
-import type { PageServerLoad } from '../$types';
+import { error, redirect } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
-import { sql } from 'kysely';
+import { sql, type Selectable } from 'kysely';
 import { Category } from '$lib/db/schema';
+import type { Challenges, CtfTeams } from '$lib/generated/db';
 
-export const load: PageServerLoad = async (event: ServerLoadEvent) => {
-    const session = event.locals.user;
+export const load: PageServerLoad = async (event) => {
+    const user = event.locals.user;
     const wantedUserId = event.params.userId;
 
-    if (session && wantedUserId === session.id) redirect(303, '/user');
+    if (!wantedUserId) error(404);
 
-    if (!wantedUserId) return;
-
-    const userInfo = await db
+    const wantedUser = await db
         .selectFrom('users')
-        .select((eb) => [
-            // Select the basic user data.
-            'users.id',
-            'users.display_name as displayName',
-
-            // Subquery for successful wargame submissions with challenge data.
-            eb
-                .selectFrom('wargame_submissions')
-                .innerJoin(
-                    'challenges',
-                    'wargame_submissions.challenge',
-                    'challenges.challenge_id'
-                )
-                .select(() => [
-                    sql<
-                        ArrayLike<{
-                            id: string;
-                            challenge_name: string;
-                            points: number;
-                            description: string;
-                            challenge_category: Category;
-                            challenge_sub_categories: string;
-                        }>
-                    >`json_agg(json_build_object(
-                'id', challenges.challenge_id,
-                'challenge_name', challenges.display_name,
-                'points', challenges.points,
-                'description', challenges.description,
-                'challenge_category', challenges.challenge_category,
-			'challenge_sub_categories', challenges.challenge_sub_categories
-              ))`.as('solves'),
-                ])
-                .whereRef('wargame_submissions.user_id', '=', 'users.id')
-                .where('wargame_submissions.success', '=', true)
-                .as('solves'),
-
-            // Subquery for challenges authored by the user.
-            eb
-                .selectFrom('challenges')
-                .select(() => [
-                    sql<
-                        ArrayLike<{
-                            id: string;
-                            challenge_name: string;
-                            points: number;
-                            description: string;
-                            challenge_category: Category;
-                            challenge_sub_categories: string;
-                        }>
-                    >`json_agg(json_build_object(
-                'id', challenges.challenge_id,
-                'challenge_name', challenges.display_name,
-                'points', challenges.points,
-                'description', challenges.description,
-                'challenge_category', challenges.challenge_category,
-			'challenge_sub_categories', challenges.challenge_sub_categories
-              ))`.as('authoredChallenges'),
-                ])
-                .whereRef('challenges.author', '=', 'users.id')
-                .as('authoredChallenges'),
-
-            // Subquery for CTFS where the user is a team member.
-            eb
-                .selectFrom('ctf_teams_members')
-                .innerJoin('ctf_teams', 'ctf_teams_members.team', 'ctf_teams.id')
-                .innerJoin('ctf_events', 'ctf_teams.ctf', 'ctf_events.id')
-                .select(() => [
-                    sql<ArrayLike<{
-                        ctfId: number;
-                        ctfName: string;
-                        teamId: number;
-                        teamName: string;
-                    }> | null>`json_agg(json_build_object(
-                'ctfId', ctf_events.id,
-                'ctfName', ctf_events.display_name,
-                'teamId', ctf_teams.id,
-                'teamName', ctf_teams.name
-              ))`.as('ctfs'),
-                ])
-                .whereRef('ctf_teams_members.user_id', '=', 'users.id')
-                .as('ctfs'),
-        ])
-        .where('users.id', '=', wantedUserId)
+        .where('id', '=', wantedUserId)
+        .selectAll()
         .executeTakeFirst();
 
-    if (
-        userInfo === undefined ||
-        userInfo.displayName === '' ||
-        userInfo.displayName === null
-    ) {
-        error(404, { message: 'User not found' });
-    } else {
-        return { userInfo };
-    }
+    if (!wantedUser || !wantedUser.display_name) error(404);
+
+    const authoredChallenges: Selectable<Challenges>[] = await db
+        .selectFrom('challenges')
+        .where('author', '=', wantedUser.id)
+        .selectAll()
+        .execute();
+
+    const solvedChallenges = await db
+        .selectFrom('challenges')
+        .innerJoin('wargame_submissions', (join) =>
+            join
+                .onRef('challenges.challenge_id', '=', 'wargame_submissions.challenge')
+                .on('wargame_submissions.success', '=', true)
+                .on('wargame_submissions.user_id', '=', wantedUser.id)
+        )
+        .selectAll('challenges')
+        .select(sql<string>`MIN(wargame_submissions.time)`.as('solve_time'))
+        .groupBy('challenges.challenge_id')
+        .execute();
+
+    const participatedCtfs = await db
+        .selectFrom('ctf_teams_members')
+        .where('ctf_teams_members.user_id', '=', wantedUser.id)
+        .innerJoin('ctf_teams', 'ctf_teams_members.team', 'ctf_teams.id')
+        .innerJoin('ctf_events', 'ctf_teams.ctf', 'ctf_events.id')
+        .selectAll('ctf_events')
+        .select(() => [sql<Selectable<CtfTeams>>`row_to_json(ctf_teams.*)`.as('team')])
+        .execute();
+
+    return {
+        authoredChallenges,
+        participatedCtfs,
+        solvedChallenges,
+        userInfo: wantedUser,
+    };
 };

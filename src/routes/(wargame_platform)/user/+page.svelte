@@ -30,8 +30,8 @@
 <div class="content flex flex-col space-y-4 p-4 pt-0">
     <h1 class="mt-2 text-2xl font-bold">{data.translations.settings}</h1>
     {#if form && form?.success}
-        <div class="w-fit rounded-md border-2 border-green-400 p-2">
-            <span class="text-md font-bold text-green-600"
+        <div class="w-fit rounded-md border-2 border-green-500 p-2">
+            <span class="text-md font-bold text-green-400"
                 >{data.translations.settingsupdated}.</span>
         </div>
     {:else if form && !form?.success}
@@ -67,7 +67,7 @@
     </form>
     <h2 class="text-xl font-bold">{data.translations.altersettings}</h2>
     <form
-        class="flex w-min flex-col space-y-1"
+        class="flex w-min flex-col space-y-3"
         method="POST"
         action="?/settings"
         use:enhance={() => {
@@ -88,11 +88,9 @@
                 id="display_name" />
         </div>
 
-        <br />
         <label for="represents_class">
             {data.translations.representclass}
         </label>
-        <br />
         <select
             class="bg-bg-900 text-text-100 border-primary rounded border-2 px-2 py-1"
             name="represents_class"

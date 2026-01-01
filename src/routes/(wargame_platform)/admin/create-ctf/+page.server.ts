@@ -69,7 +69,7 @@ export const actions = {
             };
             await db.insertInto('ctf_events').values(vals).execute();
         } else {
-            fail(401, { message: 'Not authorized' });
+            return fail(401, { message: 'Not authorized' });
         }
     },
 } satisfies Actions;

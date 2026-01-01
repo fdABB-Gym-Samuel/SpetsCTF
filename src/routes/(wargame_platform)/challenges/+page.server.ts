@@ -1,7 +1,9 @@
-import { fail, redirect, type Actions } from '@sveltejs/kit';
+import { fail, redirect, type Actions, error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
-import { sql } from 'kysely';
+import { sql, type Insertable } from 'kysely';
+import type { Challenges } from '$lib/generated/db';
+import { resolve } from '$app/paths';
 
 export const load: PageServerLoad = async ({ locals, depends }) => {
     const user = locals.user;
@@ -99,10 +101,90 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
 };
 
 export const actions = {
+    createChallenge: async ({ locals, request }) => {
+        const user = locals.user;
+        if (!user) {
+            redirect(303, '/login');
+        }
+
+        const form = await request.formData();
+        if (!form.has('name')) {
+            return fail(400);
+        }
+
+        const requestedNameFormDataEntry = form.get('name');
+        let requestedName: string = '';
+        if (
+            requestedNameFormDataEntry === null ||
+            requestedNameFormDataEntry.toString() === ''
+        ) {
+            return fail(400);
+        } else {
+            requestedName = requestedNameFormDataEntry.toString();
+        }
+
+        const formattedRequestedName = requestedName
+            .replaceAll(/\s+/g, '_')
+            .replaceAll(/[^\w]/g, '')
+            .replaceAll(/[^a-z0-9_]/gi, '')
+            .toLowerCase();
+
+        if (formattedRequestedName.length === 0) {
+            return fail(400);
+        }
+
+        const existingChallengeWithSpecifiedName = await db
+            .selectFrom('challenges')
+            .where('challenge_id', '=', formattedRequestedName)
+            .select('challenge_id')
+            .executeTakeFirst();
+
+        if (existingChallengeWithSpecifiedName) {
+            return fail(409);
+        }
+
+        const newEmptyChallenge = await db.transaction().execute(async (trx) => {
+            const newEmptyFlag = await trx
+                .insertInto('flag')
+                .values({
+                    // These fields are empty here, editing a challenge will overwrite them.
+                    flag: '',
+                    flag_format: '',
+                })
+                .returning(['flag.id'])
+                .executeTakeFirstOrThrow();
+
+            const challengeStub: Insertable<Challenges> = {
+                anonymous_author: null,
+                approved: false,
+                author: user.id,
+                challenge_id: formattedRequestedName,
+                challenge_sub_categories: '00000000',
+                created_at: new Date(),
+                ctf: null,
+                description: '',
+                display_name: requestedName,
+                flag: newEmptyFlag.id,
+                points: 0,
+            };
+
+            return await trx
+                .insertInto('challenges')
+                .values(challengeStub)
+                .returningAll()
+                .executeTakeFirst();
+        });
+
+        if (!newEmptyChallenge) {
+            error(500, { message: 'Failed to create new challenge stub.' });
+        }
+
+        redirect(303, resolve(`/challenges/${newEmptyChallenge.challenge_id}/edit`));
+    },
     delete: async ({ request, locals }) => {
         const user = locals.user;
         if (!user) {
-            return redirect(304, '/login');
+            redirect(303, '/login');
         }
 
         const formData = await request.formData();

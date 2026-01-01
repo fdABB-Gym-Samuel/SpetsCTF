@@ -32,8 +32,8 @@
     <Button
         label="Log in with "
         type="button"
-        onClick={() => goto(resolve('/login/github'))}
-        ariaLabel="Login with GitHub"
+        onclick={() => goto(resolve('/login/github'))}
+        aria-label="Login with GitHub"
         Icon={Github}
         secondLabel="GitHub"
         twStyles="gsap-top-down-opacity" />

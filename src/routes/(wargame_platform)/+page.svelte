@@ -139,8 +139,8 @@
         <Button
             label="Start practicing"
             type="button"
-            onClick={() => goto(resolve('/challenges'))}
+            onclick={() => goto(resolve('/challenges'))}
             Icon={Brain}
-            ariaLabel="Go to challenges" />
+            aria-label="Go to challenges" />
     </div>
 </main>

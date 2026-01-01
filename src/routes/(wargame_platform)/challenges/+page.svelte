@@ -1,8 +1,9 @@
 <script lang="ts">
     import Button from '$lib/components/Button.svelte';
+    import ButtonLink from '$lib/components/ButtonLink.svelte';
+    import ChallengeList from '$lib/components/ChallengeList.svelte';
     import WarningDialog from '$lib/components/WarningDialog.svelte';
     import { goto } from '$app/navigation';
-    import ChallengeList from '$lib/components/ChallengeList.svelte';
 
     let { data, form } = $props();
 
@@ -25,9 +26,11 @@
     let challengesTabs = [
         { label: 'All Challenges', tab: '#all' },
         { label: 'My Challenges', tab: '#my' },
+        { label: 'Create Challenge', tab: '#create' },
     ];
 
     import { page } from '$app/state';
+    import Input from '$lib/components/input/Input.svelte';
 
     const openDeleteDialog = (challengeId: string, challengeName: string) => {
         challengeIdToDelete = challengeId;
@@ -110,19 +113,13 @@
     {#if page.url.hash === '#all' || !page.url.hash}
         <ChallengeList
             gotoChallenge={(challengeId) => {
-                goto(resolve('/challenges/[challengeId]', { challengeId }));
+                goto(resolve(`/challenges/${challengeId}`));
             }}
             challenges={allChallenges}></ChallengeList>
     {:else if page.url.hash === '#my'}
         {#if user}
             <section>
-                <Button
-                    label="Create Challenge"
-                    type="button"
-                    onClick={() => goto(resolve('/create-challenge'))}
-                    Icon={Pen}
-                    ariaLabel="Go to challenges"></Button>
-                {#if myChallenges !== null && myChallenges?.length > 0}
+                {#if myChallenges && myChallenges?.length > 0}
                     <ul class="flex flex-col">
                         {#each myChallenges as challenge (challenge.challenge_id)}
                             <li
@@ -131,26 +128,22 @@
                                 <HSeperator color="bg-bg-500"></HSeperator>
                                 <div
                                     class="ml-4 flex h-full flex-row items-center gap-2">
-                                    <Button
+                                    <ButtonLink
                                         label=""
-                                        ariaLabel="Edit Challenge"
+                                        aria-label="Edit Challenge"
                                         type="button"
                                         styleType="icon"
-                                        onClick={() => {
-                                            goto(
-                                                resolve(
-                                                    `/edit-challenge/${challenge.challenge_id}`
-                                                )
-                                            );
-                                        }}
-                                        Icon={Pen}></Button>
+                                        href={resolve(
+                                            `/challenges/${challenge.challenge_id}/edit`
+                                        )}
+                                        Icon={Pen}></ButtonLink>
                                     <Button
                                         label=""
-                                        ariaLabel="Delete challenge"
+                                        aria-label="Delete challenge"
                                         type="button"
                                         styleType="icon"
                                         bgColor="bg-red-700"
-                                        onClick={() => {
+                                        onclick={() => {
                                             openDeleteDialog(
                                                 challenge.challenge_id,
                                                 challenge.challenge_name
@@ -164,13 +157,29 @@
                 {/if}
             </section>
         {:else}
-            <Button
+            <ButtonLink
                 label={translations.login}
-                type="button"
-                onClick={() => goto(resolve('/login'))}
+                href={resolve('/login')}
                 Icon={LogIn}
-                ariaLabel="Login" />
+                aria-label="Login" />
         {/if}
+    {:else if page.url.hash == '#create'}
+        <form
+            class="flex w-fit flex-col space-y-4"
+            method="post"
+            action="?/createChallenge">
+            <Input
+                label="Display name"
+                type="text"
+                name="name"
+                placeholder="Enter a display name"
+                required={true} />
+            <Button
+                label="Create Challenge"
+                type="submit"
+                Icon={Pen}
+                aria-label="Go to challenges"></Button>
+        </form>
     {/if}
 </main>
 

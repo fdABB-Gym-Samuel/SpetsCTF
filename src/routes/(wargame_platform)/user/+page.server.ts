@@ -55,7 +55,7 @@ export const actions = {
             .executeTakeFirst();
 
         if (!updatedUser) {
-            fail(500, {
+            return fail(500, {
                 success: false,
                 message: 'Something went wrong on the server.',
             });
