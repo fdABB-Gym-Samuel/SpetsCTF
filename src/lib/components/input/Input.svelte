@@ -24,7 +24,7 @@
     }: Props = $props();
 
     const handleKeyDown = (e: KeyboardEvent) => {
-        if (dropdownData) {
+        if (dropdownData && currentSelected !== undefined) {
             if (e.key === 'ArrowUp') {
                 e.preventDefault();
                 currentSelected =
@@ -38,11 +38,12 @@
             }
         }
     };
-    let currentSelected = $state(dropdownData?.currentSelected);
+    let currentSelected: number | undefined = $state();
     let inputElement: HTMLInputElement | undefined;
 
     onMount(() => {
         inputFocused = inputElement === document.activeElement;
+        if (dropdownData) currentSelected = dropdownData;
     });
 </script>
 
