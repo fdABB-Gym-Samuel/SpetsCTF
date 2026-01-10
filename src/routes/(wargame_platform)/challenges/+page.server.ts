@@ -4,6 +4,7 @@ import { db } from '$lib/db/database';
 import { sql, type Insertable } from 'kysely';
 import type { Challenges } from '$lib/generated/db';
 import { resolve } from '$app/paths';
+import { formatRequestedName } from '$lib/utils/utils';
 
 export const load: PageServerLoad = async ({ locals, depends }) => {
     const user = locals.user;
@@ -123,11 +124,7 @@ export const actions = {
             requestedName = requestedNameFormDataEntry.toString();
         }
 
-        const formattedRequestedName = requestedName
-            .replaceAll(/\s+/g, '_')
-            .replaceAll(/[^\w]/g, '')
-            .replaceAll(/[^a-z0-9_]/gi, '')
-            .toLowerCase();
+        const formattedRequestedName = formatRequestedName(requestedName);
 
         if (formattedRequestedName.length === 0) {
             return fail(400);

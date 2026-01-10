@@ -31,6 +31,7 @@
 
     import { page } from '$app/state';
     import Input from '$lib/components/input/Input.svelte';
+    import { formatRequestedName } from '$lib/utils/utils.js';
 
     const openDeleteDialog = (challengeId: string, challengeName: string) => {
         challengeIdToDelete = challengeId;
@@ -44,6 +45,11 @@
 
     let challengeIdToDelete = $state('');
     let challengeNameToDelete = $state('');
+
+    let inputtedChallengeDisplayName = $state('');
+    let derivedChallengeId = $derived(
+        formatRequestedName(inputtedChallengeDisplayName)
+    );
 
     onMount(() => {
         gsapContext = playAnimations(componentRoot);
@@ -172,8 +178,14 @@
                 label="Display name"
                 type="text"
                 name="name"
+                bind:value={inputtedChallengeDisplayName}
                 placeholder="Enter a display name"
                 required={true} />
+            {#if derivedChallengeId}
+                <span
+                    >Challenge ID: <span class="font-mono">{derivedChallengeId}</span
+                    ></span>
+            {/if}
             <Button
                 label="Create Challenge"
                 type="submit"
