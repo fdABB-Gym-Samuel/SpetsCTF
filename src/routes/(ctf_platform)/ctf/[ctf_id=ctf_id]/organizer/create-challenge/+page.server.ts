@@ -4,10 +4,10 @@ import { db } from '$lib/db/database';
 import {
     validateCategory,
     getChallengeIdFromDisplayName,
-    selectedCategoriesToBitset,
     getIsOrg,
     insertFlag,
 } from '$lib/db/functions';
+import { selectedCategoriesToBitset } from '$lib/bitset';
 import type { Category, ChallengeResources, Challenges } from '$lib/generated/db';
 import { type Insertable } from 'kysely';
 import { writeFile, mkdir } from 'fs/promises';

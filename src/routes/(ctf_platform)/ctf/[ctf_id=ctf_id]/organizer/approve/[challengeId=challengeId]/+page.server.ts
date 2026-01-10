@@ -2,12 +2,8 @@ import type { PageServerLoad } from './$types';
 import { error, redirect, fail, isRedirect, type Actions } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
-import {
-    selectedCategoriesToBitset,
-    validateCategory,
-    getIsOrg,
-    insertFlag,
-} from '$lib/db/functions';
+import { validateCategory, getIsOrg, insertFlag } from '$lib/db/functions';
+import { selectedCategoriesToBitset } from '$lib/bitset';
 import type { Category, ChallengeResources } from '$lib/generated/db';
 import { writeFile, mkdir, unlink } from 'fs/promises';
 import sanitize from 'sanitize-filename';
