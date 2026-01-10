@@ -8,6 +8,7 @@ import {
 import { db } from '$lib/db/database';
 import type { CtfEvents } from '$lib/generated/db';
 import type { Insertable } from 'kysely';
+import { formatRequestedName } from '$lib/utils/utils';
 
 export const load = async ({ locals }: ServerLoadEvent) => {
     const user = locals.user;
@@ -24,48 +25,49 @@ export const actions = {
     default: async ({ locals, request }) => {
         if (locals.user?.is_admin === true) {
             const form = await request.formData();
-            const display_name = form.get('display_name')?.toString();
-            const short_name = form.get('short_name')?.toString();
-            const max_team_size = form.get('max_team_size')?.toString();
-            const start_time = form.get('start_time')?.toString();
-            const end_time = form.get('end_time')?.toString();
+            const displayName = form.get('display_name')?.toString();
+            const maxTeamSize = form.get('max_team_size')?.toString();
+            const startTime = form.get('start_time')?.toString();
+            const endTime = form.get('end_time')?.toString();
 
-            let max_team_size_parsed: number | null = Math.floor(
-                Number(max_team_size ?? '')
+            let maxTeamSizeParsed: number | null = Math.floor(
+                Number(maxTeamSize ?? '')
             );
-            if (isNaN(max_team_size_parsed)) {
-                max_team_size_parsed = null;
+            if (isNaN(maxTeamSizeParsed)) {
+                maxTeamSizeParsed = null;
             }
 
-            if (!display_name) {
+            if (!displayName) {
                 return fail(422, { message: 'Display name missing' });
             }
 
-            if (!short_name) {
+            const shortName = formatRequestedName(displayName);
+
+            if (shortName.length === 0) {
                 return fail(422, { message: 'Short name missing' });
             }
 
-            if (!end_time) {
+            if (!endTime) {
                 return fail(422, { message: 'End time missing.' });
             }
 
-            if (!start_time) {
+            if (!startTime) {
                 return fail(422, { message: 'Start time missing.' });
             }
 
-            const start_time_date = new Date(start_time);
-            const end_time_date = new Date(end_time);
+            const startTimeDate = new Date(startTime);
+            const endTimeDate = new Date(endTime);
 
-            if (start_time_date >= end_time_date) {
+            if (startTimeDate >= endTimeDate) {
                 return fail(422, { message: 'End time before start time.' });
             }
 
             const vals: Insertable<CtfEvents> = {
-                start_time,
-                end_time,
-                max_team_size: max_team_size_parsed,
-                display_name,
-                short_name,
+                start_time: startTime,
+                end_time: endTime,
+                max_team_size: maxTeamSizeParsed,
+                display_name: displayName,
+                short_name: shortName,
             };
             await db.insertInto('ctf_events').values(vals).execute();
         } else {

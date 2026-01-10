@@ -60,6 +60,8 @@
     <input
         bind:this={inputElement}
         {name}
+        {type}
+        {placeholder}
         autocomplete="off"
         id="input"
         bind:value
