@@ -47,6 +47,7 @@
     <textarea
         {...restProps}
         bind:this={textareaElement}
+        {placeholder}
         {name}
         bind:value
         class="{width} bg-bg-850 border-bg-500 focus:border-primary-light rounded-lg border-2 px-6 py-2 outline-0 {heightStyles}"

@@ -38,7 +38,7 @@
                 id="display_name" />
         </div>
         <div>
-            <span class="font-mono">{requestedDisplayName}</span>
+            <span class="font-mono">{derivedShortName}</span>
         </div>
         <div>
             <Input

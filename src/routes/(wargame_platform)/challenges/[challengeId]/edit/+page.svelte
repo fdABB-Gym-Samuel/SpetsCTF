@@ -25,6 +25,7 @@
         UserCog,
         Download,
     } from '@lucide/svelte';
+    import { linkPattern } from '$lib/utils/utils.js';
 
     const uid = $props.id();
     const formId = `form-${uid}`;
@@ -255,10 +256,17 @@
                     .sort((a, b) => {
                         return a.value < b.value ? -1 : 1;
                     })} />
-            {#if newResourceFormType === 'cmd' || newResourceFormType === 'web'}
+            {#if newResourceFormType === 'cmd'}
                 <Input
                     type="text"
                     name="content"
+                    label="Content"
+                    placeholder="Enter the resource content" />
+            {:else if newResourceFormType === 'web'}
+                <Input
+                    type="text"
+                    name="content"
+                    pattern="/abcd/"
                     label="Content"
                     placeholder="Enter the resource content" />
             {:else if newResourceFormType === 'file'}
