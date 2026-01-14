@@ -266,7 +266,7 @@
                 <Input
                     type="text"
                     name="content"
-                    pattern="/abcd/"
+                    pattern={linkPattern.source}
                     label="Content"
                     placeholder="Enter the resource content" />
             {:else if newResourceFormType === 'file'}

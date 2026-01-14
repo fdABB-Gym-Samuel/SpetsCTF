@@ -156,7 +156,7 @@ export const actions = {
             };
 
             if (resourceType === 'web') {
-                if (linkPattern.test(insertableResource.content)) {
+                if (!linkPattern.test(insertableResource.content)) {
                     return fail(422, { success: false, message: 'Invalid link.' });
                 }
             }
@@ -324,16 +324,29 @@ export const actions = {
         if (!resourceData) error(404, { message: 'No such resource found.' });
 
         if (user.id === resourceData.author || user.is_admin) {
-            try {
-                const stateDirectoryPath = env.STATE_DIRECTORY ?? '';
-                const filePathToDelete = await db
-                    .deleteFrom('challenge_resources')
-                    .where('id', '=', parsedResourceId)
-                    .returning('content')
-                    .executeTakeFirstOrThrow();
-                await unlink(path.join(stateDirectoryPath, filePathToDelete.content));
-            } catch {
-                error(500, { message: 'Failed to delete resource.' });
+            if (resourceData.type === 'file') {
+                try {
+                    const stateDirectoryPath = env.STATE_DIRECTORY ?? '';
+                    const filePathToDelete = await db
+                        .deleteFrom('challenge_resources')
+                        .where('id', '=', resourceData.id)
+                        .returning('content')
+                        .executeTakeFirstOrThrow();
+                    await unlink(
+                        path.join(stateDirectoryPath, filePathToDelete.content)
+                    );
+                } catch {
+                    error(500, { message: 'Failed to delete file resource.' });
+                }
+            } else {
+                try {
+                    await db
+                        .deleteFrom('challenge_resources')
+                        .where('id', '=', resourceData.id)
+                        .executeTakeFirstOrThrow();
+                } catch {
+                    error(500, { message: 'Failed to delete resource.' });
+                }
             }
             return {
                 success: true,
@@ -370,6 +383,9 @@ export const actions = {
 
         const flagUpdate: Updateable<Flag> = {};
         const challengeUpdate: Updateable<Challenges> = {};
+
+        // Users must get an edit approved.
+        challengeUpdate.approved = false;
 
         const displayName = form.get('display_name');
         if (!displayName || displayName.toString() === '') {
