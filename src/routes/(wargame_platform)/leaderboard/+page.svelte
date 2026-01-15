@@ -22,7 +22,6 @@
             return usersScoreboard;
         }
     });
-    $inspect('filteredUsers', filteredUsers);
 
     import BackToTop from '$lib/components/BackToTop.svelte';
 

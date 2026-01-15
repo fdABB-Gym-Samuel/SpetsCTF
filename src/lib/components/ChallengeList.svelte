@@ -14,7 +14,6 @@
     }
 
     let { challenges, gotoChallenge }: Props = $props();
-    $inspect('challenges', challenges);
 </script>
 
 <section class="challenge-container w-full">

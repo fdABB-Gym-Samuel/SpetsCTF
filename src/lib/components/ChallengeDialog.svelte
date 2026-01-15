@@ -154,20 +154,7 @@
                                     <a
                                         href={resource.content}
                                         class="ignore-default h-fit"
-                                        >{resource.content
-                                            .split('//')[1]
-                                            .split('/')[0]
-                                            .split('.')
-                                            .slice(-2)
-                                            .join('.')
-                                            .slice(0, 35)}{resource.content
-                                            .split('//')[1]
-                                            .split('/')[0]
-                                            .split('.')
-                                            .slice(-2)
-                                            .join('.').length > 35
-                                            ? '...'
-                                            : ''}</a>
+                                        >{new URL(resource.content).host}</a>
                                 </li>
                             {:else if resource.type === 'file'}
                                 <li
