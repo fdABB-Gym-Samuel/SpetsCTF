@@ -36,7 +36,7 @@ deps:
 state: ./tmp
 	mkdir -p ./tmp/state
 
-dev: deps postgres codegen seed state
+dev: deps postgres codegen seed state pgweb
 	bun --bun run dev
 
 ./tmp:
@@ -44,6 +44,9 @@ dev: deps postgres codegen seed state
 
 psql:
 	psql -U spetsctf postgresql:///spetsctf?host=$$(readlink ./tmp)
+
+pgweb:
+	pgweb &
 
 ./tmp/.pgdata: ./tmp
 	initdb \

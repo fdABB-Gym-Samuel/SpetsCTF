@@ -20,9 +20,11 @@
     let componentRoot: HTMLElement;
     let gsapContext: gsap.Context | undefined;
 
-    let teamPosition = $derived(
-        scores.findIndex((team_) => team_.team_id === team?.teamId) + 1
-    );
+    let teamPosition = $derived.by(() => {
+        if (team) {
+            scores.findIndex((team_) => team_.team_id === team?.teamId) + 1;
+        }
+    });
 
     onMount(() => {
         gsapContext = playAnimations(componentRoot);
@@ -140,7 +142,9 @@
                                                 '/(ctf_platform)/ctf/[ctf_id=ctf_id]/team/[teamId=teamId]',
                                                 {
                                                     ctf_id: page.params.ctf_id ?? '',
-                                                    teamId: String(team?.teamId ?? ''),
+                                                    teamId: String(
+                                                        teamInside.team_id ?? ''
+                                                    ),
                                                 }
                                             )}>{teamInside.team_name}</a
                                         ></td>

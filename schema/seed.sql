@@ -1298,70 +1298,33 @@ VALUES
 -- 7. CTF TEAMS (12 teams across different CTFs)
 -- ============================================================================
 INSERT INTO
-  ctf_teams (id, website, name, ctf)
+  ctf_teams (website, name, ctf)
 VALUES
   -- Winter CTF teams
-  (
-    1,
-    'https://team-alpha.example.com',
-    'Team Alpha',
-    1
-  ),
-  (
-    2,
-    'https://team-beta.example.com',
-    'Team Beta',
-    1
-  ),
-  (
-    3,
-    'https://team-gamma.example.com',
-    'Team Gamma',
-    1
-  ),
+  ('https://team-alpha.example.com', 'Team Alpha', 1),
+  ('https://team-beta.example.com', 'Team Beta', 1),
+  ('https://team-gamma.example.com', 'Team Gamma', 1),
   -- Spring CTF teams
+  ('https://team-delta.example.com', 'Team Delta', 2),
   (
-    4,
-    'https://team-delta.example.com',
-    'Team Delta',
-    2
-  ),
-  (
-    5,
     'https://team-epsilon.example.com',
     'Team Epsilon',
     2
   ),
   -- Summer CTF teams
-  (
-    6,
-    'https://team-zeta.example.com',
-    'Team Zeta',
-    3
-  ),
-  (7, 'https://team-eta.example.com', 'Team Eta', 3),
-  (
-    8,
-    'https://team-theta.example.com',
-    'Team Theta',
-    3
-  ),
+  ('https://team-zeta.example.com', 'Team Zeta', 3),
+  ('https://team-eta.example.com', 'Team Eta', 3),
+  ('https://team-theta.example.com', 'Team Theta', 3),
   -- Fall CTF teams
-  (
-    9,
-    'https://team-iota.example.com',
-    'Team Iota',
-    4
-  ),
-  (10, NULL, 'Team Kappa', 4),
+  ('https://team-iota.example.com', 'Team Iota', 4),
+  (NULL, 'Team Kappa', 4),
   -- Current CTF teams
   (
-    11,
     'https://team-lambda.example.com',
     'Team Lambda',
     5
   ),
-  (12, 'https://team-mu.example.com', 'Team Mu', 5);
+  ('https://team-mu.example.com', 'Team Mu', 5);
 
 -- ============================================================================
 -- 8. TEAM MEMBERSHIPS

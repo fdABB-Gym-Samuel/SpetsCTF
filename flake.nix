@@ -68,6 +68,7 @@
             uutils-coreutils-noprefix
             vscode-langservers-extracted
             which
+            pgweb
           ];
 
           shellHook = ''

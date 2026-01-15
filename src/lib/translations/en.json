@@ -51,6 +51,8 @@
   "jul": "July",
   "jun": "June",
   "leaderboard": "Leaderboard",
+  "leave_team": "Leave Team",
+  "leave_team_description": "This action cannot be undone, and you may not be able to join the team again. If you are the only member of this team, the team will be deleted.",
   "log_in": "Log in",
   "login": "Log in",
   "loginwithgithub": "Log in with GitHub",

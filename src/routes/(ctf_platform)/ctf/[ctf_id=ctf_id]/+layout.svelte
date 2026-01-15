@@ -15,8 +15,8 @@
             display: data.translations.leaderboard,
             href: resolve(`/ctf/${page.params.ctf_id}/leaderboard`),
         },
-        data.isOrg === false
-            ? data.team === undefined
+        data.isOrg !== true
+            ? data.team === undefined || data.team === null
                 ? {
                       display: data.translations.register_team,
                       href: resolve(`/ctf/${page.params.ctf_id}/register_team`),

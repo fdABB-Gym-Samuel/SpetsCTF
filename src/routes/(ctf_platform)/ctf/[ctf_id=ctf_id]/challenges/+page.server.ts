@@ -3,61 +3,129 @@ import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
 
-export const load: PageServerLoad = async ({ locals, depends, params }) => {
+export const load: PageServerLoad = async ({ locals, depends, params, parent }) => {
     const user = locals.user;
+    const ctfId = Number(params.ctf_id);
+    const userId = user ? user.id : undefined;
+
+    const ctf = (await parent()).ctf_data;
 
     depends(`data:ctf-${params.ctf_id}-challenges`);
 
-    const allChallenges = await db
-        .with('unique_success', (qb) =>
-            qb
-                .selectFrom('ctf_submissions')
-                .innerJoin('users', 'ctf_submissions.user_id', 'users.id')
-                .where('is_admin', 'is not', true)
-                .where('ctf_submissions.ctf', '=', params.ctf_id)
-                .select(['challenge', 'user_id'])
-                .select(sql`MIN(time)`.as('first_time'))
-                .groupBy(['challenge', 'user_id'])
-        )
-        .selectFrom('challenges')
-        .leftJoin(
-            'unique_success',
-            'challenges.challenge_id',
-            'unique_success.challenge'
-        )
-        .leftJoin('ctf_events', 'challenges.ctf', 'ctf_events.id')
-        .where('challenges.approved', '=', true)
-        .where(sql<boolean>`ctf_events.end_time IS NULL OR ctf_events.end_time < NOW()`)
-        .groupBy('challenges.challenge_id')
-        .select([
-            'challenges.challenge_id',
-            'challenges.display_name',
-            'challenges.description',
-            'challenges.points',
-            'challenges.challenge_category',
-            'challenges.challenge_sub_categories',
-            'challenges.author',
-            'challenges.anonymous_author',
-            'challenges.approved',
-            'challenges.created_at',
-            'challenges.ctf',
-            'challenges.flag',
-        ])
-        .select((eb) => [
-            eb.fn.count<number>('unique_success.user_id').distinct().as('num_solvers'),
-            sql<boolean>`EXISTS(
-            SELECT 1 FROM (
-                SELECT challenge, user_id FROM ctf_submissions WHERE success = true
-            ) unified
-            WHERE unified.challenge = challenges.challenge_id
-                AND unified.user_id = ${user?.id ?? null}
-        )`.as('solved'),
-        ])
-        .orderBy('challenges.points', 'asc')
-        .execute();
+    const allChallenges =
+        ctf && (new Date(ctf.start_time) < new Date() || user?.is_admin)
+            ? await db
+                  .with('unique_success', (qb) =>
+                      qb
+                          .selectFrom('ctf_submissions')
+                          .select(['challenge', 'user_id'])
+                          .select(sql`MIN(time)`.as('first_time'))
+                          .where('success', '=', true)
+                          .groupBy(['challenge', 'user_id'])
+                  )
+                  // Second CTE: rank these unique successful submissions per challenge.
+                  .with('ranked_submissions', (qb) =>
+                      qb
+                          .selectFrom('unique_success')
+                          .select(['challenge', 'user_id', 'first_time'])
+                          .select(
+                              sql`ROW_NUMBER() OVER (PARTITION BY challenge ORDER BY first_time)`.as(
+                                  'rn'
+                              )
+                          )
+                  )
+                  // Main query: join challenges, ranked submissions, users, and flag.
+                  .selectFrom('challenges as ch')
+                  .where('ch.ctf', '=', ctfId)
+                  .where('ch.approved', '=', true)
+                  .leftJoin(
+                      'ranked_submissions as rs',
+                      'ch.challenge_id',
+                      'rs.challenge'
+                  )
+                  .leftJoin('users as u', 'rs.user_id', 'u.id')
+                  .where('u.is_admin', 'is not', true)
+                  .leftJoin('flag as f', 'ch.flag', 'f.id')
+                  .leftJoin('users as a', 'ch.author', 'a.id')
+                  .groupBy([
+                      'ch.challenge_id',
+                      'ch.display_name',
+                      'ch.description',
+                      'ch.points',
+                      'ch.challenge_category',
+                      'ch.challenge_sub_categories',
+                      'a.display_name',
+                      'a.id',
+                      'f.flag_format',
+                  ])
+                  .select((eb) => [
+                      'ch.challenge_id',
+                      'ch.display_name as challenge_name',
+                      'ch.description as challenge_description',
+                      'ch.challenge_category',
+                      'ch.challenge_sub_categories',
+                      'ch.points',
+                      'f.flag_format',
+                      eb
+                          .case()
+                          .when(sql.ref('ch.anonymous_author'), '=', true)
+                          .then(sql.lit('Anonymous'))
+                          .else(sql.ref('a.display_name'))
+                          .end()
+                          .as('author'),
+                      // 'a.id as author_id',
+                      eb
+                          .case()
+                          .when(sql.ref('ch.anonymous_author'), '=', true)
+                          .then(sql.lit(null))
+                          .else(sql.ref('a.id'))
+                          .end()
+                          .as('author_id'),
+                      // Aggregate up to the first 5 solver display_names into a JSON array, ordered by submission time.
+                      sql`
+              COALESCE(
+                JSON_AGG(
+                  json_build_object('display_name', u.display_name)
+                  ORDER BY rs.first_time
+                ) FILTER (WHERE rs.rn <= 5),
+                '[]'::json
+              )
+            `.as('first_solvers'),
+                      // Count the total number of unique successful solves for the challenge.
+                      sql`(
+              SELECT COUNT(*)
+              FROM unique_success us
+              WHERE us.challenge = ch.challenge_id
+            )`.as('num_solves'),
+                      // Check if the current user has a successful submission on this challenge.
+                      sql`EXISTS(
+              SELECT 1 FROM ctf_submissions ws
+              WHERE ws.challenge = ch.challenge_id
+                AND ws.user_id = ${userId}
+                AND ws.success = true
+            )`.as('solved'),
+                      // Get an array of resources for the challenge (ordered by resource id).
+                      sql`
+              COALESCE(
+                (
+                  SELECT JSON_AGG(
+                    json_build_object('type', cr.type, 'content', cr.content)
+                    ORDER BY cr.id
+                  )
+                  FROM challenge_resources cr
+                  WHERE cr.challenge = ch.challenge_id
+                ),
+                '[]'::json
+              )
+            `.as('resources'),
+                  ])
+                  .orderBy('ch.points', 'asc')
+                  .execute()
+            : [];
 
     const myChallengesQuery = db
         .selectFrom('challenges as ch')
+        .where('ch.ctf', '=', ctfId)
         .leftJoin('flag as f', 'ch.flag', 'f.id')
         .leftJoin('users as a', 'ch.author', 'a.id')
         .select([

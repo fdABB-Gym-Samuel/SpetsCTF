@@ -51,6 +51,8 @@
   "jul": "Juli",
   "jun": "Juni",
   "leaderboard": "Topplista",
+  "leave_team": "Lämna Lag",
+  "leave_team_description": "Den här åtgärden kan inte ångras, och du kanske inte kan gå med i laget igen. Om du är den enda medlemmen i laget kommer laget att raderas.",
   "log_in": "Logga in",
   "login": "Logga in",
   "loginwithgithub": "Logga in med GitHub",
