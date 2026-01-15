@@ -156,7 +156,6 @@ export const actions = {
             };
 
             if (resourceType === 'web') {
-                console.log(insertableResource);
                 if (linkPattern.test(insertableResource.content)) {
                     return fail(422, { success: false, message: 'Invalid link.' });
                 }

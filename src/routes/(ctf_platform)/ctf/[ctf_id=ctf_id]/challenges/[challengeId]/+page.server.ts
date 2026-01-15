@@ -235,7 +235,7 @@ export const actions = {
 
         if (submissionResult === undefined) {
             return fail(500, {
-                message: 'Youre submission could not be recorded, please try again.',
+                message: 'Your submission could not be recorded, please try again.',
             });
         }
 

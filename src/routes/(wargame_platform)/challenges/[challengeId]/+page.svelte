@@ -8,7 +8,6 @@
     let resources = $derived(data.resources);
     let translations = $derived(data.translations);
     let numSolvers = $derived(data.numSolvers);
-    console.log(challengeData);
 
     let challengeDataJoined = $derived({
         ...challengeData,
