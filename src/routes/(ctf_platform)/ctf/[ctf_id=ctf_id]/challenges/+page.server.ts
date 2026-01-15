@@ -60,12 +60,24 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
                   ])
                   .select((eb) => [
                       'ch.challenge_id',
-                      'ch.display_name as challenge_name',
-                      'ch.description as challenge_description',
+                      'ch.display_name',
+                      'ch.description',
                       'ch.challenge_category',
                       'ch.challenge_sub_categories',
                       'ch.points',
                       'f.flag_format',
+                      //   'challenges.challenge_id',
+                      //   'challenges.display_name',
+                      //   'challenges.description',
+                      //   'challenges.points',
+                      //   'challenges.challenge_category',
+                      //   'challenges.challenge_sub_categories',
+                      //   'challenges.author',
+                      //   'challenges.anonymous_author',
+                      //   'challenges.approved',
+                      //   'challenges.created_at',
+                      //   'challenges.ctf',
+                      //   'challenges.flag',
                       eb
                           .case()
                           .when(sql.ref('ch.anonymous_author'), '=', true)

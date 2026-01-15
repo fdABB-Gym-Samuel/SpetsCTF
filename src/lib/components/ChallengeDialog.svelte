@@ -221,9 +221,17 @@
                         color="var(--color-text-200)"
                         size="16"></UserRoundPen>
                     <p class="text-text-200 inline-block text-sm">Author:&nbsp;</p>
-                    <p class="text-text-100 inline-block text-sm font-bold">
-                        {challengeData.author ? challengeData.author : 'Anonymous'}
-                    </p>
+                    {#if !challengeData.author || challengeData.anonymous_author}
+                        <p class="text-text-100 inline-block text-sm font-bold italic">
+                            Anonymous
+                        </p>
+                    {:else}
+                        <a
+                            href={resolve(`/user/${challengeData.author_id}`)}
+                            class="text-text-100 inline-block text-sm font-bold">
+                            {challengeData.author}
+                        </a>
+                    {/if}
                 </div>
                 <div class="description">
                     <p class="text-text-200 inline-block text-sm">Description:&nbsp;</p>
@@ -284,9 +292,13 @@
                         <ol
                             class="first-solvers flex list-inside list-decimal flex-col justify-start">
                             {#each challengeData.first_solvers as solver (solver.id)}
-                                <li class="solver">
-                                    {solver.display_name || solver.github_username}
-                                </li>
+                                {#if solver.display_name}
+                                    <li class="solver">
+                                        {solver.display_name}
+                                    </li>
+                                {:else}
+                                    <li class="solver italic">Anonymous</li>
+                                {/if}
                             {/each}
                         </ol>
                     {:else}
