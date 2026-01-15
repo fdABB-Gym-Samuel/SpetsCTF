@@ -27,16 +27,9 @@ const getTopUsers = async () => {
         .leftJoin('ctf_events as ctf', 'c.ctf', 'ctf.id')
         .where(sql<boolean>`ctf.end_time IS NULL OR ctf.end_time < NOW()`)
         .where('c.approved', '=', true)
-        .select([
-            sql<
-                string | null
-            >`CASE WHEN u.display_name = '' OR u.display_name IS NULL THEN NULL ELSE u.id END`.as(
-                'id'
-            ),
-            'u.display_name',
-            'u.represents_class',
-        ])
+        .select(['u.id', 'u.display_name', 'u.represents_class'])
         .where('u.is_admin', 'is not', true)
+        .where('u.display_name', '!=', '') // Hide anonymous users, could alternatively show them but as "Anonymous" with italics
         .select(({ fn }) => fn.coalesce(fn.sum('c.points'), sql`0`).as('total_points'))
         .groupBy(['u.id', 'u.display_name', 'u.represents_class'])
         .orderBy('total_points', 'desc')

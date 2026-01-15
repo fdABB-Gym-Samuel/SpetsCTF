@@ -8,6 +8,7 @@
     let { data, form } = $props();
 
     let allChallenges = $derived(data.allChallenges);
+    $inspect('allChallenges', allChallenges);
     let myChallenges = $derived(data.myChallenges);
     let translations = $derived(data.translations);
     let user = $derived(data.user);

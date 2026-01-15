@@ -41,6 +41,10 @@
     let displayedCategories = filteredCategories.slice(0, 3);
     let extraCategoriesCount =
         filteredCategories.length > 3 ? filteredCategories.length - 3 : 0;
+
+    $inspect('challengeData', challengeData);
+    $inspect('points', challengeData.points);
+    $inspect('num_solvers', challengeData.num_solvers);
 </script>
 
 <article

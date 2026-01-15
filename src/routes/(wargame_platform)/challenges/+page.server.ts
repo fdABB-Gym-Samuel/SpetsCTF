@@ -40,8 +40,9 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
             'unique_success.challenge'
         )
         .leftJoin('ctf_events', 'challenges.ctf', 'ctf_events.id')
-        .where('challenges.approved', '=', true)
+        // .where('challenges.approved', '=', true)
         .where(sql<boolean>`ctf_events.end_time IS NULL OR ctf_events.end_time < NOW()`)
+        .where('challenges.approved', '=', true)
         .groupBy('challenges.challenge_id')
         .select([
             'challenges.challenge_id',

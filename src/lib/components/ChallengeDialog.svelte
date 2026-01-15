@@ -29,7 +29,7 @@
 
     interface Props {
         challengeData: Selectable<Challenges> & {
-            first_solvers: Selectable<Users>[];
+            first_solvers: { display_name: string; id: string }[];
         } & { flag_format: Selectable<Flag>['flag_format'] } & {
             num_solvers: string | number | bigint;
         } & { resources: Selectable<ChallengeResources>[] } & { solved?: boolean };
@@ -291,7 +291,7 @@
                         <h5 class="text-text-200">First Solvers:</h5>
                         <ol
                             class="first-solvers flex list-inside list-decimal flex-col justify-start">
-                            {#each challengeData.first_solvers as solver (solver.id)}
+                            {#each challengeData.first_solvers as solver}
                                 {#if solver.display_name}
                                     <li class="solver">
                                         {solver.display_name}

@@ -6,15 +6,43 @@ import { get_flag_of_challenge } from '$lib/db/functions';
 import { db } from '$lib/db/database';
 
 export const load: PageServerLoad = async ({ params, parent, locals, depends }) => {
-    const { translations } = await parent();
+    const { translations, ctf_data, isOrg } = await parent();
+
+    const ctfId = Number(params.ctf_id);
+
+    if (!ctf_data) {
+        error(404, 'CTF not found');
+    }
 
     const user = locals.user;
     const challengeData = await db
         .selectFrom('challenges')
         .innerJoin('flag', 'challenges.flag', 'flag.id')
+        .innerJoin('users', 'challenges.author', 'users.id')
+        .leftJoin('ctf_events', 'challenges.ctf', 'ctf_events.id')
+        .where('challenges.ctf', '=', ctfId)
         .where('challenge_id', '=', params.challengeId)
-        .selectAll(['challenges'])
+        .select([
+            'challenges.challenge_id',
+            'challenges.display_name',
+            'challenges.description',
+            'challenges.challenge_category',
+            'challenges.challenge_sub_categories',
+            'challenges.points',
+            'challenges.created_at',
+            'challenges.approved',
+            'challenges.anonymous_author',
+        ])
         .select('flag.flag_format')
+        .select([
+            'challenges.author as author_id',
+            sql<string>`
+                CASE 
+                    WHEN challenges.anonymous_author = true THEN '' 
+                    ELSE COALESCE(users.display_name, '') 
+                END
+            `.as('author'),
+        ])
         .select(() =>
             sql<boolean>`EXISTS(
                 SELECT 1 FROM wargame_submissions ws
@@ -27,6 +55,27 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
 
     if (!challengeData) {
         error(404, 'Challenge not found');
+    }
+
+    if (
+        !challengeData.approved &&
+        !isOrg &&
+        user &&
+        user.id !== challengeData.author_id
+    ) {
+        error(404, 'Challenge not found');
+    }
+
+    if (
+        new Date(ctf_data.start_time) > new Date() &&
+        !isOrg &&
+        user?.id !== challengeData.author_id
+    ) {
+        error(404, 'Challenge not found');
+    }
+
+    if (challengeData.anonymous_author || challengeData.author === '') {
+        challengeData.author_id = '00000000-0000-0000-0000-000000000000';
     }
 
     const firstSolvers = await db
@@ -53,8 +102,17 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
         )
         .selectFrom('first_solve_per_user')
         .innerJoin('users', 'users.id', 'first_solve_per_user.user_id')
+        .where('is_admin', '!=', true)
         .orderBy('first_solve_per_user.first_time', 'asc')
-        .selectAll('users')
+        .select([
+            'users.display_name',
+            sql<string>`
+                case
+                    when users.display_name is null or users.display_name = '' then '00000000-0000-0000-0000-000000000000'
+                    else users.id
+                end
+            `.as('id'),
+        ])
         .limit(5)
         .execute();
 

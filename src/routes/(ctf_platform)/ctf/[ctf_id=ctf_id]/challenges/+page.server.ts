@@ -108,7 +108,7 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
               SELECT COUNT(*)
               FROM unique_success us
               WHERE us.challenge = ch.challenge_id
-            )`.as('num_solves'),
+            )`.as('num_solvers'),
                       // Check if the current user has a successful submission on this challenge.
                       sql`EXISTS(
               SELECT 1 FROM ctf_submissions ws
