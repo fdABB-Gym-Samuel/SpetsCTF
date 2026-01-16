@@ -1,65 +1,29 @@
 import type { PageServerLoad } from '../$types';
 import { error, redirect } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
-import { sql } from 'kysely';
-import { getIsOrg } from '$lib/db/functions';
 
-export const load: PageServerLoad = async ({ locals, params }) => {
+export const load: PageServerLoad = async ({ locals, parent, params }) => {
     const user = locals.user;
-    const ctfId = Number(params.ctfId);
 
     if (!user) {
-        return redirect(303, '/login');
+        redirect(303, '/login');
     }
 
-    const isOrg = await getIsOrg(user.id, ctfId);
+    const parentData = await parent();
 
-    if (!isOrg && !user.is_admin) {
-        return error(401, 'User not oragnizer for this CTF or admin');
+    if (!parentData.isOrg) {
+        error(401, 'User not counted as organizer');
+    }
+
+    if (parentData.ctfData.end_time < new Date()) {
+        error(401, 'CTF has ended.');
     }
 
     const unapprovedChallenges = await db
-        .selectFrom('challenges as ch')
-        .where('ch.ctf', '=', ctfId)
-        .where('ch.approved', '=', false)
-        .leftJoin('flag as f', 'ch.flag', 'f.id')
-        .leftJoin('users as a', 'ch.author', 'a.id')
-        .groupBy([
-            'ch.challenge_id',
-            'ch.display_name',
-            'ch.description',
-            'ch.points',
-            'ch.challenge_category',
-            'ch.challenge_sub_categories',
-            'a.display_name',
-            'a.id',
-            'f.flag_format',
-        ])
-        .select([
-            'ch.challenge_id',
-            'ch.display_name as challenge_name',
-            'ch.description as challenge_description',
-            'ch.challenge_category',
-            'ch.challenge_sub_categories',
-            'ch.points',
-            'f.flag_format',
-            'a.display_name as author',
-            'a.id as author_id',
-            // Get an array of resources for the challenge (ordered by resource id).
-            sql`
-                  COALESCE(
-                    (
-                      SELECT JSON_AGG(
-                        json_build_object('type', cr.type, 'content', cr.content)
-                        ORDER BY cr.id
-                      )
-                      FROM challenge_resources cr
-                      WHERE cr.challenge = ch.challenge_id
-                    ),
-                    '[]'::json
-                  )
-                `.as('resources'),
-        ])
+        .selectFrom('challenges')
+        .where('ctf', 'is', Number(params.ctfId))
+        .where('approved', 'is not', true)
+        .selectAll()
         .execute();
 
     return { unapprovedChallenges };
