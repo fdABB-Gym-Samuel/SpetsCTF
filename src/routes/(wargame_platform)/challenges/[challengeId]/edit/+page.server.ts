@@ -3,7 +3,12 @@ import type { PageServerLoad } from './$types';
 import { resolve } from '$app/paths';
 import { db } from '$lib/db/database';
 import type { Insertable, Selectable, Updateable } from 'kysely';
-import type { ChallengeResources, Challenges, Flag } from '$lib/generated/db';
+import type {
+    ChallengeResources,
+    Challenges,
+    CtfEvents,
+    Flag,
+} from '$lib/generated/db';
 import { validateCategory } from '$lib/db/functions';
 import { selectedCategoriesToBitset } from '$lib/bitset';
 import { categories } from '$lib/db/constants';
@@ -52,12 +57,22 @@ export const load: PageServerLoad = async ({ locals, params, depends }) => {
         .selectAll()
         .executeTakeFirst();
 
+    let ctf: Selectable<CtfEvents> | undefined = undefined;
+    if (challenge.ctf) {
+        ctf = await db
+            .selectFrom('ctf_events')
+            .where('id', '=', challenge.ctf)
+            .selectAll()
+            .executeTakeFirst();
+    }
+
     if (!flag) error(404);
 
     return {
         challenge,
         flag,
         resources,
+        ctf,
     };
 };
 

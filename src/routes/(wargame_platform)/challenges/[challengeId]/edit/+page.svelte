@@ -120,6 +120,25 @@
             {/if}
         </div>
     {/if}
+    {#if data.ctf !== undefined}
+        <div class="rounded-md border-3 px-2 py-1">
+            <p>
+                This challenge is part of the CTF <a
+                    href={resolve(`/(ctf_platform)/ctf/[ctf_id=ctf_id]`, {
+                        ctf_id: data.ctf.id.toString(),
+                    })}>{data.ctf.display_name}</a
+                >.
+            </p>
+            <span>This means that:</span>
+            <ul>
+                <li>
+                    Organizers of the CTF may approve this challenge for inclusion in
+                    the CTF.
+                </li>
+                <li>The challenge will not be available until the CTF starts.</li>
+            </ul>
+        </div>
+    {/if}
     <p class="text-sm"><span class="text-primary-light">*</span>: Required</p>
     <form
         id={formId}
@@ -208,6 +227,7 @@
                         {/if}
                         <div class="flex-grow"></div>
                         {#if resource.type === 'file'}
+                            <!-- TODO: Fix the href. -->
                             <ButtonLink
                                 label=""
                                 styleType="icon"
