@@ -18,12 +18,7 @@
     import { onMount, onDestroy } from 'svelte';
     import { categories } from '$lib/db/constants';
     import type { Selectable } from 'kysely';
-    import type {
-        ChallengeResources,
-        Challenges,
-        Flag,
-        Users,
-    } from '$lib/generated/db';
+    import type { ChallengeResources, Challenges, Flag } from '$lib/generated/db';
     import { invalidate } from '$app/navigation';
     import { resolve } from '$app/paths';
 
@@ -152,7 +147,7 @@
                                     class="challenge-resource text-text-100 flex h-fit flex-row items-center gap-1 underline">
                                     <Link class="size-4"></Link>
                                     <a
-                                        href={resource.content}
+                                        href={`${resource.content}`}
                                         class="ignore-default h-fit"
                                         >{new URL(resource.content).host}</a>
                                 </li>
@@ -278,7 +273,7 @@
                         <h5 class="text-text-200">First Solvers:</h5>
                         <ol
                             class="first-solvers flex list-inside list-decimal flex-col justify-start">
-                            {#each challengeData.first_solvers as solver}
+                            {#each challengeData.first_solvers as solver (solver.id)}
                                 {#if solver.display_name}
                                     <li class="solver">
                                         {solver.display_name}
