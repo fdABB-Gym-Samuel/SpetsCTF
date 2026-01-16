@@ -7,7 +7,7 @@
 <div class="content flex flex-row items-center justify-center">
     <div class="absolute left-0 block -rotate-90">
         <a
-            href={resolve('/what_is_this_a_secret_challenge')}
+            href={resolve('/what-is-this-a-secret-challenge')}
             class="ignore-default text-bg-900 cursor-help select-none">or is there</a>
     </div>
     <div class="flex flex-col items-center justify-center">
@@ -16,7 +16,7 @@
             <h3 class="ignore-default text-center">
                 No flag here, nor is there a page?
             </h3>
-            <a href={resolve('/super_great_artist')}>
+            <a href={resolve('/super-great-artist')}>
                 <img
                     src="/no_flag_no_page.png"
                     alt="Super cool 'No Flag, No Page'"
@@ -44,7 +44,7 @@
 
             <a
                 class="ignore-default bottom-0 mt-4 w-full text-center"
-                href={resolve('/super_great_artist')}>
+                href={resolve('/super-great-artist')}>
                 <img
                     src="/thou_shall_not_pass.png"
                     alt="Super cool 'Thou shall not pass' illustration"

@@ -1,16 +1,17 @@
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
-import { User } from '@lucide/svelte';
 
 export const load: PageServerLoad = async ({ locals }) => {
-    const topUsers = await getTopUsers(locals.user);
+    const topUsers = await getTopUsers(
+        locals.user?.id ?? '00000000-0000-0000-0000-000000000000'
+    );
     const topClasses = await getTopClasses();
 
     return { usersScoreboard: topUsers, classesScoreboard: topClasses };
 };
 
-const getTopUsers = async (user) => {
+const getTopUsers = async (userId: string) => {
     const result = await db
         .selectFrom('users as u')
         .where('is_admin', 'is not', true)
@@ -32,13 +33,13 @@ const getTopUsers = async (user) => {
             'u.display_name',
             sql<string>`
                 CASE
-                    WHEN (u.display_name = '' OR u.display_name IS NULL) and u.id != ${user.id} THEN '-'
+                    WHEN (u.display_name = '' OR u.display_name IS NULL) and u.id != ${userId} THEN '-'
                     else u.represents_class
                 END
             `.as('represents_class'),
             sql<string>`
                 case
-                    when (u.display_name = '' or u.display_name IS NULL) and u.id != ${user.id} then '00000000-0000-0000-0000-000000000000'
+                    when (u.display_name = '' or u.display_name IS NULL) and u.id != ${userId} then '00000000-0000-0000-0000-000000000000'
                     else u.id
                 end
             `.as('id'),

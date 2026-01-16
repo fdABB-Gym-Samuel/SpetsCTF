@@ -41,7 +41,7 @@
                     <li class=" w-full px-2 text-center">
                         {#if user.display_name}
                             <a
-                                href={resolve(`/(wargame_platform)/user/[userId]`, {
+                                href={resolve(`/user/[userId]`, {
                                     userId: user.id,
                                 })}>{user.display_name}</a>
                         {:else}
