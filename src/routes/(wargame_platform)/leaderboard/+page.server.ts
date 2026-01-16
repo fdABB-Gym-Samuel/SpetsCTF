@@ -1,15 +1,16 @@
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
+import { User } from '@lucide/svelte';
 
-export const load: PageServerLoad = async () => {
-    const topUsers = await getTopUsers();
+export const load: PageServerLoad = async ({ locals }) => {
+    const topUsers = await getTopUsers(locals.user);
     const topClasses = await getTopClasses();
 
     return { usersScoreboard: topUsers, classesScoreboard: topClasses };
 };
 
-const getTopUsers = async () => {
+const getTopUsers = async (user) => {
     const result = await db
         .selectFrom('users as u')
         .where('is_admin', 'is not', true)
@@ -27,9 +28,22 @@ const getTopUsers = async () => {
         .leftJoin('ctf_events as ctf', 'c.ctf', 'ctf.id')
         .where(sql<boolean>`ctf.end_time IS NULL OR ctf.end_time < NOW()`)
         .where('c.approved', '=', true)
-        .select(['u.id', 'u.display_name', 'u.represents_class'])
+        .select([
+            'u.display_name',
+            sql<string>`
+                CASE
+                    WHEN (u.display_name = '' OR u.display_name IS NULL) and u.id != ${user.id} THEN '-'
+                    else u.represents_class
+                END
+            `.as('represents_class'),
+            sql<string>`
+                case
+                    when (u.display_name = '' or u.display_name IS NULL) and u.id != ${user.id} then '00000000-0000-0000-0000-000000000000'
+                    else u.id
+                end
+            `.as('id'),
+        ])
         .where('u.is_admin', 'is not', true)
-        .where('u.display_name', '!=', '') // Hide anonymous users, could alternatively show them but as "Anonymous" with italics
         .select(({ fn }) => fn.coalesce(fn.sum('c.points'), sql`0`).as('total_points'))
         .groupBy(['u.id', 'u.display_name', 'u.represents_class'])
         .orderBy('total_points', 'desc')

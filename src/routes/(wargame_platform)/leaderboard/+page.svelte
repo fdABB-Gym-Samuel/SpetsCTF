@@ -120,7 +120,7 @@
                     <div class="h-4"></div>
                     <table class="gsap-top-down-opacity w-full table-fixed">
                         <tbody>
-                            {#each filteredUsers as player, i (player.id)}
+                            {#each filteredUsers as player, i (i)}
                                 <tr
                                     class="*:border-bg-700 max-h-12 w-full text-wrap break-words *:border-t-0 [&>th:first-child]:rounded-l-lg [&>th:last-child]:rounded-r-lg
                         {i ===
