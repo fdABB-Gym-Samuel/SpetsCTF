@@ -8,7 +8,7 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
     const ctfId = Number(params.ctf_id);
     const userId = user ? user.id : undefined;
 
-    const ctf = (await parent()).ctf_data;
+    const ctf = (await parent()).ctfData;
 
     depends(`data:ctf-${params.ctf_id}-challenges`);
 

@@ -188,6 +188,9 @@
                     >Challenge ID: <span class="font-mono">{derivedChallengeId}</span
                     ></span>
             {/if}
+            {#if data.ctfData}
+                <input type="hidden" value={data.ctfData.id} />
+            {/if}
             <Button
                 label="Create Challenge"
                 type="submit"

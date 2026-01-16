@@ -5,22 +5,23 @@ import { error } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ params }: ServerLoadEvent) => {
     const ctfId = Number(params.ctf_id);
-    if (!params.ctf_id) return { ctf_data: null };
+    if (!params.ctf_id) return { ctfData: null };
 
-    const ctf_data = await db
+    const ctfData = await db
         .selectFrom('ctf_events')
         .select([
             'ctf_events.display_name',
-            'ctf_events.start_time',
             'ctf_events.end_time',
+            'ctf_events.id',
             'ctf_events.max_team_size',
+            'ctf_events.start_time',
         ])
         .where('id', '=', ctfId)
         .executeTakeFirst();
 
-    if (ctf_data === undefined) {
+    if (ctfData === undefined) {
         error(404, { message: 'CTF does not exist.' });
     }
 
-    return { ctf_data };
+    return { ctfData };
 };

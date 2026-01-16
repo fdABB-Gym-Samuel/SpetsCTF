@@ -6,11 +6,11 @@ import { get_flag_of_challenge } from '$lib/db/functions';
 import { db } from '$lib/db/database';
 
 export const load: PageServerLoad = async ({ params, parent, locals, depends }) => {
-    const { translations, ctf_data, isOrg } = await parent();
+    const { translations, ctfData, isOrg } = await parent();
 
     const ctfId = Number(params.ctf_id);
 
-    if (!ctf_data) {
+    if (!ctfData) {
         error(404, 'CTF not found');
     }
 
@@ -67,7 +67,7 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
     }
 
     if (
-        new Date(ctf_data.start_time) > new Date() &&
+        new Date(ctfData.start_time) > new Date() &&
         !isOrg &&
         user?.id !== challengeData.author_id
     ) {

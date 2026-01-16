@@ -75,16 +75,6 @@
         <li>
             <a
                 class="text-primary underline"
-                href={resolve(
-                    '/(ctf_platform)/ctf/[ctf_id=ctf_id]/organizer/create-challenge',
-                    { ctf_id: page.params.ctf_id ?? '' }
-                )}>
-                {translations.createchallenge}
-            </a>
-        </li>
-        <li>
-            <a
-                class="text-primary underline"
                 href={resolve('/(ctf_platform)/ctf/[ctf_id=ctf_id]/organizer/approve', {
                     ctf_id: page.params.ctf_id ?? '',
                 })}>
