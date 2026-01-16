@@ -133,7 +133,7 @@
                     label={translations.login}
                     type="button"
                     responsiveStyles="!px-6 md:!px-8"
-                    onclick={() => goto('/login')}
+                    onclick={() => goto(resolve('/login'))}
                     Icon={LogIn}
                     aria-label="Login" />
             {/if}
@@ -180,7 +180,7 @@
                 <div class="px-4">
                     {#if user}
                         <a
-                            href="/user"
+                            href={resolve("/user")}
                             onclick={(e) => {
                                 toggleSidebar(e, false);
                             }}
@@ -193,7 +193,7 @@
                             type="button"
                             responsiveStyles="!px-6 md:!px-8"
                             onclick={(e: MouseEvent) => {
-                                goto('/login');
+                                goto(resolve('/login'));
                                 toggleSidebar(e, false);
                             }}
                             Icon={LogIn}
