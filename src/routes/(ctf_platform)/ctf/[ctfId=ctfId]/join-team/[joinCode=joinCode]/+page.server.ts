@@ -19,7 +19,8 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
             return { success: false, message: 'Orgs and admins cannot join CTFs' };
         }
 
-        const join_code = event.params.join_code ?? '';
+        const joinCode = event.params.joinCode ?? '';
+        if (!joinCode) error(404);
 
         const ctf = await db
             .selectFrom('ctf_events')
@@ -45,7 +46,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
                 sql<number>`COUNT(ctf_teams_members.user_id)`.as('memberCount'),
                 sql<string[]>`ARRAY_AGG(ctf_teams_members.user_id)`.as('members'),
             ])
-            .where('ctf_teams.join_code', '=', join_code)
+            .where('ctf_teams.join_code', '=', joinCode)
             .groupBy('ctf_teams.id')
             .executeTakeFirstOrThrow();
 
