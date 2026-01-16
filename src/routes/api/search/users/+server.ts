@@ -1,8 +1,14 @@
 import { db } from '$lib/db/database.js';
 import { sql } from 'kysely';
-import { json } from '@sveltejs/kit';
+import { error, json } from '@sveltejs/kit';
 import type { SqlBool } from 'kysely';
 import type { RequestHandler } from './$types';
+
+interface SearchedUser {
+    id: string;
+    display_name: string;
+    github_username: string;
+}
 
 export const GET: RequestHandler = async ({ url }) => {
     const query = url.searchParams.get('q');
@@ -56,5 +62,17 @@ export const GET: RequestHandler = async ({ url }) => {
     }
     const matchingUsers = await matchingUsersQuery.limit(20).execute();
 
-    return json(matchingUsers);
+    if (matchingUsers === undefined) {
+        error(404);
+    }
+
+    const retval: SearchedUser[] = matchingUsers.map((elem) => {
+        return {
+            id: elem.id,
+            display_name: elem.display_name ?? 'No display name',
+            github_username: elem.github_username ?? 'No GitHub username',
+        };
+    });
+
+    return json(retval);
 };

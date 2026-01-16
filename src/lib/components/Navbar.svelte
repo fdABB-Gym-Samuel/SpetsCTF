@@ -180,7 +180,7 @@
                 <div class="px-4">
                     {#if user}
                         <a
-                            href={resolve("/user")}
+                            href={resolve('/user')}
                             onclick={(e) => {
                                 toggleSidebar(e, false);
                             }}
