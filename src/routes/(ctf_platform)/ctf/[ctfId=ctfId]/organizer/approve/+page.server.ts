@@ -21,8 +21,8 @@ export const load: PageServerLoad = async ({ locals, parent, params }) => {
 
     const unapprovedChallenges = await db
         .selectFrom('challenges')
-        .where('ctf', 'is', Number(params.ctfId))
-        .where('approved', 'is not', true)
+        .where('ctf', '=', Number(params.ctfId))
+        .where('approved', '!=', true)
         .selectAll()
         .execute();
 
