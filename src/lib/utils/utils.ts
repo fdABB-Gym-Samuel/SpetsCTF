@@ -14,8 +14,7 @@ export const map = (
     );
 };
 
-export const linkPattern =
-    /\b(?:https?|ftp|mailto|tel|data:image\/[a-zA-Z]+)(?::\/\/)?[^\s<>"']+/gi;
+export const linkPattern = /^(https?|ftp):\/\/[^\s]+|(mailto|tel):[^\s]+$/;
 
 export const formatRequestedName = (requestedName: string) =>
     requestedName
