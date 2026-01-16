@@ -1,7 +1,7 @@
 <script lang="ts">
     import ChallengeDialog from '$lib/components/ChallengeDialog.svelte';
 
-    let { data, form } = $props();
+    let { data } = $props();
 
     let challengeData = $derived(data.challengeData);
     let firstSolvers = $derived(data.firstSolvers);

@@ -1,5 +1,5 @@
 import { error, type ServerLoadEvent } from '@sveltejs/kit';
-import type { PageServerLoad } from '../../$types';
+import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
 import { getIsOrg } from '$lib/db/functions';

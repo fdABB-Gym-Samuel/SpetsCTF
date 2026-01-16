@@ -1,4 +1,4 @@
-import type { PageServerLoad } from '../$types';
+import type { PageServerLoad } from './$types';
 import { error, redirect } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 

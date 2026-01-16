@@ -11,9 +11,10 @@ export const load: LayoutServerLoad = async ({ locals, depends, params }) => {
         .selectFrom('ctf_events')
         .select([
             'ctf_events.display_name',
-            'ctf_events.start_time',
             'ctf_events.end_time',
+            'ctf_events.id',
             'ctf_events.max_team_size',
+            'ctf_events.start_time',
         ])
         .where('id', '=', ctfId)
         .executeTakeFirst();

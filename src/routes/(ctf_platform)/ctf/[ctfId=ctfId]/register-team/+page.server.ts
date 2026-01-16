@@ -1,7 +1,7 @@
 import { db } from '$lib/db/database.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { Actions } from '@sveltejs/kit';
-import type { PageServerLoad } from '../$types';
+import type { PageServerLoad } from './$types';
 import { getIsOrg } from '$lib/db/functions';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
