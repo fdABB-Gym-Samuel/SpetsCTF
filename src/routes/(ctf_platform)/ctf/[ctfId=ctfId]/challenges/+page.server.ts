@@ -5,12 +5,12 @@ import { sql } from 'kysely';
 
 export const load: PageServerLoad = async ({ locals, depends, params, parent }) => {
     const user = locals.user;
-    const ctfId = Number(params.ctf_id);
+    const ctfId = Number(params.ctfId);
     const userId = user ? user.id : undefined;
 
     const ctf = (await parent()).ctfData;
 
-    depends(`data:ctf-${params.ctf_id}-challenges`);
+    depends(`data:ctf-${params.ctfId}-challenges`);
 
     const allChallenges =
         ctf && (new Date(ctf.start_time) < new Date() || user?.is_admin)

@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
         redirect(303, '/login');
     }
 
-    const ctfId = Number(params.ctf_id);
+    const ctfId = Number(params.ctfId);
 
     const isOrg = await getIsOrg(user.id, ctfId);
 
@@ -26,9 +26,9 @@ export const actions = {
             error(401, { message: 'User not logged in' });
         }
 
-        const ctf_id = Number(params.ctf_id);
+        const ctfId = Number(params.ctfId);
 
-        const isOrg = await getIsOrg(user.id, ctf_id);
+        const isOrg = await getIsOrg(user.id, ctfId);
 
         if (isOrg || user.is_admin) {
             return fail(403, { message: 'Orgs and admins cannot join CTFs' });
@@ -41,7 +41,7 @@ export const actions = {
         const ctf = await db
             .selectFrom('ctf_events')
             .selectAll()
-            .where('id', '=', ctf_id)
+            .where('id', '=', ctfId)
             .executeTakeFirst();
 
         if (ctf === undefined) {
@@ -62,7 +62,7 @@ export const actions = {
                 'ctf_events.short_name as eventShortName',
             ])
             .where('ctf_teams_members.user_id', '=', user.id)
-            .where('ctf_teams.ctf', '=', ctf_id)
+            .where('ctf_teams.ctf', '=', ctfId)
             .executeTakeFirst();
 
         if (current_user_team !== undefined) {
@@ -81,7 +81,7 @@ export const actions = {
             .values({
                 name: team_name,
                 website: team_website,
-                ctf: ctf_id,
+                ctf: ctfId,
             })
             .returning('id')
             .executeTakeFirst();
@@ -103,6 +103,6 @@ export const actions = {
             return fail(500, { success: false, message: 'Unknown error.' });
         }
 
-        redirect(303, `/ctf/${ctf_id}/team/${team_id.id}`);
+        redirect(303, `/ctf/${ctfId}/team/${team_id.id}`);
     },
 } satisfies Actions;

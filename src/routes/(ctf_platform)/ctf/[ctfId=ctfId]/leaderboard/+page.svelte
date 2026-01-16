@@ -139,9 +139,9 @@
                                         ><a
                                             class="ignore-default"
                                             href={resolve(
-                                                '/(ctf_platform)/ctf/[ctf_id=ctf_id]/team/[teamId=teamId]',
+                                                '/(ctf_platform)/ctf/[ctfId=ctfId]/team/[teamId=teamId]',
                                                 {
-                                                    ctf_id: page.params.ctf_id ?? '',
+                                                    ctfId: page.params.ctfId ?? '',
                                                     teamId: String(
                                                         teamInside.team_id ?? ''
                                                     ),

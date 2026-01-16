@@ -8,7 +8,7 @@ import { db } from '$lib/db/database';
 export const load: PageServerLoad = async ({ params, parent, locals, depends }) => {
     const { translations, ctfData, isOrg } = await parent();
 
-    const ctfId = Number(params.ctf_id);
+    const ctfId = Number(params.ctfId);
 
     if (!ctfData) {
         error(404, 'CTF not found');

@@ -11,7 +11,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
             return { success: false, teamName: '', message: 'Log in to join a team' };
         }
 
-        const ctfId = Number(event.params.ctf_id);
+        const ctfId = Number(event.params.ctfId);
 
         const isOrg = await getIsOrg(user.id, ctfId);
 

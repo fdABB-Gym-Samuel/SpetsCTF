@@ -5,7 +5,7 @@ import { getIsOrg } from '$lib/db/functions';
 
 export const load: LayoutServerLoad = async ({ locals, depends, params }) => {
     const user = locals.user;
-    const ctfId = Number(params.ctf_id);
+    const ctfId = Number(params.ctfId);
 
     const ctfData = await db
         .selectFrom('ctf_events')

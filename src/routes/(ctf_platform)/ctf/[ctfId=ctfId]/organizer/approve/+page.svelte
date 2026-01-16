@@ -28,7 +28,7 @@
                 <li>
                     <a
                         href={resolve(
-                            `/ctf/${page.params.ctf_id}/organizer/approve/${challengeData.challenge_id}`
+                            `/ctf/${page.params.ctfId}/organizer/approve/${challengeData.challenge_id}`
                         )}
                         data-sveltekit-noscroll
                         class="ignore-default h-38 w-full"

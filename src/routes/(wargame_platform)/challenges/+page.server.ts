@@ -143,7 +143,7 @@ export const actions = {
 
         let desiredCtf: { id: number } | null = null;
 
-        if (form.has('ctf_id')) {
+        if (form.has('ctfId')) {
             const ctfId = form.get('ctfId');
             if (!ctfId) {
                 return fail(400, {

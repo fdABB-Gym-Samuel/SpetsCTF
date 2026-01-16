@@ -120,7 +120,7 @@
     {#if page.url.hash === '#all' || !page.url.hash}
         <ChallengeList
             gotoChallenge={(challengeId) => {
-                goto(resolve(`/ctf/${page.params.ctf_id}/challenges/${challengeId}`));
+                goto(resolve(`/ctf/${page.params.ctfId}/challenges/${challengeId}`));
             }}
             challenges={allChallenges}></ChallengeList>
     {:else if page.url.hash === '#my'}

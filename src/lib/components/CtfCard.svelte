@@ -50,8 +50,8 @@
 </script>
 
 <a
-    href={resolve('/(ctf_platform)/ctf/[ctf_id=ctf_id]', {
-        ctf_id: String(ctfData.id),
+    href={resolve('/(ctf_platform)/ctf/[ctfId=ctfId]', {
+        ctfId: String(ctfData.id),
     })}>
     <article
         class="card challenge-cards bg-bg-800 before:bg-bg-750 relative h-full min-h-fit max-w-full overflow-hidden rounded-lg px-10

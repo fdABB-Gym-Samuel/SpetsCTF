@@ -124,8 +124,8 @@
         <div class="rounded-md border-3 px-2 py-1">
             <p>
                 This challenge is part of the CTF <a
-                    href={resolve(`/(ctf_platform)/ctf/[ctf_id=ctf_id]`, {
-                        ctf_id: data.ctf.id.toString(),
+                    href={resolve(`/(ctf_platform)/ctf/[ctfId=ctfId]`, {
+                        ctfId: data.ctf.id.toString(),
                     })}>{data.ctf.display_name}</a
                 >.
             </p>

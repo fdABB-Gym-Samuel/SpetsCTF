@@ -24,7 +24,7 @@ const categories = [
 
 export const load: PageServerLoad = async ({ locals, params }) => {
     const user = locals.user;
-    const ctfId = Number(params.ctf_id);
+    const ctfId = Number(params.ctfId);
     const challengeId = params.challengeId ?? '';
     if (challengeId === '') error(404);
 
@@ -96,7 +96,7 @@ export const actions = {
     default: async ({ request, params, locals }) => {
         try {
             const user = locals.user;
-            const ctfId = Number(params.ctf_id);
+            const ctfId = Number(params.ctfId);
             const challengeId = params.challengeId ?? '';
             if (challengeId === '') error(404);
 

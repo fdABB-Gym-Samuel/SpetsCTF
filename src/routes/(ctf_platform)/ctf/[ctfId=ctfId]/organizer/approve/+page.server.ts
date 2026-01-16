@@ -6,7 +6,7 @@ import { getIsOrg } from '$lib/db/functions';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
     const user = locals.user;
-    const ctfId = Number(params.ctf_id);
+    const ctfId = Number(params.ctfId);
 
     if (!user) {
         return redirect(303, '/login');

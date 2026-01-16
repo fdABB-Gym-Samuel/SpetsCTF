@@ -16,7 +16,7 @@
     let userLeavingTeam = $state(false);
 
     let inviteLink: string = $derived(
-        `${page.url.protocol}//${page.url.host}/ctf/${page.params.ctf_id}/join_team/${teamData?.join_code}`
+        `${page.url.protocol}//${page.url.host}/ctf/${page.params.ctfId}/join_team/${teamData?.join_code}`
     );
 
     const openLeaveDialog = () => {

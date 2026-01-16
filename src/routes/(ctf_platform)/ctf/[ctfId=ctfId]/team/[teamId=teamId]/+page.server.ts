@@ -7,7 +7,7 @@ import { error, redirect } from '@sveltejs/kit';
 export const load: PageServerLoad = async ({ locals, params }: ServerLoadEvent) => {
     const userId = locals.user?.id ?? null;
     const teamId = Number(params.teamId);
-    const ctfId = Number(params.ctf_id);
+    const ctfId = Number(params.ctfId);
 
     const teamData = await db
         .selectFrom('ctf_teams as t')
@@ -95,6 +95,6 @@ export const actions = {
         }
 
         // Redirect to CTF main page since team no longer exists
-        redirect(303, `/ctf/${params.ctf_id}`);
+        redirect(303, `/ctf/${params.ctfId}`);
     },
 };

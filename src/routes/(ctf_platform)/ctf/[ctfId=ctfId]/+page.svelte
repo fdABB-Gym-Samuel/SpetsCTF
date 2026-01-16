@@ -140,8 +140,8 @@
                     type="button"
                     onclick={() =>
                         goto(
-                            resolve(`/(ctf_platform)/ctf/[ctf_id=ctf_id]/challenges`, {
-                                ctf_id: page.params.ctf_id ?? '',
+                            resolve(`/(ctf_platform)/ctf/[ctfId=ctfId]/challenges`, {
+                                ctfId: page.params.ctfId ?? '',
                             })
                         )}
                     Icon={Swords}

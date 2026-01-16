@@ -4,8 +4,8 @@ import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ params }: ServerLoadEvent) => {
-    const ctfId = Number(params.ctf_id);
-    if (!params.ctf_id) error(404);
+    const ctfId = Number(params.ctfId);
+    if (!params.ctfId) error(404);
 
     const ctfData = await db
         .selectFrom('ctf_events')

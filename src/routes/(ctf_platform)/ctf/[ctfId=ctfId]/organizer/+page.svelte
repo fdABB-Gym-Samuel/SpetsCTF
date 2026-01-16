@@ -21,7 +21,7 @@
 
     let organizersToAdd: user[] = $state([]);
 
-    const ctfId = page.params.ctf_id;
+    const ctfId = page.params.ctfId;
 
     $effect(() => {
         const curr = userSearch;
@@ -75,8 +75,8 @@
         <li>
             <a
                 class="text-primary underline"
-                href={resolve('/(ctf_platform)/ctf/[ctf_id=ctf_id]/organizer/approve', {
-                    ctf_id: page.params.ctf_id ?? '',
+                href={resolve('/(ctf_platform)/ctf/[ctfId=ctfId]/organizer/approve', {
+                    ctfId: page.params.ctfId ?? '',
                 })}>
                 {translations.approve}
             </a>
