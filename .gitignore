@@ -25,3 +25,7 @@ vite.config.ts.timestamp-*
 
 files/
 result*
+
+src/lib/generated
+tmp/
+tmp

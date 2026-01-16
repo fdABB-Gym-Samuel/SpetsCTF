@@ -8,3 +8,5 @@ export const categories: string[] = [
     'reversing',
     'web',
 ];
+
+export const resourceTypes: string[] = ['cmd', 'file', 'web'];

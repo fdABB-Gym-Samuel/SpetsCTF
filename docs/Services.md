@@ -41,11 +41,11 @@ However, Docker is not the only solution. Other programs which satisfy these
 criteria include:
 
 - Nix with NixOS and Nixpkgs
-    - Pros: Superb software availabilty, easy to administrate once set up and stellar reproducibility.
-    - Cons: Has a steep learning curve and lackluster documentation in key areas.
+  - Pros: Superb software availabilty, easy to administrate once set up and stellar reproducibility.
+  - Cons: Has a steep learning curve and lackluster documentation in key areas.
 - FreeBSD with Ports and Jails
-    - Pros: Good isolation.
-    - Cons: Imperative management often results in poor reproducibility. Software availability is not as good as Nixpkgs or Docker.
+  - Pros: Good isolation.
+  - Cons: Imperative management often results in poor reproducibility. Software availability is not as good as Nixpkgs or Docker.
 
 Therefore, we will accept your challenge packaged as a Docker image. Instructions on how to construct the Dockerfile follow.
 
@@ -57,9 +57,9 @@ For Pwn challenges, the deployment stack is as follows:
 
 - The challenge program (binary or source code file for interpreter) is compiled.
 - The flag is put in to the stack in some way
-    - Using an environment variable (`ENV FLAG=...`)
-    - Using a `flag.txt` text file (`COPY flag.txt /chall`) with proper permissions set (e.g. `RUN chmod 444 /chall/flag.txt`)
-    - Putting the flag string into the source file (in which case no special action is needed)
+  - Using an environment variable (`ENV FLAG=...`)
+  - Using a `flag.txt` text file (`COPY flag.txt /chall`) with proper permissions set (e.g. `RUN chmod 444 /chall/flag.txt`)
+  - Putting the flag string into the source file (in which case no special action is needed)
 
 #### Step 1 - Config file for `xinetd`
 

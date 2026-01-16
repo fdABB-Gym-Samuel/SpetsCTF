@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-node';
+import adapter from 'svelte-adapter-bun';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -17,7 +17,7 @@ const config = {
                 'manifest-src': ['none'],
                 'script-src-elem': ['self'],
                 'script-src': ['self'],
-                'worker-src': ['none'],
+                'worker-src': ['self'],
             },
         },
     },

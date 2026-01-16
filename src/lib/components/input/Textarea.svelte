@@ -1,54 +1,59 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+    import { onMount } from 'svelte';
+    import type { HTMLTextareaAttributes } from 'svelte/elements';
 
-	let {
-		label,
-		placeholder,
-		name,
-		value = $bindable(),
-		textareaFocused = $bindable(false),
-		width = 'w-full',
-		heightStyles = 'max-h-50',
-		rows = 2,
-		required = false
-	} = $props();
+    interface Props extends HTMLTextareaAttributes {
+        label: string;
+        textareaFocused?: boolean;
+        width?: string;
+        heightStyles?: string;
+    }
 
-	const handleInput = () => {
-		if (textareaElement === undefined) {
-			return;
-		}
-		textareaElement.style.height = 'auto';
-		textareaElement.style.height = `${textareaElement?.scrollHeight}px`;
-	};
-	let textareaElement: HTMLTextAreaElement | undefined;
+    let {
+        label,
+        placeholder,
+        name,
+        value = $bindable(),
+        textareaFocused = $bindable(false),
+        width = 'w-full',
+        heightStyles = 'max-h-50',
+        rows = 2,
+        required = false,
+        ...restProps
+    }: Props = $props();
 
-	onMount(() => {
-		textareaFocused = textareaElement === document.activeElement;
-	});
+    const handleInput = () => {
+        if (textareaElement === undefined) {
+            return;
+        }
+        textareaElement.style.height = 'auto';
+        textareaElement.style.height = `${textareaElement?.scrollHeight}px`;
+    };
+    let textareaElement: HTMLTextAreaElement | undefined;
+
+    onMount(() => {
+        textareaFocused = textareaElement === document.activeElement;
+    });
 </script>
 
 <div class="relative flex flex-col">
-	<div>
-		<label for={name}>
-			<span>{label}</span>
+    <label for={name}>
+        <span>{label}</span>
 
-			{#if required}
-				<span class="text-primary-light">*</span>
-			{/if}
-		</label>
-	</div>
-	<textarea
-		bind:this={textareaElement}
-		{name}
-		autocomplete="off"
-		id="input"
-		bind:value
-		{placeholder}
-		class="{width} bg-bg-850 border-bg-500 focus:border-primary-light rounded-lg border-2 px-6 py-2 outline-0 {heightStyles}"
-		{rows}
-		onfocus={() => (textareaFocused = true)}
-		onblur={(e) => (textareaFocused = false)}
-		oninput={() => handleInput()}
-		{required}
-	></textarea>
+        {#if required}
+            <span class="text-primary-light">*</span>
+        {/if}
+    </label>
+    <textarea
+        {...restProps}
+        bind:this={textareaElement}
+        {placeholder}
+        {name}
+        bind:value
+        class="{width} bg-bg-850 border-bg-500 focus:border-primary-light rounded-lg border-2 px-6 py-2 outline-0 {heightStyles}"
+        {rows}
+        onfocus={() => (textareaFocused = true)}
+        onblur={() => (textareaFocused = false)}
+        oninput={() => handleInput()}
+        {required}></textarea>
 </div>

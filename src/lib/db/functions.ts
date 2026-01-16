@@ -1,14 +1,13 @@
 import { createHash } from 'node:crypto';
 import type { RequestEvent } from '@sveltejs/kit';
-import type { Category, UserSessions, Users } from './db';
+import type { Category, UserSessions, Users } from '../generated/db';
 import { db } from './database';
 import { sql } from 'kysely';
 import type { Insertable, Selectable } from 'kysely';
 import sanitize from 'sanitize-filename';
 import { randomUUID } from 'crypto';
-import { Flag } from '@lucide/svelte';
 
-export function validateCategory(value: any): Category {
+export function validateCategory(value: string): Category {
     if (
         [
             'crypto',
@@ -26,7 +25,7 @@ export function validateCategory(value: any): Category {
         return 'misc' as Category;
     }
 }
-export async function get_challenge_id_from_display_name(display_name: string) {
+export async function getChallengeIdFromDisplayName(display_name: string) {
     const unsanitzed_challenge_id = display_name.toLowerCase().replace(/ /g, '_');
     const query = await db
         .selectFrom('challenges')
@@ -168,19 +167,6 @@ export async function getUserFromGithubId(github_id: number) {
         .executeTakeFirst();
 
     return res;
-}
-
-export function selectedCategoriesToBitset(
-    standardCategories: string[],
-    selectedCateories: string[]
-) {
-    let bitset = 0;
-    standardCategories.forEach((category: string, index: number) => {
-        if (selectedCateories.includes(category)) {
-            bitset |= 1 << index;
-        }
-    });
-    return bitset.toString(2).padStart(8, '0');
 }
 
 export const get_flag_of_challenge = async (challenge_id: string) => {

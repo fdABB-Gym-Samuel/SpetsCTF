@@ -2,8 +2,9 @@ import { db } from '$lib/db/database.js';
 import { sql } from 'kysely';
 import { json } from '@sveltejs/kit';
 import type { SqlBool } from 'kysely';
+import type { RequestHandler } from './$types';
 
-export const GET = async ({ url, locals }) => {
+export const GET: RequestHandler = async ({ url }) => {
     const query = url.searchParams.get('q');
     const ctfId = Number(url.searchParams.get('ctf'));
     const matchThreshold = 0;
@@ -24,7 +25,7 @@ export const GET = async ({ url, locals }) => {
         // wrap the raw SQL in a factory so it’s ExpressionOrFactory<…, SqlBool>
         .where('users.is_admin', 'is not', true)
         .where(
-            (eb) =>
+            () =>
                 sql<boolean>`
       			GREATEST(
         			similarity(github_username, ${query}),
@@ -34,7 +35,7 @@ export const GET = async ({ url, locals }) => {
         )
         // same idea for orderBy: give it a factory returning RawBuilder<number>
         .orderBy(
-            (eb) =>
+            () =>
                 sql<number>`
       			GREATEST(
         			similarity(github_username, ${query}),
