@@ -7,7 +7,7 @@ export const load: LayoutServerLoad = async ({ locals, depends, params }) => {
     const user = locals.user;
     const ctfId = Number(params.ctf_id);
 
-    const ctf_data = await db
+    const ctfData = await db
         .selectFrom('ctf_events')
         .select([
             'ctf_events.display_name',
@@ -18,7 +18,7 @@ export const load: LayoutServerLoad = async ({ locals, depends, params }) => {
         .where('id', '=', ctfId)
         .executeTakeFirst();
 
-    if (ctf_data === undefined) {
+    if (ctfData === undefined) {
         error(404, { message: 'CTF does not exist.' });
     }
 
@@ -48,6 +48,6 @@ export const load: LayoutServerLoad = async ({ locals, depends, params }) => {
         user,
         team,
         isOrg,
-        ctf_data,
+        ctfData,
     };
 };

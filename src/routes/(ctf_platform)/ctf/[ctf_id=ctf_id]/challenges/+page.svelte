@@ -1,9 +1,14 @@
 <script lang="ts">
     import Button from '$lib/components/Button.svelte';
+    import ButtonLink from '$lib/components/ButtonLink.svelte';
+    import Input from '$lib/components/input/Input.svelte';
+
     import WarningDialog from '$lib/components/WarningDialog.svelte';
     import { goto } from '$app/navigation';
     import { page } from '$app/state';
     import ChallengeList from '$lib/components/ChallengeList.svelte';
+
+    import { formatRequestedName } from '$lib/utils/utils';
 
     let { data, form } = $props();
 
@@ -23,9 +28,10 @@
     let componentRoot: HTMLElement;
     let gsapContext: gsap.Context | undefined;
 
-    let challengesTabs = [
+    const challengesTabs = [
         { label: 'All Challenges', tab: '#all' },
         { label: 'My Challenges', tab: '#my' },
+        { label: 'Create Challenge', tab: '#create' },
     ];
 
     const openDeleteDialog = (challengeId: string, challengeName: string) => {
@@ -40,6 +46,11 @@
 
     let challengeIdToDelete = $state('');
     let challengeNameToDelete = $state('');
+
+    let inputtedChallengeDisplayName = $state('');
+    let derivedChallengeId = $derived(
+        formatRequestedName(inputtedChallengeDisplayName)
+    );
 
     onMount(() => {
         gsapContext = playAnimations(componentRoot);
@@ -115,12 +126,6 @@
     {:else if page.url.hash === '#my'}
         {#if user}
             <section>
-                <Button
-                    label="Create Challenge"
-                    type="button"
-                    onclick={() => goto(resolve('/create-challenge'))}
-                    Icon={Pen}
-                    aria-label="Go to challenges"></Button>
                 {#if myChallenges !== null && myChallenges?.length > 0}
                     <ul class="flex flex-col">
                         {#each myChallenges as challenge (challenge.challenge_id)}
@@ -130,19 +135,15 @@
                                 <HSeperator color="bg-bg-500"></HSeperator>
                                 <div
                                     class="ml-4 flex h-full flex-row items-center gap-2">
-                                    <Button
+                                    <ButtonLink
                                         label=""
                                         aria-label="Edit Challenge"
                                         type="button"
                                         styleType="icon"
-                                        onclick={() => {
-                                            goto(
-                                                resolve(
-                                                    `/edit-challenge/${challenge.challenge_id}`
-                                                )
-                                            );
-                                        }}
-                                        Icon={Pen}></Button>
+                                        href={resolve(
+                                            `/challenges/${challenge.challenge_id}/edit`
+                                        )}
+                                        Icon={Pen}></ButtonLink>
                                     <Button
                                         label=""
                                         aria-label="Delete challenge"
@@ -163,13 +164,39 @@
                 {/if}
             </section>
         {:else}
-            <Button
+            <ButtonLink
                 label={translations.login}
                 type="button"
-                onclick={() => goto(resolve('/login'))}
+                href={resolve('/login')}
                 Icon={LogIn}
                 aria-label="Login" />
         {/if}
+    {:else if page.url.hash == '#create'}
+        <form
+            class="flex w-fit flex-col space-y-4"
+            method="post"
+            action="?/createChallenge">
+            <Input
+                label="Display name"
+                type="text"
+                name="name"
+                bind:value={inputtedChallengeDisplayName}
+                placeholder="Enter a display name"
+                required={true} />
+            {#if derivedChallengeId}
+                <span
+                    >Challenge ID: <span class="font-mono">{derivedChallengeId}</span
+                    ></span>
+            {/if}
+            {#if data.ctfData}
+                <input type="hidden" value={data.ctfData.id} />
+            {/if}
+            <Button
+                label="Create Challenge"
+                type="submit"
+                Icon={Pen}
+                aria-label="Go to challenges"></Button>
+        </form>
     {/if}
 </main>
 

@@ -1,8 +1,8 @@
 import { fail, redirect, type Actions, error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
-import { sql, type Insertable } from 'kysely';
-import type { Challenges } from '$lib/generated/db';
+import { sql, type Insertable, type Selectable } from 'kysely';
+import type { Challenges, CtfEvents } from '$lib/generated/db';
 import { resolve } from '$app/paths';
 import { formatRequestedName } from '$lib/utils/utils';
 
@@ -139,6 +139,20 @@ export const actions = {
 
         if (existingChallengeWithSpecifiedName) {
             return fail(409);
+        }
+
+        let desiredCtf: Selectable<CtfEvents> | null = null;
+
+        if (form.has('ctf_id')) {
+            const ctfId = form.get('ctfId');
+            if (!ctfId) {
+                return fail(400, {
+                    success: false,
+                    message: 'CTF Id provided but empty.',
+                });
+            } else {
+                // Get CTF data.
+            }
         }
 
         const newEmptyChallenge = await db.transaction().execute(async (trx) => {

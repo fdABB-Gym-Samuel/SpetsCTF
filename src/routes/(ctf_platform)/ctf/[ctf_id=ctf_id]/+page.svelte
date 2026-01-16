@@ -1,6 +1,6 @@
 <script lang="ts">
     let { data } = $props();
-    let ctf_data = $derived(data.ctf_data);
+    let ctfData = $derived(data.ctfData);
 
     import { page } from '$app/state';
     import { Swords } from '@lucide/svelte';
@@ -23,16 +23,16 @@
     let interval: Timeout;
 
     function updateCountdown(): void {
-        if (ctf_data === undefined || ctf_data === null) {
+        if (ctfData === undefined || ctfData === null) {
             countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
             return;
         }
         const now = new Date();
-        let diff = ctf_data.start_time.getTime() - now.getTime();
+        let diff = ctfData.start_time.getTime() - now.getTime();
 
         if (diff <= 0) {
             started = true;
-            diff = ctf_data.end_time.getTime() - now.getTime();
+            diff = ctfData.end_time.getTime() - now.getTime();
         }
         if (diff <= 0) {
             ended = true;
@@ -101,7 +101,7 @@
     class="m-auto flex max-w-[520px] flex-col items-center justify-center pt-48"
     bind:this={componentRoot}>
     <h1 class="text-3xl font-bold">
-        {ctf_data?.display_name}
+        {ctfData?.display_name}
     </h1>
     <div class="w-full perspective-midrange">
         <article

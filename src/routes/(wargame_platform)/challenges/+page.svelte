@@ -23,7 +23,7 @@
     let componentRoot: HTMLElement;
     let gsapContext: gsap.Context | undefined;
 
-    let challengesTabs = [
+    const challengesTabs = [
         { label: 'All Challenges', tab: '#all' },
         { label: 'My Challenges', tab: '#my' },
         { label: 'Create Challenge', tab: '#create' },
