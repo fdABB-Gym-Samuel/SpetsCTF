@@ -209,7 +209,7 @@
                         </p>
                     {:else}
                         <a
-                            href={resolve(`/user/${challengeData.author_id}`)}
+                            href={resolve(`/user/${challengeData.author}`)}
                             class="text-text-100 inline-block text-sm font-bold">
                             {challengeData.author}
                         </a>

@@ -106,7 +106,7 @@
             {#each challengesTabs as tab (tab.tab)}
                 <li>
                     <a
-                        href={tab.tab}
+                        href={String(tab.tab)}
                         class:border-b-2={page.url.hash === tab.tab ||
                             (tab.tab === '#all' && !page.url.hash)}>
                         {tab.label}

@@ -141,7 +141,7 @@ export const actions = {
             return fail(409);
         }
 
-        let desiredCtf: Selectable<CtfEvents> | null = null;
+        let desiredCtf: { id: number } | null = null;
 
         if (form.has('ctf_id')) {
             const ctfId = form.get('ctfId');
@@ -151,7 +151,12 @@ export const actions = {
                     message: 'CTF Id provided but empty.',
                 });
             } else {
-                // Get CTF data.
+                desiredCtf =
+                    (await db
+                        .selectFrom('ctf_events')
+                        .select(['id'])
+                        .where('id', '=', Number(ctfId.toString()))
+                        .executeTakeFirst()) ?? null;
             }
         }
 
@@ -173,7 +178,7 @@ export const actions = {
                 challenge_id: formattedRequestedName,
                 challenge_sub_categories: '00000000',
                 created_at: new Date(),
-                ctf: null,
+                ctf: desiredCtf?.id ?? null,
                 description: '',
                 display_name: requestedName,
                 flag: newEmptyFlag.id,
