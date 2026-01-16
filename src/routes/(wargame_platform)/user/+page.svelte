@@ -76,9 +76,10 @@
                 applyAction(result);
             };
         }}>
-        <label for="display_name">
+        <label for="display_name" class="text-md font-bold">
             {data.translations.displayname}
         </label>
+        <span class="text-text-100">Leave empty to be anonymous.</span>
         <div>
             <input
                 class="border-text-100 rounded border p-1"
@@ -88,7 +89,7 @@
                 id="display_name" />
         </div>
 
-        <label for="represents_class">
+        <label for="represents_class" class="text-md font-bold">
             {data.translations.representclass}
         </label>
         <select
