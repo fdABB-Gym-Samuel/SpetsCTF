@@ -155,7 +155,7 @@
                                                 href={resolve(`/user/${player.id}`)}
                                                 >{player.display_name}</a>
                                         {:else}
-                                            <span>Anonymous</span>
+                                            <span class="italic">Anonymous</span>
                                         {/if}
                                     </td>
                                     <td
