@@ -3,13 +3,12 @@
     import { page } from '$app/state';
     import { Copy, LogOut } from '@lucide/svelte';
     import Button from '$lib/components/Button.svelte';
-    import { base, resolve } from '$app/paths';
+    import { resolve } from '$app/paths';
     import { enhance } from '$app/forms';
 
     let { data } = $props();
     let team = $derived(data.team);
     let teamData = $derived(data.teamData);
-    $inspect(teamData);
     let translations = $derived(data.translations);
 
     let users = $derived(teamData?.users);
@@ -49,7 +48,7 @@
         <!-- join_code is null if user is not in the team or is not an org/admin -->
         <div>
             <h3>{translations.invite}</h3>
-            <a href={inviteLink} class="font-mono">
+            <a href={inviteLink} class="font-mono" rel="external">
                 {inviteLink}
             </a>
             <Button
