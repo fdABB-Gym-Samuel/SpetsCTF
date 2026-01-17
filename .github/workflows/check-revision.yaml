@@ -30,6 +30,6 @@ jobs:
         if: always()
         id: cache
         with:
-          primary-key: nix-lint-${{ runner.arch }}-${{ runner.os }}-${{ hashFiles('flake.lock') }}
+          primary-key: nix-lint-${{ runner.arch }}-${{ runner.os }}-${{ hashFiles('flake.lock', 'bun.lock') }}
           purge: true
           purge-last-accessed: 2678400
