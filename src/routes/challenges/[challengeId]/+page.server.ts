@@ -70,23 +70,11 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
     }
 
     const firstSolvers = await db
-        .with('all_submissions', (qb) =>
-            qb
-                .selectFrom('ctf_submissions')
-                .where('challenge', '=', challengeData.challenge_id)
-                .where('success', '=', true)
-                .select(['user_id', 'time'])
-                .union(
-                    qb
-                        .selectFrom('wargame_submissions')
-                        .where('challenge', '=', challengeData.challenge_id)
-                        .where('success', '=', true)
-                        .select(['user_id', 'time'])
-                )
-        )
         .with('first_solve_per_user', (qb) =>
             qb
-                .selectFrom('all_submissions')
+                .selectFrom('wargame_submissions')
+                .where('challenge', '=', challengeData.challenge_id)
+                .where('success', '=', true)
                 .select(['user_id'])
                 .select(sql`MIN(time)`.as('first_time'))
                 .groupBy('user_id')
@@ -113,23 +101,17 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
         .selectAll()
         .execute();
 
+    console.log('kjhskfhskdhfksjhdkjfhskjhfksjhdfkjshk');
+
     const numSolvers = await db
-        .with('all_submissions', (qb) =>
-            qb
-                .selectFrom('wargame_submissions')
-                .select(['challenge', 'user_id', 'time'])
-                .where('success', '=', true)
-                .union(
-                    qb
-                        .selectFrom('ctf_submissions')
-                        .select(['challenge', 'user_id', 'time'])
-                        .where('success', '=', true)
-                )
-        )
-        .selectFrom('all_submissions')
+        .selectFrom('wargame_submissions')
+        .where('success', '=', true)
         .where('challenge', '=', challengeData.challenge_id)
         .select((eb) => eb.fn.countAll().as('count'))
-        .executeTakeFirstOrThrow();
+        .executeTakeFirst();
+
+    console.log(numSolvers, 'here');
+    console.log('kshfkashdfkhds');
 
     depends(`data:challenge-${challengeData.challenge_id}`);
 
@@ -139,6 +121,7 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
         numSolvers,
         resources,
         translations,
+        user,
     };
 };
 

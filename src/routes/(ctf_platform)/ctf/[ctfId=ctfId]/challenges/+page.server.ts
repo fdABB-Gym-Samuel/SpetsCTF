@@ -66,18 +66,6 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
                       'ch.challenge_sub_categories',
                       'ch.points',
                       'f.flag_format',
-                      //   'challenges.challenge_id',
-                      //   'challenges.display_name',
-                      //   'challenges.description',
-                      //   'challenges.points',
-                      //   'challenges.challenge_category',
-                      //   'challenges.challenge_sub_categories',
-                      //   'challenges.author',
-                      //   'challenges.anonymous_author',
-                      //   'challenges.approved',
-                      //   'challenges.created_at',
-                      //   'challenges.ctf',
-                      //   'challenges.flag',
                       eb
                           .case()
                           .when(sql.ref('ch.anonymous_author'), '=', true)
@@ -109,12 +97,19 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
               FROM unique_success us
               WHERE us.challenge = ch.challenge_id
             )`.as('num_solvers'),
-                      // Check if the current user has a successful submission on this challenge.
+                      // Check if the any user on the current user's team has solved the challenge.
                       sql`EXISTS(
-              SELECT 1 FROM ctf_submissions ws
-              WHERE ws.challenge = ch.challenge_id
-                AND ws.user_id = ${userId}
-                AND ws.success = true
+              SELECT 1 
+              FROM ctf_submissions cs
+              INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
+              WHERE cs.challenge = ch.challenge_id
+                AND cs.success = true
+                AND ctm.team = (
+                  SELECT team 
+                  FROM ctf_teams_members 
+                  WHERE user_id = ${userId}
+                  LIMIT 1
+                )
             )`.as('solved'),
                       // Get an array of resources for the challenge (ordered by resource id).
                       sql`
