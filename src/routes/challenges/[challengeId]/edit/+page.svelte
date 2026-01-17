@@ -219,7 +219,8 @@
                             <FileTerminal />
                         {/if}
                         {#if resource.type === 'web'}
-                            <a href={`${resource.content}`}>{resource.content}</a>
+                            <a rel="external" href={`${resource.content}`}
+                                >{resource.content}</a>
                         {:else if resource.type === 'file'}
                             {resource.content}
                         {:else if resource.type === 'cmd'}

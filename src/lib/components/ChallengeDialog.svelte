@@ -147,6 +147,7 @@
                                     class="challenge-resource text-text-100 flex h-fit flex-row items-center gap-1 underline">
                                     <Link class="size-4"></Link>
                                     <a
+                                        rel="external"
                                         href={`${resource.content}`}
                                         class="ignore-default h-fit"
                                         >{new URL(resource.content).host}</a>

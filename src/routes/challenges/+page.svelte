@@ -23,12 +23,6 @@
     let componentRoot: HTMLElement;
     let gsapContext: gsap.Context | undefined;
 
-    const challengesTabs = [
-        { label: 'All Challenges', tab: '#all' },
-        { label: 'My Challenges', tab: '#my' },
-        { label: 'Create Challenge', tab: '#create' },
-    ];
-
     import { page } from '$app/state';
     import Input from '$lib/components/input/Input.svelte';
     import { formatRequestedName } from '$lib/utils/utils.js';
@@ -90,16 +84,23 @@
     </header>
     <nav class="flex w-full flex-col gap-2">
         <ul class="flex w-full flex-row gap-5">
-            {#each challengesTabs as tab (tab.tab)}
-                <li>
-                    <a
-                        href={String(tab.tab)}
-                        class:border-b-2={page.url.hash === tab.tab ||
-                            (tab.tab === '#all' && !page.url.hash)}>
-                        {tab.label}
-                    </a>
-                </li>
-            {/each}
+            <li>
+                <a
+                    href="#all"
+                    class:border-b-2={page.url.hash === '#all' || !page.url.hash}>
+                    All Challenges
+                </a>
+            </li>
+            <li>
+                <a href="#my" class:border-b-2={page.url.hash === '#my'}>
+                    My Challenges
+                </a>
+            </li>
+            <li>
+                <a href="#create" class:border-b-2={page.url.hash === '#create'}>
+                    Create Challenge
+                </a>
+            </li>
         </ul>
         <VSeperator></VSeperator>
     </nav>

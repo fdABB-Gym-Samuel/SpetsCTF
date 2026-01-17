@@ -20,7 +20,7 @@
 
 <div class="content flex flex-col items-center">
     <h1 class="text-center text-2xl">{teamData?.name}</h1>
-    <a href={teamData?.website}>{teamData?.website}</a>
+    <a rel="external" href={teamData?.website}>{teamData?.website}</a>
     <div>
         {#if users}
             <h3>Members:</h3>
