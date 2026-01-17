@@ -43,10 +43,6 @@ export const load: LayoutServerLoad = async ({ locals, params }) => {
             .executeTakeFirst();
     }
 
-    if (new Date() < ctfData.start_time && !isOrg) {
-        error(403, "🤓☝️ Erm, ackshually, the CTF hasn't started yet. 🤓☝️");
-    }
-
     return {
         translations: locals.translations,
         user,
