@@ -2,7 +2,7 @@ import { db } from '$lib/db/database.js';
 import { getStateDirectory } from '$lib/server/directories';
 import { error, type RequestEvent } from '@sveltejs/kit';
 import { createReadableStream } from '@sveltejs/kit/node';
-import path from 'path';
+import path from 'node:path';
 
 export async function GET({ params }: RequestEvent) {
     const challengeId = params.challengeId ?? '';
