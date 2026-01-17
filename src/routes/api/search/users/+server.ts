@@ -1,6 +1,6 @@
 import { db } from '$lib/db/database.js';
 import { sql } from 'kysely';
-import { error, json } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import type { SqlBool } from 'kysely';
 import type { RequestHandler } from './$types';
 

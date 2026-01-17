@@ -198,7 +198,7 @@ export const actions = {
 
         redirect(303, resolve(`/challenges/${newEmptyChallenge.challenge_id}/edit`));
     },
-    delete: async ({ request, locals }) => {
+    deleteChallenge: async ({ request, locals }) => {
         const user = locals.user;
         if (!user) {
             redirect(303, '/login');
