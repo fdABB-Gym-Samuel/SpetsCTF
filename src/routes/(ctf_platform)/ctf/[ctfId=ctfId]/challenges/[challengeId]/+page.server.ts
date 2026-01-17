@@ -4,7 +4,6 @@ import { type Insertable, sql } from 'kysely';
 import type { WargameSubmissions } from '$lib/generated/db';
 import { get_flag_of_challenge } from '$lib/db/functions';
 import { db } from '$lib/db/database';
-import { form } from '$app/server';
 
 export const load: PageServerLoad = async ({ params, parent, locals, depends }) => {
     const { translations, ctfData, isOrg, team } = await parent();
