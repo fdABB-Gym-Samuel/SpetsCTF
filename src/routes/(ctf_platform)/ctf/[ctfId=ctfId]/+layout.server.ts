@@ -3,7 +3,7 @@ import type { LayoutServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 import { getIsOrg } from '$lib/db/functions';
 
-export const load: LayoutServerLoad = async ({ locals, depends, params }) => {
+export const load: LayoutServerLoad = async ({ locals, params }) => {
     const user = locals.user;
     const ctfId = Number(params.ctfId);
 
@@ -42,7 +42,10 @@ export const load: LayoutServerLoad = async ({ locals, depends, params }) => {
             .where('ctf_teams.ctf', '=', ctfId)
             .executeTakeFirst();
     }
-    depends('data:user');
+
+    if (new Date() < ctfData.start_time && !isOrg) {
+        error(403, "🤓☝️ Erm, ackshually, the CTF hasn't started yet. 🤓☝️");
+    }
 
     return {
         translations: locals.translations,

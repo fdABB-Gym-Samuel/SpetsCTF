@@ -8,18 +8,19 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
     const ctfId = Number(params.ctfId);
     const userId = user ? user.id : undefined;
 
-    const ctf = (await parent()).ctfData;
+    const parentData = await parent();
+    const { ctfData } = parentData;
 
     depends(`data:ctf-${params.ctfId}-challenges`);
 
     const allChallenges =
-        ctf && (new Date(ctf.start_time) < new Date() || user?.is_admin)
+        ctfData && (new Date(ctfData.start_time) < new Date() || user?.is_admin)
             ? await db
                   .with('unique_success', (qb) =>
                       qb
                           .selectFrom('ctf_submissions')
                           .select(['challenge', 'user_id'])
-                          .select(sql`MIN(time)`.as('first_time'))
+                          .select(sql<Date>`MIN(time)`.as('first_time'))
                           .where('success', '=', true)
                           .groupBy(['challenge', 'user_id'])
                   )
@@ -29,7 +30,7 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
                           .selectFrom('unique_success')
                           .select(['challenge', 'user_id', 'first_time'])
                           .select(
-                              sql`ROW_NUMBER() OVER (PARTITION BY challenge ORDER BY first_time)`.as(
+                              sql<number>`ROW_NUMBER() OVER (PARTITION BY challenge ORDER BY first_time)`.as(
                                   'rn'
                               )
                           )
@@ -61,7 +62,6 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
                   .select((eb) => [
                       'ch.anonymous_author',
                       'ch.approved',
-                      'ch.author',
                       'ch.challenge_category',
                       'ch.challenge_id',
                       'ch.challenge_sub_categories',
@@ -78,17 +78,18 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
                           .then(sql.lit('Anonymous'))
                           .else(sql.ref('a.display_name'))
                           .end()
+                          .$castTo<string | null>()
                           .as('author'),
-                      // 'a.id as author_id',
                       eb
                           .case()
                           .when(sql.ref('ch.anonymous_author'), '=', true)
                           .then(sql.lit(null))
                           .else(sql.ref('a.id'))
                           .end()
+                          .$castTo<string | null>()
                           .as('author_id'),
                       // Aggregate up to the first 5 solver display_names into a JSON array, ordered by submission time.
-                      sql`
+                      sql<{ display_name: string | null }[]>`
               COALESCE(
                 JSON_AGG(
                   json_build_object('display_name', u.display_name)
@@ -98,20 +99,20 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
               )
             `.as('first_solvers'),
                       // Count the total number of unique successful solves for the challenge.
-                      sql`(
+                      sql<number>`(
               SELECT COUNT(*)
               FROM unique_success us
               WHERE us.challenge = ch.challenge_id
             )`.as('num_solvers'),
                       // Check if the current user has a successful submission on this challenge.
-                      sql`EXISTS(
+                      sql<boolean>`EXISTS(
               SELECT 1 FROM ctf_submissions ws
               WHERE ws.challenge = ch.challenge_id
                 AND ws.user_id = ${userId}
                 AND ws.success = true
             )`.as('solved'),
                       // Get an array of resources for the challenge (ordered by resource id).
-                      sql`
+                      sql<{ type: string; content: string }[]>`
               COALESCE(
                 (
                   SELECT JSON_AGG(
