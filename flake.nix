@@ -31,6 +31,7 @@
       formatter = eachSystem (pkgs: treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper);
       checks = eachSystem (pkgs: {
         formatting = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.check self;
+        inherit (self.packages.${pkgs.stdenv.hostPlatform.system}) spetsctf;
       });
 
       devShells = eachSystem (pkgs: {
