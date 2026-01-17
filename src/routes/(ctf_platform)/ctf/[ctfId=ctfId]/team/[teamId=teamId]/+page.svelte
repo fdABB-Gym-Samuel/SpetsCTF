@@ -3,12 +3,13 @@
     import { page } from '$app/state';
     import { Copy, LogOut } from '@lucide/svelte';
     import Button from '$lib/components/Button.svelte';
-    import { resolve } from '$app/paths';
+    import { base, resolve } from '$app/paths';
     import { enhance } from '$app/forms';
 
     let { data } = $props();
     let team = $derived(data.team);
     let teamData = $derived(data.teamData);
+    $inspect(teamData);
     let translations = $derived(data.translations);
 
     let users = $derived(teamData?.users);
@@ -44,11 +45,13 @@
             </ul>
         {/if}
     </div>
-    {#if team && teamData?.id !== team.teamId && teamData.join_code}
+    {#if team && teamData?.id === team.teamId && teamData.join_code}
         <!-- join_code is null if user is not in the team or is not an org/admin -->
         <div>
             <h3>{translations.invite}</h3>
-            <pre><code>{inviteLink}</code></pre>
+            <a href={inviteLink} class="font-mono">
+                {inviteLink}
+            </a>
             <Button
                 label=""
                 Icon={Copy}
