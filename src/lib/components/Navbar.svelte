@@ -134,7 +134,7 @@
                     label={translations.login}
                     type="button"
                     responsiveStyles="!px-6 md:!px-8"
-                    onclick={() => goto('/login')}
+                    onclick={() => goto(resolve('/login'))}
                     Icon={LogIn}
                     aria-label="Login" />
             {/if}

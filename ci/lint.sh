@@ -4,6 +4,10 @@ set -o pipefail
 
 ERR=0
 
+export STATE_DIRECTORY="$TEMP"
+export GITHUB_CLIENT_ID=""
+export GITHUB_CLIENT_SECRET=""
+
 bun install || ERR=1
 
 bun run prepare || ERR=1
