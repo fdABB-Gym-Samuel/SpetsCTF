@@ -1,53 +1,61 @@
 import { db } from '$lib/db/database.js';
+import { StateDirectory } from '$lib/server/directories';
 import { error, type RequestEvent } from '@sveltejs/kit';
-import fs from 'fs/promises';
-import { sql } from 'kysely';
+import { createReadableStream } from '@sveltejs/kit/node';
 import path from 'path';
 
 export async function GET({ params }: RequestEvent) {
     const challengeId = params.challengeId ?? '';
-    const filename = params.filename as string;
+    const filename = params.filename ?? '';
+    if (!challengeId || !filename) {
+        error(422, { message: 'You must provide both challengeId and file name.' });
+    }
 
-    const ctf = await db
+    const challenge = await db
         .selectFrom('challenges')
-        .leftJoin('ctf_events', 'challenges.ctf', 'ctf_events.id')
-        .select(
-            sql`ctf_events.start_time < NOW() OR challenges.ctf IS NULL`.as(
-                'hasStarted'
-            )
-        )
-        .where('challenges.challenge_id', '=', challengeId)
+        .where('challenge_id', '=', challengeId)
+        .select(['approved', 'ctf'])
         .executeTakeFirst();
 
-    if (ctf === undefined) {
-        return error(404, { message: 'CTF not found' });
+    if (!challenge) {
+        error(404);
     }
 
-    if (ctf.hasStarted) {
-        const challenge = await db
-            .selectFrom('challenges')
-            .select('approved')
-            .where('challenge_id', '=', challengeId)
-            .executeTakeFirstOrThrow();
+    if (!challenge.approved) {
+        return error(403, {
+            message:
+                "Challenge hasn't been approved, all resources belonging to this file have not been confirmed to be safe.",
+        });
+    }
 
-        if (!challenge.approved) {
-            return error(403, {
-                message:
-                    "Challenge hasn't been approved, all resources belonging to this file have not been confirmed to be safe.",
+    if (challenge.ctf) {
+        // Extra checks for CTF.
+        const ctf = await db
+            .selectFrom('ctf_events')
+            .where('id', '=', challenge.ctf)
+            .selectAll()
+            .executeTakeFirst();
+
+        if (!ctf) {
+            error(404);
+        }
+
+        const now = new Date();
+        if (now < ctf.start_time) {
+            error(403, {
+                message: "🤓☝️ Erm, ackshually, the CTF hasn't started yet. 🤓☝️",
             });
         }
-        const filepath = path.join(process.cwd(), 'files', challengeId, filename);
-        const file = await fs.readFile(filepath);
-        return new Response(file, {
-            status: 200,
-            headers: {
-                'Content-Type': 'application/octet-stream',
-                'Content-Disposition': `attachment; filename="${path.basename(filepath)}"`,
-            },
-        });
-    } else {
-        return new Response("🤓☝️ Erm, ackshually, the CTF hasn't started yet. 🤓☝️", {
-            status: 403,
-        });
     }
+
+    const filepath = path.join(StateDirectory, 'files', challengeId, filename);
+
+    const reader = createReadableStream(filepath);
+    return new Response(reader, {
+        status: 200,
+        headers: {
+            'Content-Type': 'application/octet-stream',
+            'Content-Disposition': `attachment; filename="${path.basename(filepath)}"`,
+        },
+    });
 }
