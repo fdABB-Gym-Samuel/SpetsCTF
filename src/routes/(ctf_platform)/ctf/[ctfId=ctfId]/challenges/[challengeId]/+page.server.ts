@@ -125,8 +125,6 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
         .select((eb) => eb.fn.countAll().as('count'))
         .executeTakeFirst();
 
-    console.log(numSolvers);
-
     depends(`data:challenge-${challengeData.challenge_id}`);
 
     return {

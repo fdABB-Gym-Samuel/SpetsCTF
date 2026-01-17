@@ -101,17 +101,12 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
         .selectAll()
         .execute();
 
-    console.log('kjhskfhskdhfksjhdkjfhskjhfksjhdfkjshk');
-
     const numSolvers = await db
         .selectFrom('wargame_submissions')
         .where('success', '=', true)
         .where('challenge', '=', challengeData.challenge_id)
         .select((eb) => eb.fn.countAll().as('count'))
         .executeTakeFirst();
-
-    console.log(numSolvers, 'here');
-    console.log('kshfkashdfkhds');
 
     depends(`data:challenge-${challengeData.challenge_id}`);
 
