@@ -1,5 +1,5 @@
 import { db } from '$lib/db/database.js';
-import { StateDirectory } from '$lib/server/directories';
+import { getStateDirectory } from '$lib/server/directories';
 import { error, type RequestEvent } from '@sveltejs/kit';
 import { createReadableStream } from '@sveltejs/kit/node';
 import path from 'path';
@@ -48,7 +48,7 @@ export async function GET({ params }: RequestEvent) {
         }
     }
 
-    const filepath = path.join(StateDirectory, 'files', challengeId, filename);
+    const filepath = path.join(getStateDirectory(), 'files', challengeId, filename);
 
     const reader = createReadableStream(filepath);
     return new Response(reader, {
