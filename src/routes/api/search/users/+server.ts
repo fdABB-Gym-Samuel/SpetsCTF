@@ -62,10 +62,6 @@ export const GET: RequestHandler = async ({ url }) => {
     }
     const matchingUsers = await matchingUsersQuery.limit(20).execute();
 
-    if (matchingUsers === undefined) {
-        error(404);
-    }
-
     const retval: SearchedUser[] = matchingUsers.map((elem) => {
         return {
             id: elem.id,

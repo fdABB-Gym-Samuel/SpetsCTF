@@ -24,7 +24,7 @@
 
     interface Props {
         challengeData: Selectable<Challenges> & {
-            first_solvers: { display_name: string; id: string }[];
+            first_solvers: { display_name: string | null; id: string }[];
         } & { flag_format: Selectable<Flag>['flag_format'] } & {
             num_solvers: string | number | bigint;
         } & { resources: Selectable<ChallengeResources>[] } & { solved?: boolean };

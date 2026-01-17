@@ -114,7 +114,9 @@ export const actions = {
         const existingOrgRegistrations = await db
             .selectFrom('ctf_organizers')
             .where('user_id', '=', targetUser.id)
+            .where('ctf', '=', ctfId)
             .execute();
+
         if (existingOrgRegistrations.length > 0) {
             return fail(401, { success: false, message: 'User is already organizer.' });
         }
