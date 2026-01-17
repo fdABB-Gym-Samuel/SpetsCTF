@@ -8,6 +8,7 @@ import {
 import { db } from '$lib/db/database';
 import { getIsOrg } from '$lib/db/functions';
 import { jsonObjectFrom } from 'kysely/helpers/postgres';
+import { sql, type SqlBool } from 'kysely';
 
 interface SearchedUser {
     id: string;
@@ -15,13 +16,7 @@ interface SearchedUser {
     github_username: string;
 }
 
-export const load = async ({
-    locals,
-    params,
-    url,
-    fetch,
-    depends,
-}: ServerLoadEvent) => {
+export const load = async ({ locals, params, url, depends }: ServerLoadEvent) => {
     const user = locals.user;
     const ctfId = Number(params.ctfId);
     if (!user) {
@@ -51,11 +46,48 @@ export const load = async ({
     const userSearchParam = url.searchParams.get('searchUser');
     let userSearchResults: Promise<SearchedUser[]> | undefined = undefined;
     if (userSearchParam !== null) {
-        userSearchResults = fetch(
-            `/api/search/users?q=${userSearchParam}&ctf=${ctfId}`
-        ).then(async (response) => {
-            return (await response.json()) as SearchedUser[];
-        });
+        userSearchResults = db
+            .selectFrom('users')
+            .select(['id', 'github_username', 'display_name'])
+            .where('users.is_admin', 'is not', true)
+            .where(
+                () =>
+                    sql<boolean>`
+                        GREATEST(
+                            similarity(github_username, ${userSearchParam}),
+                            similarity(display_name, ${userSearchParam})
+                        ) > 0
+                    `
+            )
+            .where(
+                sql<SqlBool>`
+                    NOT EXISTS (
+                        SELECT 1
+                        FROM ctf_organizers o
+                        WHERE o.user_id = users.id
+                            AND o.ctf = ${ctfId}
+                    )
+                `
+            )
+            .orderBy(
+                () =>
+                    sql<number>`
+                        GREATEST(
+                            similarity(github_username, ${userSearchParam}),
+                            similarity(display_name, ${userSearchParam})
+                        )
+                    `,
+                'desc'
+            )
+            .limit(20)
+            .execute()
+            .then((matchingUsers) =>
+                matchingUsers.map((elem) => ({
+                    id: elem.id,
+                    display_name: elem.display_name ?? 'No display name',
+                    github_username: elem.github_username ?? 'No GitHub username',
+                }))
+            );
     }
 
     return { userSearchResults, organizers };
