@@ -34,7 +34,19 @@
       });
 
       devShells = eachSystem (pkgs: {
-        default = pkgs.mkShell {
+        ci = pkgs.mkShellNoCC {
+          packages = with pkgs; [
+            bun
+            bun2nix.packages.${stdenv.hostPlatform.system}.default
+            jq
+            postgresql.out
+            pdpmake
+          ];
+          shellHook = ''
+            alias make='pdpmake --posix'
+          '';
+        };
+        default = pkgs.mkShellNoCC {
           name = "spetsctf";
           packages = with pkgs; [
             bun
