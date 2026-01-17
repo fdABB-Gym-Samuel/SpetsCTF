@@ -1,34 +1,35 @@
-name: Checks
+name: Run all checks and lints
 on:
-  pull_request:
+  pull_request: null
   push:
-    branches: [main]
-  workflow_dispatch:
+    branches: main
 jobs:
-  check-and-eval:
+  check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
-      - name: Install Nix
-        uses: nixbuild/nix-quick-install-action@2c9db80fb984ceb1bcaa77cdda3fdf8cfba92035 # v34
+      - name: Check out source code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: nixbuild/nix-quick-install-action@5bb6a3b3abe66fd09bbf250dce8ada94f856a703 # v30
+        name: Install Nix
         with:
           nix_conf: |
             keep-env-derivations = true
             keep-outputs = true
-      - name: Restore Nix Store
+      - name: Restore Nix store
         uses: nix-community/cache-nix-action/restore@135667ec418502fa5a3598af6fb9eb733888ce6a # v6.1.3
         with:
-          primary-key: nix-${{ runner.arch }}-${{ runner.os }}-${{ hashFiles('flake.lock', 'bun.lock') }}
-      - name: Check Flake
-        run: nix --extra-experimental-features 'nix-command flakes' flake check
-      - name: Build SpetsCTF package
-        run: nix --extra-experimental-features 'nix-command flakes' build .#spetsctf
+          primary-key: nix-lint-${{ runner.arch }}-${{ runner.os }}-${{ hashFiles('flake.lock', 'bun.lock') }}
+          restore-prefixes-first-match: |
+            nix-lint-${{ runner.arch }}-${{ runner.os }}-
+      - name: Run Nix flake checks
+        run: nix flake check
+      - name: Run linter script
+        run: nix develop . --command ./ci/lint.sh
       - name: Save Nix store
         uses: nix-community/cache-nix-action/save@135667ec418502fa5a3598af6fb9eb733888ce6a # v6.1.3
         if: always()
         id: cache
         with:
-          primary-key: nix-${{ runner.arch }}-${{ runner.os }}-${{ hashFiles('flake.lock', 'bun.lock') }}
-          # Purge cache after 31 days.
+          primary-key: nix-lint-${{ runner.arch }}-${{ runner.os }}-${{ hashFiles('flake.lock') }}
           purge: true
           purge-last-accessed: 2678400
