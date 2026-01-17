@@ -5,7 +5,7 @@
     import { Menu } from '@lucide/svelte';
 
     import { page } from '$app/state';
-    import { resolve } from '$app/paths';
+    import { asset, resolve } from '$app/paths';
     import type { ResolvedPathname } from '$app/types';
 
     import { gsap } from 'gsap';
@@ -92,7 +92,7 @@
                             duration: 1.2,
                         })}>
                     <img
-                        src="/assets/logo.svg"
+                        src={asset('/assets/logo.svg')}
                         alt="SpetsCTF"
                         class="logo h-5 min-w-25 select-none" />
                 </a>
@@ -114,6 +114,7 @@
             {#each links as navLink, index (index)}
                 <li>
                     <a
+                        rel="external"
                         class="nav-option link {page.url.pathname === navLink.href
                             ? 'decoration-bg-700 underline decoration-3 underline-offset-4'
                             : ''}"
@@ -124,7 +125,7 @@
         <div class="flex w-1/5 flex-grow justify-end overflow-y-hidden py-0.5 pr-0.5">
             {#if user}
                 <a
-                    href="/user"
+                    href={resolve('/user')}
                     class="ignore-default max-w-full space-x-4 truncate text-center underline">
                     <User class=" inline-block min-h-6 min-w-6" />
                     {user.display_name || user.github_username}</a>
@@ -168,6 +169,7 @@
                                     class="border-primary-light m-0 border-b-2 py-2 pl-1">
                                     <a
                                         class="ignore-default hover:!text-primary"
+                                        rel="external"
                                         href={link.href}
                                         onclick={(e) => {
                                             toggleSidebar(e, false);
