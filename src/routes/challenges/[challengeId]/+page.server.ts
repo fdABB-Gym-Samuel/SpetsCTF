@@ -115,7 +115,7 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
     return {
         challengeData,
         firstSolvers,
-        numSolvers: numSolvers.count,
+        numSolvers: numSolvers?.count ?? 0,
         resources,
         translations,
         user,

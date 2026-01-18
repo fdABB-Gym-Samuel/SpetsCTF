@@ -38,12 +38,9 @@
         translations: Record<string, string>;
         user: Selectable<Users> | undefined;
         form: ActionData;
-        notInTeam?: boolean;
     }
 
     let { challengeData, closeDialog, translations, user, form }: Props = $props();
-
-    $inspect(form, 'form');
 
     function getPointColor(points: number): string {
         const labA = Math.floor(map(points, 0, 500, -128, 128));

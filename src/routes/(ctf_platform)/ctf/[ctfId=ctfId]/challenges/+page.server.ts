@@ -105,7 +105,7 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
               WHERE us.challenge = ch.challenge_id
             )`.as('num_solvers'),
                       // Check if the any user on the current user's team has solved the challenge.
-                      sql`EXISTS(
+                      sql<boolean>`EXISTS(
               SELECT 1 
               FROM ctf_submissions cs
               INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
