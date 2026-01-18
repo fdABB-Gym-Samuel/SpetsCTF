@@ -254,11 +254,12 @@ export const actions = {
                         'Could not determine file save location. Contact an admin if the issue persists.',
                 });
 
+            const filenameSanitized = sanitize(fileBuffer.name);
             const filePath = path.join(
                 stateDirectoryPath,
                 'files',
                 challengeId,
-                sanitize(fileBuffer.name)
+                filenameSanitized
             );
 
             let fileExists: boolean = false;
@@ -290,7 +291,7 @@ export const actions = {
 
             const fileResource: Insertable<ChallengeResources> = {
                 challenge: challengeId,
-                content: path.relative(stateDirectoryPath, filePath),
+                content: filenameSanitized,
                 type: 'file',
             };
 

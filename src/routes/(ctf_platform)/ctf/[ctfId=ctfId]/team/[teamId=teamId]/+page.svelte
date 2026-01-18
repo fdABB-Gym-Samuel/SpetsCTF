@@ -16,6 +16,7 @@
     let inviteLink: string = $derived(
         resolve(`/ctf/${page.params.ctfId}/join-team/${teamData?.join_code}`)
     );
+    let inviteLinkDisplay: string = $derived(`${page.url.origin}${inviteLink}`);
 </script>
 
 <div class="content flex flex-col items-center">
@@ -49,7 +50,7 @@
         <div>
             <h3>{translations.invite}</h3>
             <a href={inviteLink} class="font-mono" rel="external">
-                {inviteLink}
+                {inviteLinkDisplay}
             </a>
             <Button
                 label=""
@@ -57,7 +58,7 @@
                 styleType="icon"
                 onclick={async () => {
                     if (browser) {
-                        await navigator.clipboard.writeText(inviteLink);
+                        await navigator.clipboard.writeText(inviteLinkDisplay);
                     }
                 }} />
         </div>

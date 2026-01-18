@@ -7,7 +7,7 @@ export function getStateDirectory(): string {
     if (!env.STATE_DIRECTORY && dev) {
         return join(cwd(), 'tmp');
     } else if (building) {
-        return '';
+        return join(cwd(), 'tmp');
     } else {
         return env.STATE_DIRECTORY;
     }

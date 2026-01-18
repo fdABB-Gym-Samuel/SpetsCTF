@@ -3,6 +3,7 @@ import { getStateDirectory } from '$lib/server/directories';
 import { error, type RequestEvent } from '@sveltejs/kit';
 import { createReadableStream } from '@sveltejs/kit/node';
 import path from 'node:path';
+import sanitize from 'sanitize-filename';
 
 export async function GET({ params }: RequestEvent) {
     const challengeId = params.challengeId ?? '';
@@ -14,11 +15,12 @@ export async function GET({ params }: RequestEvent) {
     const challenge = await db
         .selectFrom('challenges')
         .where('challenge_id', '=', challengeId)
-        .select(['approved', 'ctf'])
+        .select(['approved', 'ctf', 'challenge_id'])
         .executeTakeFirst();
 
     if (!challenge) {
-        error(404);
+        console.log('couldnt find chall');
+        error(404, 'Challenge not found.');
     }
 
     if (!challenge.approved) {
@@ -26,6 +28,19 @@ export async function GET({ params }: RequestEvent) {
             message:
                 "Challenge hasn't been approved, all resources belonging to this file have not been confirmed to be safe.",
         });
+    }
+
+    const resource = await db
+        .selectFrom('challenge_resources')
+        .where('challenge', '=', challenge.challenge_id)
+        .where('type', '=', 'file')
+        .where('content', '=', filename)
+        .selectAll()
+        .executeTakeFirst();
+
+    if (!resource) {
+        console.log('couldnt find resource');
+        error(404, 'Could not find file.');
     }
 
     if (challenge.ctf) {
@@ -48,14 +63,33 @@ export async function GET({ params }: RequestEvent) {
         }
     }
 
-    const filepath = path.join(getStateDirectory(), 'files', challengeId, filename);
+    const sanitizedChallengeId = sanitize(challengeId);
+    const sanitizedFilename = sanitize(filename);
 
-    const reader = createReadableStream(filepath);
-    return new Response(reader, {
-        status: 200,
-        headers: {
-            'Content-Type': 'application/octet-stream',
-            'Content-Disposition': `attachment; filename="${path.basename(filepath)}"`,
-        },
-    });
+    const baseDir = path.join(getStateDirectory(), 'files', sanitizedChallengeId);
+    const filepath = path.join(baseDir, sanitizedFilename);
+
+    const resolvedPath = path.resolve(filepath);
+    const resolvedBase = path.resolve(baseDir);
+
+    if (
+        !resolvedPath.startsWith(resolvedBase + path.sep) &&
+        resolvedPath !== resolvedBase
+    ) {
+        error(403, 'Invalid file path.');
+    }
+
+    try {
+        const reader = createReadableStream(filepath);
+        return new Response(reader, {
+            status: 200,
+            headers: {
+                'Content-Type': 'application/octet-stream',
+                'Content-Disposition': `attachment; filename="${sanitize(path.basename(filepath))}"`,
+            },
+        });
+    } catch {
+        console.log('couldnt read file, ', filepath);
+        error(404, 'Could not find file.');
+    }
 }

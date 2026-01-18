@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { flip } from 'svelte/animate';
     import { enhance } from '$app/forms';
     import { resolve } from '$app/paths';
     import { page } from '$app/state';
@@ -209,7 +210,9 @@
 
         <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
             {#each data.resources as resource (resource.id)}
-                <div class="bg-bg-700 border-bg-500 rounded-lg border-2 p-4">
+                <div
+                    class="bg-bg-700 border-bg-500 rounded-lg border-2 p-4"
+                    animate:flip>
                     <div class="flex flex-row items-center space-x-4">
                         {#if resource.type === 'web'}
                             <Globe />
@@ -234,7 +237,7 @@
                                 styleType="icon"
                                 iconSize="20"
                                 href={resolve(
-                                    `/files/${data.challenge.challenge_id}/${resource.content.split('/').at(-1)}`
+                                    `/files/${data.challenge.challenge_id}/${resource.content}`
                                 )}
                                 Icon={Download} />
                         {/if}

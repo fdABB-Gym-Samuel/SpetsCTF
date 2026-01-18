@@ -90,11 +90,12 @@
                         <input
                             type="hidden"
                             name="user_id"
-                            value={organizer.user?.id} />
+                            value={organizer.user?.id ?? ''} />
                         <Button
                             label=""
                             styleType="icon"
-                            disabled={organizer.user?.id === data.user?.id}
+                            disabled={!organizer.user?.id ||
+                                organizer.user?.id === data.user?.id}
                             Icon={Trash2}
                             type="submit" />
                     </form>

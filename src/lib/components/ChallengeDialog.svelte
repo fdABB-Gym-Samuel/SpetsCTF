@@ -158,7 +158,7 @@
                                     <File class="size-4"></File>
                                     <a
                                         href={resolve(
-                                            `/files/${resource.challenge}/${resource.content.split('/').at(-1)}`
+                                            `/files/${resource.challenge}/${resource.content}`
                                         )}
                                         class="ignore-default h-fit">
                                         {resource.content

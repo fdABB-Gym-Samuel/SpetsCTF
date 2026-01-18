@@ -4,7 +4,7 @@ set -o pipefail
 
 ERR=0
 
-export STATE_DIRECTORY="$TEMP"
+export STATE_DIRECTORY="${TEMP:-/tmp}"
 export GITHUB_CLIENT_ID=""
 export GITHUB_CLIENT_SECRET=""
 
@@ -22,8 +22,7 @@ bunx sv check --output machine-verbose || ERR=1
 echo "::remove-matcher owner=svelte::"
 
 echo "::add-matcher::ci/matchers/eslint.json"
-bunx eslint --format json | jq -r '.[] | select(.messages | length > 0) | .filePath as $file | .messages[] | "\($file):\(.line):\(.column):\(if .severity == 2 then "error" else "warning" end):\(.ruleId):\(.message)"'
-ERR=$?
+bunx eslint --format json | jq -r '.[] | select(.messages | length > 0) | .filePath as $file | .messages[] | "\($file):\(.line):\(.column):\(if .severity == 2 then "error" else "warning" end):\(.ruleId):\(.message)"' || ERR=1
 echo "::remove-matcher owner=eslint::"
 
 exit $ERR
