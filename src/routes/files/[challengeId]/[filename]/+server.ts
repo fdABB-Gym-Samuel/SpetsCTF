@@ -19,7 +19,6 @@ export async function GET({ params }: RequestEvent) {
         .executeTakeFirst();
 
     if (!challenge) {
-        console.log('couldnt find chall');
         error(404, 'Challenge not found.');
     }
 
@@ -39,7 +38,6 @@ export async function GET({ params }: RequestEvent) {
         .executeTakeFirst();
 
     if (!resource) {
-        console.log('couldnt find resource');
         error(404, 'Could not find file.');
     }
 
@@ -72,10 +70,7 @@ export async function GET({ params }: RequestEvent) {
     const resolvedPath = path.resolve(filepath);
     const resolvedBase = path.resolve(baseDir);
 
-    if (
-        !resolvedPath.startsWith(resolvedBase + path.sep) &&
-        resolvedPath !== resolvedBase
-    ) {
+    if (!resolvedPath.startsWith(resolvedBase + path.sep)) {
         error(403, 'Invalid file path.');
     }
 
@@ -89,7 +84,6 @@ export async function GET({ params }: RequestEvent) {
             },
         });
     } catch {
-        console.log('couldnt read file, ', filepath);
         error(404, 'Could not find file.');
     }
 }

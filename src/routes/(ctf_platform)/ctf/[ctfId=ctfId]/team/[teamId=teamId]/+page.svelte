@@ -46,7 +46,6 @@
         {/if}
     </div>
     {#if team && teamData?.id === team.teamId && teamData.join_code}
-        <!-- join_code is null if user is not in the team or is not an org/admin -->
         <div>
             <h3>{translations.invite}</h3>
             <a href={inviteLink} class="font-mono" rel="external">

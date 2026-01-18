@@ -13,7 +13,6 @@ import { validateCategory } from '$lib/db/functions';
 import { selectedCategoriesToBitset } from '$lib/bitset';
 import { categories } from '$lib/db/constants';
 import { spawn } from 'node:child_process';
-import { env } from '$env/dynamic/private';
 import path from 'node:path';
 import sanitize from 'sanitize-filename';
 import { stat } from 'node:fs/promises';
@@ -21,6 +20,7 @@ import { writeFile } from 'node:fs/promises';
 import { mkdir } from 'node:fs/promises';
 import { unlink } from 'node:fs/promises';
 import { linkPattern } from '$lib/utils/utils';
+import { getStateDirectory } from '$lib/server/directories';
 
 export const load: PageServerLoad = async ({ locals, params, depends }) => {
     const user = locals.user;
@@ -247,7 +247,7 @@ export const actions = {
                 });
             }
 
-            const stateDirectoryPath = env.STATE_DIRECTORY;
+            const stateDirectoryPath = getStateDirectory();
             if (!stateDirectoryPath || !path.isAbsolute(stateDirectoryPath))
                 error(500, {
                     message:
@@ -342,14 +342,19 @@ export const actions = {
         if (user.id === resourceData.author || user.is_admin) {
             if (resourceData.type === 'file') {
                 try {
-                    const stateDirectoryPath = env.STATE_DIRECTORY ?? '';
+                    const stateDirectoryPath = getStateDirectory();
                     const filePathToDelete = await db
                         .deleteFrom('challenge_resources')
                         .where('id', '=', resourceData.id)
-                        .returning('content')
+                        .returning(['content', 'challenge'])
                         .executeTakeFirstOrThrow();
                     await unlink(
-                        path.join(stateDirectoryPath, filePathToDelete.content)
+                        path.join(
+                            stateDirectoryPath,
+                            'files',
+                            filePathToDelete.challenge,
+                            filePathToDelete.content
+                        )
                     );
                 } catch {
                     error(500, { message: 'Failed to delete file resource.' });
