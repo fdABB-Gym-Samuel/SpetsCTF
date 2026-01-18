@@ -19,14 +19,14 @@
 <section class="challenge-container w-full">
     {#each categories as category (category)}
         <div class="category-container mb-16">
-            <h3 class="category-header gsap-top-down-opacity mb-2 text-lg font-bold">
+            <h3 class="category-header mb-2 text-lg font-bold">
                 {capitalizeFirstLetter(category)}
             </h3>
             {#if challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()).length > 0}
                 <ul
                     class="grid grid-cols-[repeat(auto-fill,minmax(305px,1fr))] gap-4 sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(390px,1fr))]">
                     {#each challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challengeData (challengeData.challenge_id)}
-                        <li class="gsap-left-right-opacity min-h-fit min-w-65">
+                        <li class="min-h-fit min-w-65">
                             <button
                                 class="w-full hover:cursor-pointer"
                                 onclick={() =>

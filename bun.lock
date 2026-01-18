@@ -7,7 +7,6 @@
       "dependencies": {
         "@types/pg": "^8.16.0",
         "arctic": "^3.7.0",
-        "gsap": "^3.14.2",
         "kysely": "^0.28.9",
         "pg": "^8.17.1",
         "sanitize-filename": "^1.6.3",
@@ -27,6 +26,7 @@
         "globals": "^16.5.0",
         "jsdom": "^26.1.0",
         "kysely-codegen": "^0.19.0",
+        "phosphor-icons-svelte": "^2.1.0",
         "postcss": "^8.5.6",
         "svelte": "^5.46.4",
         "svelte-adapter-bun": "^1.0.1",
@@ -466,8 +466,6 @@
 
     "graceful-fs": ["graceful-fs@4.2.11", "", {}, "sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ=="],
 
-    "gsap": ["gsap@3.14.2", "", {}, "sha512-P8/mMxVLU7o4+55+1TCnQrPmgjPKnwkzkXOK1asnR9Jg2lna4tEY5qBJjMmAaOBDDZWtlRjBXjLa0w53G/uBLA=="],
-
     "has-flag": ["has-flag@4.0.0", "", {}, "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ=="],
 
     "hasown": ["hasown@2.0.2", "", { "dependencies": { "function-bind": "^1.1.2" } }, "sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ=="],
@@ -635,6 +633,8 @@
     "pg-types": ["pg-types@2.2.0", "", { "dependencies": { "pg-int8": "1.0.1", "postgres-array": "~2.0.0", "postgres-bytea": "~1.0.0", "postgres-date": "~1.0.4", "postgres-interval": "^1.1.0" } }, "sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA=="],
 
     "pgpass": ["pgpass@1.0.5", "", { "dependencies": { "split2": "^4.1.0" } }, "sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug=="],
+
+    "phosphor-icons-svelte": ["phosphor-icons-svelte@2.1.0", "", { "peerDependencies": { "svelte": ">= 5" } }, "sha512-gTNxjkc3Wth5stZuVrMWrP07Obv5wUxg9zAqe2tujnLIKa+RaVWNgjOzR+Y9RE3l7bV1PN7dGcBAWR+ps7HA+Q=="],
 
     "picocolors": ["picocolors@1.1.1", "", {}, "sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA=="],
 

@@ -1,9 +1,9 @@
 <script lang="ts">
     import BackToTop from '$lib/components/BackToTop.svelte';
 
-    import { playAnimations } from '$lib/gsap/animations';
-    import { onDestroy, onMount } from 'svelte';
-    import gsap from 'gsap';
+    import { onMount } from 'svelte';
+    import { Tween } from 'svelte/motion';
+    import { cubicOut } from 'svelte/easing';
 
     import { resolve } from '$app/paths';
     import { page } from '$app/state';
@@ -17,58 +17,60 @@
     let podiumRefs: HTMLDivElement[] = $state([]);
     let textRefs: HTMLSpanElement[] = $state([]);
 
-    let componentRoot: HTMLElement;
-    let gsapContext: gsap.Context | undefined;
-
     let teamPosition = $derived.by(() => {
         if (team) {
             return scores.findIndex((team_) => team_.team_id === team?.teamId) + 1;
         }
     });
 
-    onMount(() => {
-        gsapContext = playAnimations(componentRoot);
+    // Heights for the podium bars (order: 2nd, 1st, 3rd)
+    const targetHeights = [90, 70, 40];
 
-        // Height percentages
-        const heights = ['90', '70', '40'];
-        const speed = 60; // % per second
-        const tl = gsap.timeline();
+    // Create tweens for each podium bar - more predictable timing than springs
+    const podiumTweens = targetHeights.map(
+        () => new Tween(0, { duration: 1000, easing: cubicOut })
+    );
 
-        [2, 0, 1].forEach((idx, i) => {
-            const pct = Number(heights[idx]);
-            const dur = pct / speed;
+    // Text opacity tweens
+    const textOpacityTweens = [0, 1, 2].map(
+        () => new Tween(0, { duration: 500, easing: cubicOut })
+    );
+    const textYTweens = [0, 1, 2].map(
+        () => new Tween(20, { duration: 500, easing: cubicOut })
+    );
 
-            tl.fromTo(
-                podiumRefs[i],
-                { height: '0%' },
-                {
-                    height: `${pct}%`,
-                    duration: dur,
-                    ease: 'none',
-                    onComplete: () => {
-                        gsap.fromTo(
-                            textRefs[i],
-                            { autoAlpha: 0, y: 20 },
-                            { autoAlpha: 1, y: 0, duration: 0.5 }
-                        );
-                    },
-                },
-                0
-            );
-        });
-    });
+    onMount(async () => {
+        // Animate podiums in order: 2nd, 1st, 3rd (indices: 2, 0, 1)
+        const order = [2, 0, 1];
 
-    onDestroy(() => {
-        gsapContext?.revert();
+        for (let i = 0; i < order.length; i++) {
+            const idx = order[i];
+
+            // Start podium animation (returns a promise when complete)
+            const podiumPromise = podiumTweens[i].set(targetHeights[idx]);
+
+            // After 300ms, fade in text
+            await new Promise((resolve) => setTimeout(resolve, 300));
+            textOpacityTweens[i].set(1);
+            textYTweens[i].set(0);
+
+            // Wait for podium to finish before starting next one
+            await podiumPromise;
+        }
     });
 </script>
 
-<main class="content m-auto w-full max-w-[1200px] pt-20" bind:this={componentRoot}>
+<main class="content m-auto w-full max-w-[1200px] pt-20">
     {#if ctfData && ctfData.end_time < new Date()}
         <section class="mb-8 flex h-80 w-full items-end justify-center">
             {#each [2, 0, 1] as idx, i (idx)}
                 <div class="flex h-full w-1/3 flex-col items-center justify-end">
-                    <h5 class="text-lg opacity-0" bind:this={textRefs[i]}>
+                    <h5
+                        class="text-lg"
+                        bind:this={textRefs[i]}
+                        style="opacity: {textOpacityTweens[i]
+                            .current}; transform: translateY({textYTweens[i]
+                            .current}px)">
                         {scores[idx]?.team_name}
                     </h5>
                     <div
@@ -76,7 +78,8 @@
                         class:bg-yellow-500={i === 1}
                         class:bg-slate-400={i === 2}
                         class:bg-amber-700={i === 0}
-                        bind:this={podiumRefs[i]}>
+                        bind:this={podiumRefs[i]}
+                        style="height: {podiumTweens[i].current}%">
                         <span class="text-2xl text-black">
                             ({scores[idx]?.total_points} points)
                         </span>
@@ -88,7 +91,7 @@
 
     <!-- TODO: add header with user info if logged in -->
     {#if team && !user?.is_admin}
-        <header class="gsap-top-down-opacity mb-12">
+        <header class="mb-12">
             <h1 class="text-xl font-bold">
                 {team?.teamName} <span class="text-text-200">#{teamPosition}</span>
             </h1>
@@ -97,9 +100,9 @@
     <div class="scoreboards flex w-full flex-col gap-16">
         <section>
             <div
-                class="bg-bg-850 gsap-top-down-opacity max-h-[600px] w-full min-w-20 overflow-auto rounded-lg px-8 py-4">
+                class="bg-bg-850 max-h-[600px] w-full min-w-20 overflow-auto rounded-lg px-8 py-4">
                 {#if scores.length > 0}
-                    <table class="gsap-top-down-opacity w-full table-fixed">
+                    <table class="w-full table-fixed">
                         <thead>
                             <tr
                                 class="*:bg-bg-800 min-w-20 *:py-2 [&>th:first-child]:rounded-l-lg [&>th:last-child]:rounded-r-lg">
@@ -116,7 +119,7 @@
                     </table>
 
                     <div class="h-4"></div>
-                    <table class="gsap-top-down-opacity w-full table-fixed">
+                    <table class="w-full table-fixed">
                         <tbody>
                             {#each scores as teamInside, i (teamInside.team_id)}
                                 <tr
@@ -159,7 +162,7 @@
                     </table>
                 {/if}
             </div>
-            <p class="text-text-200 gsap-top-down-opacity mt-2 ml-0.5">
+            <p class="text-text-200 mt-2 ml-0.5">
                 {scores.length} teams
             </p>
         </section>

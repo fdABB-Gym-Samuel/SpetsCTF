@@ -25,12 +25,6 @@
 
     import BackToTop from '$lib/components/BackToTop.svelte';
 
-    import { playAnimations } from '$lib/gsap/animations';
-    import { onDestroy, onMount } from 'svelte';
-
-    let componentRoot: HTMLElement;
-    let gsapContext: gsap.Context | undefined;
-
     let userPosition = $derived(
         usersScoreboard.findIndex((user_) => user_.id === user?.id) + 1
     );
@@ -39,18 +33,11 @@
             (class_) => class_.className === user?.represents_class
         ) + 1
     );
-    onMount(() => {
-        gsapContext = playAnimations(componentRoot);
-    });
-
-    onDestroy(() => {
-        gsapContext?.revert();
-    });
 </script>
 
-<main class="content m-auto w-full max-w-[1200px] pt-20" bind:this={componentRoot}>
+<main class="content m-auto w-full max-w-[1200px] pt-20">
     {#if user && !user.is_admin}
-        <header class="gsap-top-down-opacity mb-12">
+        <header class="mb-12">
             <h1 class="text-xl font-bold">
                 {user.display_name} <span class="text-text-200">#{userPosition}</span>
             </h1>
@@ -66,15 +53,12 @@
     <div class="scoreboards flex w-full flex-col gap-16">
         <section>
             <div class="mb-4 flex items-center justify-between">
-                <h3 class="scoreboard-title gsap-top-down-opacity text-lg font-bold">
-                    Users
-                </h3>
+                <h3 class="scoreboard-title text-lg font-bold">Users</h3>
                 <div
-                    class="class-filtering gsap-top-down-opacity flex flex-row flex-wrap items-center gap-1.5">
+                    class="class-filtering flex flex-row flex-wrap items-center gap-1.5">
                     <p class="text-text-200 mr-2 text-sm">Filter:</p>
                     {#each originalClasses as cls (cls)}
-                        <label
-                            class="gsap-right-left-opacity relative cursor-pointer px-4 select-none">
+                        <label class="relative cursor-pointer px-4 select-none">
                             <input
                                 type="checkbox"
                                 bind:group={includeClasses}
@@ -92,13 +76,13 @@
                 </div>
             </div>
             <div
-                class="bg-bg-850 gsap-top-down-opacity max-h-[600px] w-full min-w-20 overflow-auto rounded-lg px-8 py-4">
+                class="bg-bg-850 max-h-[600px] w-full min-w-20 overflow-auto rounded-lg px-8 py-4">
                 {#if filteredUsers.length === 0}
                     <p class="text-center text-sm text-red-500">
                         No users, please toggle at least one class.
                     </p>
                 {:else}
-                    <table class="gsap-top-down-opacity w-full table-fixed">
+                    <table class="w-full table-fixed">
                         <thead>
                             <tr
                                 class="*:bg-bg-800 min-w-20 *:py-2 [&>th:first-child]:rounded-l-lg [&>th:last-child]:rounded-r-lg">
@@ -118,7 +102,7 @@
                     </table>
 
                     <div class="h-4"></div>
-                    <table class="gsap-top-down-opacity w-full table-fixed">
+                    <table class="w-full table-fixed">
                         <tbody>
                             {#each filteredUsers as player, i (i)}
                                 <tr
@@ -172,19 +156,17 @@
                     </table>
                 {/if}
             </div>
-            <p class="text-text-200 gsap-top-down-opacity mt-2 ml-0.5">
+            <p class="text-text-200 mt-2 ml-0.5">
                 {usersScoreboard.length} users
             </p>
         </section>
 
         <section>
-            <h3 class="scoreboard-title gsap-top-down-opacity mb-4 text-lg font-bold">
-                Classes
-            </h3>
+            <h3 class="scoreboard-title mb-4 text-lg font-bold">Classes</h3>
             <div
-                class="bg-bg-850 gsap-top-down-opacity max-h-[300px] w-full min-w-20 overflow-auto rounded-lg px-8 py-4">
+                class="bg-bg-850 max-h-[300px] w-full min-w-20 overflow-auto rounded-lg px-8 py-4">
                 <!-- header only -->
-                <table class="gsap-top-down-opacity w-full table-fixed">
+                <table class="w-full table-fixed">
                     <thead>
                         <tr
                             class="*:bg-bg-800 min-w-20
@@ -206,7 +188,7 @@
                 <div class="h-4"></div>
 
                 <!-- body only -->
-                <table class="gsap-top-down-opacity w-full table-fixed">
+                <table class="w-full table-fixed">
                     <tbody>
                         {#each classesScoreboard.filter((class_) => class_.className !== 'No Class') as curr_class, i (String(curr_class.className))}
                             <tr

@@ -1,100 +1,40 @@
 @import 'tailwindcss';
 
 @font-face {
-    font-family: Bricolage Grotesque;
-    src: url('/fonts/BricolageGrotesque-VariableFont_opsz,wdth,wght.woff2')
-        format('woff2');
-    font-weight: 500;
+    font-family: Inter Tight;
+    src: url('/fonts/inter-tight-latin-wght-normal.woff2') format('woff2-variations');
+    font-weight: 100 900;
     font-style: normal;
+    font-stretch: normal;
     font-display: swap;
 }
 
 @font-face {
     font-family: Inconsolata;
-    src: url('/fonts/Inconsolata-VariableFont_wdth,wght.ttf') format('woff2');
-    font-weight: normal;
+    src: url('/fonts/Inconsolata-VariableFont_wdth,wght.ttf') format('woff2-variations');
+    font-weight: 100 900;
     font-style: normal;
+    font-stretch: normal;
     font-display: swap;
 }
 
 @theme {
-    /*****************************/
-    /**********  COLORS  *********/
-    /*****************************/
-
-    /* dark/light denotes theme, i.e light colors can be dark, but should be used for lightmode*/
-    --color-background-light: #f3f3ec;
-    /* abb-beige*/
-    --color-background-dark: #1d1d1b;
-    /* black*/
-
-    --color-foreground-dark: #f3f3ec;
-    --color-foreground-light: #1d1d1b;
-
-    /* --color-abb-beige: oklch(96.22% 0.0093 106.57);  */
-    /* --color-abb-beige: rgb;  */
-    /* --color-abb-beige: rgb(0,0,0);  */
-
-    /*****************************/
-    /**********  TEXTS  **********/
-    /*****************************/
-    --fs-hero: 48px;
-    --fs-h1: 24px;
-    --fs-h3: 18px;
-    --fs-p: 12px;
-    --fs-challenge-categories: 8px;
-
-    --fw-bold: 400;
-
-    /*****************************/
-    /*********  BORDERS  *********/
-    /*****************************/
-
-    --button-radius: 0.3rem;
-    --card-radius: 0.5rem;
-
-    /*****************************/
-    /**********  SIZES  **********/
-    /*****************************/
-
-    --nav-height: calc(15 * 0.25em);
-    --main-height: calc(100vh - var(--nav-height));
-    --hero-height: calc(9 / 10 * var(--main-height));
-
-    --challenge-card-height: clamp(100px, 20vh, 200px);
-    --challenge-card-width: clamp(200px, 20vw, 250px);
-
-    --challenge-dialog-height: clamp(350px, 70vh, 650px);
-    --challenge-dialog-width: clamp(400px, 80vw, 700px);
-
-    --dont-fucking-care-anymore: calc(100vw - var(--main-paddin-inline))
-        /*****************************/ /********  PADDINGS  *********/
-        /*****************************/ --challenge-padding-inline: 5%;
-    --main-padding-inline: 10%;
-
-    --dont-fucking-care-anymore: calc(100vw - var(--main-paddin-inline))
-        /*****************************/ /********  PADDINGS  *********/
-        /*****************************/ --challenge-padding-inline: 5%;
-    --main-padding-inline: 10%;
-
     --color-backdrop: var(--color-backdrop);
     --color-overlay: var(--color-backdrop);
 
     --color-bg-900: var(--color-bg-900);
     --color-bg-850: var(--color-bg-850);
     --color-bg-800: var(--color-bg-800);
-    --color-bg-750: var(--color-bg-750);
     --color-bg-700: var(--color-bg-700);
     --color-bg-600: var(--color-bg-600);
-    --color-bg-500: var(--color-bg-500);
 
     --color-text-100: var(--color-text-100);
+    --color-text-150: var(--color-text-150);
     --color-text-200: var(--color-text-200);
 
     --color-primary: var(--color-primary);
     --color-primary-light: var(--color-primary-light);
     --color-primary-extra-light: var(--color-primary-extra-light);
-    --color-primary-dark: var(--color-primary-dark);
 
     --color-inner-shadow: oklch(0.55 0.0091 73.68 / 25%);
 
@@ -104,120 +44,121 @@
     --color-point-400: oklch(0.68 0.1945 36.96);
     --color-point-500: oklch(0.63 0.2306 26.91);
 
-    --color-gradient-100: oklch(0.38 0.0065 67.63);
-    --color-gradient-200: oklch(0.33 0.0045 67.67);
-    --color-gradient-300: oklch(0.29 0.0039 84.58);
-
-    --font-main: 'Bricolage Grotesque', sans-serif;
-    --font-sans: 'Bricolage Grotesque', sans-serif;
+    --font-sans: 'Inter Tight', sans-serif;
     --font-mono: 'Inconsolata', monospace;
 
-    --text-sm: 14px;
-    --text-base: 16px;
-    --text-lg: 24px;
-    --text-xl: 36px;
-
     --default-transition-duration: 200ms;
-
-    --radius-lg: 16px;
-    --radius-xl: 32px;
-
-    --font-weight-bold: 600;
 }
 
+/* Color theme */
 @layer base {
-    :root {
-        --color-bg-900: oklch(0.96 0.002 106.59);
-        --color-bg-850: oklch(0.9 0.0019 106.57);
-        --color-bg-800: oklch(0.85 0.0015 17.27);
-        --color-bg-750: oklch(0.77 0.0015 17.27);
-        --color-bg-700: oklch(0.7 0.0018 17.27);
-        --color-bg-600: oklch(0.66 0.0039 84.58);
-        --color-bg-500: oklch(0.6 0.0058 78.26);
+    /* :root { */
+    /*       --color-bg-900: oklch(0.96 0.002 106.59); */
+    /*       --color-bg-850: oklch(0.9 0.0019 106.57); */
+    /*       --color-bg-800: oklch(0.85 0.0015 17.27); */
+    /*       --color-bg-750: oklch(0.77 0.0015 17.27); */
+    /*       --color-bg-700: oklch(0.7 0.0018 17.27); */
+    /*       --color-bg-600: oklch(0.66 0.0039 84.58); */
+    /*       --color-bg-500: oklch(0.6 0.0058 78.26); */
+    /**/
+    /*       --color-text-100: oklch(0.1588 0.0173 321); */
+    /*       --color-text-200: oklch(0.2181 0.0173 321); */
+    /**/
+    /*       --color-primary: oklch(0.55 0.2503 297.91); */
+    /*       --color-primary-light: oklch(0.67 0.1821 302.65); */
+    /*       --color-primary-extra-light: oklch(0.86 0.0724 305.79); */
+    /*       --color-primary-dark: oklch(0.4265 0.2195 297.91); */
+    /**/
+    /*       --color-backdrop: rgba(255, 255, 255, 0.9); */
+    /**/
+    /*       --color-gradient-100: oklch(66.788% 0.00675 75.216); */
+    /*       --color-gradient-200: oklch(81.898% 0.00817 73.542); */
+    /*       --color-gradient-300: oklch(92.459% 0.00537 95.188); */
+    /*   } */
 
-        --color-text-100: oklch(0.1588 0.0173 321);
-        --color-text-200: oklch(0.2181 0.0173 321);
-
-        --color-primary: oklch(0.55 0.2503 297.91);
-        --color-primary-light: oklch(0.67 0.1821 302.65);
-        --color-primary-extra-light: oklch(0.86 0.0724 305.79);
-        --color-primary-dark: oklch(0.4265 0.2195 297.91);
-
-        --color-backdrop: rgba(255, 255, 255, 0.9);
-
-        --color-gradient-100: oklch(66.788% 0.00675 75.216);
-        --color-gradient-200: oklch(81.898% 0.00817 73.542);
-        --color-gradient-300: oklch(92.459% 0.00537 95.188);
-    }
-}
-
-@layer base {
     @media (prefers-color-scheme: dark) {
         :root {
-            --color-bg-900: oklch(0.19 0.002 106.59);
-            --color-bg-850: oklch(0.21 0.0019 106.57);
-            --color-bg-800: oklch(0.23 0.0015 17.27);
-            --color-bg-750: oklch(0.25 0.0015 17.27);
-            --color-bg-700: oklch(0.26 0.0018 17.27);
-            --color-bg-600: oklch(0.29 0.0039 84.58);
-            --color-bg-500: oklch(0.36 0.0058 78.26);
+            --color-bg-900: #141414;
+            --color-bg-850: #181818;
+            --color-bg-800: #1d1e1e;
+            --color-bg-700: #222323;
+            --color-bg-600: #2a2b2c;
 
-            --color-text-100: oklch(0.92 0.0063 75.4);
-            --color-text-200: oklch(0.7077 0.0089 80.7);
+            --color-text-100: #f4f4f4;
+            --color-text-150: #aeaeae;
+            --color-text-200: #4f5457;
 
-            --color-primary: oklch(0.55 0.2503 297.91);
-            --color-primary-light: oklch(0.67 0.1821 302.65);
-            --color-primary-extra-light: oklch(0.86 0.0724 305.79);
-            --color-primary-dark: oklch(0.4265 0.2195 297.91);
+            --color-primary: #8937ed;
+            --color-primary-light: #ad75f1;
+            --color-primary-extra-light: #ddc6f8;
 
-            --color-backdrop: rgba(0, 0, 0, 0.8);
-
-            --color-gradient-100: oklch(0.38 0.0065 67.63);
-            --color-gradient-200: oklch(0.33 0.0045 67.67);
-            --color-gradient-300: oklch(0.29 0.0039 84.58);
+            --color-backdrop: rgba(13, 13, 13, 0.5);
         }
     }
 }
 
 body {
-    @apply bg-background-light dark:bg-bg-900 text-text-100 selection:bg-text-100 selection:text-bg-900 relative !m-0 box-border min-h-screen px-4 pt-12 font-sans font-normal lg:px-16;
+    @apply dark:bg-bg-900 text-text-100 selection:bg-text-100 selection:text-bg-900 m-0! box-border min-h-screen px-4 pt-12 font-sans leading-tight font-medium lg:px-16;
 }
 
-@keyframes noiseAnimation {
+/* NOTE: No firefox support as of now sadly */
+*,
+*::before,
+*::after {
+    corner-shape: squircle;
+}
+
+@keyframes noise {
     0% {
-        background-position: 0px 0px;
+        transform: translate3d(0, 9rem, 0);
     }
-
-    25% {
-        background-position: 1px -3px;
+    10% {
+        transform: translate3d(-1rem, -4rem, 0);
     }
-
+    20% {
+        transform: translate3d(-8rem, 2rem, 0);
+    }
+    30% {
+        transform: translate3d(9rem, -9rem, 0);
+    }
+    40% {
+        transform: translate3d(-2rem, 7rem, 0);
+    }
     50% {
-        background-position: -1px 2px;
+        transform: translate3d(-9rem, -4rem, 0);
     }
-
-    75% {
-        background-position: 2px -1px;
+    60% {
+        transform: translate3d(2rem, 6rem, 0);
     }
-
+    70% {
+        transform: translate3d(7rem, -8rem, 0);
+    }
+    80% {
+        transform: translate3d(-9rem, 1rem, 0);
+    }
+    90% {
+        transform: translate3d(6rem, -5rem, 0);
+    }
     100% {
-        background-position: 0px 1px;
+        transform: translate3d(-7rem, 0, 0);
     }
 }
 
+/* Apply noise */
 body::before {
     content: '';
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    top: -10rem;
+    left: -10rem;
+    width: calc(100% + 20rem);
+    height: calc(100% + 20rem);
     z-index: -10;
+    opacity: 0.3;
     background-image: url('/assets/noise.png');
     background-repeat: repeat;
-    opacity: 0.016;
     pointer-events: none !important;
-    animation: noiseAnimation 400ms infinite steps(1);
+    animation: noise 1s infinite steps(2);
+    will-change: transform;
 }
 
 .no-spinner::-webkit-outer-spin-button,
@@ -229,7 +170,6 @@ body::before {
 .no-spinner {
     appearance: textfield;
     -moz-appearance: textfield;
-    /* Firefox */
 }
 
 .content {
@@ -251,7 +191,7 @@ h2 {
 
     .link::after {
         content: '';
-        @apply bg-primary absolute bottom-[-1px] left-0 h-[3px] w-full origin-bottom-right scale-x-0 transition-transform duration-300 ease-in-out;
+        @apply bg-primary absolute -bottom-px left-0 h-0.5 w-full origin-bottom-right scale-x-0 transition-transform duration-300 ease-in-out;
     }
 
     .link:hover::after {

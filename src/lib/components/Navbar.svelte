@@ -8,11 +8,10 @@
     import { asset, resolve } from '$app/paths';
     import type { ResolvedPathname } from '$app/types';
 
-    import { gsap } from 'gsap';
-
     import Button from './Button.svelte';
 
     import { ArrowLeft, User, LogIn } from '@lucide/svelte';
+    import IconSignInBold from 'phosphor-icons-svelte/IconSignInBold.svelte';
 
     interface NavLink {
         display: string;
@@ -41,12 +40,48 @@
             showSidebar = !showSidebar;
         }
     };
+
+    let isHovering = $state(false);
+    let turbulenceElement: SVGFETurbulenceElement;
+    let animationFrame: number;
+
+    function animateTurbulence() {
+        if (!turbulenceElement) return;
+
+        const current = parseFloat(
+            turbulenceElement.getAttribute('baseFrequency') || '0'
+        );
+        const target = isHovering ? 0.01 : 0;
+        const speed = 0.04; // Adjust for animation speed
+
+        const diff = target - current;
+
+        if (Math.abs(diff) > 0.00001) {
+            const newValue = current + diff * speed; // Ease towards target
+            turbulenceElement.setAttribute('baseFrequency', newValue.toString());
+            animationFrame = requestAnimationFrame(animateTurbulence);
+        } else {
+            turbulenceElement.setAttribute('baseFrequency', target.toString());
+        }
+    }
+
+    function handleMouseEnter() {
+        isHovering = true;
+        cancelAnimationFrame(animationFrame);
+        animateTurbulence();
+    }
+
+    function handleMouseLeave() {
+        isHovering = false;
+        cancelAnimationFrame(animationFrame);
+        animateTurbulence();
+    }
 </script>
 
 <header class="z-40">
     <nav
-        class="bg-bg-900 fixed top-0 left-0 z-40 flex h-15 w-full flex-row items-center justify-between gap-5 px-4 *:w-1/3 sm:px-4 md:px-4 lg:px-10">
-        <div class="left flex w-1/5 flex-grow-0 flex-row items-center sm:flex-grow">
+        class="fixed top-0 left-0 z-40 flex h-15 w-full flex-row items-center justify-between gap-5 px-4 *:w-1/3 sm:px-4 md:px-4 lg:px-10">
+        <div class="left flex w-1/5 grow-0 flex-row items-center sm:grow">
             <div class="logo-continer relative flex justify-end sm:mr-0">
                 <svg
                     viewBox="0 0 180 100"
@@ -59,6 +94,7 @@
                         y="-50%"
                         id="turbulance">
                         <feTurbulence
+                            bind:this={turbulenceElement}
                             id="turbulance"
                             type="fractalNoise"
                             baseFrequency="0"
@@ -81,16 +117,8 @@
                     style="filter: url(#turbulance);"
                     href={resolve('/')}
                     aria-label="Home"
-                    onmouseenter={() =>
-                        gsap.to('#turbulance', {
-                            attr: { baseFrequency: 0.01 },
-                            duration: 1.2,
-                        })}
-                    onmouseleave={() =>
-                        gsap.to('#turbulance', {
-                            attr: { baseFrequency: 0 },
-                            duration: 1.2,
-                        })}>
+                    onmouseenter={handleMouseEnter}
+                    onmouseleave={handleMouseLeave}>
                     <img
                         src={asset('/assets/logo.svg')}
                         alt="SpetsCTF"
@@ -122,7 +150,7 @@
                 </li>
             {/each}
         </ul>
-        <div class="flex w-1/5 flex-grow justify-end overflow-y-hidden py-0.5 pr-0.5">
+        <div class="flex w-1/5 grow justify-end overflow-y-hidden py-0.5 pr-0.5">
             {#if user}
                 <a
                     href={resolve('/user')}
@@ -133,16 +161,15 @@
                 <Button
                     label={translations.login}
                     type="button"
-                    responsiveStyles="!px-6 md:!px-8"
                     onclick={() => goto(resolve('/login'))}
-                    Icon={LogIn}
-                    aria-label="Login" />
+                    Icon={IconSignInBold}
+                    aria-label="Sign in" />
             {/if}
         </div>
     </nav>
     {#if showSidebar}
         <div
-            class="backdrop bg-backdrop fixed bottom-0 left-0 z-30 h-[var(--main-height)] w-screen"
+            class="backdrop bg-backdrop fixed bottom-0 left-0 z-30 w-screen"
             onclick={(e: MouseEvent) => toggleSidebar(e, true)}
             onkeydown={(e) => {
                 if (e.key === ' ' || e.key === 'Enter') toggleSidebar(e, true);
@@ -168,7 +195,7 @@
                                 <li
                                     class="border-primary-light m-0 border-b-2 py-2 pl-1">
                                     <a
-                                        class="ignore-default hover:!text-primary"
+                                        class="ignore-default hover:text-primary!"
                                         rel="external"
                                         href={link.href}
                                         onclick={(e) => {
