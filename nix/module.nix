@@ -1,5 +1,5 @@
-{ self }:
 {
+  self,
   config,
   lib,
   pkgs,
@@ -48,29 +48,31 @@ in
     nodePackage = mkPackageOption pkgs "nodejs" { };
   };
 
-  systemd.services.spetsctf = lib.mkIf cfg.enable {
-    after = [ config.systemd.services.postgresql.name ];
-    requires = [ config.systemd.services.postgresql.name ];
-    wantedBy = [ "multi-user.target" ];
-    path = [ pkgs.file ];
-    environment = {
-      ADDRESS_HEADER = "X-Forwarded-For";
-      HOST_HEADER = "X-Forwarded-Host";
-      NODE_ENV = "production";
-      ORIGIN = cfg.httpOrigin;
-      SOCKET_PATH = cfg.socketPath;
-      PROTOCOL_HEADER = "X-Forwarded-Proto";
-    };
-    serviceConfig = {
-      ExecStart = "${lib.getExe cfg.nodePackage} ${package}";
-      SystemCallFilter = "@system-service";
-      RestrictAddressFamilies = "AF_UNIX";
-      Umask = "0137"; # Output from `umask -S`: u=rw,g=r,o=.
-      NoNewPrivileges = true;
-      DynamicUser = true;
-      StateDirectory = "spetsctf";
-      RuntimeDirectory = "spetsctf";
-      WorkingDirectory = "%S/spetsctf";
+  config = lib.mkIf cfg.enable {
+    systemd.services.spetsctf = {
+      after = [ config.systemd.services.postgresql.name ];
+      requires = [ config.systemd.services.postgresql.name ];
+      wantedBy = [ "multi-user.target" ];
+      path = [ pkgs.file ];
+      environment = {
+        ADDRESS_HEADER = "X-Forwarded-For";
+        HOST_HEADER = "X-Forwarded-Host";
+        NODE_ENV = "production";
+        ORIGIN = cfg.httpOrigin;
+        SOCKET_PATH = cfg.socketPath;
+        PROTOCOL_HEADER = "X-Forwarded-Proto";
+      };
+      serviceConfig = {
+        ExecStart = "${lib.getExe cfg.nodePackage} ${package}";
+        SystemCallFilter = "@system-service";
+        RestrictAddressFamilies = "AF_UNIX";
+        Umask = "0137"; # Output from `umask -S`: u=rw,g=r,o=.
+        NoNewPrivileges = true;
+        DynamicUser = true;
+        StateDirectory = "spetsctf";
+        RuntimeDirectory = "spetsctf";
+        WorkingDirectory = "%S/spetsctf";
+      };
     };
   };
 }

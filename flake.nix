@@ -103,7 +103,7 @@
 
       nixosModules = rec {
         default = spetsctf;
-        spetsctf = import ./nix/module.nix;
+        spetsctf = import ./nix/module.nix { };
       };
 
       nixosConfigurations = {
@@ -113,7 +113,7 @@
 
           modules = [
             ./nix/configuration.nix
-            self.nixosModules.spetsctf
+            ./nix/module.nix
           ];
         };
       };
