@@ -68,9 +68,11 @@
             neovim-unwrapped
             nixd
             nixfmt
+            nodejs
             npm-check-updates
             openssh
             pdpmake
+            pgweb
             postgresql.out
             procps
             ripgrep
@@ -81,7 +83,6 @@
             uutils-coreutils-noprefix
             vscode-langservers-extracted
             which
-            pgweb
           ];
 
           shellHook = ''
