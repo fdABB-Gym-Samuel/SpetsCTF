@@ -31,10 +31,23 @@
       formatter = eachSystem (pkgs: treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper);
       checks = eachSystem (pkgs: {
         formatting = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.check self;
+        inherit (self.packages.${pkgs.stdenv.hostPlatform.system}) spetsctf;
       });
 
       devShells = eachSystem (pkgs: {
-        default = pkgs.mkShell {
+        ci = pkgs.mkShellNoCC {
+          packages = with pkgs; [
+            bun
+            bun2nix.packages.${stdenv.hostPlatform.system}.default
+            jq
+            postgresql.out
+            pdpmake
+          ];
+          shellHook = ''
+            alias make='pdpmake --posix'
+          '';
+        };
+        default = pkgs.mkShellNoCC {
           name = "spetsctf";
           packages = with pkgs; [
             bun

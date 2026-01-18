@@ -22,7 +22,7 @@
 
     let teamPosition = $derived.by(() => {
         if (team) {
-            scores.findIndex((team_) => team_.team_id === team?.teamId) + 1;
+            return scores.findIndex((team_) => team_.team_id === team?.teamId) + 1;
         }
     });
 

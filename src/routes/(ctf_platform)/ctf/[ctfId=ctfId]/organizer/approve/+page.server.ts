@@ -1,4 +1,4 @@
-import type { PageServerLoad } from '../$types';
+import type { PageServerLoad } from './$types';
 import { error, redirect } from '@sveltejs/kit';
 import { db } from '$lib/db/database';
 
@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ locals, parent, params }) => {
 
     const unapprovedChallenges = await db
         .selectFrom('challenges')
-        .where('ctf', 'is', Number(params.ctfId))
+        .where('ctf', '=', Number(params.ctfId))
         .where('approved', 'is not', true)
         .selectAll()
         .execute();

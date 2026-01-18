@@ -1,4 +1,14 @@
 import { env } from '$env/dynamic/private';
+import { dev, building } from '$app/environment';
+import { cwd } from 'node:process';
+import { join } from 'node:path';
 
-export const StateDirectory =
-    env.STATE_DIRECTORY.length > 0 ? env.STATE_DIRECTORY : '/var/lib/spetsctf';
+export function getStateDirectory(): string {
+    if (!env.STATE_DIRECTORY && dev) {
+        return join(cwd(), 'tmp');
+    } else if (building) {
+        return join(cwd(), 'tmp');
+    } else {
+        return env.STATE_DIRECTORY;
+    }
+}

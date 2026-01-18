@@ -19,7 +19,7 @@
             ? data.team === undefined || data.team === null
                 ? {
                       display: data.translations.register_team,
-                      href: resolve(`/ctf/${page.params.ctfId}/register_team`),
+                      href: resolve(`/ctf/${page.params.ctfId}/register-team`),
                   }
                 : {
                       display: data.translations.team,

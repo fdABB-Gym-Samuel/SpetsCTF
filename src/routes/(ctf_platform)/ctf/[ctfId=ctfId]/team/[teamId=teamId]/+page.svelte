@@ -1,10 +1,10 @@
 <script lang="ts">
     import { browser } from '$app/environment';
     import { page } from '$app/state';
-    import { LogOut } from '@lucide/svelte';
+    import { Copy, LogOut } from '@lucide/svelte';
     import Button from '$lib/components/Button.svelte';
-    import WarningDialog from '$lib/components/WarningDialog.svelte';
     import { resolve } from '$app/paths';
+    import { enhance } from '$app/forms';
 
     let { data } = $props();
     let team = $derived(data.team);
@@ -13,23 +13,15 @@
 
     let users = $derived(teamData?.users);
 
-    let userLeavingTeam = $state(false);
-
     let inviteLink: string = $derived(
-        `${page.url.protocol}//${page.url.host}/ctf/${page.params.ctfId}/join_team/${teamData?.join_code}`
+        resolve(`/ctf/${page.params.ctfId}/join-team/${teamData?.join_code}`)
     );
-
-    const openLeaveDialog = () => {
-        userLeavingTeam = true;
-    };
-    const closeLeaveDialog = () => {
-        userLeavingTeam = false;
-    };
+    let inviteLinkDisplay: string = $derived(`${page.url.origin}${inviteLink}`);
 </script>
 
 <div class="content flex flex-col items-center">
     <h1 class="text-center text-2xl">{teamData?.name}</h1>
-    <a href={teamData?.website}>{teamData?.website}</a>
+    <a rel="external" href={teamData?.website}>{teamData?.website}</a>
     <div>
         {#if users}
             <h3>Members:</h3>
@@ -53,44 +45,40 @@
             </ul>
         {/if}
     </div>
-    {#if team && teamData?.id !== team.teamId && teamData.join_code}
-        <!-- join_code is null if user is not in the team or is not an org/admin -->
+    {#if team && teamData?.id === team.teamId && teamData.join_code}
         <div>
             <h3>{translations.invite}</h3>
-            <pre><code>{inviteLink}</code></pre>
-            <button
+            <a href={inviteLink} class="font-mono" rel="external">
+                {inviteLinkDisplay}
+            </a>
+            <Button
+                label=""
+                Icon={Copy}
+                styleType="icon"
                 onclick={async () => {
                     if (browser) {
-                        await navigator.clipboard.writeText(inviteLink);
+                        await navigator.clipboard.writeText(inviteLinkDisplay);
                     }
-                }}>{translations.copy}</button>
+                }} />
         </div>
     {/if}
     {#if team && teamData?.id === team.teamId}
-        <Button
-            type="submit"
-            name="action"
-            value="leave_team"
-            label={translations.leave_team}
-            styleType="small"
-            Icon={LogOut}
-            onclick={() => {
-                openLeaveDialog();
+        <form
+            method="post"
+            use:enhance={({ cancel }) => {
+                const ok = confirm(
+                    `Do you really want to leave team ${teamData.name}?`
+                );
+                if (!ok) {
+                    cancel();
+                }
             }}>
-        </Button>
+            <Button
+                type="submit"
+                label={translations.leave_team}
+                styleType="small"
+                Icon={LogOut}>
+            </Button>
+        </form>
     {/if}
 </div>
-
-{#if userLeavingTeam}
-    <WarningDialog
-        warningTitle={translations.leave_team}
-        warningAria={translations.leave_team}
-        warningDescription={translations.leave_team_description}
-        confirmationButtonText={translations.leave_team}
-        confirmationButtonIcon={LogOut}
-        hiddenName="action"
-        hiddenData="confirm_leave_team"
-        close={() => {
-            closeLeaveDialog();
-        }}></WarningDialog>
-{/if}

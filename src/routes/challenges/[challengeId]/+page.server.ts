@@ -22,15 +22,17 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
         )
         .where('challenge_id', '=', params.challengeId)
         .select([
-            'challenges.challenge_id',
-            'challenges.display_name',
-            'challenges.description',
-            'challenges.challenge_category',
-            'challenges.challenge_sub_categories',
-            'challenges.points',
-            'challenges.created_at',
-            'challenges.approved',
             'challenges.anonymous_author',
+            'challenges.approved',
+            'challenges.challenge_category',
+            'challenges.challenge_id',
+            'challenges.challenge_sub_categories',
+            'challenges.created_at',
+            'challenges.ctf',
+            'challenges.description',
+            'challenges.display_name',
+            'challenges.flag',
+            'challenges.points',
         ])
         .select('flag.flag_format')
         .select([
@@ -136,7 +138,7 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
     return {
         challengeData,
         firstSolvers,
-        numSolvers,
+        numSolvers: numSolvers.count,
         resources,
         translations,
     };
