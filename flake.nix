@@ -101,6 +101,11 @@
 
       });
 
+      nixosModules = rec {
+        default = spetsctf;
+        spetsctf = import ./nix/module.nix;
+      };
+
       packages = eachSystem (pkgs: rec {
         default = spetsctf;
         spetsctf = bun2nix.packages.${pkgs.stdenv.hostPlatform.system}.default.mkDerivation {
