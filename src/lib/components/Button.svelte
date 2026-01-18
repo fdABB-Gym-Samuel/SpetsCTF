@@ -39,6 +39,7 @@
 
 {#if styleType === 'normal'}
     <button
+        {disabled}
         {...restProps}
         class="rounded-xl px-16 py-1.5 outline-2 {disabled
             ? disabledBgColor

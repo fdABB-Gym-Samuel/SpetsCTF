@@ -2,10 +2,10 @@
     import Button from '$lib/components/Button.svelte';
     import ButtonLink from '$lib/components/ButtonLink.svelte';
     import ChallengeList from '$lib/components/ChallengeList.svelte';
-    import WarningDialog from '$lib/components/WarningDialog.svelte';
+    import { enhance } from '$app/forms';
     import { goto } from '$app/navigation';
 
-    let { data, form } = $props();
+    let { data } = $props();
 
     let allChallenges = $derived(data.allChallenges);
     let myChallenges = $derived(data.myChallenges);
@@ -23,28 +23,9 @@
     let componentRoot: HTMLElement;
     let gsapContext: gsap.Context | undefined;
 
-    const challengesTabs = [
-        { label: 'All Challenges', tab: '#all' },
-        { label: 'My Challenges', tab: '#my' },
-        { label: 'Create Challenge', tab: '#create' },
-    ];
-
     import { page } from '$app/state';
     import Input from '$lib/components/input/Input.svelte';
     import { formatRequestedName } from '$lib/utils/utils.js';
-
-    const openDeleteDialog = (challengeId: string, challengeName: string) => {
-        challengeIdToDelete = challengeId;
-        challengeNameToDelete = challengeName;
-    };
-
-    const closeDeleteDialog = () => {
-        challengeIdToDelete = '';
-        challengeNameToDelete = '';
-    };
-
-    let challengeIdToDelete = $state('');
-    let challengeNameToDelete = $state('');
 
     let inputtedChallengeDisplayName = $state('');
     let derivedChallengeId = $derived(
@@ -103,16 +84,23 @@
     </header>
     <nav class="flex w-full flex-col gap-2">
         <ul class="flex w-full flex-row gap-5">
-            {#each challengesTabs as tab (tab.tab)}
-                <li>
-                    <a
-                        href={String(tab.tab)}
-                        class:border-b-2={page.url.hash === tab.tab ||
-                            (tab.tab === '#all' && !page.url.hash)}>
-                        {tab.label}
-                    </a>
-                </li>
-            {/each}
+            <li>
+                <a
+                    href="#all"
+                    class:border-b-2={page.url.hash === '#all' || !page.url.hash}>
+                    All Challenges
+                </a>
+            </li>
+            <li>
+                <a href="#my" class:border-b-2={page.url.hash === '#my'}>
+                    My Challenges
+                </a>
+            </li>
+            <li>
+                <a href="#create" class:border-b-2={page.url.hash === '#create'}>
+                    Create Challenge
+                </a>
+            </li>
         </ul>
         <VSeperator></VSeperator>
     </nav>
@@ -143,19 +131,29 @@
                                             `/challenges/${challenge.challenge_id}/edit`
                                         )}
                                         Icon={Pen}></ButtonLink>
-                                    <Button
-                                        label=""
-                                        aria-label="Delete challenge"
-                                        type="button"
-                                        styleType="icon"
-                                        bgColor="bg-red-700"
-                                        onclick={() => {
-                                            openDeleteDialog(
-                                                challenge.challenge_id,
-                                                challenge.challenge_name
+                                    <form
+                                        method="post"
+                                        action="?/deleteChallenge"
+                                        use:enhance={({ cancel }) => {
+                                            const ok = confirm(
+                                                `Do you really want to delete challenge ${challenge.challenge_name}?`
                                             );
-                                        }}
-                                        Icon={Trash2}></Button>
+                                            if (!ok) {
+                                                cancel();
+                                            }
+                                        }}>
+                                        <input
+                                            type="hidden"
+                                            name="challengeId"
+                                            value={challenge.challenge_id} />
+                                        <Button
+                                            label=""
+                                            aria-label="Delete challenge"
+                                            type="submit"
+                                            styleType="icon"
+                                            bgColor="bg-red-700"
+                                            Icon={Trash2}></Button>
+                                    </form>
                                 </div>
                             </li>
                         {/each}
@@ -194,18 +192,4 @@
         </form>
     {/if}
 </main>
-
-{#if challengeIdToDelete}
-    <WarningDialog
-        warningTitle="Delete Challenge?"
-        warningDescription={`Are you sure you want to delete ${challengeNameToDelete}`}
-        confirmationButtonText="Delete"
-        confirmationButtonIcon={Trash2}
-        action="?/delete"
-        close={closeDeleteDialog}
-        warningAria="Delete challenge"
-        {form}
-        hiddenData={challengeIdToDelete}
-        hiddenName="challengeId"></WarningDialog>
-{/if}
 <BackToTop />

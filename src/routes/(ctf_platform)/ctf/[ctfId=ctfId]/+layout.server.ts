@@ -3,7 +3,7 @@ import type { LayoutServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 import { getIsOrg } from '$lib/db/functions';
 
-export const load: LayoutServerLoad = async ({ locals, depends, params }) => {
+export const load: LayoutServerLoad = async ({ locals, params }) => {
     const user = locals.user;
     const ctfId = Number(params.ctfId);
 
@@ -11,9 +11,10 @@ export const load: LayoutServerLoad = async ({ locals, depends, params }) => {
         .selectFrom('ctf_events')
         .select([
             'ctf_events.display_name',
-            'ctf_events.start_time',
             'ctf_events.end_time',
+            'ctf_events.id',
             'ctf_events.max_team_size',
+            'ctf_events.start_time',
         ])
         .where('id', '=', ctfId)
         .executeTakeFirst();
@@ -41,7 +42,6 @@ export const load: LayoutServerLoad = async ({ locals, depends, params }) => {
             .where('ctf_teams.ctf', '=', ctfId)
             .executeTakeFirst();
     }
-    depends('data:user');
 
     return {
         translations: locals.translations,

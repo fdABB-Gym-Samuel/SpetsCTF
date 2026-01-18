@@ -1,5 +1,5 @@
 import { db } from '$lib/db/database';
-import type { ServerLoadEvent } from '@sveltejs/kit';
+import type { Actions, ServerLoadEvent } from '@sveltejs/kit';
 import { sql } from 'kysely';
 import type { PageServerLoad } from './$types';
 import { error, redirect } from '@sveltejs/kit';
@@ -76,7 +76,7 @@ export const actions = {
             .where('team', '=', teamId)
             .where('user_id', '=', user.id)
             .returningAll()
-            .execute();
+            .executeTakeFirst();
 
         if (!removeUser) {
             return error(500, { message: 'Unable to remove user from team.' });
@@ -97,4 +97,4 @@ export const actions = {
         // Redirect to CTF main page since team no longer exists
         redirect(303, `/ctf/${params.ctfId}`);
     },
-};
+} satisfies Actions;

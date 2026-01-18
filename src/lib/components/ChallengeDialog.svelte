@@ -30,7 +30,7 @@
 
     interface Props {
         challengeData: Selectable<Challenges> & {
-            first_solvers: { display_name: string; id: string }[];
+            first_solvers: { display_name: string | null; id: string }[];
         } & { flag_format: Selectable<Flag>['flag_format'] } & {
             num_solvers: string | number | bigint;
         } & { resources: Selectable<ChallengeResources>[] } & { solved?: boolean };
@@ -158,6 +158,7 @@
                                     class="challenge-resource text-text-100 flex h-fit flex-row items-center gap-1 underline">
                                     <Link class="size-4"></Link>
                                     <a
+                                        rel="external"
                                         href={`${resource.content}`}
                                         class="ignore-default h-fit"
                                         >{new URL(resource.content).host}</a>
@@ -168,7 +169,7 @@
                                     <File class="size-4"></File>
                                     <a
                                         href={resolve(
-                                            `/files/${resource.challenge}/${resource.content.split('/').at(-1)}`
+                                            `/files/${resource.challenge}/${resource.content}`
                                         )}
                                         class="ignore-default h-fit">
                                         {resource.content
