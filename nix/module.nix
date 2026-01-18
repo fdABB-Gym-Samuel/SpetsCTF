@@ -42,7 +42,7 @@ in
       description = "The AF_UNIX socket path where the application will listen, and where you want to point your proxy.";
       example = "/tmp/spetsctf.sock";
       default = "%t/spetsctf/http.sock";
-      type = types.path;
+      type = types.oneOf [types.path types.str];
     };
 
     nodePackage = mkPackageOption pkgs "nodejs" { };

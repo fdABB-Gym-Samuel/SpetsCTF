@@ -38,6 +38,8 @@
   };
 
   services = {
+    getty.autologinUser = "root";
+    
     postgresql = {
       enable = true;
       ensureUsers = [
@@ -51,6 +53,8 @@
     };
 
     spetsctf = {
+      enable = true;
+
       httpOrigin = "http://127.0.0.1:8080";
 
       postgresConnectionStringFile = pkgs.writeText "connection-string" "postgres://spetsctf:12345678@/spetsctf?host=/run/postgresql";

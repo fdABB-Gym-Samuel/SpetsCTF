@@ -111,6 +111,10 @@
           # If developing elsewhere, change me.
           system = "x86_64-linux";
 
+          specialArgs = {
+            inherit self;
+          };
+
           modules = [
             ./nix/configuration.nix
             ./nix/module.nix
