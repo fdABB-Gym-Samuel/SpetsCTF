@@ -106,6 +106,18 @@
         spetsctf = import ./nix/module.nix;
       };
 
+      nixosConfigurations = {
+        spetsctf-test = nixpkgs.lib.nixosSystem {
+          # If developing elsewhere, change me.
+          system = "x86_64-linux";
+
+          modules = [
+            ./nix/configuration.nix
+            self.nixosModules.spetsctf
+          ];
+        };
+      };
+
       packages = eachSystem (pkgs: rec {
         default = spetsctf;
         spetsctf = bun2nix.packages.${pkgs.stdenv.hostPlatform.system}.default.mkDerivation {
