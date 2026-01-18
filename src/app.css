@@ -98,14 +98,14 @@
 }
 
 body {
-    @apply dark:bg-bg-900 text-text-100 selection:bg-text-100 selection:text-bg-900 m-0! box-border min-h-screen px-4 pt-12 font-sans leading-tight font-medium lg:px-16;
+    @apply dark:bg-bg-900 text-text-100 selection:bg-text-100 selection:text-bg-900 m-0! box-border min-h-screen scroll-smooth px-3 py-1 font-sans leading-tight font-medium lg:px-16;
 }
 
 /* NOTE: No firefox support as of now sadly */
 *,
 *::before,
 *::after {
-    corner-shape: squircle;
+    corner-shape: superellipse(1);
 }
 
 @keyframes noise {

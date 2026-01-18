@@ -1278,6 +1278,10 @@
     url = "https://registry.npmjs.org/pgpass/-/pgpass-1.0.5.tgz";
     hash = "sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug==";
   };
+  "phosphor-icons-svelte@2.1.0" = fetchurl {
+    url = "https://registry.npmjs.org/phosphor-icons-svelte/-/phosphor-icons-svelte-2.1.0.tgz";
+    hash = "sha512-gTNxjkc3Wth5stZuVrMWrP07Obv5wUxg9zAqe2tujnLIKa+RaVWNgjOzR+Y9RE3l7bV1PN7dGcBAWR+ps7HA+Q==";
+  };
   "picocolors@1.1.1" = fetchurl {
     url = "https://registry.npmjs.org/picocolors/-/picocolors-1.1.1.tgz";
     hash = "sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==";

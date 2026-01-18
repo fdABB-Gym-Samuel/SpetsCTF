@@ -16,6 +16,4 @@
 
 <Navbar {user} {translations} {links}></Navbar>
 
-<main>
-    {@render children()}
-</main>
+{@render children()}

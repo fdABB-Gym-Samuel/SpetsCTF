@@ -2,6 +2,7 @@
     import Button from '$lib/components/Button.svelte';
     import ButtonLink from '$lib/components/ButtonLink.svelte';
     import ChallengeList from '$lib/components/ChallengeList.svelte';
+    import Switch from '$lib/components/input/Switch.svelte';
     import { enhance } from '$app/forms';
     import { goto } from '$app/navigation';
 
@@ -12,8 +13,11 @@
     let translations = $derived(data.translations);
     let user = $derived(data.user);
 
-    import { Search, ChevronDown, Pen, Trash2, LogIn } from '@lucide/svelte';
-    import VSeperator from '$lib/components/VSeperator.svelte';
+    import { Pen, Trash2, LogIn } from '@lucide/svelte';
+    import IconCaretDownBold from 'phosphor-icons-svelte/IconCaretDownBold.svelte';
+    import IconMagnifyingGlassBold from 'phosphor-icons-svelte/IconMagnifyingGlassBold.svelte';
+    import IconArrowUpDownLeftBold from 'phosphor-icons-svelte/IconArrowUDownLeftBold.svelte';
+
     import BackToTop from '$lib/components/BackToTop.svelte';
     import HSeperator from '$lib/components/HSeperator.svelte';
     import { resolve } from '$app/paths';
@@ -28,66 +32,66 @@
     );
 </script>
 
-<main class="content w-full pt-20 sm:m-auto">
-    <header class="mb-16 flex flex-col items-center justify-center gap-3">
-        <p class="text-text-200">Challenge yourself, practise and gain points.</p>
-        <div class="flex flex-wrap items-center justify-center gap-4">
-            <div class="relative">
-                <input
-                    type="text"
-                    name="search"
-                    placeholder="Search"
-                    class="bg-bg-800 placeholder:text-text-200 focus:bg-bg-700 h-8 max-w-96 rounded-lg px-5 transition-colors outline-none" />
-                <Search
-                    strokeWidth="3"
-                    size="20"
-                    color="var(--color-text-200)"
-                    class="absolute top-1/2 right-4 -translate-y-1/2 transform" />
+<main class="content w-full pt-12 sm:m-auto">
+    <header class="bg-bg-800 mb-6 rounded-[10px] p-2">
+        <div class="flex h-10.5 items-center justify-between gap-24">
+            <div class="flex h-full w-full gap-3">
+                <div
+                    class="bg-bg-850 flex min-w-max flex-row gap-1 rounded-lg p-1 *:flex *:items-center *:rounded-lg *:px-14">
+                    <a
+                        class:bg-bg-600={page.url.hash === '#all' || !page.url.hash}
+                        class:text-text-200={page.url.hash === '#my'}
+                        href="#all">
+                        All challenges
+                    </a>
+                    <a
+                        class:bg-bg-600={page.url.hash === '#my'}
+                        class:text-text-200={page.url.hash === '#all'}
+                        href="#my">
+                        My challenges
+                    </a>
+                </div>
+                <div class="relative">
+                    <select
+                        name="filter"
+                        class="bg-bg-850 h-full w-56 appearance-none rounded-lg px-5 outline-0">
+                        <option value="">All</option>
+                        <option value="crypto">Crypto</option>
+                        <option value="forensics">Forensics</option>
+                        <option value="introduction">Introduction</option>
+                        <option value="misc">Misc</option>
+                        <option value="osint">OSINT</option>
+                        <option value="pwn">Pwn</option>
+                        <option value="reversing">Reversing</option>
+                        <option value="web">Web</option>
+                    </select>
+                    <IconCaretDownBold
+                        class="text-text-200 absolute top-1/2 right-4 -translate-y-1/2 transform text-[20px]" />
+                </div>
+                <div class="relative w-full">
+                    <input
+                        type="text"
+                        name="search"
+                        placeholder="Search"
+                        class="bg-bg-850 placeholder:text-text-200 focus:bg-bg-700 h-full w-full rounded-lg px-5 pl-11 transition-colors outline-none" />
+                    <IconMagnifyingGlassBold
+                        class="text-text-200 absolute top-1/2 left-4 -translate-y-1/2 transform text-[20px]" />
+                </div>
+                <div class="text-text-150 mx-1.5 flex items-center gap-3">
+                    <span>Solved</span>
+                    <Switch />
+                </div>
             </div>
-            <div class="relative">
-                <select
-                    name="filter"
-                    class="bg-bg-800 h-8 w-48 appearance-none rounded-lg px-5">
-                    <option value="">All</option>
-                    <option value="crypto">Crypto</option>
-                    <option value="forensics">Forensics</option>
-                    <option value="introduction">Introduction</option>
-                    <option value="misc">Misc</option>
-                    <option value="osint">OSINT</option>
-                    <option value="pwn">Pwn</option>
-                    <option value="reversing">Reversing</option>
-                    <option value="web">Web</option>
-                </select>
-                <ChevronDown
-                    strokeWidth="3"
-                    size="20"
-                    color="var(--color-text-200)"
-                    class="absolute top-1/2 right-4 -translate-y-1/2 transform" />
-            </div>
+            <button class="text-text-150 mr-2 flex cursor-pointer items-center gap-1.5">
+                <span>Reset</span>
+                <IconArrowUpDownLeftBold class="text-[20px]" />
+            </button>
         </div>
     </header>
-    <nav class="flex w-full flex-col gap-2">
-        <ul class="flex w-full flex-row gap-5">
-            <li>
-                <a
-                    href="#all"
-                    class:border-b-2={page.url.hash === '#all' || !page.url.hash}>
-                    All Challenges
-                </a>
-            </li>
-            <li>
-                <a href="#my" class:border-b-2={page.url.hash === '#my'}>
-                    My Challenges
-                </a>
-            </li>
-            <li>
-                <a href="#create" class:border-b-2={page.url.hash === '#create'}>
-                    Create Challenge
-                </a>
-            </li>
-        </ul>
-        <VSeperator></VSeperator>
-    </nav>
+    <p class="text-text-150 mb-18 text-sm">
+        Practise and gain points. Have a look at <span
+            class="underline underline-offset-3">Learn</span> if you feel stuck.
+    </p>
     {#if page.url.hash === '#all' || !page.url.hash}
         <ChallengeList
             gotoChallenge={(challengeId) => {
