@@ -9,7 +9,12 @@
     "${modulesPath}/profiles/minimal.nix"
     "${modulesPath}/profiles/perlless.nix"
     "${modulesPath}/profiles/qemu-guest.nix"
+    "${modulesPath}/virtualisation/qemu-vm.nix"
   ];
+
+  virtualisation = {
+    graphics = false;
+  };
 
   systemd.services.postgresql-setpassword = {
     requires = [
