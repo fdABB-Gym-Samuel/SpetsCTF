@@ -1,6 +1,8 @@
 import { env } from '$env/dynamic/private';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { building } from '$app/environment';
+import { cwd } from 'node:process';
 
 function getCredentialsDir(): string {
     if (env.CREDENTIALS_DIRECTORY) {
@@ -11,6 +13,7 @@ function getCredentialsDir(): string {
 }
 
 export function getGithubClientId(): string {
+    if (building) return 'dummy';
     const credentialsDirectory = getCredentialsDir();
     if (credentialsDirectory.length > 0) {
         const contents = readFileSync(join(credentialsDirectory, 'github_client_id'));
@@ -27,6 +30,7 @@ export function getGithubClientId(): string {
 }
 
 export function getGithubClientSecret(): string {
+    if (building) return 'dummy';
     const credentialsDirectory = getCredentialsDir();
     if (credentialsDirectory.length > 0) {
         const contents = readFileSync(
