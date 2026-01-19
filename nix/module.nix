@@ -67,11 +67,16 @@ in
       };
       serviceConfig = {
         ExecStart = "${lib.getExe cfg.nodePackage} ${package}";
+        # Allow owner and group to read and write to the socket.
+        ExecStartPost = pkgs.writeShellScript "spetsctf-exec-start-post-change-socket-perms" ''
+          ${lib.getExe' pkgs.coreutils "chmod"} 660 $RUNTIME_DIRECTORY/http.sock
+        '';
         SystemCallFilter = "@system-service";
         RestrictAddressFamilies = "AF_UNIX";
         Umask = "0177";
         NoNewPrivileges = true;
         DynamicUser = true;
+        Group = "spetsctf";
         StateDirectory = "spetsctf";
         RuntimeDirectory = "spetsctf";
         WorkingDirectory = "%S/spetsctf";
