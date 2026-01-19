@@ -58,12 +58,12 @@ in
       wantedBy = [ "multi-user.target" ];
       path = [ pkgs.file ];
       environment = {
-        ADDRESS_HEADER = "X-Forwarded-For";
-        HOST_HEADER = "X-Forwarded-Host";
+        ADDRESS_HEADER = "x-forwarded-for";
+        HOST_HEADER = "x-forwarded-host";
         NODE_ENV = "production";
         ORIGIN = cfg.httpOrigin;
         SOCKET_PATH = cfg.socketPath;
-        PROTOCOL_HEADER = "X-Forwarded-Proto";
+        PROTOCOL_HEADER = "x-forwarded-proto";
       };
       serviceConfig = {
         ExecStart = "${lib.getExe cfg.nodePackage} ${package}";
@@ -81,9 +81,9 @@ in
         RuntimeDirectory = "spetsctf";
         WorkingDirectory = "%S/spetsctf";
         LoadCredential = [
+          "database_url:${cfg.postgresConnectionStringFile}"
           "github_client_id:${cfg.github.clientIdFile}"
           "github_client_secret:${cfg.github.clientSecretFile}"
-          "database_url:${cfg.postgresConnectionStringFile}"
         ];
       };
     };
