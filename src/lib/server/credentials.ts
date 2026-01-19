@@ -2,7 +2,6 @@ import { env } from '$env/dynamic/private';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { building } from '$app/environment';
-import { cwd } from 'node:process';
 
 function getCredentialsDir(): string {
     if (env.CREDENTIALS_DIRECTORY) {
