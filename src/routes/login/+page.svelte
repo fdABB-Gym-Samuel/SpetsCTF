@@ -5,20 +5,22 @@
     import { goto } from '$app/navigation';
     import { resolve } from '$app/paths';
     import Button from '$lib/components/Button.svelte';
-    import { Github } from '@lucide/svelte';
+
+    import IconGithubLogoBold from 'phosphor-icons-svelte/IconGithubLogoBold.svelte';
 </script>
 
-<div
-    data-sveltekit-preload-data="tap"
-    class="m-auto flex max-w-128 flex-col justify-center pt-48">
-    <h1 class="mb-4 text-center text-xl font-bold">
-        {translations.login}
-    </h1>
+<div data-sveltekit-preload-data="tap" class="mx-auto w-min pt-64">
+    <div class="mb-8">
+        <h1 class="mb-2 text-2xl">
+            {translations.login} / Sign up
+        </h1>
+        <p class="text-text-200 min-w-max">You will be redirected to github.com</p>
+    </div>
     <Button
-        label="Log in with "
+        label="Continue with "
         type="button"
         onclick={() => goto(resolve('/login/github'))}
-        aria-label="Login with GitHub"
-        Icon={Github}
+        aria-label="Continue with GitHub"
+        Icon={IconGithubLogoBold}
         secondLabel="GitHub" />
 </div>

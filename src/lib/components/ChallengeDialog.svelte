@@ -86,7 +86,7 @@
 </script>
 
 <div
-    class="backdrop bg-overlay prevent-default fixed top-0 left-0 z-20 flex h-screen w-screen items-center justify-center overflow-y-scroll pt-16">
+    class="prevent-default fixed top-0 left-0 z-20 flex h-screen w-screen items-center justify-center overflow-y-scroll pt-16">
     <button
         type="button"
         class="fixed inset-0 h-full w-full cursor-default focus:outline-none"

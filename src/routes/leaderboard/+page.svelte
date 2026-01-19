@@ -1,6 +1,8 @@
 <script lang="ts">
     import { resolve } from '$app/paths';
 
+    import IconArrowUpRightBold from 'phosphor-icons-svelte/IconArrowUpRightBold.svelte';
+
     let { data } = $props();
     let user = $derived(data.user);
     let usersScoreboard = $derived(data.usersScoreboard);
@@ -35,10 +37,10 @@
     );
 </script>
 
-<main class="content m-auto w-full max-w-[1200px] pt-20">
+<main class="content m-auto w-full max-w-[1200px] pt-32">
     {#if user && !user.is_admin}
         <header class="mb-12">
-            <h1 class="text-xl font-bold">
+            <h1 class="text-[28px] font-semibold">
                 {user.display_name} <span class="text-text-200">#{userPosition}</span>
             </h1>
             <p class="text-text-200">
@@ -52,13 +54,13 @@
     {/if}
     <div class="scoreboards flex w-full flex-col gap-16">
         <section>
-            <div class="mb-4 flex items-center justify-between">
-                <h3 class="scoreboard-title text-lg font-bold">Users</h3>
+            <div class="mb-4 flex items-center justify-between px-1">
+                <h3 class="scoreboard-title text-[18px] font-semibold">Users</h3>
                 <div
                     class="class-filtering flex flex-row flex-wrap items-center gap-1.5">
-                    <p class="text-text-200 mr-2 text-sm">Filter:</p>
+                    <p class="text-text-200 text-sm">Filter:</p>
                     {#each originalClasses as cls (cls)}
-                        <label class="relative cursor-pointer px-4 select-none">
+                        <label class="relative cursor-pointer select-none">
                             <input
                                 type="checkbox"
                                 bind:group={includeClasses}
@@ -66,17 +68,14 @@
                                 id={cls}
                                 class="peer sr-only" />
                             <span
-                                class="text-text-200 peer-checked:text-text-100 text-sm transition-colors"
+                                class="text-text-200 peer-checked:text-text-150 bg-bg-800 peer-checked:bg-bg-700 rounded-4xl px-4 py-0.5 text-sm transition-colors"
                                 >{cls}</span>
-                            <span
-                                class="bg-bg-800 peer-checked:bg-bg-700 absolute top-0.5 left-0 -z-10 h-5.5 w-full rounded-lg transition-colors"
-                                aria-hidden="true"></span>
                         </label>
                     {/each}
                 </div>
             </div>
             <div
-                class="bg-bg-850 max-h-[600px] w-full min-w-20 overflow-auto rounded-lg px-8 py-4">
+                class="bg-bg-850 max-h-[600px] w-full min-w-20 overflow-auto rounded-lg p-2">
                 {#if filteredUsers.length === 0}
                     <p class="text-center text-sm text-red-500">
                         No users, please toggle at least one class.
@@ -101,12 +100,12 @@
                         </thead>
                     </table>
 
-                    <div class="h-4"></div>
+                    <div class="h-2"></div>
                     <table class="w-full table-fixed">
                         <tbody>
                             {#each filteredUsers as player, i (i)}
                                 <tr
-                                    class="*:border-bg-700 max-h-12 w-full text-wrap break-words *:border-t-0 [&>th:first-child]:rounded-l-lg [&>th:last-child]:rounded-r-lg
+                                    class="*:border-bg-700 max-h-12 text-wrap break-words *:border-t-0 [&>th:first-child]:rounded-l-lg [&>th:last-child]:rounded-r-lg
                         {i ===
                                     usersScoreboard
                                         .filter(
@@ -119,7 +118,7 @@
                                         .slice(0, 15).length -
                                         1
                                         ? ''
-                                        : '*:border-b-3'}
+                                        : '*:border-b-2'}
                         {i === 0
                                         ? 'text-primary'
                                         : i === 1
@@ -162,14 +161,14 @@
         </section>
 
         <section>
-            <h3 class="scoreboard-title mb-4 text-lg font-bold">Classes</h3>
+            <h3 class="scoreboard-title mb-4 text-[18px] font-semibold">Classes</h3>
             <div
-                class="bg-bg-850 max-h-[300px] w-full min-w-20 overflow-auto rounded-lg px-8 py-4">
+                class="bg-bg-850 max-h-[300px] w-full min-w-20 overflow-auto rounded-lg p-2">
                 <!-- header only -->
                 <table class="w-full table-fixed">
                     <thead>
                         <tr
-                            class="*:bg-bg-800 min-w-20
+                            class="*:bg-bg-800 min-w-20 *:py-2
                      [&>th:first-child]:rounded-l-lg
                      [&>th:last-child]:rounded-r-lg">
                             <th
@@ -185,7 +184,7 @@
                     </thead>
                 </table>
 
-                <div class="h-4"></div>
+                <div class="h-2"></div>
 
                 <!-- body only -->
                 <table class="w-full table-fixed">
@@ -194,7 +193,7 @@
                             <tr
                                 class="*:border-bg-700 w-full text-wrap break-words
                        *:border-t-0
-                       {i === classesScoreboard.length - 1 ? '' : '*:border-b-3'}
+                       {i === classesScoreboard.length - 1 ? '' : '*:border-b-2'}
                        {i === 0 ? 'text-secondary' : ''}">
                                 <td class="h-12 w-1/6 px-2 pl-4 text-left sm:pl-10"
                                     >{i + 1}</td>
@@ -213,4 +212,31 @@
         </section>
     </div>
 </main>
-<BackToTop />
+
+<footer class="mt-64 flex w-full flex-col items-center justify-center">
+    <BackToTop />
+    <div
+        class="text-text-150 mt-64 mb-4 flex w-full flex-wrap justify-between gap-x-8 gap-y-12 text-sm sm:gap-y-4">
+        <div class="flex flex-wrap gap-x-12 gap-y-1">
+            <div class="*:inline-block">
+                <p class="mr-4 min-w-max">
+                    This project is open-source, feel free to help.
+                </p>
+                <a
+                    class="text-text-200 *:inline-block"
+                    href="https://github.com/fdABB-Gym-Samuel/SpetsCTF"
+                    target="_blank"
+                    >Contribute <IconArrowUpRightBold class="text-base" /></a>
+            </div>
+            <p>
+                Encounter any issues? Reach out to <span class="font-semibold"
+                    >Samuel Olsson</span>
+                or <span class="font-semibold">Eric Thorburn</span> on teams.
+            </p>
+        </div>
+        <div class="flex flex-wrap gap-x-4">
+            <p>&copy; {new Date().getFullYear()} spetsen.net</p>
+            <p class="text-text-200">Design by Hannes Gingby</p>
+        </div>
+    </div>
+</footer>

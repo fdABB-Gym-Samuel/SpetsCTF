@@ -97,7 +97,7 @@
             <Button
                 label="Learn"
                 type="button"
-                onclick={() => {}}
+                onclick={() => goto(resolve('/learn'))}
                 Icon={IconGraduationCapBold}
                 aria-label="Go to learn page" />
         </div>

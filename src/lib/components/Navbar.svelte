@@ -79,8 +79,8 @@
 </script>
 
 <nav
-    class="relative z-50 flex h-15 w-full flex-row items-center justify-between gap-5 *:w-1/3">
-    <div class="left flex w-1/5 grow-0 flex-row items-center sm:grow">
+    class="noise-contained bg-bg-900 fixed top-0 left-0 z-50 flex h-15 w-full flex-row items-center justify-between gap-5 px-16 pt-1 *:w-1/3">
+    <div class="flex w-1/5 grow-0 flex-row items-center sm:grow">
         <div class="logo-continer relative flex justify-end sm:mr-0">
             <svg
                 viewBox="0 0 180 100"
