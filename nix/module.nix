@@ -75,6 +75,10 @@ in
         StateDirectory = "spetsctf";
         RuntimeDirectory = "spetsctf";
         WorkingDirectory = "%S/spetsctf";
+        LoadCredential = [
+          "github_client_id:${cfg.clientIdFile}"
+          "github_client_secret:${cfg.clientSecretFile}"
+        ];
       };
     };
   };
