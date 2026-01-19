@@ -14,11 +14,13 @@
 
   virtualisation = {
     graphics = false;
-    forwardPorts = {
-      from = "host";
-      host.port = 8080;
-      guest.port = 8080;
-    };
+    forwardPorts = [
+      {
+        from = "host";
+        host.port = 8080;
+        guest.port = 8080;
+      }
+    ];
   };
 
   systemd.services.postgresql-setpassword = {
