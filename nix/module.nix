@@ -68,7 +68,11 @@ in
       serviceConfig = {
         ExecStart = "${lib.getExe cfg.nodePackage} ${package}";
         SystemCallFilter = "@system-service";
-        RestrictAddressFamilies = "AF_UNIX";
+        RestrictAddressFamilies = [
+          "AF_UNIX"
+          "AF_INET"
+          "AF_INET6"
+        ];
         UMask = "0117";
         NoNewPrivileges = true;
         DynamicUser = true;
