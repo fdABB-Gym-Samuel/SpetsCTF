@@ -11,15 +11,18 @@ function getCredentialsDir(): string {
     }
 }
 
-export function getGithubClientId(): string {
+function genericCredentialGetter(
+    credentialName: string,
+    environmentVariableName: string
+): string {
     if (building) {
         return 'dummy';
     } else if (dev) {
-        if (env.GITHUB_CLIENT_ID) {
-            return env.GITHUB_CLIENT_ID;
+        if (env[environmentVariableName]) {
+            return env[environmentVariableName];
         } else {
             throw new Error(
-                'We are in dev and the environment variable $GITHUB_CLIENT_ID is set.'
+                `We are in dev and the environment variable $${environmentVariableName} is missing.`
             );
         }
     } else {
@@ -27,74 +30,28 @@ export function getGithubClientId(): string {
         if (credentialsDirectory.length > 0) {
             try {
                 const contents = readFileSync(
-                    join(credentialsDirectory, 'github_client_id')
+                    join(credentialsDirectory, credentialName)
                 );
                 return contents.toString().trim();
             } catch {
                 throw new Error(
-                    'Could not read $CREDENTIALS_DIRECTORY/github_client_id.'
+                    `Could not read $CREDENTIALS_DIRECTORY/${credentialName}.`
                 );
             }
         } else {
-            throw new Error('We are in prod and $CREDENTIALS_DIRECTORY is empty.');
+            throw new Error('We are in prod and $CREDENTIALS_DIRECTORY is missing.');
         }
     }
+}
+
+export function getGithubClientId(): string {
+    return genericCredentialGetter('github_client_id', 'GITHUB_CLIENT_ID');
 }
 
 export function getGithubClientSecret(): string {
-    if (building) {
-        return 'dummy';
-    } else if (dev) {
-        if (env.GITHUB_CLIENT_SECRET) {
-            return env.GITHUB_CLIENT_SECRET;
-        } else {
-            throw new Error(
-                'We are in dev and the environment variable $GITHUB_CLIENT_SECRET is set.'
-            );
-        }
-    } else {
-        const credentialsDirectory = getCredentialsDir();
-        if (credentialsDirectory.length > 0) {
-            try {
-                const contents = readFileSync(
-                    join(credentialsDirectory, 'github_client_secret')
-                );
-                return contents.toString().trim();
-            } catch {
-                throw new Error(
-                    'Could not read $CREDENTIALS_DIRECTORY/github_client_secret.'
-                );
-            }
-        } else {
-            throw new Error('We are in prod and $CREDENTIALS_DIRECTORY is empty.');
-        }
-    }
+    return genericCredentialGetter('github_client_secret', 'GITHUB_CLIENT_SECRET');
 }
 
 export function getDatabaseUrl(): string {
-    if (building) {
-        return 'dummy';
-    } else if (dev) {
-        if (env.DATABASE_URL) {
-            return env.DATABASE_URL;
-        } else {
-            throw new Error(
-                'We are in dev and the environment variable $DATABASE_URL is set.'
-            );
-        }
-    } else {
-        const credentialsDirectory = getCredentialsDir();
-        if (credentialsDirectory.length > 0) {
-            try {
-                const contents = readFileSync(
-                    join(credentialsDirectory, 'database_url')
-                );
-                return contents.toString().trim();
-            } catch {
-                throw new Error('Could not read $CREDENTIALS_DIRECTORY/database_url.');
-            }
-        } else {
-            throw new Error('We are in prod and $CREDENTIALS_DIRECTORY is empty.');
-        }
-    }
+    return genericCredentialGetter('database_url', 'DATABASE_URL');
 }

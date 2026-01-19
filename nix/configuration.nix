@@ -1,3 +1,6 @@
+# IMPORTANT: This is an insecure test configuration used to debug potential deployment
+# issues locally.  Do not use this file verbatim in production, but consider each
+# option carefully.
 {
   config,
   pkgs,

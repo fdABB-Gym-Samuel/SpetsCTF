@@ -11,7 +11,7 @@ let
 in
 {
   options.services.spetsctf = with lib; {
-    enable = mkEnableOption "Enable the SpetsCTF web service.";
+    enable = mkEnableOption "SpetsCTF web service.";
 
     httpOrigin = mkOption {
       description = "The value of the ORIGIN environment variable. Required for SvelteKit form submissions.";
@@ -78,6 +78,7 @@ in
         LoadCredential = [
           "github_client_id:${cfg.github.clientIdFile}"
           "github_client_secret:${cfg.github.clientSecretFile}"
+          "database_url:${cfg.postgresConnectionStringFile}"
         ];
       };
     };
