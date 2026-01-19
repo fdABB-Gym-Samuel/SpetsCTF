@@ -101,9 +101,8 @@
 
       });
 
-      nixosModules = rec {
-        default = spetsctf;
-        spetsctf = import ./nix/module.nix { };
+      nixosModules = {
+        spetsctf = import ./nix/module.nix { inherit self; };
       };
 
       nixosConfigurations = {
@@ -117,7 +116,7 @@
 
           modules = [
             ./nix/configuration.nix
-            ./nix/module.nix
+            self.nixosModules.spetsctf
           ];
         };
       };

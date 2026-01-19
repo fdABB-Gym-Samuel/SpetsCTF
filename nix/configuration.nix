@@ -39,7 +39,7 @@
 
   services = {
     getty.autologinUser = "root";
-    
+
     postgresql = {
       enable = true;
       ensureUsers = [
