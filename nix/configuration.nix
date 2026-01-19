@@ -76,10 +76,12 @@
       enable = true;
       virtualHosts = {
         "spetsctf" = {
-          listen = {
-            addr = "0.0.0.0";
-            port = 8080;
-          };
+          listen = [
+            {
+              addr = "0.0.0.0";
+              port = 8080;
+            }
+          ];
           locations."/" = {
             proxyPass = "http://unix:/run/spetsctf/http.sock";
           };
