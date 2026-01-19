@@ -104,12 +104,19 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
               FROM unique_success us
               WHERE us.challenge = ch.challenge_id
             )`.as('num_solvers'),
-                      // Check if the current user has a successful submission on this challenge.
+                      // Check if the any user on the current user's team has solved the challenge.
                       sql<boolean>`EXISTS(
-              SELECT 1 FROM ctf_submissions ws
-              WHERE ws.challenge = ch.challenge_id
-                AND ws.user_id = ${userId}
-                AND ws.success = true
+              SELECT 1 
+              FROM ctf_submissions cs
+              INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
+              WHERE cs.challenge = ch.challenge_id
+                AND cs.success = true
+                AND ctm.team = (
+                  SELECT team 
+                  FROM ctf_teams_members 
+                  WHERE user_id = ${userId}
+                  LIMIT 1
+                )
             )`.as('solved'),
                       // Get an array of resources for the challenge (ordered by resource id).
                       sql<{ type: string; content: string }[]>`

@@ -6,7 +6,7 @@ import { get_flag_of_challenge } from '$lib/db/functions';
 import { db } from '$lib/db/database';
 
 export const load: PageServerLoad = async ({ params, parent, locals, depends }) => {
-    const { translations, ctfData, isOrg } = await parent();
+    const { translations, ctfData, isOrg, team } = await parent();
 
     const ctfId = Number(params.ctfId);
 
@@ -47,10 +47,17 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
         ])
         .select(() =>
             sql<boolean>`EXISTS(
-                SELECT 1 FROM wargame_submissions ws
-                WHERE ws.challenge = challenges.challenge_id
-                    AND ws.user_id = ${user?.id ?? null}
-                    AND ws.success = true
+                SELECT 1 
+                FROM ctf_submissions cs
+                INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
+                WHERE cs.challenge = challenges.challenge_id
+                    AND cs.success = true
+                    AND ctm.team = (
+                        SELECT team 
+                        FROM ctf_teams_members 
+                        WHERE user_id = ${user?.id ?? null}
+                        LIMIT 1
+                    )
             )`.as('solved')
         )
         .executeTakeFirst();
@@ -81,23 +88,11 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
     }
 
     const firstSolvers = await db
-        .with('all_submissions', (qb) =>
+        .with('first_solve_per_user', (qb) =>
             qb
                 .selectFrom('ctf_submissions')
                 .where('challenge', '=', challengeData.challenge_id)
                 .where('success', '=', true)
-                .select(['user_id', 'time'])
-                .union(
-                    qb
-                        .selectFrom('wargame_submissions')
-                        .where('challenge', '=', challengeData.challenge_id)
-                        .where('success', '=', true)
-                        .select(['user_id', 'time'])
-                )
-        )
-        .with('first_solve_per_user', (qb) =>
-            qb
-                .selectFrom('all_submissions')
                 .select(['user_id'])
                 .select(sql`MIN(time)`.as('first_time'))
                 .groupBy('user_id')
@@ -125,22 +120,11 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
         .execute();
 
     const numSolvers = await db
-        .with('all_submissions', (qb) =>
-            qb
-                .selectFrom('wargame_submissions')
-                .select(['challenge', 'user_id', 'time'])
-                .where('success', '=', true)
-                .union(
-                    qb
-                        .selectFrom('ctf_submissions')
-                        .select(['challenge', 'user_id', 'time'])
-                        .where('success', '=', true)
-                )
-        )
-        .selectFrom('all_submissions')
+        .selectFrom('ctf_submissions')
+        .where('success', '=', true)
         .where('challenge', '=', challengeData.challenge_id)
         .select((eb) => eb.fn.countAll().as('count'))
-        .executeTakeFirstOrThrow();
+        .executeTakeFirst();
 
     depends(`data:challenge-${challengeData.challenge_id}`);
 
@@ -150,66 +134,77 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
         numSolvers,
         resources,
         translations,
+        team,
     };
 };
 
 export const actions = {
-    submit: async ({ request, locals }) => {
+    submit: async ({ request, locals, params }) => {
         const user = locals.user;
 
         if (!user) {
-            return redirect(304, '/login');
+            return redirect(303, '/login');
+        }
+
+        const ctfId = Number(params.ctfId);
+        const challengeId = params.challengeId;
+
+        const ctfData = await db
+            .selectFrom('ctf_events')
+            .where('id', '=', ctfId)
+            .selectAll()
+            .executeTakeFirst();
+
+        if (!ctfData) {
+            return fail(404, { message: 'CTF not found' });
+        }
+
+        const currentTime = new Date();
+
+        if (ctfData.start_time > currentTime) {
+            return fail(403, { message: 'CTF has not started yet' });
+        }
+
+        if (ctfData.end_time < currentTime) {
+            return redirect(303, `/challenges/${challengeId}`);
+        }
+
+        const userTeam = await db
+            .selectFrom('ctf_teams')
+            .innerJoin('ctf_teams_members', 'ctf_teams.id', 'ctf_teams_members.team')
+            .where('ctf_teams.ctf', '=', ctfId)
+            .where('ctf_teams_members.user_id', '=', user.id)
+            .select(['ctf_teams.id'])
+            .executeTakeFirst();
+
+        if (!userTeam) {
+            return fail(403, { message: 'User is not part of any team in this CTF' });
+        }
+
+        if (!challengeId) {
+            return fail(400, { message: 'No challengeID' });
         }
 
         const formData = await request.formData();
-        const challengeId = formData.get('challenge_id') as string;
         const submittedFlag = formData.get('flag') as string;
 
-        if (!challengeId) {
-            return fail(400, { message: 'Challenge_id parameter missing' });
-        }
-
-        const challengeCtf = await db
-            .selectFrom('challenges')
-            .select('ctf')
-            .where('challenge_id', '=', challengeId)
-            .executeTakeFirst();
-
-        let submissionTable: 'wargame_submissions' | 'ctf_submissions' =
-            'wargame_submissions';
-        if (challengeCtf && challengeCtf.ctf) {
-            const ctf = await db
-                .selectFrom('ctf_events')
-                .select(['end_time'])
-                .where('id', '=', challengeCtf.ctf)
-                .executeTakeFirst();
-
-            if (ctf === undefined) {
-                return fail(404, {
-                    message: 'Challenge belongs to CTF that could not be found',
-                });
-            }
-            const currentTime = new Date();
-            const ctfHasEnded = currentTime > ctf?.end_time;
-            // User should submit this request through the ctf route
-            if (!ctfHasEnded) {
-                redirect(307, `/ctf/${challengeCtf.ctf}/challenges?/submit`);
-            }
-
-            submissionTable = 'ctf_submissions';
-        }
-
         const successfulSubmission = await db
-            .selectFrom(submissionTable)
-            .where('user_id', '=', user.id)
+            .selectFrom('ctf_submissions')
+            .innerJoin(
+                'ctf_teams_members',
+                'ctf_submissions.user_id',
+                'ctf_teams_members.user_id'
+            )
+            .where('ctf_teams_members.team', '=', userTeam.id)
             .where('challenge', '=', challengeId)
             .where('success', '=', true)
             .executeTakeFirst();
 
         if (successfulSubmission !== undefined)
-            return fail(403, { message: 'User has already solved challenge' });
+            return fail(403, { message: "User's team has already solved challenge" });
 
         const correctFlag = await get_flag_of_challenge(challengeId);
+
         if (!correctFlag.challengeExists) {
             return fail(404, { message: 'Challenge not found' });
         }
