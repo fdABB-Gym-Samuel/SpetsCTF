@@ -171,6 +171,7 @@
         {/if}
     {:else if page.url.hash == '#create'}
         <form
+            use:enhance
             class="flex w-fit flex-col space-y-4"
             method="post"
             action="/challenges?/createChallenge">
