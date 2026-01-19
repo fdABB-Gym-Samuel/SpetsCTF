@@ -3,12 +3,12 @@
 
     import IconArrowUpRightBold from 'phosphor-icons-svelte/IconArrowUpRightBold.svelte';
 
-    import type { CtfEvents, CtfTeams, Users } from '$lib/generated/db.d.ts';
+    import type { CtfEvents } from '$lib/generated/db.d.ts';
     import type { Selectable } from 'kysely';
     interface Props {
         ctfData: Selectable<CtfEvents>;
-        organizers?: Selectable<Users>[];
-        teams?: Selectable<CtfTeams>[];
+        // organizers?: Selectable<Users>[];
+        // teams?: Selectable<CtfTeams>[];
     }
 
     let { ctfData }: Props = $props();
