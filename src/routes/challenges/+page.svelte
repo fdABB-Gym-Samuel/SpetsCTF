@@ -6,9 +6,6 @@
     import { enhance } from '$app/forms';
     import { goto } from '$app/navigation';
 
-    import { slide } from 'svelte/transition';
-    import { quintOut } from 'svelte/easing';
-
     let { data } = $props();
 
     let allChallenges = $derived(data.allChallenges);

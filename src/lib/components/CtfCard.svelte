@@ -11,7 +11,7 @@
         teams?: Selectable<CtfTeams>[];
     }
 
-    let { ctfData, organizers, teams }: Props = $props();
+    let { ctfData }: Props = $props();
 
     let startDateText = $derived(new Date(ctfData.start_time).toLocaleDateString());
     let startTimeText = $derived(
@@ -28,7 +28,7 @@
         })
     );
 
-    let numberOfTeams = $derived(teams?.length);
+    // let numberOfTeams = $derived(teams?.length);
 
     // let displayedOrganizerNames = $derived(
     // 	organizers

@@ -10,7 +10,7 @@
 
     let { challengeData, solveDate }: Props = $props();
 
-    import { map } from '$lib/utils/utils';
+    // import { map } from '$lib/utils/utils';
     import { categories } from '$lib/db/constants';
     import { capitalizeFirstLetter } from '$lib/utils/utils';
     import type { Selectable } from 'kysely';
