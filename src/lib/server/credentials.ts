@@ -27,10 +27,11 @@ function genericCredentialGetter(
         }
     } else {
         const credentialsDirectory = getCredentialsDir();
-        if (credentialsDirectory.length > 0) {
+        if (credentialsDirectory) {
             try {
                 const contents = readFileSync(
-                    join(credentialsDirectory, credentialName)
+                    join(credentialsDirectory, credentialName),
+                    'utf8'
                 );
                 return contents.toString().trim();
             } catch {

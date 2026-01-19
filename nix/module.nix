@@ -39,7 +39,7 @@ in
     };
 
     socketPath = mkOption {
-      description = "The AF_UNIX socket path where the application will listen, and where you want to point your proxy.";
+      description = "The AF_UNIX socket path where the application will listen, and where you want to point your proxy. Defaults to the systemd runtime directory.";
       example = "/tmp/spetsctf.sock";
       default = "%t/spetsctf/http.sock";
       type = types.oneOf [
@@ -69,7 +69,7 @@ in
         ExecStart = "${lib.getExe cfg.nodePackage} ${package}";
         SystemCallFilter = "@system-service";
         RestrictAddressFamilies = "AF_UNIX";
-        Umask = "0137"; # Output from `umask -S`: u=rw,g=r,o=.
+        Umask = "0177";
         NoNewPrivileges = true;
         DynamicUser = true;
         StateDirectory = "spetsctf";
