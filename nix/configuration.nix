@@ -14,6 +14,11 @@
 
   virtualisation = {
     graphics = false;
+    forwardPorts = {
+      from = "host";
+      host.port = 8080;
+      guest.port = 8080;
+    };
   };
 
   systemd.services.postgresql-setpassword = {
@@ -62,6 +67,21 @@
       github = {
         clientIdFile = pkgs.writeText "client-id" "dummy";
         clientSecretFile = pkgs.writeText "client-secret" "dummy";
+      };
+    };
+
+    nginx = {
+      enable = true;
+      virtualHosts = {
+        "spetsctf" = {
+          locations."/" = {
+            listen = {
+              addr = "0.0.0.0";
+              port = 8080;
+            };
+            proxyPass = "http://unix:/run/spetsctf/http.sock";
+          };
+        };
       };
     };
   };
