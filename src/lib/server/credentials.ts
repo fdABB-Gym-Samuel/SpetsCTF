@@ -71,7 +71,7 @@ export function getGithubClientSecret(): string {
     }
 }
 
-export function getPostgresConnectionString(): string {
+export function getDatabaseUrl(): string {
     if (building) {
         return 'dummy';
     } else if (dev) {
