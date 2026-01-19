@@ -195,13 +195,7 @@ export const actions = {
                 'ctf_submissions.user_id',
                 'ctf_teams_members.user_id'
             )
-            .where('ctf_teams_members.team', '=', (eb) =>
-                eb
-                    .selectFrom('ctf_teams_members')
-                    .select('team')
-                    .where('user_id', '=', user.id)
-                    .limit(1)
-            )
+            .where('ctf_teams_members.team', '=', userTeam.id)
             .where('challenge', '=', challengeId)
             .where('success', '=', true)
             .executeTakeFirst();
