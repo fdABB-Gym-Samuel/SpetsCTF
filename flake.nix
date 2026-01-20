@@ -68,9 +68,11 @@
             neovim-unwrapped
             nixd
             nixfmt
+            nodejs
             npm-check-updates
             openssh
             pdpmake
+            pgweb
             postgresql.out
             procps
             ripgrep
@@ -81,7 +83,6 @@
             uutils-coreutils-noprefix
             vscode-langservers-extracted
             which
-            pgweb
           ];
 
           shellHook = ''
@@ -99,6 +100,26 @@
         };
 
       });
+
+      nixosModules = {
+        spetsctf = import ./nix/module.nix { inherit self; };
+      };
+
+      nixosConfigurations = {
+        spetsctf-test = nixpkgs.lib.nixosSystem {
+          # If developing elsewhere, change me.
+          system = "x86_64-linux";
+
+          specialArgs = {
+            inherit self;
+          };
+
+          modules = [
+            ./nix/configuration.nix
+            self.nixosModules.spetsctf
+          ];
+        };
+      };
 
       packages = eachSystem (pkgs: rec {
         default = spetsctf;

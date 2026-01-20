@@ -16,9 +16,15 @@
     import { onMount, onDestroy } from 'svelte';
     import { categories } from '$lib/db/constants';
     import type { Selectable } from 'kysely';
-    import type { ChallengeResources, Challenges, Flag } from '$lib/generated/db';
+    import type {
+        ChallengeResources,
+        Challenges,
+        Flag,
+        Users,
+    } from '$lib/generated/db';
     import { invalidate } from '$app/navigation';
     import { resolve } from '$app/paths';
+    import type { ActionData } from '../../routes/challenges/[challengeId]/$types';
 
     interface Props {
         challengeData: Selectable<Challenges> & {
@@ -28,9 +34,11 @@
         } & { resources: Selectable<ChallengeResources>[] } & { solved?: boolean };
         closeDialog: () => void;
         translations: Record<string, string>;
+        user: Selectable<Users> | undefined;
+        form: ActionData;
     }
 
-    let { challengeData, closeDialog, translations }: Props = $props();
+    let { challengeData, closeDialog, translations, user, form }: Props = $props();
 
     function getPointColor(points: number): string {
         const labA = Math.floor(map(points, 0, 500, -128, 128));
@@ -215,7 +223,14 @@
                 </div>
             </div>
             <div class="right w-1/2 min-w-70 flex-grow">
-                {#if !challengeData.solved}
+                {#if form}
+                    <p
+                        class:text-green-500={form.success}
+                        class:text-red-500={!form.success}>
+                        {form.message}
+                    </p>
+                {/if}
+                {#if !challengeData.solved && user}
                     <form
                         action="?/submit"
                         method="post"
@@ -230,11 +245,12 @@
                         }}>
                         <label for="flag" class="text-text-100 text-sm"
                             >Submit flag</label>
-                        <div class="relative mt-2 mb-8">
+                        <div class="relative mt-2 mr-1 mb-8">
                             <input
                                 type="text"
                                 name="flag"
                                 class="flag bg-bg-600 text-text-100 w-full rounded-xl px-6 py-1.5 font-mono focus:outline-none"
+                                class:ring-error={form?.success === false}
                                 placeholder={challengeData.flag_format} />
                             <input
                                 type="hidden"
@@ -252,11 +268,20 @@
                             </div>
                         </div>
                     </form>
+                {:else if !user}
+                    <div class="relative mt-4 mr-1 mb-8">
+                        <p class="bg-bg-600 rounded-xl py-2 text-center font-semibold">
+                            {translations.submission_needs_login}
+                        </p>
+                    </div>
                 {:else}
-                    <p
-                        class="from-primary to-primary-light rounded-xl bg-gradient-to-br py-2 text-center font-semibold">
-                        Challenge Already Solved
-                    </p>
+                    <div class="relative mt-2 mr-1 mb-8">
+                        <p
+                            class="from-primary to-primary-light rounded-xl bg-gradient-to-br py-1 text-center font-semibold"
+                            class:ring-correct={form?.success === true}>
+                            {translations.challenge_already_solved}
+                        </p>
+                    </div>
                 {/if}
                 <div
                     class="first-solvers-wrapper text-text-100 flex flex-col justify-start">
@@ -317,3 +342,42 @@
         </section>
     </dialog>
 </div>
+
+<style>
+    @keyframes error-fade {
+        0% {
+            box-shadow:
+                0 0 0 2px rgb(239, 68, 68),
+                0 0 5px rgba(239, 68, 68, 0.6),
+                0 0 10px rgba(239, 68, 68, 0.3);
+        }
+        100% {
+            box-shadow:
+                0 0 0 2px transparent,
+                0 0 5px transparent,
+                0 0 10px transparent;
+        }
+    }
+
+    @keyframes correct-fade {
+        0% {
+            box-shadow:
+                0 0 0 2px rgb(34, 197, 94),
+                0 0 5px rgba(34, 197, 94, 0.6),
+                0 0 10px rgba(34, 197, 94, 0.3);
+        }
+        100% {
+            box-shadow:
+                0 0 0 2px transparent,
+                0 0 5px transparent,
+                0 0 10px transparent;
+        }
+    }
+
+    .ring-error {
+        animation: error-fade 3s ease-in;
+    }
+    .ring-correct {
+        animation: correct-fade 3s ease-in;
+    }
+</style>

@@ -29,6 +29,8 @@ This project uses **bun** exclusively for all package management and build opera
 
 If you find yourself suggesting npm, STOP and use bun instead.
 
+There is ONE exception: we allow using `@sveltejs/adapter-node` to build a `node`-compatible production server.
+
 ## Technology Stack
 
 - **SvelteKit** - Application framework (using **Svelte 5**)

@@ -16,18 +16,17 @@
 <main class="m-auto max-w-130 pt-48">
     <div class="mb-16">
         <p class="mb-6">
-            A place to practice and compete in cybersecurity challenges.<br /><span
-                class="text-text-150">Either log in or stay anonymous.</span>
+            {data.translations.welcome_message}!
         </p>
         <div class="flex gap-4">
             <Button
-                label="Start practicing"
+                label={data.translations.start_practising}
                 type="button"
                 onclick={() => goto(resolve('/challenges'))}
                 Icon={IconArrowRightBold}
                 aria-label="Go to challenges" />
             <Button
-                label="Learn"
+                label={data.translations.learn}
                 type="button"
                 onclick={() => goto(resolve('/learn'))}
                 Icon={IconGraduationCapBold}
@@ -35,6 +34,6 @@
         </div>
     </div>
     <div class="w-full perspective-midrange">
-        <Countdown targetDate={nextCtf?.start_time} />
+        <Countdown translations={data.translations} targetDate={nextCtf?.start_time} />
     </div>
 </main>

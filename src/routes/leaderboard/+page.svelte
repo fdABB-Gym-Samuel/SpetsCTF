@@ -70,7 +70,9 @@
     <div class="scoreboards flex w-full flex-col gap-16">
         <section>
             <div class="mb-4 flex items-center justify-between px-1">
-                <h3 class="scoreboard-title text-[18px] font-semibold">Users</h3>
+                <h3 class="scoreboard-title text-[18px] font-semibold">
+                    {data.translations.user}
+                </h3>
                 <div
                     class="class-filtering flex flex-row flex-wrap items-center gap-1.5">
                     <p class="text-text-200 text-sm">Filter:</p>
@@ -104,13 +106,13 @@
                                     class="text-text-200 w-12 pl-4 text-left font-medium sm:w-18 sm:pl-10"
                                     >#</th>
                                 <th class="text-text-200 w-fit text-left font-medium"
-                                    >Username</th>
+                                    >{data.translations.username}</th>
                                 <th
                                     class="text-text-200 w-14 pl-2 text-left font-medium sm:w-20 md:w-30 md:p-0 md:text-center"
-                                    >Class</th>
+                                    >{data.translations.class}</th>
                                 <th
                                     class="text-text-200 w-18 pr-4 text-right font-medium sm:w-24 sm:pr-10"
-                                    >Score</th>
+                                    >{data.translations.score}</th>
                             </tr>
                         </thead>
                     </table>
@@ -153,7 +155,8 @@
                                                 href={resolve(`/user/${player.id}`)}
                                                 >{player.display_name}</a>
                                         {:else}
-                                            <span class="italic">Anonymous</span>
+                                            <span class="italic"
+                                                >{data.translations.anonymous}</span>
                                         {/if}
                                     </td>
                                     <td
@@ -171,12 +174,15 @@
                 {/if}
             </div>
             <p class="text-text-200 mt-2 ml-0.5">
-                {usersScoreboard.length} users
+                {usersScoreboard.length}
+                {data.translations.users}
             </p>
         </section>
 
         <section>
-            <h3 class="scoreboard-title mb-4 text-[18px] font-semibold">Classes</h3>
+            <h3 class="scoreboard-title mb-4 text-[18px] font-semibold">
+                {data.translations.classes}
+            </h3>
             <div
                 class="bg-bg-850 max-h-[300px] w-full min-w-20 overflow-auto rounded-lg p-2">
                 <!-- header only -->
@@ -191,10 +197,10 @@
                                 >#</th>
                             <th
                                 class="text-text-200 w-fit pl-4 text-left font-medium sm:pl-10"
-                                >Class</th>
+                                >{data.translations.class}</th>
                             <th
                                 class="text-text-200 w-fit pr-4 text-right font-medium sm:pr-10"
-                                >Score</th>
+                                >{data.translations.score}</th>
                         </tr>
                     </thead>
                 </table>

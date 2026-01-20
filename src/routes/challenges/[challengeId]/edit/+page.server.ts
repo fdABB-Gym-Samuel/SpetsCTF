@@ -177,10 +177,17 @@ export const actions = {
             }
 
             try {
-                await db
-                    .insertInto('challenge_resources')
-                    .values(insertableResource)
-                    .execute();
+                await db.transaction().execute(async (trx) => {
+                    await trx
+                        .insertInto('challenge_resources')
+                        .values(insertableResource)
+                        .execute();
+                    await trx
+                        .updateTable('challenges')
+                        .set({ approved: false })
+                        .where('challenge_id', '=', challengeId)
+                        .execute();
+                });
             } catch {
                 error(500, { message: 'Failed to insert resource.' });
             }
@@ -296,10 +303,17 @@ export const actions = {
             };
 
             try {
-                await db
-                    .insertInto('challenge_resources')
-                    .values(fileResource)
-                    .execute();
+                await db.transaction().execute(async (trx) => {
+                    await trx
+                        .insertInto('challenge_resources')
+                        .values(fileResource)
+                        .execute();
+                    await trx
+                        .updateTable('challenges')
+                        .set({ approved: false })
+                        .where('challenge_id', '=', challengeId)
+                        .execute();
+                });
             } catch {
                 await unlink(filePath);
                 error(500, { message: 'Failed to register file in database.' });

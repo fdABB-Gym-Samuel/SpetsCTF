@@ -30,3 +30,5 @@ result*
 src/lib/generated
 tmp/
 tmp
+
+*.qcow2

@@ -10,7 +10,11 @@
         seconds: number;
     };
 
-    let { targetDate }: { targetDate: Date | undefined } = $props();
+    let {
+        targetDate,
+        translations,
+    }: { targetDate: Date | undefined; translations: Record<string, string> } =
+        $props();
 
     let countdown = $state<CountdownTime>({
         days: 0,
@@ -87,7 +91,7 @@
     bind:this={countdownContainer}
     class="w-full will-change-transform transform-3d"
     style="transform: rotateX({rotX.current}deg) rotateY({rotY.current}deg)">
-    <p class="text-text-200 mb-2 text-sm">Next SpetsCTF is in</p>
+    <p class="text-text-200 mb-2 text-sm">{translations.next_spetsctf_is_in}</p>
     <div class="rounded-lg shadow-xl">
         <div
             class="bg-bg-800 inner-shadow flex items-center justify-between rounded-2xl px-10 py-2 pb-3 select-none">
@@ -96,7 +100,7 @@
                     <p class="-mb-1 flex-1 text-center text-lg">
                         {number}
                     </p>
-                    <p class="text-text-200 text-sm">{label}</p>
+                    <p class="text-text-200 text-sm">{translations[label]}</p>
                 </div>
                 {#if index !== Object.entries(countdown).length - 1}
                     <div class="h-5">

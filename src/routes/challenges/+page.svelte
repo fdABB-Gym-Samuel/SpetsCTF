@@ -260,7 +260,11 @@
             <a href={resolve('/login')}>Sign in</a>
         {/if}
     {:else if page.url.hash == '#create'}
-        <form class="m-auto w-fit pt-24" method="post" action="?/createChallenge">
+        <form
+            use:enhance
+            class="m-auto w-fit pt-24"
+            method="post"
+            action="?/createChallenge">
             <div class="mb-6">
                 <Input
                     label="Display name"
