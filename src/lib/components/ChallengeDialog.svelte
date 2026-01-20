@@ -152,7 +152,7 @@
                                 </li>
                             {:else if resource.type === 'file'}
                                 <li
-                                    class="challenge-resource flex flex-row items-center gap-1">
+                                    class="challenge-resource text-text-100 flex flex-row items-center gap-1">
                                     <File class="size-4"></File>
                                     <a
                                         href={resolve(
@@ -171,7 +171,7 @@
                                 </li>
                             {:else}
                                 <li
-                                    class="challenge-resource flex flex-row items-center gap-1">
+                                    class="challenge-resource text-text-100 flex flex-row items-center gap-1">
                                     <SquareTerminal class="size-4"></SquareTerminal>
 
                                     <p>
