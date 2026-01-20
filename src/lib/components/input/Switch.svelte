@@ -1,5 +1,13 @@
+<script lang="ts">
+    interface Props {
+        checked?: boolean;
+    }
+
+    let { checked = $bindable(false) }: Props = $props();
+</script>
+
 <label class="switch">
-    <input type="checkbox" />
+    <input type="checkbox" bind:checked />
     <span class="slider"></span>
 </label>
 

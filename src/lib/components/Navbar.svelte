@@ -148,7 +148,11 @@
     <div class="flex w-1/5 grow justify-end gap-3 overflow-y-hidden pr-0.5">
         {#if user}
             <a href={resolve('/user')} class="ignore-default max-w-full truncate">
-                <div class="text-text-200 bg-bg-800 rounded-4xl px-3 py-2.5">tmp</div>
+                <!-- <div class="text-text-200 bg-bg-800 rounded-4xl px-3 py-2.5">tmp</div> -->
+                <img
+                    src={`https://avatars.githubusercontent.com/u/${user.github_id}?v=4`}
+                    alt="User Avatar"
+                    class="inline-block h-8 w-8 rounded-full align-middle" />
             </a>
         {:else}
             <Button
@@ -163,7 +167,7 @@
 </nav>
 {#if showSidebar}
     <div
-        class="backdrop bg-backdrop fixed bottom-0 left-0 z-30 w-screen"
+        class="backdrop bg-backdrop fixed bottom-0 left-0 z-30 h-[calc(100vh-(15rem/4))] w-screen"
         onclick={(e: MouseEvent) => toggleSidebar(e, true)}
         onkeydown={(e) => {
             if (e.key === ' ' || e.key === 'Enter') toggleSidebar(e, true);
@@ -206,7 +210,11 @@
                             toggleSidebar(e, false);
                         }}
                         class="ignore-default max-w-full space-x-4 truncate text-center underline">
-                        <User class=" inline-block min-h-6 min-w-6" />
+                        <!-- <User class=" inline-block min-h-6 min-w-6" /> -->
+                        <img
+                            src={`https://avatars.githubusercontent.com/u/${user.github_id}?v=4`}
+                            alt="User Avatar"
+                            class="mx-1 inline-block h-6 w-6 rounded-full align-middle" />
                         {user.display_name || user.github_username}</a>
                 {:else}
                     <Button

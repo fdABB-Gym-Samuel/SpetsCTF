@@ -13,9 +13,10 @@
             solved: boolean;
         })[];
         gotoChallenge: (challengeId: string) => void;
+        showSolved?: boolean;
     }
 
-    let { challenges, gotoChallenge }: Props = $props();
+    let { challenges, gotoChallenge, showSolved = $bindable(true) }: Props = $props();
 
     // Track expanded state for each category (all expanded by default)
     let expandedCategories = $state<Record<string, boolean>>(
@@ -51,14 +52,19 @@
                         <ul
                             class="grid grid-cols-[repeat(auto-fill,minmax(305px,1fr))] gap-6 sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(390px,1fr))]">
                             {#each challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challengeData (challengeData.challenge_id)}
-                                <li class="min-h-fit min-w-65">
-                                    <button
-                                        class="w-full hover:cursor-pointer"
-                                        onclick={() =>
-                                            gotoChallenge(challengeData.challenge_id)}>
-                                        <ChallengeCard {challengeData}></ChallengeCard>
-                                    </button>
-                                </li>
+                                {#if !challengeData.solved || showSolved}
+                                    <li class="min-h-fit min-w-65">
+                                        <button
+                                            class="w-full hover:cursor-pointer"
+                                            onclick={() =>
+                                                gotoChallenge(
+                                                    challengeData.challenge_id
+                                                )}>
+                                            <ChallengeCard {challengeData}
+                                            ></ChallengeCard>
+                                        </button>
+                                    </li>
+                                {/if}
                             {/each}
                         </ul>
                     {:else}

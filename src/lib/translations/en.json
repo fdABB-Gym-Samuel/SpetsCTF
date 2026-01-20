@@ -104,6 +104,7 @@
   "settingsupdatefailed": "Settings update failed",
   "shortname": "Short ID name, e.g. mychallenge",
   "shortnamectf": "CTF short name for identification, e.g. my_ctf_competition",
+  "solved": "Solved",
   "spets_ctf_is_a": "SpetsCTF is a CTF and wargames platform.",
   "spetsctf": "SpetsCTF",
   "start_date": "Start date:",

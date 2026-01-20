@@ -42,6 +42,8 @@
 
     let showFooter = $derived(content ? content.clientHeight >= 1200 : true);
 
+    let showSolved = $state(true);
+
     $effect(() => {
         // Track hash changes and content
         page.url.hash;
@@ -182,8 +184,8 @@
                     <!-- Solved toggle -->
                     <div
                         class="text-text-150 my-2 ml-2 flex items-center gap-3 lg:mx-1.5 lg:my-0">
-                        <span class="text-sm lg:text-base">Solved</span>
-                        <Switch />
+                        <span class="text-sm lg:text-base">{translations.solved}</span>
+                        <Switch bind:checked={showSolved} />
                     </div>
                 </div>
 
@@ -207,7 +209,8 @@
             gotoChallenge={(challengeId) => {
                 goto(resolve(`/challenges/${challengeId}`));
             }}
-            challenges={allChallenges}></ChallengeList>
+            challenges={allChallenges}
+            bind:showSolved></ChallengeList>
     {:else if page.url.hash === '#my'}
         {#if user}
             <section>

@@ -104,6 +104,7 @@
   "settingsupdatefailed": "Fel vid uppdatering av inställningar",
   "shortname": "Kort namn för identifiering, t.ex. min_utmaning",
   "shortnamectf": "Kort namn för  att identifiera CTF-tävlingen, t.ex. min_ctf_tavling",
+  "solved": "Löst",
   "spets_ctf_is_a": "SpetsCTF är en plattform för CTF-tävlingar och wargames-utmaningar.",
   "spetsctf": "SpetsCTF",
   "start_date": "Starttid:",
