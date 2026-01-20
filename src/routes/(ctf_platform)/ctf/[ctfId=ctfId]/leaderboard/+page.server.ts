@@ -26,13 +26,13 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
                 )
                 .where('challenges.ctf', '=', ctfId)
                 .where('approved', '=', true)
+                .where('ctf_submissions.success', '=', true)
                 .select([
                     'ctf_teams.id as team_id',
                     'ctf_teams.name as team_name',
                     'ctf_submissions.challenge as challenge_id',
                     'challenges.points as points',
                 ])
-                .where('ctf_submissions.success', '=', true)
                 .groupBy([
                     'ctf_teams.id',
                     'ctf_teams.name',
@@ -40,9 +40,15 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
                     'challenges.points',
                 ])
         )
-        .selectFrom('team_challenges')
-        .select(['team_id', 'team_name', sql`sum(points)`.as('total_points')])
-        .groupBy(['team_id', 'team_name'])
+        .selectFrom('ctf_teams')
+        .leftJoin('team_challenges', 'ctf_teams.id', 'team_challenges.team_id')
+        .where('ctf_teams.ctf', '=', ctfId)
+        .select([
+            'ctf_teams.id as team_id',
+            'ctf_teams.name as team_name',
+            sql<number>`coalesce(sum(team_challenges.points), 0)`.as('total_points'),
+        ])
+        .groupBy(['ctf_teams.id', 'ctf_teams.name'])
         .orderBy('total_points', 'desc')
         .execute();
 
