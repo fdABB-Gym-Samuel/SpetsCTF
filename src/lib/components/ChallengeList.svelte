@@ -64,31 +64,33 @@
 
             {#if expandedCategories[category]}
                 <div transition:slide={{ duration: 300 }}>
-                    {#if challengesByCategory[category]?.filter((challenge) => !challenge?.solved).length <= 0 && showSolved === false}
-                        <p class="mb-4">No unsolved challenges</p>
-                    {:else if challengesByCategory[category]?.length > 0}
-                        <ul
-                            class="grid grid-cols-[repeat(auto-fill,minmax(305px,1fr))] gap-6 sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(390px,1fr))]">
-                            {#each challengesByCategory[category] as challengeData (challengeData.challenge_id)}
-                                {#if (!challengeData.solved || showSolved) && challengeData.display_name
-                                        .toLowerCase()
-                                        .includes(searchQuery?.toLowerCase() ?? '')}
-                                    <li class="min-h-fit min-w-65">
-                                        <button
-                                            class="w-full hover:cursor-pointer"
-                                            onclick={() =>
-                                                gotoChallenge(
-                                                    challengeData.challenge_id
-                                                )}>
-                                            <ChallengeCard {challengeData}
-                                            ></ChallengeCard>
-                                        </button>
-                                    </li>
-                                {/if}
-                            {/each}
-                        </ul>
-                    {:else}
-                        <p class="mb-4">No challenges yet</p>
+                    {#if challengesByCategory[category]}
+                        {#if challengesByCategory[category]?.filter((challenge) => !challenge?.solved).length <= 0 && showSolved === false}
+                            <p class="mb-4">No unsolved challenges</p>
+                        {:else if challengesByCategory[category]?.length > 0}
+                            <ul
+                                class="grid grid-cols-[repeat(auto-fill,minmax(305px,1fr))] gap-6 sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(390px,1fr))]">
+                                {#each challengesByCategory[category] as challengeData (challengeData.challenge_id)}
+                                    {#if (!challengeData.solved || showSolved) && challengeData.display_name
+                                            .toLowerCase()
+                                            .includes(searchQuery?.toLowerCase() ?? '')}
+                                        <li class="min-h-fit min-w-65">
+                                            <button
+                                                class="w-full hover:cursor-pointer"
+                                                onclick={() =>
+                                                    gotoChallenge(
+                                                        challengeData.challenge_id
+                                                    )}>
+                                                <ChallengeCard {challengeData}
+                                                ></ChallengeCard>
+                                            </button>
+                                        </li>
+                                    {/if}
+                                {/each}
+                            </ul>
+                        {:else}
+                            <p class="mb-4">No challenges yet</p>
+                        {/if}
                     {/if}
                 </div>
             {/if}
