@@ -70,7 +70,35 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
                       'ch.description',
                       'ch.display_name',
                       'ch.flag',
-                      'ch.points',
+                    //   'ch.points',
+                      sql<number>`
+                        CASE 
+                          WHEN (
+                            SELECT COUNT(DISTINCT ctm.team)
+                            FROM ctf_submissions cs
+                            INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
+                            INNER JOIN ctf_teams ct ON ctm.team = ct.id
+                            WHERE cs.challenge = ch.challenge_id
+                              AND cs.success = true
+                              AND ct.ctf = ${ctfId}
+                          ) = 0 
+                          THEN 500
+                          ELSE GREATEST(
+                            CEIL(
+                              (((100.0 - 500.0) / POWER(15.0, 2)) * 
+                              POWER((
+                                SELECT COUNT(DISTINCT ctm.team)
+                                FROM ctf_submissions cs
+                                INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
+                                INNER JOIN ctf_teams ct ON ctm.team = ct.id
+                                WHERE cs.challenge = ch.challenge_id
+                                  AND cs.success = true
+                                  AND ct.ctf = ${ctfId}
+                              ), 2)) + 501
+                            ),
+                            100
+                          )
+                        END`.as('points'),
                       'f.flag_format',
                       eb
                           .case()
@@ -90,34 +118,42 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
                           .as('author_id'),
                       // Aggregate up to the first 5 solver display_names into a JSON array, ordered by submission time.
                       sql<{ display_name: string | null }[]>`
-              COALESCE(
-                JSON_AGG(
-                  json_build_object('display_name', u.display_name)
-                  ORDER BY rs.first_time
-                ) FILTER (WHERE rs.rn <= 5),
-                '[]'::json
-              )
-            `.as('first_solvers'),
+                          COALESCE(
+                            JSON_AGG(
+                              json_build_object('display_name', u.display_name)
+                              ORDER BY rs.first_time
+                            ) FILTER (WHERE rs.rn <= 5),
+                            '[]'::json
+                          )
+                        `.as('first_solvers'),
                       // Count the total number of unique successful solves for the challenge.
                       sql<number>`(
-              SELECT COUNT(*)
-              FROM unique_success us
-              WHERE us.challenge = ch.challenge_id
-            )`.as('num_solvers'),
+                          SELECT COUNT(DISTINCT ctm.team)
+                          FROM ctf_submissions cs
+                          INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
+                          INNER JOIN ctf_teams ct ON ctm.team = ct.id
+                          WHERE cs.challenge = ch.challenge_id
+                            AND cs.success = true
+                            AND ct.ctf = ${ctfId}
+                        )`.as('num_solvers'),
                       // Check if the any user on the current user's team has solved the challenge.
                       sql<boolean>`EXISTS(
-              SELECT 1 
-              FROM ctf_submissions cs
-              INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
-              WHERE cs.challenge = ch.challenge_id
-                AND cs.success = true
-                AND ctm.team = (
-                  SELECT team 
-                  FROM ctf_teams_members 
-                  WHERE user_id = ${userId}
-                  LIMIT 1
-                )
-            )`.as('solved'),
+                          SELECT 1 
+                          FROM ctf_submissions cs
+                          INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
+                          INNER JOIN ctf_teams ct ON ctm.team = ct.id
+                          WHERE cs.challenge = ch.challenge_id
+                            AND cs.success = true
+                            AND ct.ctf = ${ctfId}
+                            AND ctm.team = (
+                              SELECT ctm2.team 
+                              FROM ctf_teams_members ctm2
+                              INNER JOIN ctf_teams ct2 ON ctm2.team = ct2.id
+                              WHERE ctm2.user_id = ${userId}
+                                AND ct2.ctf = ${ctfId}
+                              LIMIT 1
+                            )
+                        )`.as('solved'),
                       // Get an array of resources for the challenge (ordered by resource id).
                       sql<{ type: string; content: string }[]>`
               COALESCE(
@@ -133,7 +169,7 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
               )
             `.as('resources'),
                   ])
-                  .orderBy('ch.points', 'asc')
+                  .orderBy('points', 'asc')
                   .execute()
             : [];
 

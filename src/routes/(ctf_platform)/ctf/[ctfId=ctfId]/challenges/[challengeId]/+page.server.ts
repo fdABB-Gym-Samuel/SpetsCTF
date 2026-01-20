@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types';
 import { error, redirect, fail, type Actions } from '@sveltejs/kit';
 import { type Insertable, sql } from 'kysely';
-import type { WargameSubmissions } from '$lib/generated/db';
+import type { CtfSubmissions, WargameSubmissions } from '$lib/generated/db';
 import { get_flag_of_challenge } from '$lib/db/functions';
 import { db } from '$lib/db/database';
 
@@ -33,7 +33,34 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
             'challenges.description',
             'challenges.display_name',
             'challenges.flag',
-            'challenges.points',
+            sql<number>`
+                CASE 
+                  WHEN (
+                    SELECT COUNT(DISTINCT ctm.team)
+                    FROM ctf_submissions cs
+                    INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
+                    INNER JOIN ctf_teams ct ON ctm.team = ct.id
+                    WHERE cs.challenge = challenges.challenge_id
+                      AND cs.success = true
+                      AND ct.ctf = ${ctfId}
+                  ) = 0 
+                  THEN 500
+                  ELSE GREATEST(
+                    CEIL(
+                      (((100.0 - 500.0) / POWER(15.0, 2)) * 
+                      POWER((
+                        SELECT COUNT(DISTINCT ctm.team)
+                        FROM ctf_submissions cs
+                        INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
+                        INNER JOIN ctf_teams ct ON ctm.team = ct.id
+                        WHERE cs.challenge = challenges.challenge_id
+                          AND cs.success = true
+                          AND ct.ctf = ${ctfId}
+                      ), 2)) + 501
+                    ),
+                    100
+                  )
+                END`.as("points"),
         ])
         .select('flag.flag_format')
         .select([
@@ -46,19 +73,24 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
             `.as('author'),
         ])
         .select(() =>
-            sql<boolean>`EXISTS(
-                SELECT 1 
-                FROM ctf_submissions cs
-                INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
-                WHERE cs.challenge = challenges.challenge_id
+            sql<boolean>`
+                EXISTS(
+                  SELECT 1 
+                  FROM ctf_submissions cs
+                  INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
+                  INNER JOIN ctf_teams ct ON ctm.team = ct.id
+                  WHERE cs.challenge = challenges.challenge_id
                     AND cs.success = true
+                    AND ct.ctf = ${ctfId}
                     AND ctm.team = (
-                        SELECT team 
-                        FROM ctf_teams_members 
-                        WHERE user_id = ${user?.id ?? null}
-                        LIMIT 1
+                      SELECT ctm2.team 
+                      FROM ctf_teams_members ctm2
+                      INNER JOIN ctf_teams ct2 ON ctm2.team = ct2.id
+                      WHERE ctm2.user_id = ${user?.id}
+                        AND ct2.ctf = ${ctfId}
+                      LIMIT 1
                     )
-            )`.as('solved')
+                )`.as('solved')
         )
         .executeTakeFirst();
 
@@ -120,10 +152,13 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
         .execute();
 
     const numSolvers = await db
-        .selectFrom('ctf_submissions')
-        .where('success', '=', true)
-        .where('challenge', '=', challengeData.challenge_id)
-        .select((eb) => eb.fn.countAll().as('count'))
+        .selectFrom('ctf_submissions as cs')
+        .innerJoin('ctf_teams_members as ctm', 'cs.user_id', 'ctm.user_id')
+        .innerJoin('ctf_teams as ct', 'ctm.team', 'ct.id')
+        .where('cs.success', '=', true)
+        .where('cs.challenge', '=', challengeData.challenge_id)
+        .where('ct.ctf', '=', ctfId)
+        .select((eb) => eb.fn.count('ctm.team').distinct().as('count'))
         .executeTakeFirst();
 
     depends(`data:challenge-${challengeData.challenge_id}`);
@@ -217,16 +252,17 @@ export const actions = {
 
         const flagIsCorrect = submittedFlag === correctFlag.flag;
 
-        const submission: Insertable<WargameSubmissions> = {
+        const submission: Insertable<CtfSubmissions> = {
             challenge: challengeId,
             user_id: user.id,
             time: new Date(),
             success: flagIsCorrect,
             submitted_data: submittedFlag,
+            ctf: ctfId,
         };
 
         const submissionResult = await db
-            .insertInto('wargame_submissions')
+            .insertInto('ctf_submissions')
             .values(submission)
             .executeTakeFirst();
 
