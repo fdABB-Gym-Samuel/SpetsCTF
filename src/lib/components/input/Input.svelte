@@ -28,7 +28,7 @@
 </script>
 
 <div class="relative flex flex-col">
-    <div>
+    <div class="mb-2">
         <label for={name}>
             <span>{label}</span>
 
@@ -45,7 +45,7 @@
         autocomplete="off"
         id="input"
         bind:value
-        class="{widthClass} bg-bg-850 border-bg-500 focus:border-primary-light rounded-full border-2 px-6 py-2 outline-0"
+        class="{widthClass} bg-bg-800 focus:bg-bg-700 rounded-lg px-6 py-2.5 outline-0 transition-colors"
         onfocus={() => (inputFocused = true)}
         onblur={() => (inputFocused = false)}
         {...restProps}

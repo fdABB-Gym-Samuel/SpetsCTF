@@ -12,6 +12,7 @@
 
     import { ArrowLeft, User, LogIn } from '@lucide/svelte';
     import IconSignInBold from 'phosphor-icons-svelte/IconSignInBold.svelte';
+    import IconPlusBold from 'phosphor-icons-svelte/IconPlusBold.svelte';
 
     interface NavLink {
         display: string;
@@ -144,15 +145,14 @@
             </li>
         {/each}
     </ul>
-    <div class="flex w-1/5 grow justify-end overflow-y-hidden py-0.5 pr-0.5">
+    <div class="flex w-1/5 grow justify-end gap-3 overflow-y-hidden pr-0.5">
         {#if user}
-            <a
-                href={resolve('/user')}
-                class="ignore-default max-w-full space-x-4 truncate text-center underline">
-                <User class=" inline-block min-h-6 min-w-6" />
-                {user.display_name || user.github_username}</a>
+            <a href={resolve('/user')} class="ignore-default max-w-full truncate">
+                <div class="text-text-200 bg-bg-800 rounded-4xl px-3 py-2.5">tmp</div>
+            </a>
         {:else}
             <Button
+                bgColor="bg-bg-850"
                 label={translations.login}
                 type="button"
                 onclick={() => goto(resolve('/login'))}

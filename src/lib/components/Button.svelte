@@ -86,9 +86,9 @@
 {:else if styleType === 'icon'}
     <button
         {...restProps}
-        class="h-fit rounded-sm px-1 py-1 text-left {disabled
+        class="h-fit rounded-sm p-2 text-left {disabled
             ? disabledBgColor
-            : bgColor} cursor-pointer outline-2 {hoverColor} transition-colors *:inline-block {responsiveStyles} {twStyles} flex">
+            : bgColor} cursor-pointer {hoverColor} transition-colors *:inline-block {responsiveStyles} {twStyles} flex">
         {#if Icon}
             <Icon
                 class="inline-block {disabled

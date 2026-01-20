@@ -1,7 +1,6 @@
 <script lang="ts">
     import { resolve } from '$app/paths';
-
-    import IconArrowUpRightBold from 'phosphor-icons-svelte/IconArrowUpRightBold.svelte';
+    import { page } from '$app/state';
 
     let { data } = $props();
     let user = $derived(data.user);
@@ -25,7 +24,23 @@
         }
     });
 
-    import BackToTop from '$lib/components/BackToTop.svelte';
+    import Footer from '$lib/components/Footer.svelte';
+
+    let content: HTMLElement | undefined = $state();
+
+    let showFooter = $derived(content ? content.clientHeight >= 1200 : true);
+
+    $effect(() => {
+        // Track hash changes and content
+        page.url.hash;
+
+        // Use setTimeout to ensure DOM has updated after hash change
+        setTimeout(() => {
+            if (content) {
+                showFooter = content.clientHeight >= 1200;
+            }
+        }, 0);
+    });
 
     let userPosition = $derived(
         usersScoreboard.findIndex((user_) => user_.id === user?.id) + 1
@@ -37,7 +52,7 @@
     );
 </script>
 
-<main class="content m-auto w-full max-w-[1200px] pt-32">
+<main class="m-auto w-full max-w-[1200px] pt-32" bind:this={content}>
     {#if user && !user.is_admin}
         <header class="mb-12">
             <h1 class="text-[28px] font-semibold">
@@ -159,7 +174,8 @@
                 {/if}
             </div>
             <p class="text-text-200 mt-2 ml-0.5">
-                {usersScoreboard.length} users
+                {usersScoreboard.length}
+                {data.translations.users}
             </p>
         </section>
 
@@ -218,31 +234,6 @@
     </div>
 </main>
 
-<footer class="mt-64 flex w-full flex-col items-center justify-center">
-    <BackToTop />
-    <div
-        class="text-text-150 mt-64 mb-4 flex w-full flex-wrap justify-between gap-x-8 gap-y-12 text-sm sm:gap-y-4">
-        <div class="flex flex-wrap gap-x-12 gap-y-1">
-            <div class="*:inline-block">
-                <p class="mr-4 min-w-max">
-                    {data.translations.foss_plead}
-                </p>
-                <a
-                    class="text-text-200 *:inline-block"
-                    href="https://github.com/fdABB-Gym-Samuel/SpetsCTF"
-                    target="_blank"
-                    >{data.translations.contribute}
-                    <IconArrowUpRightBold class="text-base" /></a>
-            </div>
-            <p>
-                Encounter any issues? Reach out to <span class="font-semibold"
-                    >Samuel Olsson</span>
-                or <span class="font-semibold">Eric Thorburn</span> on teams.
-            </p>
-        </div>
-        <div class="flex flex-wrap gap-x-4">
-            <p>&copy; {new Date().getFullYear()} spetsen.net</p>
-            <p class="text-text-200">{data.translations.design_by} Hannes Gingby</p>
-        </div>
-    </div>
-</footer>
+<div class:hidden={!showFooter}>
+    <Footer />
+</div>

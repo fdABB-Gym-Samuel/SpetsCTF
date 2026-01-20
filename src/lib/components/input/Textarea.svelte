@@ -50,7 +50,7 @@
         {placeholder}
         {name}
         bind:value
-        class="{width} bg-bg-850 border-bg-500 focus:border-primary-light rounded-lg border-2 px-6 py-2 outline-0 {heightStyles}"
+        class="{width} bg-bg-800 focus:bg-bg-700 mt-3 rounded-lg px-6 py-3 outline-0 transition-colors {heightStyles}"
         {rows}
         onfocus={() => (textareaFocused = true)}
         onblur={() => (textareaFocused = false)}

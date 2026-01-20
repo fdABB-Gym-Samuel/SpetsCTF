@@ -46,7 +46,7 @@
     <div class="relative z-10 flex h-full flex-col justify-between">
         <section>
             <div class="flex justify-between">
-                <h3 class="challenge-name text-[18px]">
+                <h3 class="challenge-name text-left text-[18px]">
                     {challengeData.display_name}
                 </h3>
                 <p class="text-text-150 font-mono text-sm font-semibold">

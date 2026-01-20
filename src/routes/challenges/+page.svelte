@@ -1,6 +1,5 @@
 <script lang="ts">
     import Button from '$lib/components/Button.svelte';
-    import ButtonLink from '$lib/components/ButtonLink.svelte';
     import ChallengeList from '$lib/components/ChallengeList.svelte';
     import Switch from '$lib/components/input/Switch.svelte';
     import { enhance } from '$app/forms';
@@ -15,16 +14,17 @@
 
     let isMyTab = $derived(page.url.hash === '#my');
 
-    import { Pen, Trash2, LogIn } from '@lucide/svelte';
     import IconCaretDownBold from 'phosphor-icons-svelte/IconCaretDownBold.svelte';
     import IconMagnifyingGlassBold from 'phosphor-icons-svelte/IconMagnifyingGlassBold.svelte';
     import IconArrowUpDownLeftBold from 'phosphor-icons-svelte/IconArrowUDownLeftBold.svelte';
-    import IconArrowUpRightBold from 'phosphor-icons-svelte/IconArrowUpRightBold.svelte';
+    import IconArrowRightBold from 'phosphor-icons-svelte/IconArrowRightBold.svelte';
     import IconListBold from 'phosphor-icons-svelte/IconListBold.svelte';
     import IconXBold from 'phosphor-icons-svelte/IconXBold.svelte';
+    import IconTrashBold from 'phosphor-icons-svelte/IconTrashBold.svelte';
+    import IconPencilBold from 'phosphor-icons-svelte/IconPencilBold.svelte';
+    import IconPlusBold from 'phosphor-icons-svelte/IconPlusBold.svelte';
 
-    import BackToTop from '$lib/components/BackToTop.svelte';
-    import HSeperator from '$lib/components/HSeperator.svelte';
+    import Footer from '$lib/components/Footer.svelte';
     import { resolve } from '$app/paths';
 
     import { page } from '$app/state';
@@ -37,48 +37,73 @@
     );
 
     let mobileFilterMenuOpen = $state(false);
+
+    let content: HTMLElement | undefined = $state();
+
+    let showFooter = $derived(content ? content.clientHeight >= 1200 : true);
+
+    $effect(() => {
+        // Track hash changes and content
+        page.url.hash;
+
+        // Use setTimeout to ensure DOM has updated after hash change
+        setTimeout(() => {
+            if (content) {
+                showFooter = content.clientHeight >= 1200;
+            }
+        }, 0);
+    });
 </script>
 
-<main class="content w-full pt-12 sm:m-auto">
+<main class="w-full pt-12 sm:m-auto" bind:this={content}>
     <header class="bg-bg-800 mb-6 rounded-[10px] p-1.5">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <!-- Mobile header with hamburger -->
-            <div class="flex items-center justify-between lg:hidden">
-                <div class="bg-bg-850 relative flex gap-1 rounded-lg p-1 lg:hidden">
-                    <!-- Sliding background indicator -->
-                    <div
-                        class="bg-bg-600 absolute top-1 bottom-1 rounded-lg transition-all duration-300 ease-out"
-                        style="left: {isMyTab
-                            ? 'calc(50% + 0.125rem)'
-                            : '0.25rem'}; right: {isMyTab
-                            ? '0.25rem'
-                            : 'calc(50% + 0.125rem)'};">
-                    </div>
+            <div class="flex gap-2 lg:hidden">
+                <Button
+                    bgColor="bg-bg-850!"
+                    hoverColor="hover:bg-bg-700!"
+                    label="Create challenge"
+                    type="button"
+                    onclick={() => goto(`${resolve('/challenges')}#create`)}
+                    Icon={IconPlusBold} />
+                <!-- Mobile header with hamburger -->
+                <div class="flex w-full items-center justify-between">
+                    <div class="bg-bg-850 relative flex gap-1 rounded-lg p-1 lg:hidden">
+                        <!-- Sliding background indicator -->
+                        <div
+                            class="bg-bg-600 absolute top-1 bottom-1 rounded-lg transition-all duration-300 ease-out"
+                            style="left: {isMyTab
+                                ? 'calc(50% + 0.125rem)'
+                                : '0.25rem'}; right: {isMyTab
+                                ? '0.25rem'
+                                : 'calc(50% + 0.125rem)'};">
+                        </div>
 
-                    <!-- Tab buttons -->
-                    <a
-                        href="#all"
-                        class="relative z-10 flex flex-1 items-center justify-center rounded-lg px-8 py-2 text-sm transition-colors duration-300"
-                        class:text-text-200={isMyTab}>
-                        All
-                    </a>
-                    <a
-                        href="#my"
-                        class="relative z-10 flex flex-1 items-center justify-center rounded-lg px-8 py-2 text-sm transition-colors duration-300"
-                        class:text-text-200={!isMyTab}>
-                        My
-                    </a>
+                        <!-- Tab buttons -->
+                        <a
+                            href="#all"
+                            class="relative z-10 flex flex-1 items-center justify-center rounded-lg px-8 py-2 text-sm transition-colors duration-300"
+                            class:text-text-200={isMyTab}>
+                            All
+                        </a>
+                        <a
+                            href="#my"
+                            class="relative z-10 flex flex-1 items-center justify-center rounded-lg px-8 py-2 text-sm transition-colors duration-300"
+                            class:text-text-200={!isMyTab}>
+                            My
+                        </a>
+                    </div>
+                    <button
+                        onclick={() => (mobileFilterMenuOpen = !mobileFilterMenuOpen)}
+                        class="text-text-200 mr-1 cursor-pointer p-2"
+                        aria-label="Toggle filter menu">
+                        {#if mobileFilterMenuOpen}
+                            <IconXBold class="text-text-150 text-[24px]" />
+                        {:else}
+                            <IconListBold class="text-text-150 text-[24px]" />
+                        {/if}
+                    </button>
                 </div>
-                <button
-                    onclick={() => (mobileFilterMenuOpen = !mobileFilterMenuOpen)}
-                    class="text-text-200 mr-1 cursor-pointer p-2"
-                    aria-label="Toggle filter menu">
-                    {#if mobileFilterMenuOpen}
-                        <IconXBold class="text-text-150 text-[24px]" />
-                    {:else}
-                        <IconListBold class="text-text-150 text-[24px]" />
-                    {/if}
-                </button>
             </div>
 
             <!-- Main content - responsive -->
@@ -86,6 +111,15 @@
                 class="w-full flex-col gap-3 lg:flex-row {mobileFilterMenuOpen
                     ? 'flex'
                     : 'hidden lg:flex'}">
+                <div class="hidden lg:block">
+                    <Button
+                        bgColor="bg-bg-850!"
+                        hoverColor="hover:bg-bg-700!"
+                        label="Create challenge"
+                        type="button"
+                        onclick={() => goto(`${resolve('/challenges')}#create`)}
+                        Icon={IconPlusBold} />
+                </div>
                 <div class="flex w-full flex-col gap-x-3 gap-y-2 lg:flex-row">
                     <!-- Desktop tabs -->
                     <div
@@ -181,20 +215,18 @@
                     <ul class="flex flex-col">
                         {#each myChallenges as challenge (challenge.challenge_id)}
                             <li
-                                class="border-bg-500 flex h-16 w-full flex-row items-center justify-between border-b-2 px-4 py-2">
+                                class="border-bg-800 flex h-16 w-full flex-row items-center justify-between border-b-2 px-4 py-2">
                                 <p class="w-full">{challenge.challenge_name}</p>
-                                <HSeperator color="bg-bg-500"></HSeperator>
                                 <div
                                     class="ml-4 flex h-full flex-row items-center gap-2">
-                                    <ButtonLink
-                                        label=""
-                                        aria-label="Edit Challenge"
-                                        type="button"
-                                        styleType="icon"
+                                    <a
                                         href={resolve(
                                             `/challenges/${challenge.challenge_id}/edit`
                                         )}
-                                        Icon={Pen}></ButtonLink>
+                                        aria-label="Edit Challenge"
+                                        class="bg-bg-700 text-text-150 hover:bg-bg-600 relative z-10 cursor-pointer rounded-lg p-2 transition-colors">
+                                        <IconPencilBold class="text-[20px]" />
+                                    </a>
                                     <form
                                         method="post"
                                         action="?/deleteChallenge"
@@ -210,13 +242,12 @@
                                             type="hidden"
                                             name="challengeId"
                                             value={challenge.challenge_id} />
-                                        <Button
-                                            label=""
-                                            aria-label="Delete challenge"
+                                        <button
                                             type="submit"
-                                            styleType="icon"
-                                            bgColor="bg-red-700"
-                                            Icon={Trash2}></Button>
+                                            aria-label="Delete challenge"
+                                            class="bg-bg-700 text-text-150 hover:bg-bg-600 relative z-10 cursor-pointer rounded-lg p-2 transition-colors">
+                                            <IconTrashBold class="text-[20px]" />
+                                        </button>
                                     </form>
                                 </div>
                             </li>
@@ -225,63 +256,39 @@
                 {/if}
             </section>
         {:else}
-            <ButtonLink
-                label={translations.login}
-                href={resolve('/login')}
-                Icon={LogIn}
-                aria-label="Login" />
+            <p>Sign sign in to create a challenge.</p>
+            <a href={resolve('/login')}>Sign in</a>
         {/if}
     {:else if page.url.hash == '#create'}
         <form
             use:enhance
-            class="flex w-fit flex-col space-y-4"
+            class="m-auto w-fit pt-24"
             method="post"
             action="?/createChallenge">
-            <Input
-                label="Display name"
-                type="text"
-                name="name"
-                bind:value={inputtedChallengeDisplayName}
-                placeholder="Enter a display name"
-                required={true} />
-            {#if derivedChallengeId}
-                <span
-                    >Challenge ID: <span class="font-mono">{derivedChallengeId}</span
-                    ></span>
-            {/if}
+            <div class="mb-6">
+                <Input
+                    label="Display name"
+                    type="text"
+                    name="name"
+                    bind:value={inputtedChallengeDisplayName}
+                    placeholder="Enter a display name"
+                    required={true} />
+                {#if derivedChallengeId}
+                    <span class="text-text-200 pl-1 leading-loose"
+                        >Challenge ID:&nbsp;&nbsp;<span class="font-mono"
+                            >{derivedChallengeId}</span
+                        ></span>
+                {/if}
+            </div>
             <Button
-                label="Create Challenge"
+                label="Continue"
                 type="submit"
-                Icon={Pen}
-                aria-label="Go to challenges"></Button>
+                Icon={IconArrowRightBold}
+                aria-label="Continue editing challenge"></Button>
         </form>
     {/if}
 </main>
 
-<footer class="mt-64 flex w-full flex-col items-center justify-center">
-    <BackToTop />
-    <div
-        class="text-text-150 mt-64 mb-4 flex w-full flex-wrap justify-between gap-x-8 gap-y-12 text-sm sm:gap-y-4">
-        <div class="flex flex-wrap gap-x-12 gap-y-1">
-            <div class="*:inline-block">
-                <p class="mr-4 min-w-max">
-                    This project is open-source, feel free to help.
-                </p>
-                <a
-                    class="text-text-200 *:inline-block"
-                    href="https://github.com/fdABB-Gym-Samuel/SpetsCTF"
-                    target="_blank"
-                    >Contribute <IconArrowUpRightBold class="text-base" /></a>
-            </div>
-            <p>
-                Encounter any issues? Reach out to <span class="font-semibold"
-                    >Samuel Olsson</span>
-                or <span class="font-semibold">Eric Thorburn</span> on teams.
-            </p>
-        </div>
-        <div class="flex flex-wrap gap-x-4">
-            <p>&copy; {new Date().getFullYear()} spetsen.net</p>
-            <p class="text-text-200">Design by Hannes Gingby</p>
-        </div>
-    </div>
-</footer>
+<div class:hidden={!showFooter}>
+    <Footer />
+</div>

@@ -5,18 +5,21 @@
         selected: string[];
         name: string;
     }
+
     let { title, options, selected = $bindable([]), name }: Props = $props();
 </script>
 
 <div>
     <fieldset>
         <legend>{title}</legend>
-        <ul class="gap-x-4 px-4 pt-2 [&>*:first-child]:border-t-1">
+        <ul class="gap-x-4 pt-2">
             {#each options as option (option.text)}
-                <div
-                    class="border-bg-500 flex w-full flex-row items-center justify-between border-b-1 px-4 py-1">
+                <li
+                    class="flex w-full flex-row items-center gap-2 px-4 py-1 *:cursor-pointer">
                     <div>
-                        <label for={`${name}_${option.text}`} class="text-text-100">
+                        <label
+                            for={`${name}_${option.text}`}
+                            class="text-text-100 cursor-pointer select-none">
                             {option.text}
                         </label>
                         {#if option.disabled}
@@ -29,9 +32,9 @@
                         id={`${name}_${option.text}`}
                         bind:group={selected}
                         value={option.value}
-                        class="bg-bg-500 checked:bg-primary h-4 w-4 appearance-none rounded-sm"
+                        class="bg-bg-600 checked:bg-primary size-4 appearance-none rounded-sm"
                         disabled={option.disabled} />
-                </div>
+                </li>
             {/each}
         </ul>
     </fieldset>
