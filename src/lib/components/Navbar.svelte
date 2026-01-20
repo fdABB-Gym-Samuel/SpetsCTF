@@ -183,23 +183,18 @@
     <div
         class="bg-bg-700 text-text-150 absolute top-16 right-3 z-50 min-w-54 rounded-lg p-2 shadow-lg lg:right-8 xl:right-16"
         role="menu">
-        <ul
+        <div
             class="*:hover:bg-bg-600 flex flex-col *:rounded-sm *:px-2 *:py-1.5 *:transition-colors">
-            <li>
-                <a href={resolve(`/user/${user.id}`)} onclick={closeAvatarPopup}
-                    >Profile</a>
-            </li>
-            <li>
-                <a href={resolve('/user')} onclick={closeAvatarPopup}>Account</a>
-            </li>
-        </ul>
+            <a href={resolve(`/user/${user.id}`)} onclick={closeAvatarPopup}>Profile</a>
+            <a href={resolve('/user')} onclick={closeAvatarPopup}>Account</a>
+        </div>
         <div class="my-1">
             <VSeperator color="bg-bg-600" />
         </div>
         <form
             class="*:hover:bg-bg-600 w-full *:w-full *:rounded-sm *:px-2 *:py-1.5 *:text-left *:transition-colors"
             method="post"
-            action="?/logout"
+            action="/user?/logout"
             use:enhance={() => {
                 return async ({ result }) => {
                     if (result.type === 'success') {
