@@ -4,13 +4,18 @@
     import type { Selectable } from 'kysely';
     import { Menu } from '@lucide/svelte';
 
+    import { enhance } from '$app/forms';
+    import VSeperator from './VSeperator.svelte';
+
+    import IconSignOutBold from 'phosphor-icons-svelte/IconSignOutBold.svelte';
+
     import { page } from '$app/state';
     import { asset, resolve } from '$app/paths';
     import type { ResolvedPathname } from '$app/types';
 
     import Button from './Button.svelte';
 
-    import { ArrowLeft, User, LogIn } from '@lucide/svelte';
+    import { ArrowLeft, LogIn } from '@lucide/svelte';
     import IconSignInBold from 'phosphor-icons-svelte/IconSignInBold.svelte';
 
     interface NavLink {
@@ -25,6 +30,7 @@
     }
 
     let showSidebar = $state(false);
+    let showAvatarPopup = $state(false);
 
     let { user, translations, links }: Props = $props();
 
@@ -39,6 +45,14 @@
         } else {
             showSidebar = !showSidebar;
         }
+    };
+
+    const toggleAvatarPopup = () => {
+        showAvatarPopup = !showAvatarPopup;
+    };
+
+    const closeAvatarPopup = () => {
+        showAvatarPopup = false;
     };
 
     let isHovering = $state(false);
@@ -79,7 +93,7 @@
 </script>
 
 <nav
-    class="noise-contained bg-bg-900 fixed top-0 left-0 z-50 flex h-15 w-full flex-row items-center justify-between gap-5 px-16 pt-1 *:w-1/3">
+    class="noise-contained bg-bg-900 fixed top-0 left-0 z-50 flex h-15 w-full flex-row items-center justify-between gap-5 px-3 pt-1 *:w-1/3 lg:px-8 xl:px-16">
     <div class="flex w-1/5 grow-0 flex-row items-center sm:grow">
         <div class="logo-continer relative flex justify-end sm:mr-0">
             <svg
@@ -144,15 +158,17 @@
             </li>
         {/each}
     </ul>
-    <div class="flex w-1/5 grow justify-end gap-3 overflow-y-hidden pr-0.5">
+    <div class="relative flex w-1/5 grow justify-end gap-3 overflow-y-hidden pr-0.5">
         {#if user}
-            <a href={resolve('/user')} class="ignore-default max-w-full truncate">
-                <!-- <div class="text-text-200 bg-bg-800 rounded-4xl px-3 py-2.5">tmp</div> -->
+            <button
+                onclick={toggleAvatarPopup}
+                aria-label="User menu"
+                class="ignore-default max-w-full cursor-pointer truncate">
                 <img
                     src={`https://avatars.githubusercontent.com/u/${user.github_id}?v=4`}
                     alt="User Avatar"
                     class="inline-block h-8 w-8 rounded-full align-middle" />
-            </a>
+            </button>
         {:else}
             <Button
                 bgColor="bg-bg-850"
@@ -164,6 +180,42 @@
         {/if}
     </div>
 </nav>
+
+{#if showAvatarPopup && user}
+    <div
+        class="bg-bg-700 text-text-150 absolute top-16 right-3 z-50 min-w-54 rounded-lg p-2 shadow-lg lg:right-8 xl:right-16"
+        role="menu">
+        <ul
+            class="*:hover:bg-bg-600 flex flex-col *:rounded-sm *:px-2 *:py-1.5 *:transition-colors">
+            <li>
+                <a href={resolve(`/user/${user.id}`)} onclick={closeAvatarPopup}
+                    >Profile</a>
+            </li>
+            <li>
+                <a href={resolve('/user')} onclick={closeAvatarPopup}>Account</a>
+            </li>
+        </ul>
+        <div class="my-1">
+            <VSeperator color="bg-bg-600" />
+        </div>
+        <form
+            class="*:hover:bg-bg-600 w-full *:w-full *:rounded-sm *:px-2 *:py-1.5 *:text-left *:transition-colors"
+            method="post"
+            action="?/logout"
+            use:enhance={() => {
+                return async ({ result }) => {
+                    if (result.type === 'success') {
+                        await goto(resolve('/'), { invalidateAll: true });
+                    }
+                };
+            }}>
+            <button type="submit" class="cursor-pointer">
+                <span>Sign out</span>
+            </button>
+        </form>
+    </div>
+{/if}
+
 {#if showSidebar}
     <div
         class="backdrop bg-backdrop fixed bottom-0 left-0 z-30 h-[calc(100vh-(15rem/4))] w-screen"

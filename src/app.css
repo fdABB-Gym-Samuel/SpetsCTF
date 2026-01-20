@@ -167,7 +167,7 @@
 }
 
 body {
-    @apply noise scrollbar-hidden dark:bg-bg-900 text-text-100 selection:bg-text-100 selection:text-bg-900 m-0 box-border min-h-screen scroll-smooth px-3 py-1 font-sans leading-tight font-medium antialiased lg:px-16;
+    @apply noise scrollbar-hidden dark:bg-bg-900 text-text-100 selection:bg-text-100 selection:text-bg-900 m-0 box-border min-h-screen scroll-smooth px-3 py-1 font-sans leading-tight font-medium antialiased lg:px-8 xl:px-16;
 }
 
 /* NOTE: No firefox support as of now sadly */
