@@ -10,6 +10,7 @@
     let allChallenges = $derived(data.allChallenges);
     let myChallenges = $derived(data.myChallenges);
     let user = $derived(data.user);
+    let translations = $derived(data.translations);
 
     let isMyTab = $derived(page.url.hash === '#my');
 

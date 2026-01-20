@@ -12,25 +12,12 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
     depends('data:challenges');
 
     const allChallenges = await db
-        .with('all_submissions', (qb) =>
-            qb
-                .selectFrom('wargame_submissions')
-                .select(['challenge', 'user_id', 'time'])
-                .where('success', '=', true)
-                .union(
-                    qb
-                        .selectFrom('ctf_submissions')
-                        .select(['challenge', 'user_id', 'time'])
-                        .where('success', '=', true)
-                )
-        )
         .with('unique_success', (qb) =>
             qb
-                .selectFrom('all_submissions')
-                .innerJoin('users', 'all_submissions.user_id', 'users.id')
-                .where('is_admin', 'is not', true)
+                .selectFrom('wargame_submissions')
                 .select(['challenge', 'user_id'])
-                .select(sql`MIN(time)`.as('first_time'))
+                .select(sql<Date>`MIN(time)`.as('first_time'))
+                .where('success', '=', true)
                 .groupBy(['challenge', 'user_id'])
         )
         .selectFrom('challenges')
