@@ -6,6 +6,7 @@ import type { Challenges, CtfTeams } from '$lib/generated/db';
 
 export const load: PageServerLoad = async (event) => {
     const wantedUserId = event.params.userId;
+    const userId = event.locals.user?.id;
 
     if (!wantedUserId) error(404);
 
@@ -15,7 +16,8 @@ export const load: PageServerLoad = async (event) => {
         .selectAll()
         .executeTakeFirst();
 
-    if (!wantedUser || !wantedUser.display_name) error(404);
+    if (!wantedUser || (!wantedUser.display_name && wantedUser.id != userId))
+        error(404);
 
     const authoredChallenges: Selectable<Challenges>[] = await db
         .selectFrom('challenges')

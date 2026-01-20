@@ -6,7 +6,6 @@
     let { data, form } = $props();
 
     import Button from '$lib/components/Button.svelte';
-    import ButtonLink from '$lib/components/ButtonLink.svelte';
     import Checkbox from '$lib/components/input/Checkbox.svelte';
     import Input from '$lib/components/input/Input.svelte';
     import Select from '$lib/components/input/Select.svelte';
@@ -78,7 +77,7 @@
     let newResourceFormType = $state('cmd');
 </script>
 
-<main class="pt-8">
+<main class="pt-16 *:mx-auto *:w-[80%]">
     {#if showApproveForm}
         <section id="approve">
             <div class="flex flex-row items-center space-x-3">
@@ -140,15 +139,17 @@
             </ul>
         </div>
     {/if}
-    <p class="text-sm"><span class="text-primary-light">*</span>: Required</p>
+    <p class="mb-12 text-sm">
+        <span class="text-primary-light">*</span>: Required
+    </p>
     <form
         id={formId}
         action="?/editChallenge"
         method="post"
         enctype="multipart/form-data"
-        class="grid grid-cols-1 justify-around gap-x-10 gap-y-4 lg:grid-cols-2"
+        class="mb-12 grid grid-cols-1 justify-around gap-x-12 gap-y-4 lg:grid-cols-2"
         use:enhance>
-        <section class="flex max-w-200 min-w-80 flex-grow flex-col gap-4">
+        <section class="flex max-w-200 min-w-80 grow flex-col gap-4">
             <Input
                 label="Challenge display name"
                 value={data.challenge.display_name}
@@ -182,7 +183,7 @@
                 selected={data.challenge.anonymous_author ? ['author_anonymous'] : []}
             ></Checkbox>
         </section>
-        <section class="flex max-w-200 min-w-80 flex-grow flex-col gap-4">
+        <section class="flex max-w-200 min-w-80 grow flex-col gap-4">
             <Input
                 label="Points"
                 value={data.challenge.points}
@@ -206,13 +207,10 @@
     </form>
 
     <section id="resources">
-        <h2>Challenge Resources</h2>
-
-        <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <h2 class="text-[22px] font-semibold">Challenge Resources</h2>
+        <div class="mt-3 grid grid-cols-1 gap-5 lg:grid-cols-2">
             {#each data.resources as resource (resource.id)}
-                <div
-                    class="bg-bg-700 border-bg-500 rounded-lg border-2 p-4"
-                    animate:flip>
+                <div class="bg-bg-700 rounded-lg p-3" animate:flip>
                     <div class="flex flex-row items-center space-x-4">
                         {#if resource.type === 'web'}
                             <Globe />
@@ -229,17 +227,16 @@
                         {:else if resource.type === 'cmd'}
                             <span class="font-mono">{resource.content}</span>
                         {/if}
-                        <div class="flex-grow"></div>
+                        <div class="grow"></div>
                         {#if resource.type === 'file'}
                             <!-- TODO: Fix the href. -->
-                            <ButtonLink
-                                label=""
-                                styleType="icon"
-                                iconSize="20"
+                            <a
                                 href={resolve(
                                     `/files/${data.challenge.challenge_id}/${resource.content}`
                                 )}
-                                Icon={Download} />
+                                class="bg-bg-600 rounded-lg p-2">
+                                <Download />
+                            </a>
                         {/if}
                         <form method="post" action="?/deleteResource" use:enhance>
                             <input
@@ -262,7 +259,8 @@
             method="post"
             action="?/createResource"
             enctype="multipart/form-data"
-            use:enhance>
+            use:enhance
+            class="*:my-4">
             <Select
                 bind:value={newResourceFormType}
                 name="resource_type"

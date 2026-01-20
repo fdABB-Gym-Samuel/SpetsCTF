@@ -28,7 +28,7 @@
     <select
         {name}
         {...restProps}
-        class="bg-bg-700 border-bg-500 focus:border-primary-light w-full rounded-full border-2 px-6 py-2"
+        class="bg-bg-700 focus:border-primary-light mt-3 w-full appearance-none rounded-lg border-2 border-transparent px-6 py-2"
         bind:value>
         {#each options as option (option.value)}
             <option value={option.value}>{option.text}</option>

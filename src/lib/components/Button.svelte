@@ -1,9 +1,9 @@
 <script lang="ts">
-    import type { Icon as IconType } from '@lucide/svelte';
+    import type { Component } from 'svelte';
     import type { HTMLButtonAttributes } from 'svelte/elements';
 
     interface Props extends HTMLButtonAttributes {
-        Icon?: typeof IconType;
+        Icon?: Component;
         bgColor?: string;
         disabledBgColor?: string;
         disabledTextColor?: string;
@@ -20,18 +20,17 @@
 
     let {
         Icon = undefined,
-        bgColor = 'bg-bg-700',
+        bgColor = 'bg-bg-800',
         disabled,
         disabledBgColor = 'bg-bg-850',
-        disabledTextColor = 'text-gradient-100',
-        hoverColor = 'hover:bg-bg-600',
-        iconSize = '16',
+        disabledTextColor = 'text-text-200',
+        hoverColor = 'hover:bg-bg-700',
+        iconSize = '20px',
         label,
-        outlineColor = 'outline-bg-500',
         responsiveStyles = '',
         secondLabel = '',
         styleType = 'normal',
-        textColor = '',
+        textColor = 'text-text-150',
         twStyles = '',
         ...restProps
     }: Props = $props();
@@ -41,25 +40,25 @@
     <button
         {disabled}
         {...restProps}
-        class="rounded-xl px-16 py-1.5 outline-2 {disabled
+        class="flex items-center gap-1.5 rounded-lg px-5 py-2.5 font-semibold {disabled
             ? disabledBgColor
-            : bgColor} {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {twStyles} {responsiveStyles} text-nowrap">
+            : bgColor} cursor-pointer {hoverColor} transition-colors *:inline-block {twStyles} {responsiveStyles} text-nowrap">
         {#if secondLabel !== ''}
-            <span class="mr-0.5 {disabled ? disabledTextColor : textColor}"
+            <span class={disabled ? disabledTextColor : textColor}
                 >{label}<span class="dark:text-primary-light text-primary"
                     >{secondLabel}</span
                 ></span>
         {:else}
-            <span class="mr-0.5 {disabled ? disabledTextColor : textColor}"
-                >{label}</span>
+            <span class={disabled ? disabledTextColor : textColor}>{label}</span>
         {/if}
         {#if Icon}
             <Icon
-                size={iconSize}
-                strokeWidth="2.5"
-                class="{disabled ? disabledTextColor : textColor} {secondLabel !== ''
+                class="inline-block {disabled
+                    ? disabledTextColor
+                    : textColor} {secondLabel !== ''
                     ? 'dark:text-primary-light text-primary'
-                    : ''}" />
+                    : ''}"
+                style="font-size: {iconSize}" />
         {/if}
     </button>
 {:else if styleType === 'small'}
@@ -67,36 +66,37 @@
         {...restProps}
         class="rounded-sm px-4 py-1 text-sm {disabled
             ? disabledBgColor
-            : bgColor} outline-2 {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {responsiveStyles} {twStyles}">
+            : bgColor} cursor-pointer outline-2 {hoverColor} transition-colors *:inline-block {responsiveStyles} {twStyles}">
         {#if secondLabel !== ''}
-            <span class="mr-0.5 {disabled ? disabledTextColor : textColor}"
+            <span class="mr-1 {disabled ? disabledTextColor : textColor}"
                 >{label}<span class="text-primary-light">{secondLabel}</span></span>
         {:else}
-            <span class="mr-0.5 {disabled ? disabledTextColor : textColor}"
-                >{label}</span>
+            <span class="mr-1 {disabled ? disabledTextColor : textColor}">{label}</span>
         {/if}
         {#if Icon}
             <Icon
-                size={iconSize}
-                strokeWidth="2.5"
-                class="{disabled ? disabledTextColor : textColor} {secondLabel !== ''
-                    ? 'text-primary-light'
-                    : ''}" />
+                class="inline-block {disabled
+                    ? disabledTextColor
+                    : textColor} {secondLabel !== ''
+                    ? 'dark:text-primary-light text-primary'
+                    : ''}"
+                style="font-size: {iconSize}" />
         {/if}
     </button>
 {:else if styleType === 'icon'}
     <button
         {...restProps}
-        class="h-fit rounded-sm px-1 py-1 text-left {disabled
+        class="h-fit rounded-sm p-2 text-left {disabled
             ? disabledBgColor
-            : bgColor} outline-2 {outlineColor} cursor-pointer {hoverColor} transition-colors *:inline-block {responsiveStyles} {twStyles} flex">
+            : bgColor} cursor-pointer {hoverColor} transition-colors *:inline-block {responsiveStyles} {twStyles} flex">
         {#if Icon}
             <Icon
-                size={iconSize}
-                strokeWidth="2.5"
-                class="{disabled ? disabledTextColor : textColor} {secondLabel !== ''
-                    ? 'text-primary-light'
-                    : ''}" />
+                class="inline-block {disabled
+                    ? disabledTextColor
+                    : textColor} {secondLabel !== ''
+                    ? 'dark:text-primary-light text-primary'
+                    : ''}"
+                style="font-size: {iconSize}" />
         {/if}
     </button>
 {/if}

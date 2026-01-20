@@ -5,36 +5,22 @@
     import { goto } from '$app/navigation';
     import { resolve } from '$app/paths';
     import Button from '$lib/components/Button.svelte';
-    import { Github } from '@lucide/svelte';
 
-    import { playAnimations } from '$lib/gsap/animations.js';
-    import { onDestroy, onMount } from 'svelte';
-
-    let componentRoot: HTMLElement;
-    let gsapContext: gsap.Context | undefined;
-
-    onMount(() => {
-        gsapContext = playAnimations(componentRoot);
-    });
-
-    onDestroy(() => {
-        gsapContext?.revert();
-    });
+    import IconGithubLogoBold from 'phosphor-icons-svelte/IconGithubLogoBold.svelte';
 </script>
 
-<div
-    data-sveltekit-preload-data="tap"
-    class="m-auto flex max-w-128 flex-col justify-center pt-48"
-    bind:this={componentRoot}>
-    <h1 class="gsap-top-down-opacity mb-4 text-center text-xl font-bold">
-        {translations.login}
-    </h1>
+<div data-sveltekit-preload-data="tap" class="mx-auto w-min pt-64">
+    <div class="mb-8">
+        <h1 class="mb-2 text-2xl">
+            {translations.login}
+        </h1>
+        <p class="text-text-200 min-w-max">{translations.github_redirect_message}</p>
+    </div>
     <Button
-        label="Log in with "
+        label={`${translations.continue_with} `}
         type="button"
         onclick={() => goto(resolve('/login/github'))}
-        aria-label="Login with GitHub"
-        Icon={Github}
-        secondLabel="GitHub"
-        twStyles="gsap-top-down-opacity" />
+        aria-label={`${translations.continue_with} GitHub`}
+        Icon={IconGithubLogoBold}
+        secondLabel="GitHub" />
 </div>

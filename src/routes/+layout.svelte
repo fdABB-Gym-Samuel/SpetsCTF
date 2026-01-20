@@ -11,11 +11,12 @@
         { display: translations.challenges, href: resolve('/challenges') },
         { display: translations.ctfs, href: resolve('/ctfs') },
         { display: translations.leaderboard, href: resolve('/leaderboard') },
+        { display: translations.learn, href: resolve('/learn') },
     ]);
 </script>
 
-<Navbar {user} {translations} {links}></Navbar>
+<header class="mb-10">
+    <Navbar {user} {translations} {links}></Navbar>
+</header>
 
-<main>
-    {@render children()}
-</main>
+{@render children()}
