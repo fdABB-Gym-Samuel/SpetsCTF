@@ -23,6 +23,15 @@
         Object.fromEntries(categories.map((cat) => [cat, true]))
     );
 
+    // let challengesByCategory = $derived(challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()))
+    let challengesByCategory = $derived(
+        Object.groupBy(
+            challenges,
+            (challenge) =>
+                challenge.challenge_category?.toLowerCase() ?? 'uncategorized'
+        )
+    );
+
     function toggleCategory(category: string) {
         expandedCategories[category] = !expandedCategories[category];
     }
@@ -48,10 +57,12 @@
 
             {#if expandedCategories[category]}
                 <div transition:slide={{ duration: 300 }}>
-                    {#if challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()).length > 0}
+                    {#if challengesByCategory[category]?.filter((challenge) => !challenge?.solved).length <= 0 && showSolved === false}
+                        <p class="mb-4">No unsolved challenges</p>
+                    {:else if challengesByCategory[category]?.length > 0}
                         <ul
                             class="grid grid-cols-[repeat(auto-fill,minmax(305px,1fr))] gap-6 sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(390px,1fr))]">
-                            {#each challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challengeData (challengeData.challenge_id)}
+                            {#each challengesByCategory[category] as challengeData (challengeData.challenge_id)}
                                 {#if !challengeData.solved || showSolved}
                                     <li class="min-h-fit min-w-65">
                                         <button
