@@ -70,7 +70,7 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
                       'ch.description',
                       'ch.display_name',
                       'ch.flag',
-                    //   'ch.points',
+                      //   'ch.points',
                       sql<number>`
                         CASE 
                           WHEN (

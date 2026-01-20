@@ -60,7 +60,7 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
                     ),
                     100
                   )
-                END`.as("points"),
+                END`.as('points'),
         ])
         .select('flag.flag_format')
         .select([
