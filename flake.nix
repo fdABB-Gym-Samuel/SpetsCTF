@@ -39,9 +39,10 @@
           packages = with pkgs; [
             bun
             bun2nix.packages.${stdenv.hostPlatform.system}.default
+            go-migrate
             jq
-            postgresql.out
             pdpmake
+            postgresql.out
           ];
           shellHook = ''
             alias make='pdpmake --posix'
@@ -59,6 +60,7 @@
             garage
             getent
             git
+            go-migrate
             groff
             helix
             jq
