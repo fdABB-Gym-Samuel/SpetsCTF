@@ -16,6 +16,8 @@
     }: { targetDate: Date | undefined; translations: Record<string, string> } =
         $props();
 
+    console.log(translations);
+
     let countdown = $state<CountdownTime>({
         days: 0,
         hours: 0,

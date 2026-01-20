@@ -46,7 +46,8 @@
     let showSolved = $state(true);
 
     let showCategory = $state<string>('');
-    $inspect(showCategory);
+
+    let searchQuery = $state('');
 
     $effect(() => {
         // Track hash changes and content
@@ -176,6 +177,7 @@
                     <!-- Search input -->
                     <div class="relative w-full">
                         <input
+                            bind:value={searchQuery}
                             type="text"
                             name="search"
                             placeholder="Search"
@@ -214,7 +216,8 @@
             }}
             challenges={allChallenges}
             bind:showSolved
-            bind:showCategory></ChallengeList>
+            bind:showCategory
+            bind:searchQuery></ChallengeList>
     {:else if page.url.hash === '#my'}
         {#if user}
             <section>

@@ -168,7 +168,7 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
 };
 
 export const actions = {
-    delete: async ({ request, locals }) => {
+    deleteChallenge: async ({ request, locals }) => {
         const user = locals.user;
         if (!user) {
             return redirect(304, '/login');

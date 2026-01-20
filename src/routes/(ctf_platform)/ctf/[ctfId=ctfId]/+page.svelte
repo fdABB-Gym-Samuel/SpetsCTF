@@ -34,6 +34,6 @@
         </div>
     </div>
     <div class="w-full perspective-midrange">
-        <Countdown targetDate={ctfData?.start_time} />
+        <Countdown targetDate={ctfData?.start_time} translations={data?.translations} />
     </div>
 </main>

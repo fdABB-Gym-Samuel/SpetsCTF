@@ -15,6 +15,7 @@
         gotoChallenge: (challengeId: string) => void;
         showSolved?: boolean;
         showCategory?: string;
+        searchQuery?: string;
     }
 
     let {
@@ -22,6 +23,7 @@
         gotoChallenge,
         showSolved = $bindable(true),
         showCategory = $bindable(''),
+        searchQuery = $bindable(''),
     }: Props = $props();
 
     // Track expanded state for each category (all expanded by default)
@@ -29,7 +31,6 @@
         Object.fromEntries(categories.map((cat) => [cat, true]))
     );
 
-    // let challengesByCategory = $derived(challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()))
     let challengesByCategory = $derived(
         Object.groupBy(
             challenges,
@@ -69,7 +70,9 @@
                         <ul
                             class="grid grid-cols-[repeat(auto-fill,minmax(305px,1fr))] gap-6 sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(390px,1fr))]">
                             {#each challengesByCategory[category] as challengeData (challengeData.challenge_id)}
-                                {#if !challengeData.solved || showSolved}
+                                {#if (!challengeData.solved || showSolved) && challengeData.display_name
+                                        .toLowerCase()
+                                        .includes(searchQuery?.toLowerCase() ?? '')}
                                     <li class="min-h-fit min-w-65">
                                         <button
                                             class="w-full hover:cursor-pointer"
