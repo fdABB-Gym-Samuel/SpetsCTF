@@ -12,7 +12,6 @@
 
     import { ArrowLeft, User, LogIn } from '@lucide/svelte';
     import IconSignInBold from 'phosphor-icons-svelte/IconSignInBold.svelte';
-    import IconPlusBold from 'phosphor-icons-svelte/IconPlusBold.svelte';
 
     interface NavLink {
         display: string;

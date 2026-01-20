@@ -9,7 +9,6 @@
 
     let allChallenges = $derived(data.allChallenges);
     let myChallenges = $derived(data.myChallenges);
-    let translations = $derived(data.translations);
     let user = $derived(data.user);
 
     let isMyTab = $derived(page.url.hash === '#my');
@@ -46,7 +45,7 @@
 
     $effect(() => {
         // Track hash changes and content
-        page.url.hash;
+        let hash = page.url.hash;
 
         // Use setTimeout to ensure DOM has updated after hash change
         setTimeout(() => {
@@ -263,11 +262,7 @@
             <a href={resolve('/login')}>Sign in</a>
         {/if}
     {:else if page.url.hash == '#create'}
-        <form
-            use:enhance
-            class="m-auto w-fit pt-24"
-            method="post"
-            action="?/createChallenge">
+        <form class="m-auto w-fit pt-24" method="post" action="?/createChallenge">
             <div class="mb-6">
                 <Input
                     label="Display name"
