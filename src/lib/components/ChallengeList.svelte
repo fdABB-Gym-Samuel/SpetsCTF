@@ -14,9 +14,15 @@
         })[];
         gotoChallenge: (challengeId: string) => void;
         showSolved?: boolean;
+        showCategory?: string;
     }
 
-    let { challenges, gotoChallenge, showSolved = $bindable(true) }: Props = $props();
+    let {
+        challenges,
+        gotoChallenge,
+        showSolved = $bindable(true),
+        showCategory = $bindable(''),
+    }: Props = $props();
 
     // Track expanded state for each category (all expanded by default)
     let expandedCategories = $state<Record<string, boolean>>(
@@ -38,7 +44,7 @@
 </script>
 
 <section class="w-full">
-    {#each categories as category (category)}
+    {#each showCategory ? [showCategory] : categories as category (category)}
         <div class="mb-16">
             <button
                 class="mb-4 cursor-pointer pb-2 text-left"
