@@ -68,7 +68,7 @@ CREATE TABLE challenges (
   display_name VARCHAR(256) NOT NULL,
   description TEXT,
   created_at TIMESTAMPTZ,
-  challenge_category category DEFAULT 'misc' NOT NULL,
+  challenge_category CATEGORY DEFAULT 'misc' NOT NULL,
   -- This is basically a bitset storing the challenges
   -- The challenges are stored in an array, order matters!!! Its the same as the Enum for category, i.e alphabetical
   -- The list of challenges can be derived like this in js:
@@ -91,7 +91,7 @@ CREATE TABLE wargame_submissions (
   id SERIAL PRIMARY KEY,
   challenge VARCHAR(256) NOT NULL,
   user_id UUID NOT NULL,
-  time TIMESTAMPTZ DEFAULT NOW(),
+  time TIMESTAMPTZ DEFAULT now(),
   success BOOLEAN NOT NULL DEFAULT FALSE,
   submitted_data TEXT,
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
@@ -117,7 +117,7 @@ CREATE TABLE ctf_submissions (
   id SERIAL PRIMARY KEY,
   challenge VARCHAR(256) NOT NULL,
   user_id UUID NOT NULL,
-  time TIMESTAMPTZ DEFAULT NOW(),
+  time TIMESTAMPTZ DEFAULT now(),
   success BOOLEAN NOT NULL DEFAULT FALSE,
   ctf INT NOT NULL,
   submitted_data TEXT,
@@ -131,7 +131,7 @@ CREATE TYPE challenge_resource_type AS ENUM('cmd', 'file', 'web');
 CREATE TABLE challenge_resources (
   id SERIAL PRIMARY KEY,
   challenge VARCHAR(256) NOT NULL,
-  type challenge_resource_type NOT NULL DEFAULT 'file',
+  type CHALLENGE_RESOURCE_TYPE NOT NULL DEFAULT 'file',
   content TEXT NOT NULL,
   FOREIGN KEY (challenge) REFERENCES challenges (challenge_id) ON DELETE CASCADE,
   UNIQUE (challenge, type, content)
