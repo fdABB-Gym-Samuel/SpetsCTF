@@ -146,6 +146,26 @@
     }
 }
 
+@layer utilities {
+    *::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    *::-webkit-scrollbar-track {
+        border-radius: 100vh;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background: var(--color-bg-600);
+        border-radius: 100vh;
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+        background: var(--color-text-200);
+    }
+}
+
 body {
     @apply noise scrollbar-hidden dark:bg-bg-900 text-text-100 selection:bg-text-100 selection:text-bg-900 m-0 box-border min-h-screen scroll-smooth px-3 py-1 font-sans leading-tight font-medium antialiased lg:px-16;
 }

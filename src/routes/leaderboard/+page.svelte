@@ -1,6 +1,5 @@
 <script lang="ts">
     import { resolve } from '$app/paths';
-    import { page } from '$app/state';
 
     let { data } = $props();
     let user = $derived(data.user);
@@ -27,20 +26,6 @@
     import Footer from '$lib/components/Footer.svelte';
 
     let content: HTMLElement | undefined = $state();
-
-    let showFooter = $derived(content ? content.clientHeight >= 1200 : true);
-
-    $effect(() => {
-        // Track hash changes and content
-        let hash = page.url.hash;
-
-        // Use setTimeout to ensure DOM has updated after hash change
-        setTimeout(() => {
-            if (content) {
-                showFooter = content.clientHeight >= 1200;
-            }
-        }, 0);
-    });
 
     let userPosition = $derived(
         usersScoreboard.findIndex((user_) => user_.id === user?.id) + 1
@@ -228,6 +213,4 @@
     </div>
 </main>
 
-<div class:hidden={!showFooter}>
-    <Footer />
-</div>
+<Footer />
