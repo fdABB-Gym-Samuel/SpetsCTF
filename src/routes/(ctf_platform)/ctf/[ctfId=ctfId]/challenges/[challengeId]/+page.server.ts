@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types';
 import { error, redirect, fail, type Actions } from '@sveltejs/kit';
 import { type Insertable, sql } from 'kysely';
-import type { CtfSubmissions, WargameSubmissions } from '$lib/generated/db';
+import type { CtfSubmissions } from '$lib/generated/db';
 import { get_flag_of_challenge } from '$lib/db/functions';
 import { db } from '$lib/db/database';
 
