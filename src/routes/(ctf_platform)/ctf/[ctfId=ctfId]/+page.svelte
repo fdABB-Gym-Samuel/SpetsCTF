@@ -1,15 +1,13 @@
 <script lang="ts">
     let { data } = $props();
     let ctfData = $derived(data.ctfData);
+    import { Spring } from 'svelte/motion';
 
     import { page } from '$app/state';
     import { Swords } from '@lucide/svelte';
 
     import { onMount, onDestroy } from 'svelte';
-    import gsap from 'gsap';
     import { goto } from '$app/navigation';
-
-    import { playAnimations } from '$lib/gsap/animations';
 
     import HSeperator from '$lib/components/HSeperator.svelte';
     import Button from '$lib/components/Button.svelte';
@@ -46,67 +44,51 @@
 
         countdown = { days, hours, minutes, seconds };
     }
-    let componentRoot: HTMLElement;
-    let gsapContext: gsap.Context | undefined;
 
     let countdownContainer: HTMLElement;
-    const maxRotate: number = 1.5;
+    const maxRotate: number = 1;
+
+    const rotX = new Spring(0, { stiffness: 0.15, damping: 0.8 });
+    const rotY = new Spring(0, { stiffness: 0.15, damping: 0.8 });
 
     function handleMouseMove(event: MouseEvent): void {
         const rect = countdownContainer.getBoundingClientRect();
         const xRel = event.clientX - (rect.left + rect.width / 2);
         const yRel = event.clientY - (rect.top + rect.height / 2);
-
         // Normalize to range [-1, 1]
         const xNorm = xRel / (rect.width / 2);
         const yNorm = yRel / (rect.height / 2);
-
-        const rotY = xNorm * maxRotate; // mouse right → positive Y-rotation
-        const rotX = -yNorm * maxRotate; // mouse down → positive X-rotation
-
         // Smoothly tween to the new rotation
-        gsap.to(countdownContainer, {
-            rotationX: rotX,
-            rotationY: rotY,
-            duration: 0.5,
-        });
+        rotY.target = xNorm * maxRotate;
+        rotX.target = -yNorm * maxRotate;
     }
 
     function handleMouseLeave() {
-        // reset back to flat
-        gsap.to(countdownContainer, {
-            rotationX: 0,
-            rotationY: 0,
-            duration: 0.5,
-        });
+        // Reset back to flat
+        rotX.target = 0;
+        rotY.target = 0;
     }
 
     onMount(() => {
         updateCountdown();
         interval = setInterval(updateCountdown, 1000);
-
-        gsapContext = playAnimations(componentRoot);
     });
 
     onDestroy(() => {
         clearInterval(interval);
-
-        gsapContext?.revert();
     });
 </script>
 
 <svelte:body on:mousemove={handleMouseMove} on:mouseleave={handleMouseLeave} />
 
-<main
-    class="m-auto flex max-w-[520px] flex-col items-center justify-center pt-48"
-    bind:this={componentRoot}>
+<main class="m-auto flex max-w-[520px] flex-col items-center justify-center pt-48">
     <h1 class="text-3xl font-bold">
         {ctfData?.display_name}
     </h1>
     <div class="w-full perspective-midrange">
         <article
             bind:this={countdownContainer}
-            class="gsap-opacity-slow mt-12 w-full will-change-transform transform-3d">
+            class="mt-12 w-full will-change-transform transform-3d">
             {#if !started}
                 <p class="text-text-200 mb-2 text-sm">CTF starts in</p>
             {:else if !ended}
@@ -134,7 +116,7 @@
         {#if ended}
             <p class="text-center">CTF has ended</p>
         {:else}
-            <div class="gsap-bottom-up-opacity mt-24 text-center">
+            <div class="mt-24 text-center">
                 <Button
                     label="See Challenges"
                     type="button"

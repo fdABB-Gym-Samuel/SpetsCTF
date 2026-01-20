@@ -1,10 +1,12 @@
 <script lang="ts">
     import ChallengeCard from './ChallengeCard.svelte';
-    import VSeperator from './VSeperator.svelte';
+    // import VSeperator from "./VSeperator.svelte";
     import type { Challenges } from '$lib/generated/db';
     import type { Selectable } from 'kysely';
     import { capitalizeFirstLetter } from '$lib/utils/utils';
     import { categories } from '$lib/db/constants';
+    import IconCaretDownBold from 'phosphor-icons-svelte/IconCaretDownBold.svelte';
+    import { slide } from 'svelte/transition';
 
     interface Props {
         challenges: (Selectable<Challenges> & { num_solvers: number } & {
@@ -14,33 +16,58 @@
     }
 
     let { challenges, gotoChallenge }: Props = $props();
+
+    // Track expanded state for each category (all expanded by default)
+    let expandedCategories = $state<Record<string, boolean>>(
+        Object.fromEntries(categories.map((cat) => [cat, true]))
+    );
+
+    function toggleCategory(category: string) {
+        expandedCategories[category] = !expandedCategories[category];
+    }
 </script>
 
-<section class="challenge-container w-full">
+<section class="w-full">
     {#each categories as category (category)}
-        <div class="category-container mb-16">
-            <h3 class="category-header gsap-top-down-opacity mb-2 text-lg font-bold">
-                {capitalizeFirstLetter(category)}
-            </h3>
-            {#if challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()).length > 0}
-                <ul
-                    class="grid grid-cols-[repeat(auto-fill,minmax(305px,1fr))] gap-4 sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(390px,1fr))]">
-                    {#each challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challengeData (challengeData.challenge_id)}
-                        <li class="gsap-left-right-opacity min-h-fit min-w-65">
-                            <button
-                                class="w-full hover:cursor-pointer"
-                                onclick={() =>
-                                    gotoChallenge(challengeData.challenge_id)}>
-                                <ChallengeCard {challengeData}></ChallengeCard>
-                            </button>
-                        </li>
-                    {/each}
-                </ul>
-            {:else}
-                <p class="mb-4">No challenges yet</p>
+        <div class="mb-16">
+            <button
+                class="mb-4 cursor-pointer pb-2 text-left"
+                onclick={() => toggleCategory(category)}>
+                <h3 class="flex items-center gap-2 text-[20px] font-semibold">
+                    {capitalizeFirstLetter(category)}
+                    <div
+                        class="transition-transform"
+                        style="transform: rotate({expandedCategories[category]
+                            ? '0deg'
+                            : '180deg'})">
+                        <IconCaretDownBold class="text-text-200 " />
+                    </div>
+                </h3>
+            </button>
+
+            {#if expandedCategories[category]}
+                <div transition:slide={{ duration: 300 }}>
+                    {#if challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()).length > 0}
+                        <ul
+                            class="grid grid-cols-[repeat(auto-fill,minmax(305px,1fr))] gap-6 sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(390px,1fr))]">
+                            {#each challenges.filter((challenge) => challenge.challenge_category == category?.toLowerCase()) as challengeData (challengeData.challenge_id)}
+                                <li class="min-h-fit min-w-65">
+                                    <button
+                                        class="w-full hover:cursor-pointer"
+                                        onclick={() =>
+                                            gotoChallenge(challengeData.challenge_id)}>
+                                        <ChallengeCard {challengeData}></ChallengeCard>
+                                    </button>
+                                </li>
+                            {/each}
+                        </ul>
+                    {:else}
+                        <p class="mb-4">No challenges yet</p>
+                    {/if}
+                </div>
             {/if}
-            <br />
-            <VSeperator />
+
+            <!-- <VSeperator /> -->
         </div>
     {/each}
 </section>

@@ -11,8 +11,6 @@
 
     import { capitalizeFirstLetter } from '$lib/utils/utils';
 
-    import { playAnimations } from '$lib/gsap/animations';
-
     import Button from './Button.svelte';
     import { map } from '$lib/utils/utils';
     import { onMount, onDestroy } from 'svelte';
@@ -78,12 +76,7 @@
 
     let keydownHandler: (e: KeyboardEvent) => void;
 
-    let gsapContext: gsap.Context | undefined;
-    let componentRoot: HTMLElement;
-
     onMount(() => {
-        gsapContext = playAnimations(componentRoot);
-
         keydownHandler = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 closeDialog();
@@ -94,8 +87,6 @@
     });
 
     onDestroy(() => {
-        gsapContext?.revert();
-
         if (keydownHandler) {
             document.removeEventListener('keydown', keydownHandler);
         }
@@ -103,8 +94,7 @@
 </script>
 
 <div
-    bind:this={componentRoot}
-    class="backdrop bg-overlay prevent-default fixed top-0 left-0 z-20 flex h-screen w-screen items-center justify-center overflow-y-scroll pt-16">
+    class="prevent-default fixed top-0 left-0 z-20 flex h-screen w-screen items-center justify-center overflow-y-scroll pt-16">
     <button
         type="button"
         class="fixed inset-0 h-full w-full cursor-default focus:outline-none"
@@ -115,7 +105,7 @@
         }}
         aria-label="Close challenge details"></button>
     <dialog
-        class="bg-bg-800 challenge-dialog gsap-opacity relative m-auto flex w-[85%] max-w-[1000px] flex-col overflow-y-scroll rounded-lg px-4 py-12 sm:px-8 md:px-10 lg:px-16">
+        class="bg-bg-800 challenge-dialog relative m-auto flex w-[85%] max-w-[1000px] flex-col overflow-y-scroll rounded-lg px-4 py-12 sm:px-8 md:px-10 lg:px-16">
         <section class="-mt-2 mb-12 flex w-full justify-between">
             {#if challengeData.created_at}
                 <p class="text-primary-light text-md mb-0.5 font-mono font-bold">

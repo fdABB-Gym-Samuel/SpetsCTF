@@ -19,36 +19,20 @@
     import { Search, ChevronDown, Pen, Trash2, LogIn } from '@lucide/svelte';
     import VSeperator from '$lib/components/VSeperator.svelte';
     import BackToTop from '$lib/components/BackToTop.svelte';
-    import { playAnimations } from '$lib/gsap/animations';
-    import { onDestroy, onMount } from 'svelte';
     import HSeperator from '$lib/components/HSeperator.svelte';
     import { resolve } from '$app/paths';
     import { enhance } from '$app/forms';
-
-    let componentRoot: HTMLElement;
-    let gsapContext: gsap.Context | undefined;
 
     let inputtedChallengeDisplayName = $state('');
     let derivedChallengeId = $derived(
         formatRequestedName(inputtedChallengeDisplayName)
     );
-
-    onMount(() => {
-        gsapContext = playAnimations(componentRoot);
-    });
-
-    onDestroy(() => {
-        gsapContext?.revert();
-    });
 </script>
 
-<main class="content w-[100%] pt-20 sm:m-auto" bind:this={componentRoot}>
+<main class="content w-[100%] pt-20 sm:m-auto">
     <header class="mb-16 flex flex-col items-center justify-center gap-3">
-        <p class="text-text-200 gsap-top-down-opacity">
-            Challenge yourself, practise and gain points.
-        </p>
-        <div
-            class="gsap-top-down-opacity flex flex-wrap items-center justify-center gap-4">
+        <p class="text-text-200">Challenge yourself, practise and gain points.</p>
+        <div class="flex flex-wrap items-center justify-center gap-4">
             <div class="relative">
                 <input
                     type="text"

@@ -10,26 +10,21 @@
 
     let { challengeData, solveDate }: Props = $props();
 
-    import { map } from '$lib/utils/utils';
+    // import { map } from '$lib/utils/utils';
     import { categories } from '$lib/db/constants';
     import { capitalizeFirstLetter } from '$lib/utils/utils';
     import type { Selectable } from 'kysely';
 
-    function getPointColor(points: number): string {
-        const labA = Math.floor(map(points, 0, 500, -128, 128));
-        return `lab(90% ${labA} 128)`;
+    function getPointBracket(points: number): number {
+        if (points < 200) return 100;
+        if (points < 300) return 200;
+        if (points < 400) return 300;
+        if (points < 500) return 400;
+        return 500;
     }
 
     let pointElement: HTMLSpanElement | undefined = $state(undefined);
-
-    $effect(() => {
-        if (pointElement && !challengeData.solved) {
-            pointElement.style.color = getPointColor(challengeData.points);
-        } else if (pointElement && challengeData.solved) {
-            pointElement.style.backgroundColor = getPointColor(challengeData.points);
-            pointElement.classList.add('text-bg-700');
-        }
-    });
+    let pointBracket = $derived(getPointBracket(challengeData.points));
 
     let filteredCategories = categories.filter(
         (_, index) =>
@@ -44,19 +39,17 @@
 </script>
 
 <article
-    class="card challenge-cards bg-bg-800 before:bg-bg-750 relative h-full min-h-fit max-w-full overflow-hidden rounded-lg px-10
-  py-6 before:absolute before:inset-0 before:origin-center before:scale-0 before:rounded-lg before:transition-transform
-  before:duration-500 before:ease-out before:content-[''] hover:before:scale-100"
+    class="bg-card hover:bg-bg-700 relative h-full min-h-fit max-w-full overflow-hidden rounded-[10px] px-8 py-6 transition-colors"
     class:bg-gradient-to-br={challengeData.solved}
     class:from-primary={challengeData.solved}
     class:to-primary-light={challengeData.solved}>
     <div class="relative z-10 flex h-full flex-col justify-between">
-        <section class="top *:flex *:items-center *:justify-between">
-            <div class="flex !items-start justify-start">
-                <h3 class="challenge-name text-[18px] font-bold">
+        <section>
+            <div class="flex justify-between">
+                <h3 class="challenge-name text-[18px]">
                     {challengeData.display_name}
                 </h3>
-                <p class="mt-1 mb-0.5 font-mono text-xs">
+                <p class="text-text-150 font-mono text-sm font-semibold">
                     {#if solveDate}
                         {solveDate.toLocaleDateString('sv-SE')}
                     {:else if challengeData.created_at}
@@ -65,49 +58,50 @@
                 </p>
             </div>
             {#if challengeData.num_solvers}
-                <div class="mt-2 mb-4">
-                    <p class="font-mono text-sm font-bold">
-                        {challengeData.num_solvers}&nbsp;&nbsp;<span
-                            class="text-text-200"
-                            class:!text-text-100={challengeData.solved}>
-                            {#if challengeData.num_solvers == 1}
-                                SOLVER
-                            {:else}
-                                SOLVERS
-                            {/if}
-                        </span>
-                    </p>
-                    <p class="font-mono text-sm font-bold">
-                        <span class="mx-1 rounded-2xl bg-black" bind:this={pointElement}
-                            >&nbsp;{challengeData.points}&nbsp;</span
+                <div class="mt-1 mb-6 flex items-start gap-5">
+                    <p class="text-sm leading-normal font-semibold">
+                        <span
+                            class="font-mono"
+                            bind:this={pointElement}
+                            class:text-point-100={!challengeData.solved &&
+                                pointBracket === 100}
+                            class:text-point-200={!challengeData.solved &&
+                                pointBracket === 200}
+                            class:text-point-300={!challengeData.solved &&
+                                pointBracket === 300}
+                            class:text-point-400={!challengeData.solved &&
+                                pointBracket === 400}
+                            class:text-point-500={!challengeData.solved &&
+                                pointBracket === 500}>{challengeData.points}</span
                         ><span
                             class="text-text-200"
-                            class:!text-text-100={challengeData.solved}>POINTS</span>
+                            class:text-text-100!={challengeData.solved}
+                            >&nbsp;&nbsp;points</span>
+                    </p>
+                    <p class="font-mono text-sm font-semibold">
+                        {challengeData.num_solvers}&nbsp;<span
+                            class="text-text-200 font-sans"
+                            class:text-text-100!={challengeData.solved}>
+                            {#if challengeData.num_solvers == 1}
+                                solver
+                            {:else}
+                                solvers
+                            {/if}
+                        </span>
                     </p>
                 </div>
             {/if}
         </section>
         <section class="justify arounditems-center flex">
             <ul class="categroies flex w-full flex-row flex-wrap">
-                {#each displayedCategories as category, index (category)}
-                    <li
-                        class="text-text-100 px-4 py-1 text-xs
-            {index === 0 ? 'bg-gradient-100 rounded-l-xl rounded-bl-xl' : ''}
-            {index === 1 ? 'bg-gradient-200' : ''}
-            {index === 2 ? 'bg-gradient-300 rounded-r-xl rounded-br-xl' : ''}
-            {index === displayedCategories.length - 1
-                            ? 'rounded-r-xl rounded-br-xl'
-                            : ''}"
-                        class:bg-text-100={challengeData.solved}
-                        class:!text-gradient-100={index === 0 && challengeData.solved}
-                        class:!text-gradient-200={index === 1 && challengeData.solved}
-                        class:!text-gradient-300={index === 2 && challengeData.solved}>
+                {#each displayedCategories as category (category)}
+                    <li class="text-text-200 text-sm">
                         # {capitalizeFirstLetter(category)}
                     </li>
                 {/each}
             </ul>
             {#if extraCategoriesCount > 0}
-                <div class="text-text-100 text-sm">
+                <div class="text-text-100">
                     <span>+{extraCategoriesCount}</span>
                 </div>
             {/if}
