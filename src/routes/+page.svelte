@@ -84,18 +84,17 @@
 <main class="m-auto max-w-130 pt-48">
     <div class="mb-16">
         <p class="mb-6">
-            A place to practice and compete in cybersecurity challenges.<br /><span
-                class="text-text-150">Either log in or stay anonymous.</span>
+            {data.translations.welcome_message}!
         </p>
         <div class="flex gap-4">
             <Button
-                label="Start practicing"
+                label={data.translations.start_practising}
                 type="button"
                 onclick={() => goto(resolve('/challenges'))}
                 Icon={IconArrowRightBold}
                 aria-label="Go to challenges" />
             <Button
-                label="Learn"
+                label={data.translations.learn}
                 type="button"
                 onclick={() => goto(resolve('/learn'))}
                 Icon={IconGraduationCapBold}
@@ -107,7 +106,9 @@
             bind:this={countdownContainer}
             class="w-full will-change-transform transform-3d"
             style="transform: rotateX({rotX.current}deg) rotateY({rotY.current}deg)">
-            <p class="text-text-200 mb-2 text-sm">Next SpetsCTF is in</p>
+            <p class="text-text-200 mb-2 text-sm">
+                {data.translations.next_spetsctf_is_in}
+            </p>
             <div class="rounded-lg shadow-xl">
                 <div
                     class="bg-bg-800 inner-shadow flex items-center justify-between rounded-2xl px-10 py-2 pb-3 select-none">
@@ -116,7 +117,9 @@
                             <p class="-mb-1 flex-1 text-center text-lg">
                                 {number}
                             </p>
-                            <p class="text-text-200 text-sm">{label}</p>
+                            <p class="text-text-200 text-sm">
+                                {data.translations[label]}
+                            </p>
                         </div>
                         {#if index !== Object.entries(countdown).length - 1}
                             <div class="h-5">

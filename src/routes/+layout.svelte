@@ -11,7 +11,7 @@
         { display: translations.challenges, href: resolve('/challenges') },
         { display: translations.ctfs, href: resolve('/ctfs') },
         { display: translations.leaderboard, href: resolve('/leaderboard') },
-        { display: 'Learn', href: resolve('/learn') },
+        { display: translations.learn, href: resolve('/learn') },
     ]);
 </script>
 
