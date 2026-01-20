@@ -59,7 +59,8 @@
             <div class="flex gap-2 xl:hidden">
                 <!-- Mobile header with hamburger -->
                 <div class="flex w-full items-center justify-between">
-                    <div class="bg-bg-850 relative flex gap-1 rounded-lg p-1 xl:hidden">
+                    <div
+                        class="bg-bg-850 relative flex w-[30%] min-w-fit justify-evenly rounded-lg p-1 xl:hidden">
                         <!-- Sliding background indicator for mobile (3 tabs) -->
                         <div
                             class="bg-bg-600 absolute top-1 bottom-1 rounded-lg transition-all duration-300 ease-out"
@@ -74,19 +75,19 @@
                         <!-- Tab buttons -->
                         <a
                             href="#all"
-                            class="relative z-10 flex flex-1 items-center justify-center rounded-lg px-4 py-2 text-sm transition-colors duration-300"
+                            class="relative z-10 flex w-[calc(100%/3)] flex-1 items-center justify-center rounded-lg px-6 py-2 text-sm transition-colors duration-300"
                             class:text-text-200={currentTab !== 0}>
                             All
                         </a>
                         <a
                             href="#my"
-                            class="relative z-10 flex flex-1 items-center justify-center rounded-lg px-4 py-2 text-sm transition-colors duration-300"
+                            class="relative z-10 flex w-[calc(100%/3)] flex-1 items-center justify-center rounded-lg px-6 py-2 text-sm transition-colors duration-300"
                             class:text-text-200={currentTab !== 1}>
                             My
                         </a>
                         <a
                             href="#create"
-                            class="relative z-10 flex flex-1 items-center justify-center rounded-lg px-4 py-2 text-sm transition-colors duration-300"
+                            class="relative z-10 flex w-[calc(100%/3)] flex-1 items-center justify-center rounded-lg px-6 py-2 text-sm transition-colors duration-300"
                             class:text-text-200={currentTab !== 2}>
                             Create
                         </a>
