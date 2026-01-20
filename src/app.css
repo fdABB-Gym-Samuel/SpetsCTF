@@ -80,7 +80,7 @@
 
     @media (prefers-color-scheme: dark) {
         :root {
-            --color-bg-900: #141414;
+            --color-bg-900: #151515;
             --color-bg-850: #181818;
             --color-bg-800: #1d1e1e;
             --color-bg-700: #222323;
@@ -107,45 +107,6 @@
     }
 }
 
-@utility noise {
-    &::before {
-        content: '';
-        position: fixed;
-        top: -10rem;
-        left: -10rem;
-        width: calc(100% + 20rem);
-        height: calc(100% + 20rem);
-        z-index: -10;
-        opacity: 0.3;
-        background-image: url('/assets/noise.png');
-        background-repeat: repeat;
-        pointer-events: none !important;
-        animation: noise 1s infinite steps(2);
-        will-change: transform;
-    }
-}
-
-@utility noise-contained {
-    position: relative;
-    overflow: hidden;
-
-    &::before {
-        content: '';
-        position: absolute;
-        top: -10rem;
-        left: -10rem;
-        width: calc(100% + 20rem);
-        height: calc(100% + 20rem);
-        z-index: -10;
-        opacity: 0.3;
-        background-image: url('/assets/noise.png');
-        background-repeat: repeat;
-        pointer-events: none !important;
-        animation: noise 1s infinite steps(2);
-        will-change: transform;
-    }
-}
-
 @layer utilities {
     *::-webkit-scrollbar {
         width: 6px;
@@ -167,7 +128,7 @@
 }
 
 body {
-    @apply noise scrollbar-hidden dark:bg-bg-900 text-text-100 selection:bg-text-100 selection:text-bg-900 m-0 box-border min-h-screen scroll-smooth px-3 py-1 font-sans leading-tight font-medium antialiased lg:px-8 xl:px-16;
+    @apply scrollbar-hidden dark:bg-bg-900 text-text-100 selection:bg-text-100 selection:text-bg-900 m-0 box-border min-h-screen scroll-smooth px-3 py-1 font-sans leading-tight font-medium antialiased lg:px-8 xl:px-16;
 }
 
 /* NOTE: No firefox support as of now sadly */
@@ -175,52 +136,6 @@ body {
 *::before,
 *::after {
     corner-shape: superellipse(1);
-}
-
-@keyframes noise {
-    0% {
-        transform: translate3d(0, 9rem, 0);
-    }
-
-    10% {
-        transform: translate3d(-1rem, -4rem, 0);
-    }
-
-    20% {
-        transform: translate3d(-8rem, 2rem, 0);
-    }
-
-    30% {
-        transform: translate3d(9rem, -9rem, 0);
-    }
-
-    40% {
-        transform: translate3d(-2rem, 7rem, 0);
-    }
-
-    50% {
-        transform: translate3d(-9rem, -4rem, 0);
-    }
-
-    60% {
-        transform: translate3d(2rem, 6rem, 0);
-    }
-
-    70% {
-        transform: translate3d(7rem, -8rem, 0);
-    }
-
-    80% {
-        transform: translate3d(-9rem, 1rem, 0);
-    }
-
-    90% {
-        transform: translate3d(6rem, -5rem, 0);
-    }
-
-    100% {
-        transform: translate3d(-7rem, 0, 0);
-    }
 }
 
 .no-spinner::-webkit-outer-spin-button,
