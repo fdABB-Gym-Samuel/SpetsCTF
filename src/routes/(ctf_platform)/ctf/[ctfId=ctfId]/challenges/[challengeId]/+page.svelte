@@ -17,16 +17,10 @@
         resources: resources,
     });
 
-    import { page } from '$app/state';
-    import { resolve } from '$app/paths';
-    import { goto } from '$app/navigation';
+    import { invalidate } from '$app/navigation';
     function closeDialog() {
-        goto(
-            resolve('/(ctf_platform)/ctf/[ctfId=ctfId]/challenges', {
-                ctfId: page.params.ctfId ?? '',
-            }),
-            { invalidate: ['data:challenges'] }
-        );
+        history.back();
+        invalidate('data:challenges');
     }
 </script>
 

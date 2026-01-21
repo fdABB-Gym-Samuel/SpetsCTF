@@ -80,7 +80,7 @@
 
                         <!-- Tab buttons -->
                         <a
-                            href="#all"
+                            href={resolve('/challenges')}
                             class="relative z-10 flex w-[calc(100%/3)] flex-1 items-center justify-center rounded-lg px-6 py-2 text-sm transition-colors duration-300"
                             class:text-text-200={currentTab !== 0}>
                             All
@@ -133,20 +133,20 @@
 
                         <!-- Tab buttons -->
                         <a
-                            href="#all"
-                            class="relative z-10 flex items-center rounded-lg px-12 py-2 transition-colors duration-300"
+                            href={resolve('/challenges')}
+                            class="relative z-10 flex w-[calc(100%/3)] items-center justify-center rounded-lg px-12 py-2 transition-colors duration-300"
                             class:text-text-200={currentTab !== 0}>
                             All challenges
                         </a>
                         <a
                             href="#my"
-                            class="relative z-10 flex items-center rounded-lg px-12 py-2 transition-colors duration-300"
+                            class="relative z-10 flex w-[calc(100%/3)] items-center justify-center rounded-lg px-12 py-2 transition-colors duration-300"
                             class:text-text-200={currentTab !== 1}>
                             My challenges
                         </a>
                         <a
                             href="#create"
-                            class="relative z-10 flex items-center rounded-lg px-12 py-2 transition-colors duration-300"
+                            class="relative z-10 flex w-[calc(100%/3)] items-center justify-center rounded-lg px-12 py-2 transition-colors duration-300"
                             class:text-text-200={currentTab !== 2}>
                             Create challenge
                         </a>
@@ -210,7 +210,7 @@
             href={resolve('/learn')}
             class="underline underline-offset-2">Learn</a> if you feel stuck.
     </p>
-    {#if page.url.hash === '#all' || !page.url.hash}
+    {#if currentTab === 0}
         <ChallengeList
             gotoChallenge={(challengeId) => {
                 goto(resolve(`/challenges/${challengeId}`));
@@ -219,7 +219,7 @@
             bind:showSolved
             bind:showCategory
             bind:searchQuery></ChallengeList>
-    {:else if page.url.hash === '#my'}
+    {:else if currentTab === 1}
         {#if user}
             <section>
                 {#if myChallenges && myChallenges?.length > 0}
@@ -270,7 +270,7 @@
             <p>Sign sign in to create a challenge.</p>
             <a href={resolve('/login')}>Sign in</a>
         {/if}
-    {:else if page.url.hash == '#create'}
+    {:else if currentTab === 2}
         <form class="m-auto w-fit pt-24" method="post" action="?/createChallenge">
             <div class="mb-6">
                 <Input
