@@ -62,7 +62,6 @@
               daemonize
               file
               fzf
-              garage
               getent
               git
               goMigrateBuilt
