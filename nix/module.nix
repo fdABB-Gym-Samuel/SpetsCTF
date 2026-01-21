@@ -9,6 +9,7 @@ let
   cfg = config.services.spetsctf;
   package = self.packages.${pkgs.stdenv.hostPlatform.system}.spetsctf;
   goMigratePackage = pkgs.callPackage ./packaging/go-migrate.nix { };
+  systemdServices = config.systemd.services;
 in
 {
   options.services.spetsctf = with lib; {
@@ -53,44 +54,52 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    systemd.services.spetsctf = {
-      after = [ config.systemd.services.postgresql.name ];
-      requires = [ config.systemd.services.postgresql.name ];
-      wantedBy = [ "multi-user.target" ];
-      path = [ pkgs.file ];
-      environment = {
-        ADDRESS_HEADER = "x-forwarded-for";
-        HOST_HEADER = "x-forwarded-host";
-        NODE_ENV = "production";
-        ORIGIN = cfg.httpOrigin;
-        SOCKET_PATH = cfg.socketPath;
-        PROTOCOL_HEADER = "x-forwarded-proto";
+    systemd.services.spetsctf =
+      let
+        servicePrerequisites =
+          if (builtins.hasAttr "postgresql-setup" systemdServices) then
+            [ systemdServices.postgresql-setup.name ]
+          else
+            [ ];
+      in
+      {
+        after = [ config.systemd.services.postgresql.name ] ++ servicePrerequisites;
+        requires = [ config.systemd.services.postgresql.name ] ++ servicePrerequisites;
+        wantedBy = [ "multi-user.target" ];
+        path = [ pkgs.file ];
+        environment = {
+          ADDRESS_HEADER = "x-forwarded-for";
+          HOST_HEADER = "x-forwarded-host";
+          NODE_ENV = "production";
+          ORIGIN = cfg.httpOrigin;
+          SOCKET_PATH = cfg.socketPath;
+          PROTOCOL_HEADER = "x-forwarded-proto";
+        };
+        serviceConfig = {
+          ExecStartPre = pkgs.writeShellScript "spetsctf-exec-start-pre-migrate-up" ''
+            DATABASE_URL="$(cat $CREDENTIALS_DIRECTORY/database_url)"
+            ${lib.getExe goMigratePackage} -path ${../database/migrations} -database $DATABASE_URL up
+          '';
+          ExecStart = "${lib.getExe cfg.nodePackage} ${package}";
+          SystemCallFilter = "@system-service";
+          RestrictAddressFamilies = [
+            "AF_UNIX"
+            "AF_INET"
+            "AF_INET6"
+          ];
+          UMask = "0117";
+          NoNewPrivileges = true;
+          DynamicUser = true;
+          Group = "spetsctf";
+          StateDirectory = "spetsctf";
+          RuntimeDirectory = "spetsctf";
+          WorkingDirectory = "%S/spetsctf";
+          LoadCredential = [
+            "database_url:${cfg.postgresConnectionStringFile}"
+            "github_client_id:${cfg.github.clientIdFile}"
+            "github_client_secret:${cfg.github.clientSecretFile}"
+          ];
+        };
       };
-      serviceConfig = {
-        ExecStartPre = pkgs.writeShellScript "spetsctf-exec-start-pre-migrate-up" ''
-          DATABASE_URL="$(cat $CREDENTIALS_DIRECTORY/database_url)"
-          ${lib.getExe goMigratePackage} -path ${../database/migrations} -database $DATABASE_URL up
-        '';
-        ExecStart = "${lib.getExe cfg.nodePackage} ${package}";
-        SystemCallFilter = "@system-service";
-        RestrictAddressFamilies = [
-          "AF_UNIX"
-          "AF_INET"
-          "AF_INET6"
-        ];
-        UMask = "0117";
-        NoNewPrivileges = true;
-        DynamicUser = true;
-        Group = "spetsctf";
-        StateDirectory = "spetsctf";
-        RuntimeDirectory = "spetsctf";
-        WorkingDirectory = "%S/spetsctf";
-        LoadCredential = [
-          "database_url:${cfg.postgresConnectionStringFile}"
-          "github_client_id:${cfg.github.clientIdFile}"
-          "github_client_secret:${cfg.github.clientSecretFile}"
-        ];
-      };
-    };
   };
 }
