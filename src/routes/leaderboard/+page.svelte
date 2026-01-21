@@ -37,7 +37,7 @@
     );
 </script>
 
-<main class="m-auto w-full max-w-[1200px] pt-32" bind:this={content}>
+<main class="m-auto w-full max-w-[1200px] pt-16" bind:this={content}>
     {#if user && !user.is_admin}
         <header class="mb-12">
             <h1 class="text-[28px] font-semibold">

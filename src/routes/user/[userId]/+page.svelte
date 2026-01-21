@@ -12,7 +12,7 @@
     let displayName = $derived(userInfo.display_name);
 </script>
 
-<div class="content flex flex-col gap-8">
+<div class="content flex flex-col gap-8 mt-16">
     <h1 class="route-title text-xl font-bold">{displayName}</h1>
 
     <section>

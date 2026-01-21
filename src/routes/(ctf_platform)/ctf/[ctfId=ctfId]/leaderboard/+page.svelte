@@ -60,7 +60,7 @@
     });
 </script>
 
-<main class="content m-auto w-full max-w-[1200px] pt-20">
+<main class="content m-auto w-full max-w-[1200px] pt-12">
     {#if ctfData && ctfData.end_time < new Date()}
         <section class="mb-8 flex h-80 w-full items-end justify-center">
             {#each [2, 0, 1] as idx, i (idx)}
