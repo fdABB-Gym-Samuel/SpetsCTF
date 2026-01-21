@@ -8,6 +8,7 @@
 let
   cfg = config.services.spetsctf;
   package = self.packages.${pkgs.stdenv.hostPlatform.system}.spetsctf;
+  goMigratePackage = pkgs.callPackage ./packaging/go-migrate.nix { };
 in
 {
   options.services.spetsctf = with lib; {
@@ -66,6 +67,11 @@ in
         PROTOCOL_HEADER = "x-forwarded-proto";
       };
       serviceConfig = {
+        ExecStartPre = pkgs.writeShellScript "spetsctf-exec-start-pre-migrate-up" ''
+          DATABASE_URL="$(cat $CREDENTIALS_DIRECTORY/database_url)"
+          echo $DATABASE_URL
+          ${lib.getExe goMigratePackage} -database "$DATABASE_URL" up
+        '';
         ExecStart = "${lib.getExe cfg.nodePackage} ${package}";
         SystemCallFilter = "@system-service";
         RestrictAddressFamilies = [
