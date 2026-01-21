@@ -47,6 +47,12 @@
 
     let searchQuery = $state('');
 
+    const resetFilters = () => {
+        showSolved = true;
+        showCategory = '';
+        searchQuery = '';
+    };
+
     let pageHeight = $state(0);
     let showFooter = $derived(pageHeight < 1800);
 </script>
@@ -188,6 +194,9 @@
 
                 <!-- Reset button -->
                 <button
+                    onclick={() => {
+                        resetFilters();
+                    }}
                     class="text-text-150 flex cursor-pointer items-center justify-center gap-1.5 py-2 xl:mr-2.5 xl:justify-start xl:py-0">
                     <span>Reset</span>
                     <IconArrowUpDownLeftBold class="text-[20px]" />
