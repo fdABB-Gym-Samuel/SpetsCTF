@@ -105,9 +105,13 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
 
     const numSolvers = await db
         .selectFrom('wargame_submissions')
-        .where('success', '=', true)
-        .where('challenge', '=', challengeData.challenge_id)
-        .select((eb) => eb.fn.countAll().as('count'))
+        .innerJoin('users', 'users.id', 'wargame_submissions.user_id')
+        .where('wargame_submissions.success', '=', true)
+        .where('wargame_submissions.challenge', '=', challengeData.challenge_id)
+        .where('users.is_admin', '!=', true)
+        .select((eb) =>
+            eb.fn.count<number>('wargame_submissions.user_id').distinct().as('count')
+        )
         .executeTakeFirst();
 
     depends(`data:challenge-${challengeData.challenge_id}`);

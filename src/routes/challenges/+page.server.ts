@@ -46,15 +46,20 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
             'challenges.flag',
         ])
         .select((eb) => [
-            eb.fn.count<number>('unique_success.user_id').distinct().as('num_solvers'),
+            sql<number>`
+              COUNT(DISTINCT 
+                CASE WHEN EXISTS(
+                  SELECT 1 FROM users 
+                  WHERE users.id = unique_success.user_id 
+                    AND users.is_admin != true
+                ) THEN unique_success.user_id END
+              )
+            `.as('num_solvers'),
             sql<boolean>`EXISTS(
-            SELECT 1 FROM (
-                SELECT challenge, user_id FROM wargame_submissions WHERE success = true
-                UNION
-                SELECT challenge, user_id FROM ctf_submissions WHERE success = true
-            ) unified
-            WHERE unified.challenge = challenges.challenge_id
-                AND unified.user_id = ${user?.id ?? null}
+            SELECT challenge, user_id FROM wargame_submissions 
+            WHERE success = true
+                AND challenge = challenges.challenge_id
+                AND user_id = ${user?.id ?? null}
         )`.as('solved'),
         ])
         .orderBy('challenges.points', 'asc')
