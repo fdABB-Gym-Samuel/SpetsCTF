@@ -69,8 +69,7 @@ in
       serviceConfig = {
         ExecStartPre = pkgs.writeShellScript "spetsctf-exec-start-pre-migrate-up" ''
           DATABASE_URL="$(cat $CREDENTIALS_DIRECTORY/database_url)"
-          echo $DATABASE_URL
-          ${lib.getExe goMigratePackage} -database "$DATABASE_URL" up
+          ${lib.getExe goMigratePackage} -path ${../database/migrations} -database $DATABASE_URL up
         '';
         ExecStart = "${lib.getExe cfg.nodePackage} ${package}";
         SystemCallFilter = "@system-service";
