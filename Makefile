@@ -44,10 +44,10 @@ dev: deps postgres migrate-up pgweb codegen
 psql:
 	psql -U spetsctf "postgresql:///spetsctf?host=$$(readlink ./tmp)"
 
-migrate-up: postgres
+migrate-up:
 	migrate -path ./database/migrations -database "postgresql://spetsctf@/spetsctf?host=$$(readlink ./tmp)" up
 
-migrate-down: postgres
+migrate-down:
 	migrate -path ./database/migrations -database "postgresql://spetsctf@/spetsctf?host=$$(readlink ./tmp)" down
 
 ./tmp/.pgdata: ./tmp
