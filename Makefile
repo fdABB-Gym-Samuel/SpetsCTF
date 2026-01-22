@@ -35,7 +35,7 @@ clean: pgweb-clean postgres-clean dev-clean
 deps:
 	bun install
 
-dev: deps postgres migrate-up pgweb codegen
+dev: deps postgres migrate-up pgweb codegen seed
 	bun --bun run dev
 
 ./tmp:
