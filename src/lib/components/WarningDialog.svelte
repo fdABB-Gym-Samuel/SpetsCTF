@@ -68,14 +68,11 @@
                         label="Cancel"
                         aria-label="Cancel"
                         type="button"
-                        styleType="small"
-                        onclick={closeDialog}
-                        textColor="text-text-100"></Button>
+                        onclick={closeDialog}></Button>
                     <Button
                         label={confirmationButtonText}
                         aria-label={warningAria}
                         type="submit"
-                        styleType="small"
                         Icon={confirmationButtonIcon}
                         bgColor="bg-red-700"
                         hoverColor="hover:bg-red-500"

@@ -27,6 +27,8 @@
     --color-bg-800: var(--color-bg-800);
     --color-bg-700: var(--color-bg-700);
     --color-bg-600: var(--color-bg-600);
+    --color-bg-200: var(--color-bg-200);
+    --color-bg-100: var(--color-bg-100);
 
     --color-text-100: var(--color-text-100);
     --color-text-150: var(--color-text-150);
@@ -85,6 +87,8 @@
             --color-bg-800: #1d1e1e;
             --color-bg-700: #222323;
             --color-bg-600: #2a2b2c;
+            --color-bg-200: #bdbdbd;
+            --color-bg-100: #d9d9d9;
 
             --color-card: #1d1d1d;
 

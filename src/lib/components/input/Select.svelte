@@ -16,7 +16,7 @@
     }: Props = $props();
 </script>
 
-<div class="flex w-6/10 flex-col">
+<div class="flex flex-col">
     <label for={name}>
         <span>{label}</span>
 
