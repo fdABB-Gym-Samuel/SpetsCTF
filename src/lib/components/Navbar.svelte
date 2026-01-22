@@ -12,7 +12,6 @@
 
     import Button from './Button.svelte';
 
-    import { LogIn } from '@lucide/svelte';
     import IconSignInBold from 'phosphor-icons-svelte/IconSignInBold.svelte';
     import IconListBold from 'phosphor-icons-svelte/IconListBold.svelte';
     import IconXBold from 'phosphor-icons-svelte/IconXBold.svelte';

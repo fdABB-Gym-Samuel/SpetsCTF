@@ -5,7 +5,6 @@
     import IconTerminalBold from 'phosphor-icons-svelte/IconTerminalBold.svelte';
     import IconGlobeBold from 'phosphor-icons-svelte/IconGlobeBold.svelte';
     import IconArrowBendUpRightBold from 'phosphor-icons-svelte/IconArrowBendUpRightBold.svelte';
-    import IconXBold from 'phosphor-icons-svelte/IconXBold.svelte';
     import IconCopyBold from 'phosphor-icons-svelte/IconCopyBold.svelte';
 
     import { applyAction, enhance } from '$app/forms';
