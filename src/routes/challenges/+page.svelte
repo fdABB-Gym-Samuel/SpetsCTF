@@ -3,7 +3,7 @@
     import ChallengeList from '$lib/components/ChallengeList.svelte';
     import Switch from '$lib/components/input/Switch.svelte';
     import { enhance } from '$app/forms';
-    import { goto } from '$app/navigation';
+    import { beforeNavigate, goto } from '$app/navigation';
 
     let { data } = $props();
 
@@ -55,6 +55,10 @@
 
     let pageHeight = $state(0);
     let showFooter = $derived(pageHeight < 1800);
+
+    beforeNavigate(() => {
+        sessionStorage.setItem('challengesScroll', window.scrollY.toString());
+    });
 </script>
 
 <svelte:body bind:clientHeight={pageHeight} />

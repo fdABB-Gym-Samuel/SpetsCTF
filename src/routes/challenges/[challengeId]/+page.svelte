@@ -21,7 +21,19 @@
     import { goto } from '$app/navigation';
 
     function closeDialog() {
-        goto(resolve('/challenges'), { invalidate: ['data:challenges'] });
+        const savedScroll = sessionStorage.getItem('challengesScroll');
+
+        goto(resolve('/challenges'), {
+            invalidate: ['data:challenges'],
+            noScroll: true,
+            keepFocus: true,
+        }).then(() => {
+            if (savedScroll) {
+                requestAnimationFrame(() => {
+                    window.scrollTo(0, Number(savedScroll));
+                });
+            }
+        });
     }
 </script>
 

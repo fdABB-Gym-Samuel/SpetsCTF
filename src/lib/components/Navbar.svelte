@@ -148,7 +148,6 @@
         {#each links as navLink, index (index)}
             <li>
                 <a
-                    rel="external"
                     class="nav-option link {page.url.pathname === navLink.href
                         ? 'text-text-150 font-semibold'
                         : ''}"
