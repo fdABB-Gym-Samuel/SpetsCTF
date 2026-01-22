@@ -93,7 +93,7 @@
             {/if}
         </section>
         <section class="justify arounditems-center flex">
-            <ul class="categroies flex w-full flex-row flex-wrap">
+            <ul class="categroies flex w-full flex-row flex-wrap gap-2.5">
                 {#each displayedCategories as category (category)}
                     <li class="text-text-200 text-sm">
                         # {capitalizeFirstLetter(category)}

@@ -46,7 +46,7 @@
 
 <section class="w-full">
     {#each showCategory ? [showCategory] : categories as category (category)}
-        <div class="mb-16">
+        <div class="mb-16" id={category}>
             <button
                 class="mb-4 cursor-pointer pb-2 text-left"
                 onclick={() => toggleCategory(category)}>

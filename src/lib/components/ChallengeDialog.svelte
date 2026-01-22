@@ -270,14 +270,15 @@
                     </form>
                 {:else if !user}
                     <div class="relative mt-4 mr-1 mb-8">
-                        <p class="bg-bg-600 rounded-xl py-2 text-center font-semibold">
+                        <p
+                            class="bg-bg-600 text-text-100 rounded-xl py-2 text-center font-semibold">
                             {translations.submission_needs_login}
                         </p>
                     </div>
                 {:else}
                     <div class="relative mt-2 mr-1 mb-8">
                         <p
-                            class="from-primary to-primary-light rounded-xl bg-gradient-to-br py-1 text-center font-semibold"
+                            class="from-primary to-primary-light text-text-100 rounded-xl bg-gradient-to-br py-1 text-center font-semibold"
                             class:ring-correct={form?.success === true}>
                             {translations.challenge_already_solved}
                         </p>

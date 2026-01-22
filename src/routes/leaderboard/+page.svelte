@@ -37,7 +37,7 @@
     );
 </script>
 
-<main class="m-auto w-full max-w-[1200px] pt-32" bind:this={content}>
+<main class="m-auto w-full max-w-[1200px] pt-16" bind:this={content}>
     {#if user && !user.is_admin}
         <header class="mb-12">
             <h1 class="text-[28px] font-semibold">
@@ -81,7 +81,7 @@
                         No users, please toggle at least one class.
                     </p>
                 {:else}
-                    <table class="w-full table-fixed">
+                    <table class="w-full table-auto">
                         <thead>
                             <tr
                                 class="*:bg-bg-800 min-w-20 *:py-2 [&>th:first-child]:rounded-l-lg [&>th:last-child]:rounded-r-lg">
@@ -101,7 +101,7 @@
                     </table>
 
                     <div class="h-2"></div>
-                    <table class="w-full table-fixed">
+                    <table class="w-full table-auto">
                         <tbody>
                             {#each filteredUsers as player, i (i)}
                                 <tr
@@ -165,7 +165,7 @@
             <div
                 class="bg-bg-850 max-h-[300px] w-full min-w-20 overflow-auto rounded-lg p-2">
                 <!-- header only -->
-                <table class="w-full table-fixed">
+                <table class="w-full table-auto">
                     <thead>
                         <tr
                             class="*:bg-bg-800 min-w-20 *:py-2
@@ -187,7 +187,7 @@
                 <div class="h-2"></div>
 
                 <!-- body only -->
-                <table class="w-full table-fixed">
+                <table class="w-full table-auto">
                     <tbody>
                         {#each classesScoreboard.filter((class_) => class_.className !== 'No Class') as curr_class, i (String(curr_class.className))}
                             <tr

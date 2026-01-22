@@ -147,12 +147,15 @@
             : 'sm:flex'}">
         {#each links as navLink, index (index)}
             <li>
+                <!-- eslint-disable svelte/no-navigation-without-resolve -->
                 <a
-                    rel="external"
                     class="nav-option link {page.url.pathname === navLink.href
                         ? 'text-text-150 font-semibold'
                         : ''}"
-                    href={navLink.href}>{navLink.display}</a>
+                    href={navLink.href}>
+                    {navLink.display}
+                </a>
+                <!-- eslint-enable svelte/no-navigation-without-resolve -->
             </li>
         {/each}
     </ul>
@@ -234,13 +237,14 @@
                     <ul class="flex h-full flex-col items-stretch space-x-2 pr-5 pl-2">
                         {#each links as link (link.href)}
                             <li class="border-primary-light m-0 border-b-2 py-2 pl-1">
+                                <!-- eslint-disable svelte/no-navigation-without-resolve -->
                                 <a
                                     class="ignore-default hover:text-primary!"
-                                    rel="external"
                                     href={link.href}
                                     onclick={(e) => {
                                         toggleSidebar(e, false);
                                     }}>{link.display}</a>
+                                <!-- eslint-enable svelte/no-navigation-without-resolve -->
                             </li>
                         {/each}
                     </ul>
