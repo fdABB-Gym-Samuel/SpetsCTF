@@ -15,6 +15,7 @@ bun run prepare || ERR=1
 make ./tmp || ERR=1
 export DATABASE_URL=postgresql://spetsctf@/spetsctf?host=$(readlink ./tmp) || ERR=1
 make postgres >/dev/null || ERR=1
+make migrate-up >/dev/null || ERR=1
 make codegen || ERR=1
 
 echo "::add-matcher::ci/matchers/svelte.json"

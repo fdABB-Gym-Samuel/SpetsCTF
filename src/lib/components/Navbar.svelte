@@ -158,12 +158,15 @@
             : 'sm:flex'}">
         {#each links as navLink, index (index)}
             <li>
+                <!-- eslint-disable svelte/no-navigation-without-resolve -->
                 <a
-                    rel="external"
                     class="nav-option link {page.url.pathname === navLink.href
                         ? 'text-text-150 font-semibold'
                         : ''}"
-                    href={navLink.href}>{navLink.display}</a>
+                    href={navLink.href}>
+                    {navLink.display}
+                </a>
+                <!-- eslint-enable svelte/no-navigation-without-resolve -->
             </li>
         {/each}
     </ul>

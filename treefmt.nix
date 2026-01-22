@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 let
   prettier-plugin-svelte = pkgs.buildNpmPackage {
     pname = "prettier-plugin-svelte";
@@ -72,7 +72,6 @@ in
         tabWidth = 4;
         trailingComma = "es5";
         useTabs = false;
-        # tailwindStylesheet = "./src/routes/layout.css";
         overrides = [
           {
             files = "*.svelte";
@@ -87,23 +86,7 @@ in
       enable = true;
       dialect = "postgresql";
     };
+    mbake.enable = true;
   };
 
-  settings.formatter = {
-    "mbake" = {
-      command = "${lib.getBin pkgs.bash}/bin/bash";
-      options = [
-        "-euc"
-        ''
-          for file in "$@"; do
-            ${lib.getBin pkgs.mbake}/bin/mbake format $file
-          done
-        ''
-        "--"
-      ];
-      includes = [
-        "Makefile"
-      ];
-    };
-  };
 }
