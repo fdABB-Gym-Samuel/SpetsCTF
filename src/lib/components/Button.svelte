@@ -1,7 +1,6 @@
 <script lang="ts">
     import type { Component } from 'svelte';
     import type { HTMLButtonAttributes } from 'svelte/elements';
-
     interface Props extends HTMLButtonAttributes {
         Icon?: Component;
         bgColor?: string;
@@ -10,14 +9,13 @@
         hoverColor?: string;
         iconSize?: string;
         label: string;
-        outlineColor?: string;
         responsiveStyles?: string;
         secondLabel?: string;
-        styleType?: 'normal' | 'small' | 'icon';
+        styleType?: 'normal' | 'icon';
         textColor?: string;
         twStyles?: string;
+        inverted?: boolean;
     }
-
     let {
         Icon = undefined,
         bgColor = 'bg-bg-800',
@@ -32,8 +30,13 @@
         styleType = 'normal',
         textColor = 'text-text-150',
         twStyles = '',
+        inverted = false,
         ...restProps
     }: Props = $props();
+
+    const invertedBgColor = $derived(inverted ? 'bg-bg-100' : bgColor);
+    const invertedHoverColor = $derived(inverted ? 'hover:bg-bg-200' : hoverColor);
+    const invertedTextColor = $derived(inverted ? 'text-bg-600' : textColor);
 </script>
 
 {#if styleType === 'normal'}
@@ -42,45 +45,26 @@
         {...restProps}
         class="flex items-center gap-1.5 rounded-lg px-5 py-2.5 font-semibold {disabled
             ? disabledBgColor
-            : bgColor} cursor-pointer {hoverColor} transition-colors *:inline-block {twStyles} {responsiveStyles} text-nowrap">
+            : invertedBgColor} cursor-pointer {disabled
+            ? ''
+            : invertedHoverColor} transition-colors *:inline-block {twStyles} {responsiveStyles} text-nowrap">
         {#if secondLabel !== ''}
-            <span class={disabled ? disabledTextColor : textColor}
+            <span class={disabled ? disabledTextColor : invertedTextColor}
                 >{label}<span class="dark:text-primary-light text-primary"
                     >{secondLabel}</span
                 ></span>
         {:else}
-            <span class={disabled ? disabledTextColor : textColor}>{label}</span>
+            <span class={disabled ? disabledTextColor : invertedTextColor}
+                >{label}</span>
         {/if}
         {#if Icon}
             <Icon
                 class="inline-block {disabled
                     ? disabledTextColor
-                    : textColor} {secondLabel !== ''
+                    : invertedTextColor} {secondLabel !== ''
                     ? 'dark:text-primary-light text-primary'
                     : ''}"
-                style="font-size: {iconSize}" />
-        {/if}
-    </button>
-{:else if styleType === 'small'}
-    <button
-        {...restProps}
-        class="rounded-sm px-4 py-1 text-sm {disabled
-            ? disabledBgColor
-            : bgColor} cursor-pointer outline-2 {hoverColor} transition-colors *:inline-block {responsiveStyles} {twStyles}">
-        {#if secondLabel !== ''}
-            <span class="mr-1 {disabled ? disabledTextColor : textColor}"
-                >{label}<span class="text-primary-light">{secondLabel}</span></span>
-        {:else}
-            <span class="mr-1 {disabled ? disabledTextColor : textColor}">{label}</span>
-        {/if}
-        {#if Icon}
-            <Icon
-                class="inline-block {disabled
-                    ? disabledTextColor
-                    : textColor} {secondLabel !== ''
-                    ? 'dark:text-primary-light text-primary'
-                    : ''}"
-                style="font-size: {iconSize}" />
+                style="font-size: {iconSize}px" />
         {/if}
     </button>
 {:else if styleType === 'icon'}
@@ -88,15 +72,17 @@
         {...restProps}
         class="h-fit rounded-sm p-2 text-left {disabled
             ? disabledBgColor
-            : bgColor} cursor-pointer {hoverColor} transition-colors *:inline-block {responsiveStyles} {twStyles} flex">
+            : invertedBgColor} cursor-pointer {disabled
+            ? ''
+            : invertedHoverColor} transition-colors *:inline-block {responsiveStyles} {twStyles} flex">
         {#if Icon}
             <Icon
                 class="inline-block {disabled
                     ? disabledTextColor
-                    : textColor} {secondLabel !== ''
+                    : invertedTextColor} {secondLabel !== ''
                     ? 'dark:text-primary-light text-primary'
                     : ''}"
-                style="font-size: {iconSize}" />
+                style="font-size: {iconSize}px" />
         {/if}
     </button>
 {/if}

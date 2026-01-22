@@ -2,7 +2,6 @@
     import { goto } from '$app/navigation';
     import type { Users } from '$lib/generated/db';
     import type { Selectable } from 'kysely';
-    import { Menu } from '@lucide/svelte';
 
     import { enhance } from '$app/forms';
     import VSeperator from './VSeperator.svelte';
@@ -13,8 +12,9 @@
 
     import Button from './Button.svelte';
 
-    import { ArrowLeft, LogIn } from '@lucide/svelte';
     import IconSignInBold from 'phosphor-icons-svelte/IconSignInBold.svelte';
+    import IconListBold from 'phosphor-icons-svelte/IconListBold.svelte';
+    import IconXBold from 'phosphor-icons-svelte/IconXBold.svelte';
 
     interface NavLink {
         display: string;
@@ -51,6 +51,12 @@
 
     const closeAvatarPopup = () => {
         showAvatarPopup = false;
+    };
+
+    const closeAvatarPopupBackdrop = (e: MouseEvent | KeyboardEvent) => {
+        if (e.currentTarget === e.target) {
+            showAvatarPopup = false;
+        }
     };
 
     let isHovering = $state(false);
@@ -92,7 +98,19 @@
 
 <nav
     class="bg-bg-900 fixed top-0 left-0 z-50 flex h-15 w-full flex-row items-center justify-between gap-5 px-3 pt-1 *:w-1/3 lg:px-8 xl:px-16">
-    <div class="flex w-1/5 grow-0 flex-row items-center sm:grow">
+    <div class="flex w-1/5 grow-0 flex-row items-center gap-x-2 sm:grow">
+        <div class="block {links.length > 3 ? 'md:hidden' : 'sm:hidden'}">
+            <button
+                class="ignore-default ml-1 flex flex-col"
+                aria-label="Toggle Sidebar"
+                onclick={toggleSidebar}>
+                {#if !showSidebar}
+                    <IconListBold class="text-text-150 text-[24px]" />
+                {:else}
+                    <IconXBold class="text-text-150 text-[24px]" />
+                {/if}
+            </button>
+        </div>
         <div class="logo-continer relative flex justify-end sm:mr-0">
             <svg
                 viewBox="0 0 180 100"
@@ -131,14 +149,6 @@
                     class="logo h-5 min-w-25 select-none" />
             </a>
         </div>
-        <div class="mr-4 block {links.length > 3 ? 'md:hidden' : 'sm:hidden'}">
-            <button
-                class="ignore-default ml-2 flex flex-col gap-1.5"
-                aria-label="Open Sidebar"
-                onclick={toggleSidebar}>
-                <Menu></Menu>
-            </button>
-        </div>
     </div>
     <ul
         class="hidden h-full min-w-fit flex-row items-center justify-center gap-8 {links.length >
@@ -172,7 +182,6 @@
             </button>
         {:else}
             <Button
-                bgColor="bg-bg-850"
                 label={translations.login}
                 type="button"
                 onclick={() => goto(resolve('/login'))}
@@ -184,31 +193,47 @@
 
 {#if showAvatarPopup && user}
     <div
-        class="bg-bg-700 text-text-150 absolute top-16 right-3 z-50 min-w-54 rounded-lg p-2 shadow-lg lg:right-8 xl:right-16"
-        role="menu">
+        class="fixed inset-0 z-50"
+        onclick={closeAvatarPopupBackdrop}
+        onkeydown={(e) => {
+            if (e.key === ' ' || e.key === 'Enter') closeAvatarPopupBackdrop(e);
+        }}
+        aria-label="close avatar menu"
+        role="button"
+        tabindex="0">
         <div
-            class="*:hover:bg-bg-600 flex flex-col *:rounded-sm *:px-2 *:py-1.5 *:transition-colors">
-            <a href={resolve(`/user/${user.id}`)} onclick={closeAvatarPopup}>Profile</a>
-            <a href={resolve('/user')} onclick={closeAvatarPopup}>Account</a>
+            class="bg-bg-700 text-text-150 fixed top-16 right-3 z-50 min-w-54 rounded-lg p-2 shadow-lg lg:right-8 xl:right-16"
+            role="menu"
+            onclick={(e) => e.stopPropagation()}
+            onkeydown={(e) => {
+                if (e.key === ' ' || e.key === 'Enter') e.stopPropagation();
+            }}
+            tabindex="-1">
+            <div
+                class="*:hover:bg-bg-600 flex flex-col *:rounded-sm *:px-2 *:py-1.5 *:transition-colors">
+                <a href={resolve(`/user/${user.id}`)} onclick={closeAvatarPopup}
+                    >Profile</a>
+                <a href={resolve('/user')} onclick={closeAvatarPopup}>Account</a>
+            </div>
+            <div class="my-1">
+                <VSeperator color="bg-bg-600" />
+            </div>
+            <form
+                class="*:hover:bg-bg-600 w-full *:w-full *:rounded-sm *:px-2 *:py-1.5 *:text-left *:transition-colors"
+                method="post"
+                action="/user?/logout"
+                use:enhance={() => {
+                    return async ({ result }) => {
+                        if (result.type === 'success') {
+                            await goto(resolve('/'), { invalidateAll: true });
+                        }
+                    };
+                }}>
+                <button type="submit" class="cursor-pointer">
+                    <span>Sign out</span>
+                </button>
+            </form>
         </div>
-        <div class="my-1">
-            <VSeperator color="bg-bg-600" />
-        </div>
-        <form
-            class="*:hover:bg-bg-600 w-full *:w-full *:rounded-sm *:px-2 *:py-1.5 *:text-left *:transition-colors"
-            method="post"
-            action="/user?/logout"
-            use:enhance={() => {
-                return async ({ result }) => {
-                    if (result.type === 'success') {
-                        await goto(resolve('/'), { invalidateAll: true });
-                    }
-                };
-            }}>
-            <button type="submit" class="cursor-pointer">
-                <span>Sign out</span>
-            </button>
-        </form>
     </div>
 {/if}
 
@@ -223,59 +248,22 @@
         role="button"
         tabindex="0">
         <nav
-            class="bg-bg-900 border-r-primary bottom-0 z-40 flex h-full w-120 max-w-9/10 flex-col justify-between border-r-2 px-4 pb-8">
-            <div>
-                <div class="">
-                    <button
-                        aria-label="Close sidebar"
-                        class="ignore-default"
-                        onclick={toggleSidebar}>
-                        <ArrowLeft />
-                    </button>
-                </div>
-                <div class="w-full px-2">
-                    <ul class="flex h-full flex-col items-stretch space-x-2 pr-5 pl-2">
-                        {#each links as link (link.href)}
-                            <li class="border-primary-light m-0 border-b-2 py-2 pl-1">
-                                <!-- eslint-disable svelte/no-navigation-without-resolve -->
-                                <a
-                                    class="ignore-default hover:text-primary!"
-                                    href={link.href}
-                                    onclick={(e) => {
-                                        toggleSidebar(e, false);
-                                    }}>{link.display}</a>
-                                <!-- eslint-enable svelte/no-navigation-without-resolve -->
-                            </li>
-                        {/each}
-                    </ul>
-                </div>
-            </div>
-            <div class="px-4">
-                {#if user}
-                    <a
-                        href={resolve('/user')}
-                        onclick={(e) => {
-                            toggleSidebar(e, false);
-                        }}
-                        class="ignore-default max-w-full space-x-4 truncate text-center underline">
-                        <!-- <User class=" inline-block min-h-6 min-w-6" /> -->
-                        <img
-                            src={`https://avatars.githubusercontent.com/u/${user.github_id}?v=4`}
-                            alt="User Avatar"
-                            class="mx-1 inline-block h-6 w-6 rounded-full align-middle" />
-                        {user.display_name || user.github_username}</a>
-                {:else}
-                    <Button
-                        label={translations.login}
-                        type="button"
-                        responsiveStyles="!px-6 md:!px-8"
-                        onclick={(e: MouseEvent) => {
-                            goto(resolve('/login'));
-                            toggleSidebar(e, false);
-                        }}
-                        Icon={LogIn}
-                        aria-label="Login" />
-                {/if}
+            class="bg-bg-900 bottom-0 z-40 flex h-full w-full max-w-4/5 flex-col justify-between px-4 pb-8">
+            <div class="mt-12 w-full px-2">
+                <ul
+                    class="flex h-full flex-col items-stretch gap-3 space-x-2 pr-5 pl-2">
+                    {#each links as link (link.href)}
+                        <li class="border-primary-light m-0 border-b-2 py-4 pl-1">
+                            <a
+                                class="ignore-default hover:text-text-150"
+                                rel="external"
+                                href={link.href}
+                                onclick={(e) => {
+                                    toggleSidebar(e, false);
+                                }}>{link.display}</a>
+                        </li>
+                    {/each}
+                </ul>
             </div>
         </nav>
     </div>

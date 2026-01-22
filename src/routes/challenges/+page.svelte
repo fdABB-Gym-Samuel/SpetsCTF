@@ -24,6 +24,7 @@
     import IconXBold from 'phosphor-icons-svelte/IconXBold.svelte';
     import IconTrashBold from 'phosphor-icons-svelte/IconTrashBold.svelte';
     import IconPencilBold from 'phosphor-icons-svelte/IconPencilBold.svelte';
+    import IconSignInBold from 'phosphor-icons-svelte/IconSignInBold.svelte';
 
     import Footer from '$lib/components/Footer.svelte';
     import { resolve } from '$app/paths';
@@ -271,8 +272,11 @@
                 {/if}
             </section>
         {:else}
-            <p>Sign sign in to create a challenge.</p>
-            <a href={resolve('/login')}>Sign in</a>
+            <p class="mb-3">Sign sign in to create a challenge.</p>
+            <Button
+                label="Sign in"
+                Icon={IconSignInBold}
+                onclick={() => goto(resolve('/login'))}></Button>
         {/if}
     {:else if currentTab === 2}
         <form class="m-auto w-fit pt-24" method="post" action="?/createChallenge">

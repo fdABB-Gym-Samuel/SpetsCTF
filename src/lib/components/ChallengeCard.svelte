@@ -15,15 +15,8 @@
     import { capitalizeFirstLetter } from '$lib/utils/utils';
     import type { Selectable } from 'kysely';
 
-    function getPointBracket(points: number): number {
-        if (points < 200) return 100;
-        if (points < 300) return 200;
-        if (points < 400) return 300;
-        if (points < 500) return 400;
-        return 500;
-    }
+    import { getPointBracket } from '$lib/utils/utils';
 
-    let pointElement: HTMLSpanElement | undefined = $state(undefined);
     let pointBracket = $derived(getPointBracket(challengeData.points));
 
     let filteredCategories = categories.filter(
@@ -59,10 +52,8 @@
             </div>
             {#if challengeData.num_solvers}
                 <div class="mt-1 mb-6 flex items-start gap-5">
-                    <p class="text-sm leading-normal font-semibold">
+                    <p class="font-mono text-sm leading-normal font-semibold">
                         <span
-                            class="font-mono"
-                            bind:this={pointElement}
                             class:text-point-100={!challengeData.solved &&
                                 pointBracket === 100}
                             class:text-point-200={!challengeData.solved &&
@@ -76,16 +67,16 @@
                         ><span
                             class="text-text-200"
                             class:text-text-100!={challengeData.solved}
-                            >&nbsp;&nbsp;points</span>
+                            >&nbsp;POINTS</span>
                     </p>
-                    <p class="font-mono text-sm font-semibold">
+                    <p class="font-mono text-sm">
                         {challengeData.num_solvers}&nbsp;<span
-                            class="text-text-200 font-sans"
+                            class="text-text-200"
                             class:text-text-100!={challengeData.solved}>
                             {#if challengeData.num_solvers == 1}
                                 solver
                             {:else}
-                                solvers
+                                SOLVERS
                             {/if}
                         </span>
                     </p>

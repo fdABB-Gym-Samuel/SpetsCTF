@@ -1,7 +1,10 @@
 <script lang="ts">
     import { browser } from '$app/environment';
     import { page } from '$app/state';
-    import { Copy, LogOut } from '@lucide/svelte';
+
+    import IconCopyBold from 'phosphor-icons-svelte/IconCopyBold.svelte';
+    import IconSignOutBold from 'phosphor-icons-svelte/IconSignOutBold.svelte';
+
     import Button from '$lib/components/Button.svelte';
     import { resolve } from '$app/paths';
     import { enhance } from '$app/forms';
@@ -19,18 +22,19 @@
     let inviteLinkDisplay: string = $derived(`${page.url.origin}${inviteLink}`);
 </script>
 
-<div class="content flex flex-col items-center">
-    <h1 class="text-center text-2xl">{teamData?.name}</h1>
-    <a rel="external" href={teamData?.website}>{teamData?.website}</a>
-    <div>
+<div class="content mx-auto max-w-fit pt-24">
+    <div class="mb-8">
+        <h1 class="mb-3 text-[22px]">{teamData?.name}</h1>
+        <a class="text-text-150" rel="external" href={teamData?.website}
+            >{teamData?.website}</a>
+    </div>
+    <div class="mb-12">
         {#if users}
-            <h3>Members:</h3>
-
+            <h3 class="mb-3 text-[18px]">Members:</h3>
             <ul class="users flex flex-row items-center">
-                <span class="bg-primary h-8 w-px min-w-px"></span>
-
+                <span class="bg-primary h-0.5 w-4 rounded-sm"></span>
                 {#each users as user (user)}
-                    <li class=" w-full px-2 text-center">
+                    <li class="px-3">
                         {#if user.display_name}
                             <a
                                 href={resolve(`/user/[userId]`, {
@@ -40,26 +44,28 @@
                             <p class="italic">Anonymous</p>
                         {/if}
                     </li>
-                    <span class="bg-primary h-8 w-px min-w-px"></span>
                 {/each}
+                <span class="bg-primary h-0.5 w-4 rounded-sm"></span>
             </ul>
         {/if}
     </div>
     {#if team && teamData?.id === team.teamId && teamData.join_code}
-        <div>
-            <h3>{translations.invite}</h3>
-            <a href={inviteLink} class="font-mono" rel="external">
-                {inviteLinkDisplay}
-            </a>
-            <Button
-                label=""
-                Icon={Copy}
-                styleType="icon"
-                onclick={async () => {
-                    if (browser) {
-                        await navigator.clipboard.writeText(inviteLinkDisplay);
-                    }
-                }} />
+        <div class="mb-12">
+            <h3 class="text-[18px]">{translations.invite}</h3>
+            <div class="flex items-center gap-3">
+                <a href={inviteLink} class="font-mono text-sm" rel="external">
+                    {inviteLinkDisplay}
+                </a>
+                <Button
+                    label=""
+                    Icon={IconCopyBold}
+                    styleType="icon"
+                    onclick={async () => {
+                        if (browser) {
+                            await navigator.clipboard.writeText(inviteLinkDisplay);
+                        }
+                    }} />
+            </div>
         </div>
     {/if}
     {#if team && teamData?.id === team.teamId}
@@ -73,12 +79,8 @@
                     cancel();
                 }
             }}>
-            <Button
-                type="submit"
-                label={translations.leave_team}
-                styleType="small"
-                Icon={LogOut}>
-            </Button>
+            <Button type="submit" label={translations.leave_team} Icon={IconSignOutBold}
+            ></Button>
         </form>
     {/if}
 </div>

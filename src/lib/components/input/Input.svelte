@@ -28,7 +28,7 @@
 </script>
 
 <div class="relative flex flex-col">
-    <div class="mb-2">
+    <div class="mb-3">
         <label for={name}>
             <span>{label}</span>
 
