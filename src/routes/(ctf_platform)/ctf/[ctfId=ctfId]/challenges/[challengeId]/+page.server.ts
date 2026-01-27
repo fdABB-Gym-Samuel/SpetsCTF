@@ -43,6 +43,14 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
                     WHERE cs.challenge = challenges.challenge_id
                       AND cs.success = true
                       AND ct.ctf = ${ctfId}
+                      AND ctm.team != COALESCE((
+                        SELECT ctm_author.team 
+                        FROM ctf_teams_members ctm_author
+                        INNER JOIN ctf_teams ct_author ON ctm_author.team = ct_author.id
+                        WHERE ctm_author.user_id = challenges.author
+                          AND ct_author.ctf = ${ctfId}
+                        LIMIT 1
+                      ), -1)
                   ) = 0 
                   THEN 500
                   ELSE GREATEST(
@@ -56,6 +64,14 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
                         WHERE cs.challenge = challenges.challenge_id
                           AND cs.success = true
                           AND ct.ctf = ${ctfId}
+                          AND ctm.team != COALESCE((
+                            SELECT ctm_author.team 
+                            FROM ctf_teams_members ctm_author
+                            INNER JOIN ctf_teams ct_author ON ctm_author.team = ct_author.id
+                            WHERE ctm_author.user_id = challenges.author
+                              AND ct_author.ctf = ${ctfId}
+                            LIMIT 1
+                          ), -1)
                       ), 2)) + 501
                     ),
                     100
@@ -115,51 +131,69 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
         error(404, 'Challenge not found');
     }
 
+    // Get the author's team to exclude from first solvers and solver count
+    // Must be done BEFORE we replace author_id for anonymous authors
+    const authorTeam = await db
+        .selectFrom('ctf_teams_members as ctm')
+        .innerJoin('ctf_teams as ct', 'ctm.team', 'ct.id')
+        .where('ctm.user_id', '=', challengeData.author_id)
+        .where('ct.ctf', '=', ctfId)
+        .select('ctm.team')
+        .executeTakeFirst();
+
     if (challengeData.anonymous_author || challengeData.author === '') {
         challengeData.author_id = '00000000-0000-0000-0000-000000000000';
     }
 
-    const firstSolvers = await db
-        .with('first_solve_per_user', (qb) =>
+    const firstSolversQuery = db
+        .with('first_solve_per_team', (qb) =>
             qb
                 .selectFrom('ctf_submissions')
+                .innerJoin(
+                    'ctf_teams_members as ctm',
+                    'ctf_submissions.user_id',
+                    'ctm.user_id'
+                )
+                .innerJoin('ctf_teams as ct', 'ctm.team', 'ct.id')
+                .innerJoin('users', 'ctf_submissions.user_id', 'users.id')
                 .where('challenge', '=', challengeData.challenge_id)
                 .where('success', '=', true)
-                .select(['user_id'])
-                .select(sql`MIN(time)`.as('first_time'))
-                .groupBy('user_id')
+                .where('ct.ctf', '=', ctfId)
+                .where('users.is_admin', '!=', true)
+                .$if(!!authorTeam, (qb) => qb.where('ctm.team', '!=', authorTeam!.team))
+                .select(['ctm.team as team_id'])
+                .select(sql`MIN(ctf_submissions.time)`.as('first_time'))
+                .groupBy('ctm.team')
         )
-        .selectFrom('first_solve_per_user')
-        .innerJoin('users', 'users.id', 'first_solve_per_user.user_id')
-        .where('is_admin', '!=', true)
-        .orderBy('first_solve_per_user.first_time', 'asc')
+        .selectFrom('first_solve_per_team')
+        .innerJoin('ctf_teams', 'ctf_teams.id', 'first_solve_per_team.team_id')
+        .orderBy('first_solve_per_team.first_time', 'asc')
         .select([
-            'users.display_name',
-            sql<string>`
-                case
-                    when users.display_name is null or users.display_name = '' then '00000000-0000-0000-0000-000000000000'
-                    else users.id
-                end
-            `.as('id'),
+            'ctf_teams.name as display_name',
+            sql<string>`ctf_teams.id::text`.as('id'),
         ])
-        .limit(5)
-        .execute();
+        .limit(5);
 
-    const resources = await db
-        .selectFrom('challenge_resources')
-        .where('challenge', '=', challengeData.challenge_id)
-        .selectAll()
-        .execute();
+    const firstSolvers = await firstSolversQuery.execute();
 
-    const numSolvers = await db
+    const numSolversQuery = db
         .selectFrom('ctf_submissions as cs')
         .innerJoin('ctf_teams_members as ctm', 'cs.user_id', 'ctm.user_id')
         .innerJoin('ctf_teams as ct', 'ctm.team', 'ct.id')
         .where('cs.success', '=', true)
         .where('cs.challenge', '=', challengeData.challenge_id)
         .where('ct.ctf', '=', ctfId)
+        .$if(!!authorTeam, (qb) => qb.where('ctm.team', '!=', authorTeam!.team));
+
+    const numSolvers = await numSolversQuery
         .select((eb) => eb.fn.count('ctm.team').distinct().as('count'))
         .executeTakeFirst();
+
+    const resources = await db
+        .selectFrom('challenge_resources')
+        .where('challenge', '=', challengeData.challenge_id)
+        .selectAll()
+        .execute();
 
     depends(`data:challenge-${challengeData.challenge_id}`);
 
