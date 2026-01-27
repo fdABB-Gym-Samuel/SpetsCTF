@@ -293,7 +293,7 @@
         </section>
         <section class="flex w-full flex-wrap justify-between gap-x-12 gap-y-4">
             <ul
-                class="categories @container flex h-fit w-fit flex-row flex-wrap"
+                class="categories @container flex h-fit w-fit flex-row flex-wrap space-x-4"
                 style="container-type:normal">
                 {#each filteredCategories as category, index (index)}
                     <li class="text-text-100 text-md">
@@ -304,6 +304,7 @@
             <div class="flex flex-row gap-8">
                 <p class="text-md font-mono font-bold">
                     <span
+                        class:text-text-100={challengeData.solved}
                         class:text-point-100={!challengeData.solved &&
                             pointBracket === 100}
                         class:text-point-200={!challengeData.solved &&
