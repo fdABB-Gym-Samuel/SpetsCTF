@@ -279,7 +279,11 @@
                 onclick={() => goto(resolve('/login'))}></Button>
         {/if}
     {:else if currentTab === 2}
-        <form class="m-auto w-fit pt-24" method="post" action="?/createChallenge">
+        <form
+            class="m-auto w-fit pt-24"
+            use:enhance
+            method="post"
+            action="?/createChallenge">
             <div class="mb-6">
                 <Input
                     label="Display name"

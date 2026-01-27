@@ -1,6 +1,5 @@
 import { fail, redirect, error, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { resolve } from '$app/paths';
 import { db } from '$lib/db/database';
 import type { Insertable, Selectable, Updateable } from 'kysely';
 import type {
@@ -25,7 +24,7 @@ import { getStateDirectory } from '$lib/server/directories';
 export const load: PageServerLoad = async ({ locals, params, depends }) => {
     const user = locals.user;
     if (!user) {
-        redirect(303, resolve('/login'));
+        redirect(303, '/login');
     }
 
     const challengeId = params.challengeId;
@@ -79,7 +78,7 @@ export const load: PageServerLoad = async ({ locals, params, depends }) => {
 export const actions = {
     approveChallenge: async ({ request, locals }) => {
         const user = locals.user;
-        if (!user) redirect(303, resolve('/login'));
+        if (!user) redirect(303, '/login');
 
         const form = await request.formData();
         const challengeId = form.get('challenge_id')?.toString() ?? '';
@@ -108,7 +107,7 @@ export const actions = {
     },
     disapproveChallenge: async ({ request, locals }) => {
         const user = locals.user;
-        if (!user) redirect(303, resolve('/login'));
+        if (!user) redirect(303, '/login');
 
         const form = await request.formData();
         const challengeId = form.get('challenge_id')?.toString() ?? '';
@@ -137,7 +136,7 @@ export const actions = {
     },
     createResource: async ({ request, locals, params }) => {
         const user = locals.user;
-        if (!user) redirect(303, resolve('/login'));
+        if (!user) redirect(303, '/login');
 
         const challengeId = params.challengeId ?? '';
         if (!challengeId) return fail(404);
@@ -327,7 +326,7 @@ export const actions = {
     },
     deleteResource: async ({ request, locals }) => {
         const user = locals.user;
-        if (!user) redirect(303, resolve('/login'));
+        if (!user) redirect(303, '/login');
 
         const form = await request.formData();
 
@@ -396,7 +395,7 @@ export const actions = {
     },
     editChallenge: async ({ request, locals, params }) => {
         const user = locals.user;
-        if (!user) redirect(303, resolve('/login'));
+        if (!user) redirect(303, '/login');
 
         const challengeId = params.challengeId;
         if (challengeId === undefined)

@@ -3,7 +3,6 @@ import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { sql, type Insertable } from 'kysely';
 import type { Challenges } from '$lib/generated/db';
-import { resolve } from '$app/paths';
 import { formatRequestedName } from '$lib/utils/utils';
 
 export const load: PageServerLoad = async ({ locals, depends }) => {
@@ -186,7 +185,7 @@ export const actions = {
             error(500, { message: 'Failed to create new challenge stub.' });
         }
 
-        redirect(303, resolve(`/challenges/${newEmptyChallenge.challenge_id}/edit`));
+        redirect(303, `/challenges/${newEmptyChallenge.challenge_id}/edit`);
     },
     deleteChallenge: async ({ request, locals }) => {
         const user = locals.user;

@@ -263,7 +263,11 @@
             <a href={resolve('/login')}>Sign in</a>
         {/if}
     {:else if currentTab === 2}
-        <form class="m-auto w-fit pt-24" method="post" action="?/createChallenge">
+        <form
+            class="m-auto w-fit pt-24"
+            method="post"
+            use:enhance
+            action="/challenges?/createChallenge">
             <div class="mb-6">
                 <Input
                     label="Display name"
@@ -279,6 +283,7 @@
                         ></span>
                 {/if}
             </div>
+            <input type="hidden" value={page.params.ctfId} name="ctfId" />
             <Button
                 label="Continue"
                 type="submit"
