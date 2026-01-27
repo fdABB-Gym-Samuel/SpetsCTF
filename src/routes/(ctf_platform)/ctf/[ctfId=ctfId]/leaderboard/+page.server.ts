@@ -92,7 +92,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
                     'ctf_teams.id',
                     'ctf_teams.name',
                     'ctf_submissions.challenge',
-                    'points',
+                    sql.ref('points'),
                 ])
         )
         .selectFrom('ctf_teams')
