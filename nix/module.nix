@@ -87,7 +87,7 @@ in
             "AF_INET"
             "AF_INET6"
           ];
-          UMask = "0117";
+          UMask = "027";
           NoNewPrivileges = true;
           DynamicUser = true;
           Group = "spetsctf";
