@@ -92,7 +92,7 @@
     class="w-full will-change-transform transform-3d"
     style="transform: rotateX({rotX.current}deg) rotateY({rotY.current}deg)">
     <p class="text-text-200 mb-2 text-sm">{translations.next_spetsctf_is_in}</p>
-    <div class="rounded-lg shadow-xl">
+    <div class="rounded-2xl shadow-xl">
         <div
             class="bg-bg-800 inner-shadow flex items-center justify-between rounded-2xl px-10 py-2 pb-3 select-none">
             {#each Object.entries(countdown) as [label, number], index (label)}
