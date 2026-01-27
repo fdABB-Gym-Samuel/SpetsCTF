@@ -270,7 +270,7 @@
         role="button"
         tabindex="0">
         <nav
-            class="bg-bg-900 bottom-0 z-40 flex h-full w-full max-w-4/5 flex-col justify-between px-4 pb-8">
+            class="bg-bg-900 bottom-0 z-40 flex h-full w-full max-w-4/5 flex-col justify-between px-4 pb-8 select-none">
             <div class="mt-12 w-full px-2">
                 <ul
                     class="flex h-full flex-col items-stretch gap-3 space-x-2 pr-5 pl-2">

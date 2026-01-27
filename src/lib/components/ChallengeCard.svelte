@@ -42,7 +42,10 @@
                 <h3 class="challenge-name text-left text-[18px]">
                     {challengeData.display_name}
                 </h3>
-                <p class="text-text-150 font-mono text-sm font-semibold">
+                <p
+                    class:text-text-100={challengeData.solved}
+                    class:text-text-200={!challengeData.solved}
+                    class="font-mono text-sm font-semibold">
                     {#if solveDate}
                         {solveDate.toLocaleDateString('sv-SE')}
                     {:else if challengeData.created_at}
@@ -54,6 +57,7 @@
                 <div class="mt-1 mb-6 flex items-start gap-5">
                     <p class="font-mono text-sm leading-normal font-semibold">
                         <span
+                            class:text-text-100={challengeData.solved}
                             class:text-point-100={!challengeData.solved &&
                                 pointBracket === 100}
                             class:text-point-200={!challengeData.solved &&
@@ -65,18 +69,18 @@
                             class:text-point-500={!challengeData.solved &&
                                 pointBracket === 500}>{challengeData.points}</span
                         ><span
-                            class="text-text-200"
+                            class="text-text-100"
                             class:text-text-100!={challengeData.solved}
                             >&nbsp;POINTS</span>
                     </p>
                     <p class="font-mono text-sm">
                         {challengeData.num_solvers}&nbsp;<span
-                            class="text-text-200"
+                            class="text-text-100"
                             class:text-text-100!={challengeData.solved}>
                             {#if challengeData.num_solvers == 1}
-                                solver
+                                SOLVE
                             {:else}
-                                SOLVERS
+                                SOLVES
                             {/if}
                         </span>
                     </p>
@@ -86,7 +90,10 @@
         <section class="justify arounditems-center flex">
             <ul class="categroies flex w-full flex-row flex-wrap gap-2.5">
                 {#each displayedCategories as category (category)}
-                    <li class="text-text-200 text-sm">
+                    <li
+                        class:text-text-200={!challengeData.solved}
+                        class:text-text-100={challengeData.solved}
+                        class="text-sm">
                         # {capitalizeFirstLetter(category)}
                     </li>
                 {/each}

@@ -107,12 +107,12 @@
                 </h3>
             </section>
             {#if challengeData.created_at}
-                <p class="text-primary-light text-md mb-0.5 font-mono font-bold">
+                <p class="text-md text-text-100 mb-0.5">
                     {translations.uploaded}
                     {challengeData.created_at.toLocaleDateString('sv-SE')}
                 </p>
             {:else}
-                <p class="text-primary-light mb-0.5 font-mono text-sm font-bold">
+                <p class="text-text-100 mb-0.5">
                     {translations.unknown_creation_time}
                 </p>
             {/if}
@@ -122,13 +122,13 @@
             <div class="w-1/2 min-w-70 grow">
                 {#if challengeData.resources.length != 0}
                     <div class="mb-4 flex flex-col">
-                        <p class="text-text-200 mb-2">Resources:</p>
+                        <p class="text-text-100 mb-2">Resources:</p>
                         <ul
                             class="resources *:bg-bg-600 flex flex-col gap-1 *:w-fit *:rounded-full *:py-1 *:pr-5 *:pl-4">
                             {#each challengeData.resources as resource (resource)}
                                 {#if resource.type === 'web'}
                                     <li
-                                        class="challenge-resource text-text-100 flex h-fit flex-row items-center gap-1 underline">
+                                        class="challenge-resource text-text-100 flex h-fit flex-row items-center gap-1 underline select-none">
                                         <IconGlobeBold
                                             class="text-text-150 text-[20px]" />
                                         <a
@@ -139,7 +139,7 @@
                                     </li>
                                 {:else if resource.type === 'file'}
                                     <li
-                                        class="challenge-resource text-text-100 flex flex-row items-center gap-1">
+                                        class="challenge-resource text-text-100 flex flex-row items-center gap-1 select-none">
                                         <IconFileBold
                                             class="text-text-150 text-[20px]" />
                                         <a
@@ -159,7 +159,7 @@
                                     </li>
                                 {:else}
                                     <li
-                                        class="challenge-resource text-text-100 flex flex-row items-center gap-1">
+                                        class="challenge-resource text-text-100 flex flex-row items-center gap-1 select-none">
                                         <IconTerminalBold
                                             class="text-text-150 text-[20px]" />
                                         <button
@@ -186,7 +186,7 @@
                     </div>
                 {/if}
                 <div class="author mb-2">
-                    <p class="text-text-200 inline-block">Author:&nbsp;</p>
+                    <p class="text-text-100 inline-block">Author:&nbsp;</p>
                     {#if !challengeData.author || challengeData.anonymous_author}
                         <p class="text-text-100 inline-block italic">Anonymous</p>
                     {:else}
@@ -226,13 +226,12 @@
                                 applyAction(result);
                             };
                         }}>
-                        <label for="flag" class="text-text-100 text-sm"
-                            >Submit flag</label>
+                        <label for="flag" class="text-text-100">Submit flag</label>
                         <div class="relative mt-2 mr-1 mb-8">
                             <input
                                 type="text"
                                 name="flag"
-                                class="flag bg-bg-600 text-text-100 w-full rounded-lg px-6 py-3 font-mono text-sm focus:outline-none"
+                                class="flag bg-bg-600 text-text-100 w-full rounded-lg px-6 py-3 font-mono focus:outline-none"
                                 class:ring-error={form?.success === false}
                                 placeholder={challengeData.flag_format} />
                             <input
@@ -273,7 +272,7 @@
                 <div
                     class="first-solvers-wrapper text-text-100 flex flex-col justify-start">
                     {#if challengeData.num_solvers != 0}
-                        <h5 class="text-text-200 mb-2">First Solvers:</h5>
+                        <h5 class="text-text-100 mb-2">First Solvers:</h5>
                         <ol
                             class="first-solvers flex list-inside list-decimal flex-col justify-start">
                             {#each challengeData.first_solvers as solver (solver.id)}
@@ -287,7 +286,7 @@
                             {/each}
                         </ol>
                     {:else}
-                        <p class="text-text-200">This challenge has no solvers yet.</p>
+                        <p class="text-text-100">This challenge has no solvers yet.</p>
                     {/if}
                 </div>
             </div>
@@ -297,13 +296,13 @@
                 class="categories @container flex h-fit w-fit flex-row flex-wrap"
                 style="container-type:normal">
                 {#each filteredCategories as category, index (index)}
-                    <li class="text-text-100 text-sm">
+                    <li class="text-text-100 text-md">
                         <p>{capitalizeFirstLetter(category)}</p>
                     </li>
                 {/each}
             </ul>
             <div class="flex flex-row gap-8">
-                <p class="font-mono text-sm font-bold">
+                <p class="text-md font-mono font-bold">
                     <span
                         class:text-point-100={!challengeData.solved &&
                             pointBracket === 100}
@@ -315,10 +314,10 @@
                             pointBracket === 400}
                         class:text-point-500={!challengeData.solved &&
                             pointBracket === 500}>{challengeData.points}</span
-                    >&nbsp;<span class="text-text-200">POINTS</span>
+                    >&nbsp;<span class="text-text-100">POINTS</span>
                 </p>
-                <p class="text-text-100 font-mono text-sm font-bold">
-                    {challengeData.num_solvers}&nbsp;<span class="text-text-200">
+                <p class="text-text-100 text-md font-mono font-bold">
+                    {challengeData.num_solvers}&nbsp;<span class="text-text-100">
                         {#if challengeData.num_solvers == 1}
                             SOLVER
                         {:else}
