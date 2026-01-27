@@ -34,7 +34,7 @@
             num_solvers: string | number | bigint;
         } & { resources: Selectable<ChallengeResources>[] } & {
             solved?: boolean;
-        } & { author_id: Selectable<Users>['id'] };
+        } & { author?: string };
         closeDialog: () => void;
         translations: Record<string, string>;
         user: Selectable<Users> | undefined;
@@ -101,14 +101,6 @@
         class="bg-bg-800 challenge-dialog relative mx-auto flex w-[95%] max-w-[1400px] flex-col rounded-2xl px-8 py-12 sm:px-12 md:w-[85%] md:px-14 lg:px-16">
         <section
             class="-mt-2 mb-12 flex w-full flex-wrap items-center justify-between gap-x-8 gap-y-1 text-nowrap">
-            <!-- <button -->
-            <!-- 	type="button" -->
-            <!-- 	onclick={() => closeDialog()} -->
-            <!-- 	class="cursor-pointer hover:bg-bg-600 p-1 transition-colors rounded-sm" -->
-            <!-- 	title="Close the challenge dialog." -->
-            <!-- > -->
-            <!-- 	<IconXBold class="text-[20px] text-text-150" /> -->
-            <!-- </button> -->
             <section>
                 <h3 class="challenge-name text-text-100 text-[22px] font-semibold">
                     {challengeData.display_name}
@@ -199,7 +191,7 @@
                         <p class="text-text-100 inline-block italic">Anonymous</p>
                     {:else}
                         <a
-                            href={resolve(`/user/${challengeData.author_id}`)}
+                            href={resolve(`/user/${challengeData.author}`)}
                             class="text-text-100 inline-block">
                             {challengeData.author}
                         </a>
