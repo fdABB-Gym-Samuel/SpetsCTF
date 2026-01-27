@@ -27,6 +27,15 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
                 .where('challenges.ctf', '=', ctfId)
                 .where('approved', '=', true)
                 .where('ctf_submissions.success', '=', true)
+                // Exclude challenges where author is on this team
+                .where(
+                    sql<boolean>`NOT EXISTS (
+                        SELECT 1 FROM challenges c
+                        INNER JOIN ctf_teams_members ctm_auth ON c.author = ctm_auth.user_id
+                        WHERE c.challenge_id = ctf_submissions.challenge
+                          AND ctm_auth.team = ctf_teams.id
+                    )`
+                )
                 .select([
                     'ctf_teams.id as team_id',
                     'ctf_teams.name as team_name',
@@ -38,9 +47,18 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
                             FROM ctf_submissions cs
                             INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
                             INNER JOIN ctf_teams ct ON ctm.team = ct.id
+                            INNER JOIN challenges ch ON cs.challenge = ch.challenge_id
                             WHERE cs.challenge = ctf_submissions.challenge
                               AND cs.success = true
                               AND ct.ctf = ${ctfId}
+                              AND ctm.team != COALESCE((
+                                SELECT ctm_author.team 
+                                FROM ctf_teams_members ctm_author
+                                INNER JOIN ctf_teams ct_author ON ctm_author.team = ct_author.id
+                                WHERE ctm_author.user_id = ch.author
+                                  AND ct_author.ctf = ${ctfId}
+                                LIMIT 1
+                              ), -1)
                           ) = 0 
                           THEN 500
                           ELSE GREATEST(
@@ -51,9 +69,18 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
                                 FROM ctf_submissions cs
                                 INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
                                 INNER JOIN ctf_teams ct ON ctm.team = ct.id
+                                INNER JOIN challenges ch ON cs.challenge = ch.challenge_id
                                 WHERE cs.challenge = ctf_submissions.challenge
                                   AND cs.success = true
                                   AND ct.ctf = ${ctfId}
+                                  AND ctm.team != COALESCE((
+                                    SELECT ctm_author.team 
+                                    FROM ctf_teams_members ctm_author
+                                    INNER JOIN ctf_teams ct_author ON ctm_author.team = ct_author.id
+                                    WHERE ctm_author.user_id = ch.author
+                                      AND ct_author.ctf = ${ctfId}
+                                    LIMIT 1
+                                  ), -1)
                               ), 2)) + 501
                             ),
                             100
