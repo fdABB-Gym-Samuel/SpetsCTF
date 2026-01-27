@@ -6,7 +6,6 @@
     import { page } from '$app/state';
 
     let links = $derived([
-        { display: data.translations.wargames, href: resolve('/challenges') },
         {
             display: data.translations.challenges,
             href: resolve(`/ctf/${page.params.ctfId}/challenges`),

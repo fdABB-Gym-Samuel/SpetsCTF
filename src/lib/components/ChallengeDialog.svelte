@@ -34,7 +34,7 @@
             num_solvers: string | number | bigint;
         } & { resources: Selectable<ChallengeResources>[] } & {
             solved?: boolean;
-        } & { author?: string };
+        } & { author_id: string | null };
         closeDialog: () => void;
         translations: Record<string, string>;
         user: Selectable<Users> | undefined;
@@ -191,7 +191,7 @@
                         <p class="text-text-100 inline-block italic">Anonymous</p>
                     {:else}
                         <a
-                            href={resolve(`/user/${challengeData.author}`)}
+                            href={resolve(`/user/${challengeData.author_id}`)}
                             class="text-text-100 inline-block">
                             {challengeData.author}
                         </a>
