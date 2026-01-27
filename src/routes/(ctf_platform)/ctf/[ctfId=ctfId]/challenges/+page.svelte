@@ -267,7 +267,7 @@
             class="m-auto w-fit pt-24"
             method="post"
             use:enhance
-            action="?/createChallenge">
+            action="/challenges?/createChallenge">
             <div class="mb-6">
                 <Input
                     label="Display name"
@@ -283,6 +283,7 @@
                         ></span>
                 {/if}
             </div>
+            <input type="hidden" value={page.params.ctfId} name="ctfId" />
             <Button
                 label="Continue"
                 type="submit"
