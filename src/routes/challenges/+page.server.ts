@@ -186,7 +186,7 @@ export const actions = {
             error(500, { message: 'Failed to create new challenge stub.' });
         }
 
-        redirect(303, resolve(`/challenges/${newEmptyChallenge.challenge_id}/edit`));
+        redirect(303, `/challenges/${newEmptyChallenge.challenge_id}/edit`);
     },
     deleteChallenge: async ({ request, locals }) => {
         const user = locals.user;
