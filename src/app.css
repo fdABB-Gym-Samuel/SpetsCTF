@@ -56,29 +56,27 @@
 
 /* Color theme */
 @layer base {
-    /* :root { */
-    /*       --color-bg-900: oklch(0.96 0.002 106.59); */
-    /*       --color-bg-850: oklch(0.9 0.0019 106.57); */
-    /*       --color-bg-800: oklch(0.85 0.0015 17.27); */
-    /*       --color-bg-750: oklch(0.77 0.0015 17.27); */
-    /*       --color-bg-700: oklch(0.7 0.0018 17.27); */
-    /*       --color-bg-600: oklch(0.66 0.0039 84.58); */
-    /*       --color-bg-500: oklch(0.6 0.0058 78.26); */
-    /**/
-    /*       --color-text-100: oklch(0.1588 0.0173 321); */
-    /*       --color-text-200: oklch(0.2181 0.0173 321); */
-    /**/
-    /*       --color-primary: oklch(0.55 0.2503 297.91); */
-    /*       --color-primary-light: oklch(0.67 0.1821 302.65); */
-    /*       --color-primary-extra-light: oklch(0.86 0.0724 305.79); */
-    /*       --color-primary-dark: oklch(0.4265 0.2195 297.91); */
-    /**/
-    /*       --color-backdrop: rgba(255, 255, 255, 0.9); */
-    /**/
-    /*       --color-gradient-100: oklch(66.788% 0.00675 75.216); */
-    /*       --color-gradient-200: oklch(81.898% 0.00817 73.542); */
-    /*       --color-gradient-300: oklch(92.459% 0.00537 95.188); */
-    /*   } */
+    :root {
+        --color-bg-900: #f4f4f4;
+        --color-bg-850: #f0f0f0;
+        --color-bg-800: #e5e5e5;
+        --color-bg-700: #e2e2e2;
+        --color-bg-600: #dbdbdb;
+        --color-bg-200: #1d1e1e;
+        --color-bg-100: #151515;
+
+        --color-card: #eaeaea;
+
+        --color-text-100: #1c1c1c;
+        --color-text-150: #2f2f2f;
+        --color-text-200: #595e62;
+
+        --color-primary: #8937ed;
+        --color-primary-light: #ad75f1;
+        --color-primary-extra-light: #ddc6f8;
+
+        --color-backdrop: rgba(13, 13, 13, 0.5);
+    }
 
     @media (prefers-color-scheme: dark) {
         :root {
@@ -132,7 +130,7 @@
 }
 
 body {
-    @apply scrollbar-hidden dark:bg-bg-900 text-text-100 selection:bg-text-100 selection:text-bg-900 m-0 box-border min-h-screen scroll-smooth px-3 py-1 font-sans leading-tight font-medium antialiased lg:px-8 xl:px-16;
+    @apply scrollbar-hidden bg-bg-900 text-text-100 selection:bg-text-100 selection:text-bg-900 m-0 box-border min-h-screen scroll-smooth px-3 py-1 font-sans leading-tight font-medium antialiased lg:px-8 xl:px-16;
 }
 
 /* NOTE: No firefox support as of now sadly */

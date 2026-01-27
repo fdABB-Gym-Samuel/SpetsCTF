@@ -32,7 +32,9 @@
             first_solvers: { display_name: string | null; id: string }[];
         } & { flag_format: Selectable<Flag>['flag_format'] } & {
             num_solvers: string | number | bigint;
-        } & { resources: Selectable<ChallengeResources>[] } & { solved?: boolean };
+        } & { resources: Selectable<ChallengeResources>[] } & {
+            solved?: boolean;
+        } & { author?: string };
         closeDialog: () => void;
         translations: Record<string, string>;
         user: Selectable<Users> | undefined;
@@ -85,8 +87,7 @@
     });
 </script>
 
-<div
-    class="prevent-default flex items-center justify-center overflow-y-scroll pt-12 sm:pt-24 md:pt-36">
+<div class="fixed inset-0 overflow-y-auto pt-12 sm:pt-24 md:pt-36">
     <button
         type="button"
         class="fixed inset-0 h-full w-full cursor-default focus:outline-none"
@@ -97,17 +98,9 @@
         }}
         aria-label="Close challenge details"></button>
     <dialog
-        class="bg-bg-800 challenge-dialog relative mx-auto flex w-[95%] max-w-[1400px] flex-col overflow-y-scroll rounded-lg px-8 py-12 sm:px-12 md:w-[85%] md:px-14 lg:px-16">
+        class="bg-bg-800 challenge-dialog relative mx-auto flex w-[95%] max-w-[1400px] flex-col rounded-2xl px-8 py-12 sm:px-12 md:w-[85%] md:px-14 lg:px-16">
         <section
             class="-mt-2 mb-12 flex w-full flex-wrap items-center justify-between gap-x-8 gap-y-1 text-nowrap">
-            <!-- <button -->
-            <!-- 	type="button" -->
-            <!-- 	onclick={() => closeDialog()} -->
-            <!-- 	class="cursor-pointer hover:bg-bg-600 p-1 transition-colors rounded-sm" -->
-            <!-- 	title="Close the challenge dialog." -->
-            <!-- > -->
-            <!-- 	<IconXBold class="text-[20px] text-text-150" /> -->
-            <!-- </button> -->
             <section>
                 <h3 class="challenge-name text-text-100 text-[22px] font-semibold">
                     {challengeData.display_name}
@@ -125,7 +118,7 @@
             {/if}
         </section>
         <section
-            class="middle mb-24 flex h-full w-full flex-row flex-wrap justify-center gap-x-4 gap-y-8 overflow-hidden *:w-full">
+            class="middle mb-24 flex h-full w-full flex-row flex-wrap justify-center gap-x-4 gap-y-8 *:w-full">
             <div class="w-1/2 min-w-70 grow">
                 {#if challengeData.resources.length != 0}
                     <div class="mb-4 flex flex-col">
@@ -181,7 +174,7 @@
                                             <IconCopyBold class="ml-1 text-[20px]" />
                                             {#if showCopiedMessage}
                                                 <div
-                                                    class="bg-bg-600 absolute bottom-6 -translate-x-4 rounded-sm px-2 py-0.5 text-sm">
+                                                    class="bg-bg-600 absolute bottom-6 -translate-x-4 rounded-lg px-2 py-0.5 text-sm">
                                                     Copied!
                                                 </div>
                                             {/if}
