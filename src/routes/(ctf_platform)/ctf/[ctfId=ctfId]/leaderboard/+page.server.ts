@@ -31,13 +31,41 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
                     'ctf_teams.id as team_id',
                     'ctf_teams.name as team_name',
                     'ctf_submissions.challenge as challenge_id',
-                    'challenges.points as points',
+                    sql<number>`(
+                        CASE 
+                          WHEN (
+                            SELECT COUNT(DISTINCT ctm.team)
+                            FROM ctf_submissions cs
+                            INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
+                            INNER JOIN ctf_teams ct ON ctm.team = ct.id
+                            WHERE cs.challenge = ctf_submissions.challenge
+                              AND cs.success = true
+                              AND ct.ctf = ${ctfId}
+                          ) = 0 
+                          THEN 500
+                          ELSE GREATEST(
+                            CEIL(
+                              (((100.0 - 500.0) / POWER(15.0, 2)) * 
+                              POWER((
+                                SELECT COUNT(DISTINCT ctm.team)
+                                FROM ctf_submissions cs
+                                INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
+                                INNER JOIN ctf_teams ct ON ctm.team = ct.id
+                                WHERE cs.challenge = ctf_submissions.challenge
+                                  AND cs.success = true
+                                  AND ct.ctf = ${ctfId}
+                              ), 2)) + 501
+                            ),
+                            100
+                          )
+                        END
+                    )`.as('points'),
                 ])
                 .groupBy([
                     'ctf_teams.id',
                     'ctf_teams.name',
                     'ctf_submissions.challenge',
-                    'challenges.points',
+                    'points',
                 ])
         )
         .selectFrom('ctf_teams')
