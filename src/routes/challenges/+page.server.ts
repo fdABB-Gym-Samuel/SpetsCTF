@@ -3,7 +3,6 @@ import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { sql, type Insertable } from 'kysely';
 import type { Challenges } from '$lib/generated/db';
-import { resolve } from '$app/paths';
 import { formatRequestedName } from '$lib/utils/utils';
 
 export const load: PageServerLoad = async ({ locals, depends }) => {
