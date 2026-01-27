@@ -223,36 +223,6 @@ export const actions = {
             const arrayBuffer = await fileBuffer.arrayBuffer();
             const buffer = Buffer.from(arrayBuffer);
 
-            const mimeType = await new Promise<string>((resolve, reject) => {
-                const fileProcess = spawn('file', ['-b', '--mime-type', '-']);
-                let output = '';
-                fileProcess.stdout.on('data', (data) => {
-                    output += data.toString();
-                });
-
-                fileProcess.stderr.on('data', (data) => {
-                    reject(new Error(data.toString()));
-                });
-
-                fileProcess.on('close', (code) => {
-                    if (code === 0) {
-                        resolve(output.trim());
-                    } else {
-                        reject(new Error(`file command exited with code ${code}`));
-                    }
-                });
-
-                fileProcess.stdin.write(buffer);
-                fileProcess.stdin.end();
-            });
-
-            if (fileBuffer.type.split(';').at(0)?.trim() !== mimeType) {
-                return fail(422, {
-                    success: false,
-                    message: 'Stop lying about the mimetype!',
-                });
-            }
-
             const stateDirectoryPath = getStateDirectory();
             if (!stateDirectoryPath || !path.isAbsolute(stateDirectoryPath))
                 error(500, {

@@ -66,7 +66,6 @@ in
         after = [ config.systemd.services.postgresql.name ] ++ servicePrerequisites;
         requires = [ config.systemd.services.postgresql.name ] ++ servicePrerequisites;
         wantedBy = [ "multi-user.target" ];
-        path = [ pkgs.file ];
         environment = {
           ADDRESS_HEADER = "x-forwarded-for";
           HOST_HEADER = "x-forwarded-host";
