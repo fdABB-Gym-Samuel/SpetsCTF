@@ -2,10 +2,10 @@
     import Button from '$lib/components/Button.svelte';
     import ChallengeList from '$lib/components/ChallengeList.svelte';
     import Switch from '$lib/components/input/Switch.svelte';
-    import { enhance } from '$app/forms';
+    import { applyAction, enhance } from '$app/forms';
     import { goto } from '$app/navigation';
 
-    let { data } = $props();
+    let { data, form } = $props();
 
     let allChallenges = $derived(data.allChallenges);
     let myChallenges = $derived(data.myChallenges);
@@ -266,8 +266,15 @@
         <form
             class="m-auto w-fit pt-24"
             method="post"
-            use:enhance
+            use:enhance={() => {
+                return ({ result }) => {
+                    applyAction(result);
+                };
+            }}
             action="/challenges?/createChallenge">
+            {#if form}
+                <span class:text-red-500={!form.success}>{form.message}</span>
+            {/if}
             <div class="mb-6">
                 <Input
                     label="Display name"

@@ -127,7 +127,7 @@ export const actions = {
             .executeTakeFirst();
 
         if (existingChallengeWithSpecifiedName) {
-            return fail(409);
+            return fail(409, { success: false, message: 'Challenge ID not available' });
         }
 
         let desiredCtf: { id: number } | null = null;
