@@ -224,7 +224,7 @@
                                     class="ml-4 flex h-full flex-row items-center gap-2">
                                     <a
                                         href={resolve(
-                                            `/ctf/${ctfData?.id}/challenges/${challenge.challenge_id}/edit`
+                                            `/challenges/${challenge.challenge_id}/edit`
                                         )}
                                         aria-label="Edit Challenge"
                                         class="bg-bg-700 text-text-150 hover:bg-bg-600 relative z-10 cursor-pointer rounded-lg p-2 transition-colors">
