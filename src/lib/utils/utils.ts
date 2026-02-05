@@ -24,7 +24,6 @@ export const formatRequestedName = (requestedName: string) =>
             .replaceAll(/\s+/g, '_')
             .replaceAll(/[^\w]/g, '')
             .replaceAll(/[^a-z0-9_]/gi, '')
-            .toLowerCase()
     );
 
 export function getPointBracket(points: number): number {

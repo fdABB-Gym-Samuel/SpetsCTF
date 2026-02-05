@@ -222,6 +222,7 @@ export const actions = {
                     .executeTakeFirst(),
                 rm(join(getStateDirectory(), 'files', sanitize(challengeId)), {
                     recursive: true,
+                    force: true,
                 }),
             ]);
         } catch {
