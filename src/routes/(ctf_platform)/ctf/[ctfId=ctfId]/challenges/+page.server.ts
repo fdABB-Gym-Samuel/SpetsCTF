@@ -289,16 +289,14 @@ export const actions = {
         }
 
         try {
-            await Promise.all([
-                db
-                    .deleteFrom('challenges')
-                    .where('challenge_id', '=', challengeId)
-                    .executeTakeFirst(),
-                rm(join(getStateDirectory(), 'files', sanitize(challengeId)), {
-                    recursive: true,
-                    force: true,
-                }),
-            ]);
+            await db
+                .deleteFrom('challenges')
+                .where('challenge_id', '=', challengeId)
+                .executeTakeFirst();
+            await rm(join(getStateDirectory(), 'files', sanitize(challengeId)), {
+                recursive: true,
+                force: true,
+            });
         } catch {
             error(500, {
                 message:
