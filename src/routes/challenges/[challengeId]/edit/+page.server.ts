@@ -5,6 +5,8 @@ import type { Insertable, Selectable, Updateable } from 'kysely';
 import type {
     ChallengeResources,
     Challenges,
+    CtfChallengeResources,
+    CtfChallenges,
     CtfEvents,
     Flag,
 } from '$lib/generated/db';
@@ -67,13 +69,55 @@ export const load: PageServerLoad = async ({ locals, params, depends }) => {
 
     if (!flag) error(404);
 
+    // Check if there's a corresponding CTF challenge
+    let ctfChallenge: Selectable<CtfChallenges> | undefined = undefined;
+    if (ctf) {
+        ctfChallenge = await db
+            .selectFrom('ctf_challenges')
+            .where('challenge_id', '=', challengeId)
+            .selectAll()
+            .executeTakeFirst();
+    }
+
+    // Determine if the CTF has ended
+    const ctfEnded = ctf ? new Date(ctf.end_time) < new Date() : true;
+
     return {
         challenge,
         flag,
         resources,
         ctf,
+        ctfChallenge,
+        ctfEnded,
     };
 };
+
+// Helper function to check if CTF has ended for a challenge
+async function getCtfStatus(
+    challengeId: string
+): Promise<{ ctfId: number | null; ctfEnded: boolean }> {
+    const challenge = await db
+        .selectFrom('challenges')
+        .where('challenge_id', '=', challengeId)
+        .select('ctf')
+        .executeTakeFirst();
+
+    if (!challenge?.ctf) {
+        return { ctfId: null, ctfEnded: true };
+    }
+
+    const ctf = await db
+        .selectFrom('ctf_events')
+        .where('id', '=', challenge.ctf)
+        .select('end_time')
+        .executeTakeFirst();
+
+    if (!ctf) {
+        return { ctfId: challenge.ctf, ctfEnded: true };
+    }
+
+    return { ctfId: challenge.ctf, ctfEnded: new Date(ctf.end_time) < new Date() };
+}
 
 export const actions = {
     approveChallenge: async ({ request, locals }) => {
@@ -87,12 +131,25 @@ export const actions = {
         }
 
         if (user.is_admin) {
+            const { ctfId, ctfEnded } = await getCtfStatus(challengeId);
+
             try {
-                await db
-                    .updateTable('challenges')
-                    .set({ approved: true })
-                    .where('challenge_id', '=', challengeId)
-                    .executeTakeFirstOrThrow();
+                await db.transaction().execute(async (trx) => {
+                    await trx
+                        .updateTable('challenges')
+                        .set({ approved: true })
+                        .where('challenge_id', '=', challengeId)
+                        .execute();
+
+                    // Also update ctf_challenges if CTF hasn't ended
+                    if (ctfId && !ctfEnded) {
+                        await trx
+                            .updateTable('ctf_challenges')
+                            .set({ approved: true })
+                            .where('challenge_id', '=', challengeId)
+                            .execute();
+                    }
+                });
             } catch {
                 error(500, { message: 'Failed to set approved bit.' });
             }
@@ -116,12 +173,25 @@ export const actions = {
         }
 
         if (user.is_admin) {
+            const { ctfId, ctfEnded } = await getCtfStatus(challengeId);
+
             try {
-                await db
-                    .updateTable('challenges')
-                    .set({ approved: false })
-                    .where('challenge_id', '=', challengeId)
-                    .executeTakeFirstOrThrow();
+                await db.transaction().execute(async (trx) => {
+                    await trx
+                        .updateTable('challenges')
+                        .set({ approved: false })
+                        .where('challenge_id', '=', challengeId)
+                        .execute();
+
+                    // Also update ctf_challenges if CTF hasn't ended
+                    if (ctfId && !ctfEnded) {
+                        await trx
+                            .updateTable('ctf_challenges')
+                            .set({ approved: false })
+                            .where('challenge_id', '=', challengeId)
+                            .execute();
+                    }
+                });
             } catch {
                 error(500, { message: 'Failed to set approved bit.' });
             }
@@ -152,6 +222,8 @@ export const actions = {
         if (!user.is_admin && currentChallenge.author !== user.id) {
             return fail(401);
         }
+
+        const { ctfId, ctfEnded } = await getCtfStatus(challengeId);
 
         const form = await request.formData();
 
@@ -186,6 +258,23 @@ export const actions = {
                         .set({ approved: false })
                         .where('challenge_id', '=', challengeId)
                         .execute();
+
+                    // Also add to ctf_challenge_resources if CTF hasn't ended
+                    if (ctfId && !ctfEnded) {
+                        await trx
+                            .insertInto('ctf_challenge_resources')
+                            .values({
+                                type: resourceType as 'web' | 'cmd' | 'file',
+                                challenge: currentChallenge.challenge_id,
+                                content: form.get('content')?.toString() ?? '',
+                            })
+                            .execute();
+                        await trx
+                            .updateTable('ctf_challenges')
+                            .set({ approved: false })
+                            .where('challenge_id', '=', challengeId)
+                            .execute();
+                    }
                 });
             } catch {
                 error(500, { message: 'Failed to insert resource.' });
@@ -282,6 +371,23 @@ export const actions = {
                         .set({ approved: false })
                         .where('challenge_id', '=', challengeId)
                         .execute();
+
+                    // Also add to ctf_challenge_resources if CTF hasn't ended
+                    if (ctfId && !ctfEnded) {
+                        await trx
+                            .insertInto('ctf_challenge_resources')
+                            .values({
+                                challenge: challengeId,
+                                content: filenameSanitized,
+                                type: 'file',
+                            })
+                            .execute();
+                        await trx
+                            .updateTable('ctf_challenges')
+                            .set({ approved: false })
+                            .where('challenge_id', '=', challengeId)
+                            .execute();
+                    }
                 });
             } catch {
                 await unlink(filePath);
@@ -322,32 +428,60 @@ export const actions = {
 
         if (!resourceData) error(404, { message: 'No such resource found.' });
 
+        const { ctfId, ctfEnded } = await getCtfStatus(resourceData.challenge);
+
         if (user.id === resourceData.author || user.is_admin) {
             if (resourceData.type === 'file') {
                 try {
                     const stateDirectoryPath = getStateDirectory();
-                    const filePathToDelete = await db
-                        .deleteFrom('challenge_resources')
-                        .where('id', '=', resourceData.id)
-                        .returning(['content', 'challenge'])
-                        .executeTakeFirstOrThrow();
-                    await unlink(
-                        path.join(
-                            stateDirectoryPath,
-                            'files',
-                            filePathToDelete.challenge,
-                            filePathToDelete.content
-                        )
-                    );
+
+                    await db.transaction().execute(async (trx) => {
+                        const filePathToDelete = await trx
+                            .deleteFrom('challenge_resources')
+                            .where('id', '=', resourceData.id)
+                            .returning(['content', 'challenge'])
+                            .executeTakeFirstOrThrow();
+
+                        // Also delete from ctf_challenge_resources if CTF hasn't ended
+                        if (ctfId && !ctfEnded) {
+                            await trx
+                                .deleteFrom('ctf_challenge_resources')
+                                .where('challenge', '=', resourceData.challenge)
+                                .where('type', '=', resourceData.type)
+                                .where('content', '=', resourceData.content)
+                                .execute();
+                        }
+
+                        await unlink(
+                            path.join(
+                                stateDirectoryPath,
+                                'files',
+                                filePathToDelete.challenge,
+                                filePathToDelete.content
+                            )
+                        );
+                    });
                 } catch {
                     error(500, { message: 'Failed to delete file resource.' });
                 }
             } else {
                 try {
-                    await db
-                        .deleteFrom('challenge_resources')
-                        .where('id', '=', resourceData.id)
-                        .executeTakeFirstOrThrow();
+                    await db.transaction().execute(async (trx) => {
+                        await trx
+                            .deleteFrom('challenge_resources')
+                            .where('id', '=', resourceData.id)
+                            .execute();
+
+                        // Also delete from ctf_challenge_resources if CTF hasn't ended
+                        if (ctfId && !ctfEnded) {
+                            await trx
+                                .deleteFrom('ctf_challenge_resources')
+                                .where('challenge', '=', resourceData.challenge)
+                                .where('type', '=', resourceData.type)
+                                .where('content', '=', resourceData.content)
+                                .execute();
+                        }
+                    });
                 } catch {
                     error(500, { message: 'Failed to delete resource.' });
                 }
@@ -483,8 +617,28 @@ export const actions = {
 
         challengeUpdate.points = pointsParsed;
 
+        const { ctfId, ctfEnded } = await getCtfStatus(challengeId);
+
+        // Handle migrate_to_wargames (only if CTF hasn't ended)
+        const migrateToWargames = form.get('migrate_to_wargames') === 'on';
+        if (ctfId && !ctfEnded) {
+            challengeUpdate.migrate_to_wargames = migrateToWargames;
+        }
+
+        // Get the CTF challenge's flag ID if it exists and CTF hasn't ended
+        let ctfChallengeFlag: number | null = null;
+        if (ctfId && !ctfEnded) {
+            const ctfChallenge = await db
+                .selectFrom('ctf_challenges')
+                .where('challenge_id', '=', challengeId)
+                .select('flag')
+                .executeTakeFirst();
+            ctfChallengeFlag = ctfChallenge?.flag ?? null;
+        }
+
         try {
             await db.transaction().execute(async (trx) => {
+                // Update the wargame challenge's flag
                 await trx
                     .updateTable('flag')
                     .set(flagUpdate)
@@ -495,6 +649,34 @@ export const actions = {
                     .set(challengeUpdate)
                     .where('challenge_id', '=', challengeId)
                     .execute();
+
+                // Also update ctf_challenges and its flag if CTF hasn't ended
+                if (ctfId && !ctfEnded) {
+                    // Update CTF challenge's separate flag
+                    if (ctfChallengeFlag) {
+                        await trx
+                            .updateTable('flag')
+                            .set(flagUpdate)
+                            .where('id', '=', ctfChallengeFlag)
+                            .execute();
+                    }
+
+                    await trx
+                        .updateTable('ctf_challenges')
+                        .set({
+                            approved: false,
+                            display_name: challengeUpdate.display_name,
+                            description: challengeUpdate.description,
+                            challenge_category: challengeUpdate.challenge_category,
+                            challenge_sub_categories:
+                                challengeUpdate.challenge_sub_categories,
+                            anonymous_author: challengeUpdate.anonymous_author,
+                            points: challengeUpdate.points,
+                            migrate_to_wargames: migrateToWargames,
+                        })
+                        .where('challenge_id', '=', challengeId)
+                        .execute();
+                }
             });
         } catch {
             error(500, { message: 'Failed to update challenge.' });

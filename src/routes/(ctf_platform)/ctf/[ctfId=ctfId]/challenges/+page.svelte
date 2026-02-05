@@ -224,7 +224,7 @@
                                     class="ml-4 flex h-full flex-row items-center gap-2">
                                     <a
                                         href={resolve(
-                                            `/ctf/${ctfData?.id}/challenges/${challenge.challenge_id}/edit`
+                                            `/challenges/${challenge.challenge_id}/edit`
                                         )}
                                         aria-label="Edit Challenge"
                                         class="bg-bg-700 text-text-150 hover:bg-bg-600 relative z-10 cursor-pointer rounded-lg p-2 transition-colors">
@@ -271,7 +271,7 @@
                     applyAction(result);
                 };
             }}
-            action="/challenges?/createChallenge">
+            action="?/createChallenge">
             {#if form}
                 <span class:text-red-500={!form.success}>{form.message}</span>
             {/if}
@@ -290,7 +290,14 @@
                         ></span>
                 {/if}
             </div>
-            <input type="hidden" value={page.params.ctfId} name="ctfId" />
+            <div class="my-4 flex items-center gap-3">
+                <span>Migrate to Wargames after CTF</span>
+                <Switch checked={true} name="migrate_to_wargames" />
+            </div>
+            <p class="text-text-300 mb-4 max-w-md text-sm">
+                When enabled, this challenge will also be available as a permanent
+                wargames challenge after the CTF ends.
+            </p>
             <Button
                 label="Continue"
                 type="submit"

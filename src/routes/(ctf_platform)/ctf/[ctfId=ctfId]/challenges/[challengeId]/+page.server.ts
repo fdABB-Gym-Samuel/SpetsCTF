@@ -2,7 +2,7 @@ import type { PageServerLoad } from './$types';
 import { error, redirect, fail, type Actions } from '@sveltejs/kit';
 import { type Insertable, sql } from 'kysely';
 import type { CtfSubmissions } from '$lib/generated/db';
-import { get_flag_of_challenge } from '$lib/db/functions';
+import { get_flag_of_ctf_challenge } from '$lib/db/functions';
 import { db } from '$lib/db/database';
 
 export const load: PageServerLoad = async ({ params, parent, locals, depends }) => {
@@ -16,38 +16,39 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
 
     const user = locals.user;
     const challengeData = await db
-        .selectFrom('challenges')
-        .innerJoin('flag', 'challenges.flag', 'flag.id')
-        .innerJoin('users', 'challenges.author', 'users.id')
-        .leftJoin('ctf_events', 'challenges.ctf', 'ctf_events.id')
-        .where('challenges.ctf', '=', ctfId)
+        .selectFrom('ctf_challenges')
+        .innerJoin('flag', 'ctf_challenges.flag', 'flag.id')
+        .innerJoin('users', 'ctf_challenges.author', 'users.id')
+        .leftJoin('ctf_events', 'ctf_challenges.ctf', 'ctf_events.id')
+        .where('ctf_challenges.ctf', '=', ctfId)
         .where('challenge_id', '=', params.challengeId)
         .select([
-            'challenges.anonymous_author',
-            'challenges.approved',
-            'challenges.challenge_category',
-            'challenges.challenge_id',
-            'challenges.challenge_sub_categories',
-            'challenges.created_at',
-            'challenges.ctf',
-            'challenges.description',
-            'challenges.display_name',
-            'challenges.flag',
+            'ctf_challenges.anonymous_author',
+            'ctf_challenges.approved',
+            'ctf_challenges.challenge_category',
+            'ctf_challenges.challenge_id',
+            'ctf_challenges.challenge_sub_categories',
+            'ctf_challenges.created_at',
+            'ctf_challenges.ctf',
+            'ctf_challenges.description',
+            'ctf_challenges.display_name',
+            'ctf_challenges.flag',
+            'ctf_challenges.migrate_to_wargames',
             sql<number>`
                 CASE 
                   WHEN (
                     SELECT COUNT(DISTINCT ctm.team)
                     FROM ctf_submissions cs
-                    INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
+                    INNER JOIN ctf_teams_members ctm ON cs.team_id = ctm.team
                     INNER JOIN ctf_teams ct ON ctm.team = ct.id
-                    WHERE cs.challenge = challenges.challenge_id
+                    WHERE cs.challenge = ctf_challenges.challenge_id
                       AND cs.success = true
                       AND ct.ctf = ${ctfId}
                       AND ctm.team != COALESCE((
                         SELECT ctm_author.team 
                         FROM ctf_teams_members ctm_author
                         INNER JOIN ctf_teams ct_author ON ctm_author.team = ct_author.id
-                        WHERE ctm_author.user_id = challenges.author
+                        WHERE ctm_author.user_id = ctf_challenges.author
                           AND ct_author.ctf = ${ctfId}
                         LIMIT 1
                       ), -1)
@@ -59,16 +60,16 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
                       POWER((
                         SELECT COUNT(DISTINCT ctm.team)
                         FROM ctf_submissions cs
-                        INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
+                        INNER JOIN ctf_teams_members ctm ON cs.team_id = ctm.team
                         INNER JOIN ctf_teams ct ON ctm.team = ct.id
-                        WHERE cs.challenge = challenges.challenge_id
+                        WHERE cs.challenge = ctf_challenges.challenge_id
                           AND cs.success = true
                           AND ct.ctf = ${ctfId}
                           AND ctm.team != COALESCE((
                             SELECT ctm_author.team 
                             FROM ctf_teams_members ctm_author
                             INNER JOIN ctf_teams ct_author ON ctm_author.team = ct_author.id
-                            WHERE ctm_author.user_id = challenges.author
+                            WHERE ctm_author.user_id = ctf_challenges.author
                               AND ct_author.ctf = ${ctfId}
                             LIMIT 1
                           ), -1)
@@ -80,10 +81,10 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
         ])
         .select('flag.flag_format')
         .select([
-            'challenges.author as author_id',
+            'ctf_challenges.author as author_id',
             sql<string>`
                 CASE 
-                    WHEN challenges.anonymous_author = true THEN '' 
+                    WHEN ctf_challenges.anonymous_author = true THEN '' 
                     ELSE COALESCE(users.display_name, '') 
                 END
             `.as('author'),
@@ -93,19 +94,9 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
                 EXISTS(
                   SELECT 1 
                   FROM ctf_submissions cs
-                  INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
-                  INNER JOIN ctf_teams ct ON ctm.team = ct.id
-                  WHERE cs.challenge = challenges.challenge_id
+                  WHERE cs.challenge = ctf_challenges.challenge_id
                     AND cs.success = true
-                    AND ct.ctf = ${ctfId}
-                    AND ctm.team = (
-                      SELECT ctm2.team 
-                      FROM ctf_teams_members ctm2
-                      INNER JOIN ctf_teams ct2 ON ctm2.team = ct2.id
-                      WHERE ctm2.user_id = ${user?.id}
-                        AND ct2.ctf = ${ctfId}
-                      LIMIT 1
-                    )
+                    AND cs.team_id = ${team?.teamId ?? null}
                 )`.as('solved')
         )
         .executeTakeFirst();
@@ -151,11 +142,11 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
                 .selectFrom('ctf_submissions')
                 .innerJoin(
                     'ctf_teams_members as ctm',
-                    'ctf_submissions.user_id',
-                    'ctm.user_id'
+                    'ctf_submissions.team_id',
+                    'ctm.team'
                 )
                 .innerJoin('ctf_teams as ct', 'ctm.team', 'ct.id')
-                .innerJoin('users', 'ctf_submissions.user_id', 'users.id')
+                .innerJoin('users', 'ctm.user_id', 'users.id')
                 .where('challenge', '=', challengeData.challenge_id)
                 .where('success', '=', true)
                 .where('ct.ctf', '=', ctfId)
@@ -178,7 +169,7 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
 
     const numSolversQuery = db
         .selectFrom('ctf_submissions as cs')
-        .innerJoin('ctf_teams_members as ctm', 'cs.user_id', 'ctm.user_id')
+        .innerJoin('ctf_teams_members as ctm', 'cs.team_id', 'ctm.team')
         .innerJoin('ctf_teams as ct', 'ctm.team', 'ct.id')
         .where('cs.success', '=', true)
         .where('cs.challenge', '=', challengeData.challenge_id)
@@ -190,7 +181,7 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
         .executeTakeFirst();
 
     const resources = await db
-        .selectFrom('challenge_resources')
+        .selectFrom('ctf_challenge_resources')
         .where('challenge', '=', challengeData.challenge_id)
         .selectAll()
         .execute();
@@ -208,7 +199,7 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
 };
 
 export const actions = {
-    submit: async ({ request, locals, params }) => {
+    submit: async ({ request, locals, params, parent }) => {
         const user = locals.user;
 
         if (!user) {
@@ -218,11 +209,7 @@ export const actions = {
         const ctfId = Number(params.ctfId);
         const challengeId = params.challengeId;
 
-        const ctfData = await db
-            .selectFrom('ctf_events')
-            .where('id', '=', ctfId)
-            .selectAll()
-            .executeTakeFirst();
+        const { ctfData, team } = await parent();
 
         if (!ctfData) {
             return fail(404, { message: 'CTF not found' });
@@ -238,15 +225,7 @@ export const actions = {
             return redirect(303, `/challenges/${challengeId}`);
         }
 
-        const userTeam = await db
-            .selectFrom('ctf_teams')
-            .innerJoin('ctf_teams_members', 'ctf_teams.id', 'ctf_teams_members.team')
-            .where('ctf_teams.ctf', '=', ctfId)
-            .where('ctf_teams_members.user_id', '=', user.id)
-            .select(['ctf_teams.id'])
-            .executeTakeFirst();
-
-        if (!userTeam) {
+        if (!team) {
             return fail(403, { message: 'User is not part of any team in this CTF' });
         }
 
@@ -259,12 +238,7 @@ export const actions = {
 
         const successfulSubmission = await db
             .selectFrom('ctf_submissions')
-            .innerJoin(
-                'ctf_teams_members',
-                'ctf_submissions.user_id',
-                'ctf_teams_members.user_id'
-            )
-            .where('ctf_teams_members.team', '=', userTeam.id)
+            .where('ctf_submissions.team_id', '=', team.teamId)
             .where('challenge', '=', challengeId)
             .where('success', '=', true)
             .executeTakeFirst();
@@ -272,7 +246,7 @@ export const actions = {
         if (successfulSubmission !== undefined)
             return fail(403, { message: "User's team has already solved challenge" });
 
-        const correctFlag = await get_flag_of_challenge(challengeId);
+        const correctFlag = await get_flag_of_ctf_challenge(challengeId);
 
         if (!correctFlag.challengeExists) {
             return fail(404, { message: 'Challenge not found' });
@@ -288,7 +262,7 @@ export const actions = {
 
         const submission: Insertable<CtfSubmissions> = {
             challenge: challengeId,
-            user_id: user.id,
+            team_id: team.teamId,
             time: new Date(),
             success: flagIsCorrect,
             submitted_data: submittedFlag,

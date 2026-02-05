@@ -199,6 +199,36 @@ export const get_flag_of_challenge = async (challenge_id: string) => {
     return flag;
 };
 
+export const get_flag_of_ctf_challenge = async (challenge_id: string) => {
+    const flag_object = await db
+        .selectFrom('ctf_challenges')
+        .select('flag')
+        .where('challenge_id', '=', challenge_id)
+        .where('approved', '=', true)
+        .executeTakeFirst();
+
+    if (!flag_object) {
+        return { flag: '', challengeExists: false, flagExists: false };
+    }
+    const flag_id = flag_object['flag'];
+
+    const flag = await db
+        .selectFrom('flag')
+        .select([
+            'flag',
+            sql<boolean>`true`.as('challengeExists'),
+            sql<boolean>`true`.as('flagExists'),
+        ])
+        .where('id', '=', flag_id)
+        .executeTakeFirst();
+
+    if (flag === undefined) {
+        return { flag: '', challengeExists: true, flagExists: false };
+    }
+
+    return flag;
+};
+
 export const getIsOrg = async (userId: string, ctfId: number) => {
     const org = await db
         .selectFrom('ctf_organizers')

@@ -33,6 +33,7 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
             'challenges.display_name',
             'challenges.flag',
             'challenges.points',
+            'migrate_to_wargames',
         ])
         .select('flag.flag_format')
         .select([
@@ -60,7 +61,7 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
     }
 
     if (
-        !challengeData.approved &&
+        (!challengeData.approved || !challengeData.migrate_to_wargames) &&
         !user?.is_admin &&
         user?.id !== challengeData.author_id
     ) {
