@@ -52,15 +52,10 @@
         data.user && data.user.is_admin && data.challenge.approved
     );
 
-    let mainCategory = $state('misc');
-    let selectedSubCategories: string[] = $state([]);
-    onMount(() => {
-        mainCategory = data.challenge.challenge_category;
-        selectedSubCategories = bitsetToSelectedCategories(
-            categories,
-            data.challenge.challenge_sub_categories
-        );
-    });
+    let mainCategory = $derived(data.challenge.challenge_category);
+    let selectedSubCategories: string[] = $derived(
+        bitsetToSelectedCategories(categories, data.challenge.challenge_sub_categories)
+    );
 
     let possibleSubCategories = $derived.by(() =>
         categories
