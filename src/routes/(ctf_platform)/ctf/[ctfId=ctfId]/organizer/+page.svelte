@@ -79,7 +79,7 @@
     <h3 class="text-2xl">Current organizers</h3>
     <ul class="flex w-full flex-col space-y-3">
         {#each data.organizers as organizer (organizer.user?.id)}
-            <li animate:flip>
+            <li animate:flip={{ duration: 200 }}>
                 <div
                     class="bg-bg-700 border-bg-500 flex flex-row space-x-4 rounded-lg border-2 p-4">
                     <span class:font-bold={organizer.user?.id === data.user?.id}
