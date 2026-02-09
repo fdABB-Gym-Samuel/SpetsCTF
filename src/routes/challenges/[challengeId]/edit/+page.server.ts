@@ -435,8 +435,8 @@ export const actions = {
                 try {
                     const stateDirectoryPath = getStateDirectory();
 
-                    await db.transaction().execute(async (trx) => {
-                        const filePathToDelete = await trx
+                    const filePathToDelete = await db.transaction().execute(async (trx) => {
+                        const deletedResource = await trx
                             .deleteFrom('challenge_resources')
                             .where('id', '=', resourceData.id)
                             .returning(['content', 'challenge'])
@@ -452,15 +452,18 @@ export const actions = {
                                 .execute();
                         }
 
-                        await unlink(
-                            path.join(
-                                stateDirectoryPath,
-                                'files',
-                                filePathToDelete.challenge,
-                                filePathToDelete.content
-                            )
-                        );
+                        return deletedResource;
                     });
+
+                    // Delete the file only after the database transaction commits successfully
+                    await unlink(
+                        path.join(
+                            stateDirectoryPath,
+                            'files',
+                            filePathToDelete.challenge,
+                            filePathToDelete.content
+                        )
+                    );
                 } catch {
                     error(500, { message: 'Failed to delete file resource.' });
                 }
