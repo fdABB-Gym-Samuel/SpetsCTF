@@ -435,8 +435,8 @@ export const actions = {
                 try {
                     const stateDirectoryPath = getStateDirectory();
 
-                    const filePathToDelete = await db.transaction().execute(async (trx) => {
-                        const deletedResource = await trx
+                    const deletedResource = await db.transaction().execute(async (trx) => {
+                        const resource = await trx
                             .deleteFrom('challenge_resources')
                             .where('id', '=', resourceData.id)
                             .returning(['content', 'challenge'])
@@ -452,7 +452,7 @@ export const actions = {
                                 .execute();
                         }
 
-                        return deletedResource;
+                        return resource;
                     });
 
                     // Delete the file only after the database transaction commits successfully
@@ -460,8 +460,8 @@ export const actions = {
                         path.join(
                             stateDirectoryPath,
                             'files',
-                            filePathToDelete.challenge,
-                            filePathToDelete.content
+                            deletedResource.challenge,
+                            deletedResource.content
                         )
                     );
                 } catch {
