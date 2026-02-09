@@ -444,13 +444,11 @@ export const actions = {
                 .where('challenge_id', '=', challengeId)
                 .execute();
 
-            // Also delete from challenges if it exists there
-            if (ctfChallenge.migrate_to_wargames) {
-                await trx
-                    .deleteFrom('challenges')
-                    .where('challenge_id', '=', challengeId)
-                    .execute();
-            }
+            // Also delete from challenges
+            await trx
+                .deleteFrom('challenges')
+                .where('challenge_id', '=', challengeId)
+                .execute();
         });
 
         return { success: true, message: 'Challenge successfully deleted' };
