@@ -9,10 +9,6 @@ DROP FUNCTION IF EXISTS check_team_member_not_organizer ();
 
 DROP FUNCTION IF EXISTS check_organizer_not_in_team ();
 
--- Re-add ctf column to challenges table
-ALTER TABLE challenges
-ADD COLUMN ctf INT REFERENCES ctf_events (id);
-
 -- Migrate CTF challenges back to the challenges table
 INSERT INTO
   challenges (
