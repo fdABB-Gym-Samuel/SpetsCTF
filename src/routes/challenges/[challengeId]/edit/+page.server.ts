@@ -432,10 +432,11 @@ export const actions = {
 
         if (user.id === resourceData.author || user.is_admin) {
             if (resourceData.type === 'file') {
-                try {
-                    const stateDirectoryPath = getStateDirectory();
+                const stateDirectoryPath = getStateDirectory();
+                let deletedResource;
 
-                    const deletedResource = await db.transaction().execute(async (trx) => {
+                try {
+                    deletedResource = await db.transaction().execute(async (trx) => {
                         const resource = await trx
                             .deleteFrom('challenge_resources')
                             .where('id', '=', resourceData.id)
@@ -454,8 +455,13 @@ export const actions = {
 
                         return resource;
                     });
+                } catch (e) {
+                    console.error('Failed to delete file resource from database:', e);
+                    error(500, { message: 'Failed to delete file resource from database.' });
+                }
 
-                    // Delete the file only after the database transaction commits successfully
+                // Delete the file only after the database transaction commits successfully
+                try {
                     await unlink(
                         path.join(
                             stateDirectoryPath,
@@ -465,8 +471,9 @@ export const actions = {
                         )
                     );
                 } catch (e) {
-                    console.error('Failed to delete file resource:', e);
-                    error(500, { message: 'Failed to delete file resource.' });
+                    console.error('Failed to delete file from filesystem:', e);
+                    // File deletion failed but DB record is already deleted
+                    // This is acceptable - orphaned files can be cleaned up separately
                 }
             } else {
                 try {
