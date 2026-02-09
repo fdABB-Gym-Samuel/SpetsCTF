@@ -464,7 +464,8 @@ export const actions = {
                             deletedResource.content
                         )
                     );
-                } catch {
+                } catch (e) {
+                    console.error('Failed to delete file resource:', e);
                     error(500, { message: 'Failed to delete file resource.' });
                 }
             } else {
