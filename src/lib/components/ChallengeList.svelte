@@ -9,7 +9,9 @@
     import { slide } from 'svelte/transition';
 
     interface Props {
-        challenges: (Selectable<Challenges> & { num_solvers: number } & {
+        challenges: (Omit<Selectable<Challenges>, 'flag' | 'migrate_to_wargames'> & {
+            num_solvers: number;
+        } & {
             solved: boolean;
         })[];
         gotoChallenge: (challengeId: string) => void;

@@ -31,8 +31,10 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
         )
         .leftJoin('ctf_events', 'challenges.ctf', 'ctf_events.id')
         .where('challenges.approved', '=', true)
+        .where('challenges.migrate_to_wargames', '=', true)
         .where(sql<boolean>`ctf_events.end_time IS NULL OR ctf_events.end_time < NOW()`)
         .where('challenges.approved', '=', true)
+        .where('challenges.migrate_to_wargames', '=', true)
         .groupBy('challenges.challenge_id')
         .select([
             'challenges.challenge_id',
@@ -46,7 +48,7 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
             'challenges.approved',
             'challenges.created_at',
             'challenges.ctf',
-            'challenges.flag',
+            // 'challenges.flag',
             sql<number>`
                   COUNT(DISTINCT 
                     CASE WHEN EXISTS(
@@ -124,13 +126,20 @@ export const actions = {
             return fail(400);
         }
 
-        const existingChallengeWithSpecifiedName = await db
+        // Check if challenge ID exists in either table
+        const existingChallenge = await db
             .selectFrom('challenges')
             .where('challenge_id', '=', formattedRequestedName)
             .select('challenge_id')
             .executeTakeFirst();
 
-        if (existingChallengeWithSpecifiedName) {
+        const existingCtfChallenge = await db
+            .selectFrom('ctf_challenges')
+            .where('challenge_id', '=', formattedRequestedName)
+            .select('challenge_id')
+            .executeTakeFirst();
+
+        if (existingChallenge || existingCtfChallenge) {
             return fail(409, { success: false, message: 'Challenge ID not available' });
         }
 
@@ -178,11 +187,43 @@ export const actions = {
                 points: 0,
             };
 
-            return await trx
+            const challenge = await trx
                 .insertInto('challenges')
                 .values(challengeStub)
                 .returningAll()
                 .executeTakeFirst();
+
+            // Also create in ctf_challenges to reserve the ID (with separate flag)
+            if (desiredCtf) {
+                const ctfFlag = await trx
+                    .insertInto('flag')
+                    .values({
+                        flag: '',
+                        flag_format: '',
+                    })
+                    .returning(['flag.id'])
+                    .executeTakeFirstOrThrow();
+
+                await trx
+                    .insertInto('ctf_challenges')
+                    .values({
+                        anonymous_author: null,
+                        approved: false,
+                        author: user.id,
+                        challenge_id: formattedRequestedName,
+                        challenge_sub_categories: '00000000',
+                        created_at: new Date(),
+                        ctf: desiredCtf.id,
+                        description: '',
+                        display_name: requestedName,
+                        flag: ctfFlag.id,
+                        points: 0,
+                        migrate_to_wargames: true,
+                    })
+                    .execute();
+            }
+
+            return challenge;
         });
 
         if (!newEmptyChallenge) {

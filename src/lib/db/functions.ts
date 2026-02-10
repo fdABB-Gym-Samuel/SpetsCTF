@@ -169,18 +169,18 @@ export async function getUserFromGithubId(github_id: number) {
     return res;
 }
 
-export const get_flag_of_challenge = async (challenge_id: string) => {
-    const flag_object = await db
+export const getFlagOfChallenge = async (challengeId: string) => {
+    const flagObject = await db
         .selectFrom('challenges')
         .select('flag')
-        .where('challenge_id', '=', challenge_id)
+        .where('challenge_id', '=', challengeId)
         .where('approved', '=', true)
         .executeTakeFirst();
 
-    if (!flag_object) {
+    if (!flagObject) {
         return { flag: '', challengeExists: false, flagExists: false };
     }
-    const flag_id = flag_object['flag'];
+    const flagId = flagObject['flag'];
 
     const flag = await db
         .selectFrom('flag')
@@ -189,7 +189,37 @@ export const get_flag_of_challenge = async (challenge_id: string) => {
             sql<boolean>`true`.as('challengeExists'),
             sql<boolean>`true`.as('flagExists'),
         ])
-        .where('id', '=', flag_id)
+        .where('id', '=', flagId)
+        .executeTakeFirst();
+
+    if (flag === undefined) {
+        return { flag: '', challengeExists: true, flagExists: false };
+    }
+
+    return flag;
+};
+
+export const getFlagOfCtfChallenge = async (challengeId: string) => {
+    const flagObject = await db
+        .selectFrom('ctf_challenges')
+        .select('flag')
+        .where('challenge_id', '=', challengeId)
+        .where('approved', '=', true)
+        .executeTakeFirst();
+
+    if (!flagObject) {
+        return { flag: '', challengeExists: false, flagExists: false };
+    }
+    const flagId = flagObject['flag'];
+
+    const flag = await db
+        .selectFrom('flag')
+        .select([
+            'flag',
+            sql<boolean>`true`.as('challengeExists'),
+            sql<boolean>`true`.as('flagExists'),
+        ])
+        .where('id', '=', flagId)
         .executeTakeFirst();
 
     if (flag === undefined) {
