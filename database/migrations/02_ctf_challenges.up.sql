@@ -198,4 +198,17 @@ WHERE
       AND co.ctf = ct.ctf
   );
 
+INSERT INTO
+  classes (name, school)
+VALUES
+  ('V2301', 'Hitachigymnasiet Västerås'),
+  ('V2302', 'Hitachigymnasiet Västerås'),
+  ('V2303', 'Hitachigymnasiet Västerås'),
+  ('V2401', 'Hitachigymnasiet Västerås'),
+  ('V2402', 'Hitachigymnasiet Västerås'),
+  ('V2403', 'Hitachigymnasiet Västerås'),
+  ('V2501', 'Hitachigymnasiet Västerås'),
+  ('V2502', 'Hitachigymnasiet Västerås'),
+  ('V2503', 'Hitachigymnasiet Västerås');
+
 COMMIT;
