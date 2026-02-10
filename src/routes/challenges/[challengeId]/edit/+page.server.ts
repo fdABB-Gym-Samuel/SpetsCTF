@@ -5,7 +5,6 @@ import type { Insertable, Selectable, Updateable } from 'kysely';
 import type {
     ChallengeResources,
     Challenges,
-    CtfChallengeResources,
     CtfChallenges,
     CtfEvents,
     Flag,
@@ -13,7 +12,6 @@ import type {
 import { validateCategory } from '$lib/db/functions';
 import { selectedCategoriesToBitset } from '$lib/bitset';
 import { categories } from '$lib/db/constants';
-import { spawn } from 'node:child_process';
 import path from 'node:path';
 import sanitize from 'sanitize-filename';
 import { stat } from 'node:fs/promises';

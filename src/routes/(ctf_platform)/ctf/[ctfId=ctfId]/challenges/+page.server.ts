@@ -1,7 +1,7 @@
 import { fail, redirect, type Actions, error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
-import { sql, type Insertable } from 'kysely';
+import { sql } from 'kysely';
 import { formatRequestedName } from '$lib/utils/utils';
 
 export const load: PageServerLoad = async ({ locals, depends, params, parent }) => {
