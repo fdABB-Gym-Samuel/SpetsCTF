@@ -169,11 +169,11 @@ export async function getUserFromGithubId(github_id: number) {
     return res;
 }
 
-export const getFlagOfChallenge = async (challenge_id: string) => {
+export const getFlagOfChallenge = async (challengeId: string) => {
     const flag_object = await db
         .selectFrom('challenges')
         .select('flag')
-        .where('challenge_id', '=', challenge_id)
+        .where('challenge_id', '=', challengeId)
         .where('approved', '=', true)
         .executeTakeFirst();
 
@@ -199,11 +199,11 @@ export const getFlagOfChallenge = async (challenge_id: string) => {
     return flag;
 };
 
-export const getFlagOfCtfChallenge = async (challenge_id: string) => {
+export const getFlagOfCtfChallenge = async (challengeId: string) => {
     const flag_object = await db
         .selectFrom('ctf_challenges')
         .select('flag')
-        .where('challenge_id', '=', challenge_id)
+        .where('challenge_id', '=', challengeId)
         .where('approved', '=', true)
         .executeTakeFirst();
 
