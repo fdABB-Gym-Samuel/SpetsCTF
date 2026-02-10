@@ -432,11 +432,12 @@ export const actions = {
 
         if (user.id === resourceData.author || user.is_admin) {
             if (resourceData.type === 'file') {
-                try {
-                    const stateDirectoryPath = getStateDirectory();
+                const stateDirectoryPath = getStateDirectory();
+                let deletedResource;
 
-                    await db.transaction().execute(async (trx) => {
-                        const filePathToDelete = await trx
+                try {
+                    deletedResource = await db.transaction().execute(async (trx) => {
+                        const resource = await trx
                             .deleteFrom('challenge_resources')
                             .where('id', '=', resourceData.id)
                             .returning(['content', 'challenge'])
@@ -452,17 +453,27 @@ export const actions = {
                                 .execute();
                         }
 
-                        await unlink(
-                            path.join(
-                                stateDirectoryPath,
-                                'files',
-                                filePathToDelete.challenge,
-                                filePathToDelete.content
-                            )
-                        );
+                        return resource;
                     });
-                } catch {
-                    error(500, { message: 'Failed to delete file resource.' });
+                } catch (e) {
+                    console.error('Failed to delete file resource from database:', e);
+                    error(500, { message: 'Failed to delete file resource from database.' });
+                }
+
+                // Delete the file only after the database transaction commits successfully
+                try {
+                    await unlink(
+                        path.join(
+                            stateDirectoryPath,
+                            'files',
+                            deletedResource.challenge,
+                            deletedResource.content
+                        )
+                    );
+                } catch (e) {
+                    console.error('Failed to delete file from filesystem:', e);
+                    // File deletion failed but DB record is already deleted
+                    // This is acceptable - orphaned files can be cleaned up separately
                 }
             } else {
                 try {
