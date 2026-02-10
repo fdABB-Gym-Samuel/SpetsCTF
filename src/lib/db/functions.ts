@@ -169,18 +169,18 @@ export async function getUserFromGithubId(github_id: number) {
     return res;
 }
 
-export const get_flag_of_challenge = async (challenge_id: string) => {
-    const flag_object = await db
+export const getFlagOfChallenge = async (challengeId: string) => {
+    const flagObject = await db
         .selectFrom('challenges')
         .select('flag')
-        .where('challenge_id', '=', challenge_id)
+        .where('challenge_id', '=', challengeId)
         .where('approved', '=', true)
         .executeTakeFirst();
 
-    if (!flag_object) {
+    if (!flagObject) {
         return { flag: '', challengeExists: false, flagExists: false };
     }
-    const flag_id = flag_object['flag'];
+    const flagId = flagObject['flag'];
 
     const flag = await db
         .selectFrom('flag')
@@ -189,7 +189,7 @@ export const get_flag_of_challenge = async (challenge_id: string) => {
             sql<boolean>`true`.as('challengeExists'),
             sql<boolean>`true`.as('flagExists'),
         ])
-        .where('id', '=', flag_id)
+        .where('id', '=', flagId)
         .executeTakeFirst();
 
     if (flag === undefined) {
@@ -199,18 +199,18 @@ export const get_flag_of_challenge = async (challenge_id: string) => {
     return flag;
 };
 
-export const get_flag_of_ctf_challenge = async (challenge_id: string) => {
-    const flag_object = await db
+export const getFlagOfCtfChallenge = async (challengeId: string) => {
+    const flagObject = await db
         .selectFrom('ctf_challenges')
         .select('flag')
-        .where('challenge_id', '=', challenge_id)
+        .where('challenge_id', '=', challengeId)
         .where('approved', '=', true)
         .executeTakeFirst();
 
-    if (!flag_object) {
+    if (!flagObject) {
         return { flag: '', challengeExists: false, flagExists: false };
     }
-    const flag_id = flag_object['flag'];
+    const flagId = flagObject['flag'];
 
     const flag = await db
         .selectFrom('flag')
@@ -219,7 +219,7 @@ export const get_flag_of_ctf_challenge = async (challenge_id: string) => {
             sql<boolean>`true`.as('challengeExists'),
             sql<boolean>`true`.as('flagExists'),
         ])
-        .where('id', '=', flag_id)
+        .where('id', '=', flagId)
         .executeTakeFirst();
 
     if (flag === undefined) {

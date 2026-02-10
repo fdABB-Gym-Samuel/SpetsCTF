@@ -2,7 +2,7 @@ import type { PageServerLoad } from './$types';
 import { error, redirect, fail, type Actions } from '@sveltejs/kit';
 import { type Insertable, sql } from 'kysely';
 import type { CtfSubmissions } from '$lib/generated/db';
-import { get_flag_of_ctf_challenge } from '$lib/db/functions';
+import { getFlagOfCtfChallenge } from '$lib/db/functions';
 import { db } from '$lib/db/database';
 
 export const load: PageServerLoad = async ({ params, parent, locals, depends }) => {
@@ -268,7 +268,7 @@ export const actions = {
         if (successfulSubmission !== undefined)
             return fail(403, { message: "User's team has already solved challenge" });
 
-        const correctFlag = await get_flag_of_ctf_challenge(challengeId);
+        const correctFlag = await getFlagOfCtfChallenge(challengeId);
 
         if (!correctFlag.challengeExists) {
             return fail(404, { message: 'Challenge not found' });
