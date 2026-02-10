@@ -1197,38 +1197,38 @@ VALUES
 -- Ensure private CTF challenge also exists in ctf_challenges
 INSERT INTO
   ctf_challenges (
-    slug,
+    challenge_id,
     points,
-    title,
+    display_name,
     description,
-    category,
-    tags,
-    solves,
+    challenge_category,
+    challenge_sub_categories,
+    flag,
     ctf,
     author,
-    is_hidden,
-    is_active,
+    anonymous_author,
+    approved,
     created_at,
-    show_in_wargames
+    migrate_to_wargames
   )
 SELECT
-  slug,
+  challenge_id,
   points,
-  title,
+  display_name,
   description,
-  category,
-  tags,
-  solves,
+  challenge_category,
+  challenge_sub_categories,
+  flag,
   ctf,
   author,
-  is_hidden,
-  is_active,
+  anonymous_author,
+  approved,
   created_at,
-  show_in_wargames
+  migrate_to_wargames
 FROM
   challenges
 WHERE
-  slug = 'private_challenge_01';
+  challenge_id = 'private_challenge_01';
 
 -- ============================================================================
 -- 7. CTF CHALLENGE RESOURCES (for CTF challenges)

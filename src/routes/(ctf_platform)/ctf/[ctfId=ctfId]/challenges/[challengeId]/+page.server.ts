@@ -199,7 +199,7 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
 };
 
 export const actions = {
-    submit: async ({ request, locals, params, parent }) => {
+    submit: async ({ request, locals, params }) => {
         const user = locals.user;
 
         if (!user) {
@@ -209,11 +209,33 @@ export const actions = {
         const ctfId = Number(params.ctfId);
         const challengeId = params.challengeId;
 
-        const { ctfData, team } = await parent();
+        const ctfData = await db
+            .selectFrom('ctf_events')
+            .select([
+                'ctf_events.end_time',
+                'ctf_events.start_time',
+                'ctf_events.display_name',
+                'ctf_events.max_team_size',
+                'ctf_events.id',
+            ])
+            .where('id', '=', ctfId)
+            .executeTakeFirst();
 
         if (!ctfData) {
             return fail(404, { message: 'CTF not found' });
         }
+
+        const team = await db
+            .selectFrom('ctf_teams_members')
+            .innerJoin('ctf_teams', 'ctf_teams_members.team', 'ctf_teams.id')
+            .select([
+                'ctf_teams.id as teamId',
+                'ctf_teams.website',
+                'ctf_teams.name as teamName',
+            ])
+            .where('ctf_teams_members.user_id', '=', user.id)
+            .where('ctf_teams.ctf', '=', ctfId)
+            .executeTakeFirst();
 
         const currentTime = new Date();
 
