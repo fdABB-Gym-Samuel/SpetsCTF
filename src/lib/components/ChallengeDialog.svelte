@@ -55,6 +55,9 @@
     // Needs to be changed to handle when there are multiple commands that can be copied
     let showCopiedMessage = $state(false);
 
+    let cursorPosition = $state({ x: 0, y: 0 });
+    let showCloseText = $state(false);
+
     async function copyToClipboard(text_to_copy: string) {
         try {
             await navigator.clipboard.writeText(text_to_copy).then(() => {
@@ -69,6 +72,8 @@
     }
 
     let keydownHandler: (e: KeyboardEvent) => void;
+    let mouseMoveHandler: (e: MouseEvent) => void;
+    let dialogElement: HTMLDialogElement;
 
     onMount(() => {
         keydownHandler = (e: KeyboardEvent) => {
@@ -77,12 +82,31 @@
             }
         };
 
+        mouseMoveHandler = (e: MouseEvent) => {
+            cursorPosition = { x: e.clientX, y: e.clientY };
+
+            // Check if cursor is outside the dialog
+            if (dialogElement) {
+                const rect = dialogElement.getBoundingClientRect();
+                const isOutside =
+                    e.clientX < rect.left ||
+                    e.clientX > rect.right ||
+                    e.clientY < rect.top ||
+                    e.clientY > rect.bottom;
+                showCloseText = isOutside;
+            }
+        };
+
         document.addEventListener('keydown', keydownHandler);
+        document.addEventListener('mousemove', mouseMoveHandler);
     });
 
     onDestroy(() => {
         if (keydownHandler) {
             document.removeEventListener('keydown', keydownHandler);
+        }
+        if (mouseMoveHandler) {
+            document.removeEventListener('mousemove', mouseMoveHandler);
         }
     });
 </script>
@@ -90,7 +114,7 @@
 <div class="fixed inset-0 overflow-y-auto pt-12 sm:pt-24 md:pt-36">
     <button
         type="button"
-        class="fixed inset-0 h-full w-full cursor-default focus:outline-none"
+        class="fixed inset-0 h-full w-full cursor-pointer focus:outline-none"
         onclick={(e) => {
             if (e.currentTarget === e.target) {
                 closeDialog();
@@ -98,6 +122,7 @@
         }}
         aria-label="Close challenge details"></button>
     <dialog
+        bind:this={dialogElement}
         class="bg-bg-800 challenge-dialog relative mx-auto flex w-[95%] max-w-[1400px] flex-col rounded-2xl px-8 py-12 sm:px-12 md:w-[85%] md:px-14 lg:px-16">
         <section
             class="-mt-2 mb-12 flex w-full flex-wrap items-center justify-between gap-x-8 gap-y-1 text-nowrap">
@@ -107,12 +132,12 @@
                 </h3>
             </section>
             {#if challengeData.created_at}
-                <p class="text-md text-text-100 mb-0.5">
+                <p class="text-md text-primary-light mb-0.5">
                     {translations.uploaded}
                     {challengeData.created_at.toLocaleDateString('sv-SE')}
                 </p>
             {:else}
-                <p class="text-text-100 mb-0.5">
+                <p class="text-primary-light mb-0.5">
                     {translations.unknown_creation_time}
                 </p>
             {/if}
@@ -122,9 +147,9 @@
             <div class="w-1/2 min-w-70 grow">
                 {#if challengeData.resources.length != 0}
                     <div class="mb-4 flex flex-col">
-                        <p class="text-text-100 mb-2">Resources:</p>
+                        <p class="text-text-150 mb-2">Resources:</p>
                         <ul
-                            class="resources *:bg-bg-600 flex flex-col gap-1 *:w-fit *:rounded-full *:py-1 *:pr-5 *:pl-4">
+                            class="resources *:bg-bg-600 flex flex-col gap-1 *:w-fit *:rounded-lg *:py-2 *:pr-4 *:pl-3">
                             {#each challengeData.resources as resource (resource)}
                                 {#if resource.type === 'web'}
                                     <li
@@ -186,7 +211,7 @@
                     </div>
                 {/if}
                 <div class="author mb-2">
-                    <p class="text-text-100 inline-block">Author:&nbsp;</p>
+                    <p class="text-text-150 inline-block">Author:&nbsp;</p>
                     {#if !challengeData.author || challengeData.anonymous_author}
                         <p class="text-text-100 inline-block italic">Anonymous</p>
                     {:else}
@@ -231,15 +256,14 @@
                             <input
                                 type="text"
                                 name="flag"
-                                class="flag bg-bg-600 text-text-100 w-full rounded-lg px-6 py-3 font-mono focus:outline-none"
+                                class="flag bg-bg-600 text-text-100 w-full rounded-[10px] px-6 py-3.5 font-mono focus:outline-none"
                                 class:ring-error={form?.success === false}
                                 placeholder={challengeData.flag_format} />
                             <input
                                 type="hidden"
                                 value={challengeData.challenge_id}
                                 name="challenge_id" />
-                            <div
-                                class="absolute top-1/2 right-1 -translate-y-1/2 transform">
+                            <div class="absolute top-1 right-1 transform">
                                 <Button
                                     label="Submit"
                                     Icon={IconArrowBendUpRightBold}
@@ -296,8 +320,8 @@
                 class="categories @container flex h-fit w-fit flex-row flex-wrap space-x-4"
                 style="container-type:normal">
                 {#each filteredCategories as category, index (index)}
-                    <li class="text-text-100 text-md">
-                        <p>{capitalizeFirstLetter(category)}</p>
+                    <li class="text-text-150 text-md">
+                        <p># {capitalizeFirstLetter(category)}</p>
                     </li>
                 {/each}
             </ul>
@@ -315,10 +339,10 @@
                             pointBracket === 400}
                         class:text-point-500={!challengeData.solved &&
                             pointBracket === 500}>{challengeData.points}</span
-                    >&nbsp;<span class="text-text-100">POINTS</span>
+                    >&nbsp;<span class="text-text-150">POINTS</span>
                 </p>
                 <p class="text-text-100 text-md font-mono font-bold">
-                    {challengeData.num_solvers}&nbsp;<span class="text-text-100">
+                    {challengeData.num_solvers}&nbsp;<span class="text-text-150">
                         {#if challengeData.num_solvers == 1}
                             SOLVER
                         {:else}
@@ -329,6 +353,13 @@
             </div>
         </section>
     </dialog>
+    {#if showCloseText}
+        <div
+            class="close-cursor-text bg-bg-600 text-text-150 pointer-events-none fixed z-50 rounded-sm px-2 py-1 text-sm transition-all duration-75 ease-out"
+            style="left: {cursorPosition.x + 16}px; top: {cursorPosition.y - 10}px;">
+            Close
+        </div>
+    {/if}
 </div>
 
 <style>
