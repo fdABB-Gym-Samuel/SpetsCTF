@@ -9,38 +9,6 @@ DROP FUNCTION IF EXISTS check_team_member_not_organizer ();
 
 DROP FUNCTION IF EXISTS check_organizer_not_in_team ();
 
--- Migrate CTF challenges back to the challenges table
-INSERT INTO
-  challenges (
-    challenge_id,
-    points,
-    display_name,
-    description,
-    created_at,
-    challenge_category,
-    challenge_sub_categories,
-    flag,
-    ctf,
-    author,
-    anonymous_author,
-    approved
-  )
-SELECT
-  challenge_id,
-  points,
-  display_name,
-  description,
-  created_at,
-  challenge_category,
-  challenge_sub_categories,
-  flag,
-  ctf,
-  author,
-  anonymous_author,
-  approved
-FROM
-  ctf_challenges;
-
 -- Restore ctf_submissions to use user_id instead of team_id
 -- First, add user_id as nullable
 ALTER TABLE ctf_submissions
