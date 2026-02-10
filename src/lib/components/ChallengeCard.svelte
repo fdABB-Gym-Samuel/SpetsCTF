@@ -69,13 +69,13 @@
                             class:text-point-500={!challengeData.solved &&
                                 pointBracket === 500}>{challengeData.points}</span
                         ><span
-                            class="text-text-100"
+                            class="text-text-150"
                             class:text-text-100!={challengeData.solved}
                             >&nbsp;POINTS</span>
                     </p>
                     <p class="font-mono text-sm">
                         {challengeData.num_solvers}&nbsp;<span
-                            class="text-text-100"
+                            class="text-text-150"
                             class:text-text-100!={challengeData.solved}>
                             {#if challengeData.num_solvers == 1}
                                 SOLVE
