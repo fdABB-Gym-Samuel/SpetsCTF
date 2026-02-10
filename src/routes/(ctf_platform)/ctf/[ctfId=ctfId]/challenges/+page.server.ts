@@ -397,7 +397,7 @@ export const actions = {
     deleteChallenge: async ({ request, locals, params }) => {
         const user = locals.user;
         if (!user) {
-            return redirect(304, '/login');
+            return redirect(303, '/login');
         }
 
         const ctfId = Number(params.ctfId);

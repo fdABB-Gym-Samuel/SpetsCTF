@@ -91,15 +91,10 @@ FROM
   challenge_resources cr
   INNER JOIN ctf_challenges cc ON cr.challenge = cc.challenge_id;
 
--- Delete the migrated resources from the original table
-DELETE FROM challenge_resources
-WHERE
-  challenge IN (
-    SELECT
-      challenge_id
-    FROM
-      ctf_challenges
-  );
+-- NOTE: Do NOT delete the migrated resources from challenge_resources.
+-- The wargames version of a challenge still relies on challenge_resources,
+-- so we intentionally keep these rows and only copy them into
+-- ctf_challenge_resources.
 
 -- Alter ctf_submissions to use team_id instead of user_id
 -- First, add team_id as nullable
