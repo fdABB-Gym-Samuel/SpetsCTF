@@ -289,13 +289,18 @@ export const actions = {
         }
 
         try {
-            await db
-                .deleteFrom('challenges')
-                .where('challenge_id', '=', challengeId)
-                .executeTakeFirst();
-            await rm(join(getStateDirectory(), 'files', sanitize(challengeId)), {
-                recursive: true,
-                force: true,
+            await db.transaction().execute(async (trx) => {
+                const result = await trx
+                    .deleteFrom('challenges')
+                    .where('challenge_id', '=', challengeId)
+                    .executeTakeFirst();
+
+                await rm(join(getStateDirectory(), 'files', sanitize(challengeId)), {
+                    recursive: true,
+                    force: true,
+                });
+
+                return result;
             });
         } catch {
             error(500, {
