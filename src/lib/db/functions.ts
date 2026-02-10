@@ -169,7 +169,7 @@ export async function getUserFromGithubId(github_id: number) {
     return res;
 }
 
-export const get_flag_of_challenge = async (challenge_id: string) => {
+export const getFlagOfChallenge = async (challenge_id: string) => {
     const flag_object = await db
         .selectFrom('challenges')
         .select('flag')
@@ -199,7 +199,7 @@ export const get_flag_of_challenge = async (challenge_id: string) => {
     return flag;
 };
 
-export const get_flag_of_ctf_challenge = async (challenge_id: string) => {
+export const getFlagOfCtfChallenge = async (challenge_id: string) => {
     const flag_object = await db
         .selectFrom('ctf_challenges')
         .select('flag')
