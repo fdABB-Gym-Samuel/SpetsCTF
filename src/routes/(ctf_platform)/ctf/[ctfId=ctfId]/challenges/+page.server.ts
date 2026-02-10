@@ -3,6 +3,10 @@ import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
 import { formatRequestedName } from '$lib/utils/utils';
+import { rm } from 'node:fs/promises';
+import { getStateDirectory } from '$lib/server/directories';
+import { join } from 'node:path';
+import sanitize from 'sanitize-filename';
 
 export const load: PageServerLoad = async ({ locals, depends, params, parent }) => {
     const user = locals.user;

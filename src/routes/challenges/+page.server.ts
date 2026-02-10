@@ -4,6 +4,10 @@ import { db } from '$lib/db/database';
 import { sql, type Insertable } from 'kysely';
 import type { Challenges } from '$lib/generated/db';
 import { formatRequestedName } from '$lib/utils/utils';
+import { rm } from 'node:fs/promises';
+import { getStateDirectory } from '$lib/server/directories';
+import { join } from 'node:path';
+import sanitize from 'sanitize-filename';
 
 export const load: PageServerLoad = async ({ locals, depends }) => {
     const user = locals.user;
@@ -251,10 +255,26 @@ export const actions = {
             return fail(401, { message: 'User not author of challenge or admin' });
         }
 
-        await db
-            .deleteFrom('challenges')
-            .where('challenge_id', '=', challengeId)
-            .executeTakeFirst();
+        try {
+            await db.transaction().execute(async (trx) => {
+                const result = await trx
+                    .deleteFrom('challenges')
+                    .where('challenge_id', '=', challengeId)
+                    .executeTakeFirst();
+
+                await rm(join(getStateDirectory(), 'files', sanitize(challengeId)), {
+                    recursive: true,
+                    force: true,
+                });
+
+                return result;
+            });
+        } catch {
+            error(500, {
+                message:
+                    'Could not delete challenge properly, please contact an administrator.',
+            });
+        }
 
         return { success: true, message: 'Challenge successfully deleted' };
     },

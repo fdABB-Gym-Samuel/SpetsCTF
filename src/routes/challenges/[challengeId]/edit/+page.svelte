@@ -15,7 +15,6 @@
     import Textarea from '$lib/components/input/Textarea.svelte';
 
     import { categories, resourceTypes } from '$lib/db/constants';
-    import { onMount } from 'svelte';
 
     import { bitsetToSelectedCategories } from '$lib/bitset';
 
@@ -38,6 +37,8 @@
         };
     });
 
+    let editFormHasChanged = $state(false);
+
     const privacyOptions: { text: string; disabled: boolean; value: string }[] = [
         {
             text: 'Anonymous',
@@ -53,15 +54,10 @@
         data.user && data.user.is_admin && data.challenge.approved
     );
 
-    let mainCategory = $state('misc');
-    let selectedSubCategories: string[] = $state([]);
-    onMount(() => {
-        mainCategory = data.challenge.challenge_category;
-        selectedSubCategories = bitsetToSelectedCategories(
-            categories,
-            data.challenge.challenge_sub_categories
-        );
-    });
+    let mainCategory = $derived(data.challenge.challenge_category);
+    let selectedSubCategories: string[] = $derived(
+        bitsetToSelectedCategories(categories, data.challenge.challenge_sub_categories)
+    );
 
     let possibleSubCategories = $derived.by(() =>
         categories
@@ -151,12 +147,20 @@
         </p>
 
         <form
+            onchange={() => {
+                editFormHasChanged = true;
+            }}
             id={formId}
             action="?/editChallenge"
             method="post"
             enctype="multipart/form-data"
             class="flex flex-col gap-6"
-            use:enhance>
+            use:enhance={() => {
+                return ({ update }) => {
+                    editFormHasChanged = false;
+                    update();
+                };
+            }}>
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <section class="flex flex-col gap-4">
                     <h3 class="text-lg font-semibold">Basic Information</h3>
@@ -243,7 +247,9 @@
             {#if data.resources.length > 0}
                 <div class="mt-4 mb-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
                     {#each data.resources as resource (resource.id)}
-                        <div class="bg-bg-700 rounded-lg px-4 py-3" animate:flip>
+                        <div
+                            class="bg-bg-700 rounded-lg px-4 py-3"
+                            animate:flip={{ duration: 200 }}>
                             <div class="flex flex-row items-center gap-3">
                                 <div class="shrink-0 *:text-[20px]">
                                     {#if resource.type === 'web'}
@@ -315,7 +321,14 @@
                     method="post"
                     action="?/createResource"
                     enctype="multipart/form-data"
-                    use:enhance
+                    use:enhance={({ cancel }) => {
+                        if (editFormHasChanged) {
+                            const ok = confirm(
+                                'Challenge edit form has unsaved changes, adding a new resource will overwrite them. Are you sure you want to continue?'
+                            );
+                            if (!ok) cancel();
+                        }
+                    }}
                     class="flex flex-col gap-4">
                     <div class="flex gap-8">
                         <div class="w-96">

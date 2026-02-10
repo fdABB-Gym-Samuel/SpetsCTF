@@ -1,3 +1,5 @@
+import sanitize from 'sanitize-filename';
+
 export function capitalizeFirstLetter(word: string) {
     return word.charAt(0).toUpperCase() + word.slice(1);
 }
@@ -17,11 +19,12 @@ export const map = (
 export const linkPattern = /^(https?|ftp):\/\/[^\s]+|(mailto|tel):[^\s]+$/;
 
 export const formatRequestedName = (requestedName: string) =>
-    requestedName
-        .replaceAll(/\s+/g, '_')
-        .replaceAll(/[^\w]/g, '')
-        .replaceAll(/[^a-z0-9_]/gi, '')
-        .toLowerCase();
+    sanitize(
+        requestedName
+            .replaceAll(/\s+/g, '_')
+            .replaceAll(/[^\w]/g, '')
+            .replaceAll(/[^a-z0-9_]/gi, '')
+    );
 
 export function getPointBracket(points: number): number {
     if (points < 200) return 100;
