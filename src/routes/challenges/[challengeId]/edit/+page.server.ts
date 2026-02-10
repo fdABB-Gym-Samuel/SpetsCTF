@@ -457,7 +457,9 @@ export const actions = {
                     });
                 } catch (e) {
                     console.error('Failed to delete file resource from database:', e);
-                    error(500, { message: 'Failed to delete file resource from database.' });
+                    error(500, {
+                        message: 'Failed to delete file resource from database.',
+                    });
                 }
 
                 // Delete the file only after the database transaction commits successfully

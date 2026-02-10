@@ -98,6 +98,7 @@ DROP TABLE IF EXISTS ctf_challenge_resources;
 -- Drop migrate_to_wargames column from challenges table
 ALTER TABLE challenges
 DROP COLUMN migrate_to_wargames;
+
 -- Drop the ctf_challenges table
 DROP TABLE IF EXISTS ctf_challenges;
 
