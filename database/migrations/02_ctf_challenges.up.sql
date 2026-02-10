@@ -95,7 +95,6 @@ FROM
 -- The wargames version of a challenge still relies on challenge_resources,
 -- so we intentionally keep these rows and only copy them into
 -- ctf_challenge_resources.
-
 -- Alter ctf_submissions to use team_id instead of user_id
 -- First, add team_id as nullable
 ALTER TABLE ctf_submissions
