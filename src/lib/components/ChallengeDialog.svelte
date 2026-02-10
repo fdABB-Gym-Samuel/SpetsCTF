@@ -149,29 +149,27 @@
                     <div class="mb-4 flex flex-col">
                         <p class="text-text-150 mb-2">Resources:</p>
                         <ul
-                            class="resources *:bg-bg-600 flex flex-col gap-1 *:w-fit *:rounded-lg *:py-2 *:pr-4 *:pl-3">
+                            class="resources *:bg-bg-600 flex flex-col gap-1 *:w-fit *:rounded-lg *:py-1.5 *:pr-4 *:pl-3">
                             {#each challengeData.resources as resource (resource)}
                                 {#if resource.type === 'web'}
                                     <li
-                                        class="challenge-resource text-text-100 flex h-fit flex-row items-center gap-1 underline select-none">
-                                        <IconGlobeBold
-                                            class="text-text-150 text-[20px]" />
+                                        class="challenge-resource text-text-150 flex h-fit flex-row items-center gap-1 underline select-none">
+                                        <IconGlobeBold class="text-[20px]" />
                                         <a
                                             rel="external"
                                             href={`${resource.content}`}
-                                            class="ignore-default h-fit"
+                                            class="ignore-default h-fit font-semibold"
                                             >{new URL(resource.content).host}</a>
                                     </li>
                                 {:else if resource.type === 'file'}
                                     <li
-                                        class="challenge-resource text-text-100 flex flex-row items-center gap-1 select-none">
-                                        <IconFileBold
-                                            class="text-text-150 text-[20px]" />
+                                        class="challenge-resource text-text-150 flex flex-row items-center gap-1 select-none">
+                                        <IconFileBold class="text-[20px]" />
                                         <a
                                             href={resolve(
                                                 `/files/${resource.challenge}/${resource.content}`
                                             )}
-                                            class="ignore-default h-fit">
+                                            class="ignore-default h-fit font-semibold">
                                             {resource.content
                                                 .split('/')
                                                 .at(-1)
@@ -217,7 +215,7 @@
                     {:else}
                         <a
                             href={resolve(`/user/${challengeData.author_id}`)}
-                            class="text-text-100 inline-block">
+                            class="text-text-100 link inline-block">
                             {challengeData.author}
                         </a>
                     {/if}

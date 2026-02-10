@@ -51,13 +51,17 @@
         <h3 class="text-3xl">{translations.learning_resources}</h3>
     </div>
     <ul class="space-y-8 text-xl">
-        {#each resources as { category, links }}
+        {#each resources as { category, links } (category)}
             <li>
                 <h6 class="text-xl">{category}:</h6>
                 <ul class="mt-1 ml-4 list-inside list-disc text-base">
-                    {#each links as { name, url }}
+                    {#each links as { name, url } (name)}
                         <li>
-                            <a class="text-primary link" href={url}>{name}</a>
+                            <a
+                                class="text-primary link"
+                                href={url}
+                                target="_blank"
+                                rel="external">{name}</a>
                         </li>
                     {/each}
                 </ul>
