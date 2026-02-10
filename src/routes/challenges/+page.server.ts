@@ -44,7 +44,7 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
             'challenges.approved',
             'challenges.created_at',
             'challenges.ctf',
-            'challenges.flag',
+            // 'challenges.flag',
             sql<number>`
                   COUNT(DISTINCT 
                     CASE WHEN EXISTS(

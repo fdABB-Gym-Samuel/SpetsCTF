@@ -28,7 +28,7 @@
     import { getPointBracket } from '$lib/utils/utils';
 
     interface Props {
-        challengeData: Selectable<Challenges> & {
+        challengeData: Omit<Selectable<Challenges>, 'flag' | 'migrate_to_wargames'> & {
             first_solvers: { display_name: string | null; id: string }[];
         } & { flag_format: Selectable<Flag>['flag_format'] } & {
             num_solvers: string | number | bigint;
