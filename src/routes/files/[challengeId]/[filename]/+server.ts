@@ -4,8 +4,9 @@ import { error, type RequestEvent } from '@sveltejs/kit';
 import { createReadableStream } from '@sveltejs/kit/node';
 import path from 'node:path';
 import sanitize from 'sanitize-filename';
+import { getIsOrg } from '$lib/db/functions';
 
-export async function GET({ params }: RequestEvent) {
+export async function GET({ params, locals }: RequestEvent) {
     const challengeId = params.challengeId ?? '';
     const filename = params.filename ?? '';
     if (!challengeId || !filename) {
@@ -15,14 +16,22 @@ export async function GET({ params }: RequestEvent) {
     const challenge = await db
         .selectFrom('challenges')
         .where('challenge_id', '=', challengeId)
-        .select(['approved', 'ctf', 'challenge_id'])
+        .select(['approved', 'ctf', 'challenge_id', 'author'])
         .executeTakeFirst();
 
     if (!challenge) {
         error(404, 'Challenge not found.');
     }
 
-    if (!challenge.approved) {
+    const isOrg = locals.user?.id
+        ? getIsOrg(locals.user?.id, challenge.ctf ?? undefined)
+        : false;
+    if (
+        !challenge.approved &&
+        !locals.user?.is_admin &&
+        !isOrg &&
+        challenge.author !== locals.user?.id
+    ) {
         return error(403, {
             message:
                 "Challenge hasn't been approved, all resources belonging to this file have not been confirmed to be safe.",
