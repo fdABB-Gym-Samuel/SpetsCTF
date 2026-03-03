@@ -63,7 +63,7 @@ export async function GET({ params, locals }: RequestEvent) {
         }
 
         const now = new Date();
-        if (now < ctf.start_time) {
+        if (now < ctf.start_time && !isOrg) {
             error(403, {
                 message: "🤓☝️ Erm, ackshually, the CTF hasn't started yet. 🤓☝️",
             });
