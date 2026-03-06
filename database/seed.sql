@@ -38,7 +38,7 @@ VALUES
   ('FLAG{shellcode_executed}', 'string');
 
 -- ============================================================================
--- 2. CTF EVENTS (8 events:  past, ongoing, and future)
+-- 2. CTF EVENTS (7 events: past, ongoing, and future)
 -- ============================================================================
 INSERT INTO
   ctf_events (
@@ -100,14 +100,6 @@ VALUES
     now() + interval '2 months',
     now() + interval '2 months' + interval '72 hours',
     6
-  ),
-  -- Permanent wargame (no specific CTF, NULL)
-  (
-    'wargames',
-    'Permanent Wargames',
-    now() - interval '1 year',
-    now() + interval '10 years',
-    1
   );
 
 -- ============================================================================
@@ -287,6 +279,7 @@ VALUES
 
 -- ============================================================================
 -- 4. CTF ORGANIZERS (assign organizers to events)
+-- Note: Organizers cannot be members of teams in their CTF
 -- ============================================================================
 INSERT INTO
   ctf_organizers (user_id, ctf)
@@ -359,10 +352,10 @@ WHERE
   github_username IN ('hannah_misc', 'xander_pro');
 
 -- ============================================================================
--- 5. CHALLENGES (35 challenges across all CTFs and wargames)
+-- 5. CTF CHALLENGES (CTF-specific challenges in ctf_challenges table)
 -- ============================================================================
 INSERT INTO
-  challenges (
+  ctf_challenges (
     challenge_id,
     points,
     display_name,
@@ -374,10 +367,11 @@ INSERT INTO
     author,
     anonymous_author,
     approved,
-    created_at
+    created_at,
+    migrate_to_wargames
   )
 VALUES
-  -- CTF 1 challenges
+  -- CTF 1 challenges (Winter Warmup)
   (
     'winter_intro_01',
     50,
@@ -393,11 +387,12 @@ VALUES
       FROM
         users
       WHERE
-        github_username = 'victor_admin'
+        github_username = 'alice_sec'
     ),
     false,
     true,
-    now() - interval '10 months'
+    now() - interval '10 months',
+    true
   ),
   (
     'winter_crypto_01',
@@ -418,7 +413,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '10 months'
+    now() - interval '10 months',
+    true
   ),
   (
     'winter_web_01',
@@ -439,7 +435,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '10 months'
+    now() - interval '10 months',
+    true
   ),
   (
     'winter_forensics_01',
@@ -460,7 +457,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '10 months'
+    now() - interval '10 months',
+    true
   ),
   (
     'winter_pwn_01',
@@ -481,9 +479,10 @@ VALUES
     ),
     true,
     true,
-    now() - interval '10 months'
+    now() - interval '10 months',
+    true
   ),
-  -- CTF 2 challenges
+  -- CTF 2 challenges (Spring Security)
   (
     'spring_intro_01',
     50,
@@ -499,11 +498,12 @@ VALUES
       FROM
         users
       WHERE
-        github_username = 'hannah_misc'
+        github_username = 'alice_sec'
     ),
     false,
     true,
-    now() - interval '7 months'
+    now() - interval '7 months',
+    true
   ),
   (
     'spring_crypto_01',
@@ -524,7 +524,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '7 months'
+    now() - interval '7 months',
+    true
   ),
   (
     'spring_osint_01',
@@ -545,7 +546,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '7 months'
+    now() - interval '7 months',
+    true
   ),
   (
     'spring_rev_01',
@@ -566,7 +568,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '7 months'
+    now() - interval '7 months',
+    true
   ),
   (
     'spring_forensics_01',
@@ -587,9 +590,10 @@ VALUES
     ),
     false,
     true,
-    now() - interval '7 months'
+    now() - interval '7 months',
+    true
   ),
-  -- CTF 3 challenges
+  -- CTF 3 challenges (Summer Hacking)
   (
     'summer_intro_01',
     50,
@@ -605,11 +609,12 @@ VALUES
       FROM
         users
       WHERE
-        github_username = 'xander_pro'
+        github_username = 'alice_sec'
     ),
     false,
     true,
-    now() - interval '4 months'
+    now() - interval '4 months',
+    true
   ),
   (
     'summer_web_01',
@@ -630,7 +635,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '4 months'
+    now() - interval '4 months',
+    true
   ),
   (
     'summer_crypto_01',
@@ -651,7 +657,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '4 months'
+    now() - interval '4 months',
+    true
   ),
   (
     'summer_pwn_01',
@@ -672,7 +679,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '4 months'
+    now() - interval '4 months',
+    true
   ),
   (
     'summer_misc_01',
@@ -693,9 +701,10 @@ VALUES
     ),
     false,
     true,
-    now() - interval '4 months'
+    now() - interval '4 months',
+    true
   ),
-  -- CTF 4 challenges
+  -- CTF 4 challenges (Autumn Attack)
   (
     'fall_intro_01',
     50,
@@ -715,7 +724,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '2 months'
+    now() - interval '2 months',
+    true
   ),
   (
     'fall_osint_01',
@@ -736,7 +746,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '2 months'
+    now() - interval '2 months',
+    true
   ),
   (
     'fall_web_01',
@@ -757,7 +768,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '2 months'
+    now() - interval '2 months',
+    true
   ),
   (
     'fall_forensics_01',
@@ -778,7 +790,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '2 months'
+    now() - interval '2 months',
+    true
   ),
   (
     'fall_rev_01',
@@ -799,9 +812,10 @@ VALUES
     ),
     false,
     true,
-    now() - interval '2 months'
+    now() - interval '2 months',
+    true
   ),
-  -- CTF 5 (ongoing) challenges
+  -- CTF 5 challenges (Ongoing - December Cyber Showdown)
   (
     'current_intro_01',
     50,
@@ -817,11 +831,12 @@ VALUES
       FROM
         users
       WHERE
-        github_username = 'hannah_misc'
+        github_username = 'alice_sec'
     ),
     false,
     true,
-    now() - interval '1 week'
+    now() - interval '1 week',
+    true
   ),
   (
     'current_crypto_01',
@@ -842,7 +857,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '1 week'
+    now() - interval '1 week',
+    true
   ),
   (
     'current_pwn_01',
@@ -863,7 +879,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '1 week'
+    now() - interval '1 week',
+    true
   ),
   (
     'current_forensics_01',
@@ -884,7 +901,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '1 week'
+    now() - interval '1 week',
+    true
   ),
   (
     'current_misc_01',
@@ -905,9 +923,10 @@ VALUES
     ),
     false,
     true,
-    now() - interval '1 week'
+    now() - interval '1 week',
+    true
   ),
-  -- CTF 6 (future) challenges
+  -- CTF 6 challenges (Future - New Year CTF)
   (
     'newyear_intro_01',
     50,
@@ -923,11 +942,12 @@ VALUES
       FROM
         users
       WHERE
-        github_username = 'victor_admin'
+        github_username = 'alice_sec'
     ),
     false,
     true,
-    now() - interval '2 days'
+    now() - interval '2 days',
+    true
   ),
   (
     'newyear_web_01',
@@ -948,7 +968,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '2 days'
+    now() - interval '2 days',
+    true
   ),
   (
     'newyear_osint_01',
@@ -969,9 +990,31 @@ VALUES
     ),
     false,
     true,
-    now() - interval '2 days'
-  ),
-  -- Wargame challenges (no specific CTF)
+    now() - interval '2 days',
+    true
+  );
+
+-- ============================================================================
+-- 6. WARGAME CHALLENGES (permanent challenges in challenges table)
+-- ============================================================================
+INSERT INTO
+  challenges (
+    challenge_id,
+    points,
+    display_name,
+    description,
+    challenge_category,
+    challenge_sub_categories,
+    flag,
+    ctf,
+    author,
+    anonymous_author,
+    approved,
+    created_at,
+    migrate_to_wargames
+  )
+VALUES
+  -- Challenges migrated from past CTFs (have ctf reference)
   (
     'wargame_intro_01',
     25,
@@ -980,7 +1023,7 @@ VALUES
     'introduction',
     '00100000',
     19,
-    NULL,
+    1,
     (
       SELECT
         id
@@ -991,7 +1034,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '6 months'
+    now() - interval '6 months',
+    true
   ),
   (
     'wargame_crypto_01',
@@ -1001,7 +1045,7 @@ VALUES
     'crypto',
     '10000000',
     2,
-    NULL,
+    1,
     (
       SELECT
         id
@@ -1012,7 +1056,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '5 months'
+    now() - interval '5 months',
+    true
   ),
   (
     'wargame_pwn_01',
@@ -1022,7 +1067,7 @@ VALUES
     'pwn',
     '00000100',
     6,
-    NULL,
+    2,
     (
       SELECT
         id
@@ -1033,7 +1078,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '4 months'
+    now() - interval '4 months',
+    true
   ),
   (
     'wargame_web_01',
@@ -1043,7 +1089,7 @@ VALUES
     'web',
     '00000001',
     8,
-    NULL,
+    2,
     (
       SELECT
         id
@@ -1054,7 +1100,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '3 months'
+    now() - interval '3 months',
+    true
   ),
   (
     'wargame_rev_01',
@@ -1064,7 +1111,7 @@ VALUES
     'reversing',
     '00000010',
     15,
-    NULL,
+    3,
     (
       SELECT
         id
@@ -1075,7 +1122,8 @@ VALUES
     ),
     false,
     true,
-    now() - interval '2 months'
+    now() - interval '2 months',
+    true
   ),
   (
     'wargame_forensics_01',
@@ -1085,7 +1133,7 @@ VALUES
     'forensics',
     '01000000',
     4,
-    NULL,
+    3,
     (
       SELECT
         id
@@ -1096,8 +1144,10 @@ VALUES
     ),
     false,
     true,
-    now() - interval '1 month'
+    now() - interval '1 month',
+    true
   ),
+  -- Original wargame challenge (no CTF origin)
   (
     'wargame_pwn_02',
     350,
@@ -1117,94 +1167,114 @@ VALUES
     ),
     false,
     true,
-    now() - interval '2 weeks'
+    now() - interval '2 weeks',
+    true
+  ),
+  -- Challenge that won't migrate to wargames (for testing)
+  (
+    'private_challenge_01',
+    100,
+    'Private CTF Challenge',
+    'This challenge will not be shown as a wargame',
+    'misc',
+    '00010000',
+    20,
+    1,
+    (
+      SELECT
+        id
+      FROM
+        users
+      WHERE
+        github_username = 'victor_admin'
+    ),
+    false,
+    true,
+    now() - interval '6 months',
+    false
   );
 
+-- Ensure private CTF challenge also exists in ctf_challenges
+INSERT INTO
+  ctf_challenges (
+    challenge_id,
+    points,
+    display_name,
+    description,
+    challenge_category,
+    challenge_sub_categories,
+    flag,
+    ctf,
+    author,
+    anonymous_author,
+    approved,
+    created_at,
+    migrate_to_wargames
+  )
+SELECT
+  challenge_id,
+  points,
+  display_name,
+  description,
+  challenge_category,
+  challenge_sub_categories,
+  flag,
+  ctf,
+  author,
+  anonymous_author,
+  approved,
+  created_at,
+  migrate_to_wargames
+FROM
+  challenges
+WHERE
+  challenge_id = 'private_challenge_01';
+
 -- ============================================================================
--- 6. CHALLENGE RESOURCES (files, commands, web links)
+-- 7. CTF CHALLENGE RESOURCES (for CTF challenges)
 -- ============================================================================
 INSERT INTO
-  challenge_resources (challenge, type, content)
+  ctf_challenge_resources (challenge, type, content)
 VALUES
   -- Winter CTF resources
-  (
-    'winter_crypto_01',
-    'file',
-    'https://storage.example.com/winter/caesar_cipher.txt'
-  ),
+  ('winter_crypto_01', 'file', 'caesar_cipher.txt'),
   (
     'winter_web_01',
     'web',
     'https://winter-ctf.example.com/login'
   ),
-  (
-    'winter_forensics_01',
-    'file',
-    'https://storage.example.com/winter/hidden_image.png'
-  ),
-  (
-    'winter_pwn_01',
-    'file',
-    'https://storage.example.com/winter/vuln_binary'
-  ),
+  ('winter_forensics_01', 'file', 'hidden_image.png'),
+  ('winter_pwn_01', 'file', 'vuln_binary'),
   (
     'winter_pwn_01',
     'cmd',
     'nc winter-ctf.example.com 9001'
   ),
   -- Spring CTF resources
-  (
-    'spring_crypto_01',
-    'file',
-    'https://storage.example.com/spring/xor_encrypted.bin'
-  ),
+  ('spring_crypto_01', 'file', 'xor_encrypted.bin'),
   (
     'spring_osint_01',
     'web',
     'https://twitter.com/mystery_user_2025'
   ),
-  (
-    'spring_rev_01',
-    'file',
-    'https://storage.example.com/spring/reverse_me.exe'
-  ),
-  (
-    'spring_forensics_01',
-    'file',
-    'https://storage.example.com/spring/memory_dump.raw'
-  ),
+  ('spring_rev_01', 'file', 'reverse_me.exe'),
+  ('spring_forensics_01', 'file', 'memory_dump.raw'),
   -- Summer CTF resources
   (
     'summer_web_01',
     'web',
     'https://summer-ctf.example.com/vulnerable-app'
   ),
-  (
-    'summer_crypto_01',
-    'file',
-    'https://storage.example.com/summer/weak_rsa.txt'
-  ),
-  (
-    'summer_pwn_01',
-    'file',
-    'https://storage.example.com/summer/heap_challenge'
-  ),
+  ('summer_crypto_01', 'file', 'weak_rsa.txt'),
+  ('summer_pwn_01', 'file', 'heap_challenge'),
   (
     'summer_pwn_01',
     'cmd',
-    'nc summer-ctf. example.com 8888'
+    'nc summer-ctf.example.com 8888'
   ),
-  (
-    'summer_misc_01',
-    'file',
-    'https://storage.example.com/summer/network_capture.pcap'
-  ),
+  ('summer_misc_01', 'file', 'network_capture.pcap'),
   -- Fall CTF resources
-  (
-    'fall_osint_01',
-    'file',
-    'https://storage.example.com/fall/mystery_location.jpg'
-  ),
+  ('fall_osint_01', 'file', 'mystery_location.jpg'),
   (
     'fall_web_01',
     'web',
@@ -1213,112 +1283,82 @@ VALUES
   (
     'fall_forensics_01',
     'file',
-    'https://storage.example.com/fall/network_traffic.pcapng'
+    'network_traffic.pcapng'
   ),
-  (
-    'fall_rev_01',
-    'file',
-    'https://storage.example.com/fall/assembly_challenge. elf'
-  ),
+  ('fall_rev_01', 'file', 'assembly_challenge.elf'),
   -- Current CTF resources
-  (
-    'current_crypto_01',
-    'file',
-    'https://storage.example.com/current/aes_encrypted.bin'
-  ),
+  ('current_crypto_01', 'file', 'aes_encrypted.bin'),
   (
     'current_pwn_01',
     'cmd',
     'nc current-ctf.example.com 7777'
   ),
-  (
-    'current_forensics_01',
-    'file',
-    'https://storage.example.com/current/disk_image.dd'
-  ),
+  ('current_forensics_01', 'file', 'disk_image.dd'),
   (
     'current_misc_01',
     'file',
-    'https://storage.example.com/current/encrypted_archive.zip'
+    'encrypted_archive.zip'
   ),
   -- Future CTF resources
   (
     'newyear_web_01',
     'web',
-    'https://newyear-ctf.example. com/api'
+    'https://newyear-ctf.example.com/api'
   ),
-  (
-    'newyear_osint_01',
-    'file',
-    'https://storage.example.com/newyear/document.pdf'
-  ),
-  -- Wargame resources
-  (
-    'wargame_crypto_01',
-    'file',
-    'https://wargames.example.com/challenges/crypto1.txt'
-  ),
+  ('newyear_osint_01', 'file', 'document.pdf');
+
+-- ============================================================================
+-- 8. WARGAME CHALLENGE RESOURCES (for permanent wargame challenges)
+-- ============================================================================
+INSERT INTO
+  challenge_resources (challenge, type, content)
+VALUES
+  ('wargame_crypto_01', 'file', 'crypto1.txt'),
   (
     'wargame_pwn_01',
     'cmd',
-    'nc wargames. example.com 5001'
+    'nc wargames.example.com 5001'
   ),
-  (
-    'wargame_pwn_01',
-    'file',
-    'https://wargames.example.com/binaries/pwn1'
-  ),
+  ('wargame_pwn_01', 'file', 'pwn1'),
   (
     'wargame_web_01',
     'web',
     'https://wargames.example.com/web1'
   ),
-  (
-    'wargame_rev_01',
-    'file',
-    'https://wargames.example.com/binaries/reverse1.exe'
-  ),
-  (
-    'wargame_forensics_01',
-    'file',
-    'https://wargames.example.com/forensics/evidence.zip'
-  ),
+  ('wargame_rev_01', 'file', 'reverse1.exe'),
+  ('wargame_forensics_01', 'file', 'evidence.zip'),
   (
     'wargame_pwn_02',
     'cmd',
     'nc wargames.example.com 5002'
   ),
-  (
-    'wargame_pwn_02',
-    'file',
-    'https://wargames.example.com/binaries/pwn2'
-  );
+  ('wargame_pwn_02', 'file', 'pwn2');
 
 -- ============================================================================
--- 7. CTF TEAMS (12 teams across different CTFs)
+-- 9. CTF TEAMS (12 teams across different CTFs)
 -- ============================================================================
 INSERT INTO
   ctf_teams (website, name, ctf)
 VALUES
-  -- Winter CTF teams
+  -- Winter CTF teams (CTF 1)
   ('https://team-alpha.example.com', 'Team Alpha', 1),
   ('https://team-beta.example.com', 'Team Beta', 1),
   ('https://team-gamma.example.com', 'Team Gamma', 1),
-  -- Spring CTF teams
+  -- Spring CTF teams (CTF 2)
   ('https://team-delta.example.com', 'Team Delta', 2),
   (
     'https://team-epsilon.example.com',
     'Team Epsilon',
     2
   ),
-  -- Summer CTF teams
+  -- Summer CTF teams (CTF 3)
   ('https://team-zeta.example.com', 'Team Zeta', 3),
   ('https://team-eta.example.com', 'Team Eta', 3),
   ('https://team-theta.example.com', 'Team Theta', 3),
-  -- Fall CTF teams
+  -- Fall CTF teams (CTF 4)
   ('https://team-iota.example.com', 'Team Iota', 4),
   (NULL, 'Team Kappa', 4),
-  -- Current CTF teams
+  -- Current CTF teams (CTF 5)
   (
     'https://team-lambda.example.com',
     'Team Lambda',
@@ -1327,9 +1367,11 @@ VALUES
   ('https://team-mu.example.com', 'Team Mu', 5);
 
 -- ============================================================================
--- 8. TEAM MEMBERSHIPS
+-- 10. TEAM MEMBERSHIPS
+-- Note: Users who are organizers for a CTF cannot be in teams for that CTF
 -- ============================================================================
--- Team Alpha (Winter CTF)
+-- Team Alpha (Winter CTF - ID 1)
+-- Organizers for CTF 1: victor_admin, hannah_misc - excluded
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1345,7 +1387,7 @@ WHERE
     'diana_pwn'
   );
 
--- Team Beta (Winter CTF)
+-- Team Beta (Winter CTF - ID 2)
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1356,7 +1398,7 @@ FROM
 WHERE
   github_username IN ('erik_rev', 'fiona_forensics', 'george_osint');
 
--- Team Gamma (Winter CTF)
+-- Team Gamma (Winter CTF - ID 3)
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1365,14 +1407,10 @@ SELECT
 FROM
   users
 WHERE
-  github_username IN (
-    'hannah_misc',
-    'ivan_crypto',
-    'julia_web',
-    'kevin_pwn'
-  );
+  github_username IN ('ivan_crypto', 'julia_web', 'kevin_pwn');
 
--- Team Delta (Spring CTF)
+-- Team Delta (Spring CTF - ID 4)
+-- Organizers for CTF 2: xander_pro, hannah_misc - excluded
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1389,7 +1427,7 @@ WHERE
     'paula_web'
   );
 
--- Team Epsilon (Spring CTF)
+-- Team Epsilon (Spring CTF - ID 5)
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1400,7 +1438,8 @@ FROM
 WHERE
   github_username IN ('quinn_misc', 'rachel_pwn', 'steve_intro');
 
--- Team Zeta (Summer CTF)
+-- Team Zeta (Summer CTF - ID 6)
+-- Organizers for CTF 3: victor_admin, xander_pro - excluded
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1413,12 +1452,10 @@ WHERE
     'tina_expert',
     'uma_ninja',
     'wendy_hacker',
-    'xander_pro',
-    'yuki_master',
-    'alice_sec'
+    'yuki_master'
   );
 
--- Team Eta (Summer CTF)
+-- Team Eta (Summer CTF - ID 7)
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1428,13 +1465,13 @@ FROM
   users
 WHERE
   github_username IN (
+    'alice_sec',
     'bob_crypto',
     'charlie_web',
-    'diana_pwn',
-    'erik_rev'
+    'diana_pwn'
   );
 
--- Team Theta (Summer CTF)
+-- Team Theta (Summer CTF - ID 8)
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1452,7 +1489,8 @@ WHERE
     'kevin_pwn'
   );
 
--- Team Iota (Fall CTF)
+-- Team Iota (Fall CTF - ID 9)
+-- Organizers for CTF 4: hannah_misc, victor_admin - excluded
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1468,7 +1506,7 @@ WHERE
     'oliver_crypto'
   );
 
--- Team Kappa (Fall CTF)
+-- Team Kappa (Fall CTF - ID 10)
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1484,7 +1522,8 @@ WHERE
     'steve_intro'
   );
 
--- Team Lambda (Current CTF)
+-- Team Lambda (Current CTF - ID 11)
+-- Organizers for CTF 5: xander_pro, hannah_misc, victor_admin - excluded
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1497,11 +1536,10 @@ WHERE
     'tina_expert',
     'uma_ninja',
     'wendy_hacker',
-    'xander_pro',
     'yuki_master'
   );
 
--- Team Mu (Current CTF)
+-- Team Mu (Current CTF - ID 12)
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1519,30 +1557,23 @@ WHERE
   );
 
 -- ============================================================================
--- 9. CTF SUBMISSIONS (80+ submissions with realistic timing)
+-- 11. CTF SUBMISSIONS (using team_id instead of user_id)
 -- ============================================================================
 -- Winter CTF submissions (past event)
 INSERT INTO
   ctf_submissions (
     challenge,
-    user_id,
+    team_id,
     time,
     success,
     ctf,
     submitted_data
   )
 VALUES
-  -- Team Alpha members
+  -- Team Alpha (ID 1) submissions
   (
     'winter_intro_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'alice_sec'
-    ),
+    1,
     now() - interval '10 months' + interval '15 minutes',
     true,
     1,
@@ -1550,14 +1581,7 @@ VALUES
   ),
   (
     'winter_crypto_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'bob_crypto'
-    ),
+    1,
     now() - interval '10 months' + interval '1 hour',
     true,
     1,
@@ -1565,44 +1589,23 @@ VALUES
   ),
   (
     'winter_web_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'charlie_web'
-    ),
-    now() - interval '10 months' + interval '2 hours',
-    true,
     1,
-    'FLAG{sql_injection_success}'
-  ),
-  (
-    'winter_web_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'charlie_web'
-    ),
     now() - interval '10 months' + interval '1 hour 30 minutes',
     false,
     1,
     'FLAG{wrong_guess}'
   ),
   (
+    'winter_web_01',
+    1,
+    now() - interval '10 months' + interval '2 hours',
+    true,
+    1,
+    'FLAG{sql_injection_success}'
+  ),
+  (
     'winter_forensics_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'diana_pwn'
-    ),
+    1,
     now() - interval '10 months' + interval '3 hours',
     true,
     1,
@@ -1610,30 +1613,16 @@ VALUES
   ),
   (
     'winter_pwn_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'diana_pwn'
-    ),
+    1,
     now() - interval '10 months' + interval '8 hours',
     true,
     1,
     'FLAG{buffer_overflow_pwned}'
   ),
-  -- Team Beta members
+  -- Team Beta (ID 2) submissions
   (
     'winter_intro_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'erik_rev'
-    ),
+    2,
     now() - interval '10 months' + interval '20 minutes',
     true,
     1,
@@ -1641,14 +1630,7 @@ VALUES
   ),
   (
     'winter_crypto_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'erik_rev'
-    ),
+    2,
     now() - interval '10 months' + interval '2 hours',
     false,
     1,
@@ -1656,14 +1638,7 @@ VALUES
   ),
   (
     'winter_forensics_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'fiona_forensics'
-    ),
+    2,
     now() - interval '10 months' + interval '2 hours 30 minutes',
     true,
     1,
@@ -1671,45 +1646,16 @@ VALUES
   ),
   (
     'winter_crypto_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'george_osint'
-    ),
+    2,
     now() - interval '10 months' + interval '3 hours',
     true,
     1,
     'FLAG{basic_crypto_rocks}'
   ),
-  -- Team Gamma members
-  (
-    'winter_intro_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'hannah_misc'
-    ),
-    now() - interval '10 months' + interval '10 minutes',
-    true,
-    1,
-    'FLAG{welcome_to_ctf}'
-  ),
+  -- Team Gamma (ID 3) submissions
   (
     'winter_web_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'julia_web'
-    ),
+    3,
     now() - interval '10 months' + interval '2 hours 15 minutes',
     true,
     1,
@@ -1717,30 +1663,28 @@ VALUES
   ),
   (
     'winter_pwn_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'kevin_pwn'
-    ),
+    3,
     now() - interval '10 months' + interval '10 hours',
     false,
     1,
     'attempted_exploit'
-  ),
-  -- Spring CTF submissions
+  );
+
+-- Spring CTF submissions
+INSERT INTO
+  ctf_submissions (
+    challenge,
+    team_id,
+    time,
+    success,
+    ctf,
+    submitted_data
+  )
+VALUES
+  -- Team Delta (ID 4) submissions
   (
     'spring_intro_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'laura_rev'
-    ),
+    4,
     now() - interval '7 months' + interval '30 minutes',
     true,
     2,
@@ -1748,14 +1692,7 @@ VALUES
   ),
   (
     'spring_crypto_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'oliver_crypto'
-    ),
+    4,
     now() - interval '7 months' + interval '2 hours',
     true,
     2,
@@ -1763,14 +1700,7 @@ VALUES
   ),
   (
     'spring_osint_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'nina_osint'
-    ),
+    4,
     now() - interval '7 months' + interval '1 hour 30 minutes',
     true,
     2,
@@ -1778,14 +1708,7 @@ VALUES
   ),
   (
     'spring_rev_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'laura_rev'
-    ),
+    4,
     now() - interval '7 months' + interval '12 hours',
     true,
     2,
@@ -1793,29 +1716,16 @@ VALUES
   ),
   (
     'spring_forensics_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'mike_forensics'
-    ),
+    4,
     now() - interval '7 months' + interval '5 hours',
     true,
     2,
     'FLAG{memory_dump_analyzed}'
   ),
+  -- Team Epsilon (ID 5) submissions
   (
     'spring_crypto_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'quinn_misc'
-    ),
+    5,
     now() - interval '7 months' + interval '3 hours',
     false,
     2,
@@ -1823,30 +1733,28 @@ VALUES
   ),
   (
     'spring_osint_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'rachel_pwn'
-    ),
+    5,
     now() - interval '7 months' + interval '2 hours',
     false,
     2,
     'incorrect_person'
-  ),
-  -- Summer CTF submissions
+  );
+
+-- Summer CTF submissions
+INSERT INTO
+  ctf_submissions (
+    challenge,
+    team_id,
+    time,
+    success,
+    ctf,
+    submitted_data
+  )
+VALUES
+  -- Team Zeta (ID 6) submissions
   (
     'summer_intro_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'tina_expert'
-    ),
+    6,
     now() - interval '4 months' + interval '5 minutes',
     true,
     3,
@@ -1854,74 +1762,24 @@ VALUES
   ),
   (
     'summer_web_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'wendy_hacker'
-    ),
+    6,
     now() - interval '4 months' + interval '1 hour',
     true,
     3,
     'FLAG{xss_vulnerability_found}'
   ),
   (
-    'summer_crypto_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'alice_sec'
-    ),
-    now() - interval '4 months' + interval '6 hours',
-    true,
-    3,
-    'FLAG{rsa_broken}'
-  ),
-  (
-    'summer_pwn_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'kevin_pwn'
-    ),
-    now() - interval '4 months' + interval '15 hours',
-    true,
-    3,
-    'FLAG{heap_exploitation_master}'
-  ),
-  (
     'summer_misc_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'hannah_misc'
-    ),
+    6,
     now() - interval '4 months' + interval '4 hours',
     true,
     3,
     'FLAG{network_forensics_win}'
   ),
+  -- Team Eta (ID 7) submissions
   (
     'summer_web_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'charlie_web'
-    ),
+    7,
     now() - interval '4 months' + interval '1 hour 30 minutes',
     true,
     3,
@@ -1929,45 +1787,53 @@ VALUES
   ),
   (
     'summer_crypto_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'bob_crypto'
-    ),
-    now() - interval '4 months' + interval '8 hours',
+    7,
+    now() - interval '4 months' + interval '6 hours',
+    true,
+    3,
+    'FLAG{rsa_broken}'
+  ),
+  (
+    'summer_crypto_01',
+    7,
+    now() - interval '4 months' + interval '5 hours',
     false,
     3,
     'incorrect_factorization'
   ),
+  -- Team Theta (ID 8) submissions
   (
     'summer_pwn_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'diana_pwn'
-    ),
+    8,
+    now() - interval '4 months' + interval '15 hours',
+    true,
+    3,
+    'FLAG{heap_exploitation_master}'
+  ),
+  (
+    'summer_pwn_01',
+    8,
     now() - interval '4 months' + interval '14 hours',
     false,
     3,
     'heap_attempt_failed'
-  ),
-  -- Fall CTF submissions
+  );
+
+-- Fall CTF submissions
+INSERT INTO
+  ctf_submissions (
+    challenge,
+    team_id,
+    time,
+    success,
+    ctf,
+    submitted_data
+  )
+VALUES
+  -- Team Iota (ID 9) submissions
   (
     'fall_intro_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'steve_intro'
-    ),
+    9,
     now() - interval '2 months' + interval '10 minutes',
     true,
     4,
@@ -1975,44 +1841,15 @@ VALUES
   ),
   (
     'fall_osint_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'nina_osint'
-    ),
+    9,
     now() - interval '2 months' + interval '2 hours',
     true,
     4,
     'FLAG{geolocation_expert}'
   ),
   (
-    'fall_web_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'paula_web'
-    ),
-    now() - interval '2 months' + interval '3 hours',
-    true,
-    4,
-    'FLAG{jwt_token_forged}'
-  ),
-  (
     'fall_forensics_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'mike_forensics'
-    ),
+    9,
     now() - interval '2 months' + interval '6 hours',
     true,
     4,
@@ -2020,29 +1857,24 @@ VALUES
   ),
   (
     'fall_rev_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'laura_rev'
-    ),
+    9,
     now() - interval '2 months' + interval '18 hours',
     true,
     4,
     'FLAG{assembly_decoded}'
   ),
+  -- Team Kappa (ID 10) submissions
+  (
+    'fall_web_01',
+    10,
+    now() - interval '2 months' + interval '3 hours',
+    true,
+    4,
+    'FLAG{jwt_token_forged}'
+  ),
   (
     'fall_osint_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'george_osint'
-    ),
+    10,
     now() - interval '2 months' + interval '2 hours 30 minutes',
     false,
     4,
@@ -2050,60 +1882,28 @@ VALUES
   ),
   (
     'fall_web_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'charlie_web'
-    ),
+    10,
     now() - interval '2 months' + interval '4 hours',
     false,
     4,
     'invalid_jwt'
-  ),
-  -- Current CTF submissions (ongoing)
+  );
+
+-- Current CTF submissions (ongoing)
+INSERT INTO
+  ctf_submissions (
+    challenge,
+    team_id,
+    time,
+    success,
+    ctf,
+    submitted_data
+  )
+VALUES
+  -- Team Lambda (ID 11) submissions
   (
     'current_intro_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'alice_sec'
-    ),
-    now() - interval '1 hour',
-    true,
-    5,
-    'FLAG{first_steps_completed}'
-  ),
-  (
-    'current_crypto_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'bob_crypto'
-    ),
-    now() - interval '30 minutes',
-    true,
-    5,
-    'FLAG{aes_decrypted}'
-  ),
-  (
-    'current_intro_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'tina_expert'
-    ),
+    11,
     now() - interval '50 minutes',
     true,
     5,
@@ -2111,14 +1911,7 @@ VALUES
   ),
   (
     'current_crypto_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'uma_ninja'
-    ),
+    11,
     now() - interval '45 minutes',
     false,
     5,
@@ -2126,52 +1919,40 @@ VALUES
   ),
   (
     'current_misc_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'wendy_hacker'
-    ),
+    11,
     now() - interval '20 minutes',
     true,
     5,
     'FLAG{zip_password_cracked}'
   ),
+  -- Team Mu (ID 12) submissions
+  (
+    'current_intro_01',
+    12,
+    now() - interval '1 hour',
+    true,
+    5,
+    'FLAG{first_steps_completed}'
+  ),
+  (
+    'current_crypto_01',
+    12,
+    now() - interval '30 minutes',
+    true,
+    5,
+    'FLAG{aes_decrypted}'
+  ),
   (
     'current_pwn_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'diana_pwn'
-    ),
+    12,
     now() - interval '15 minutes',
     false,
     5,
     'format_string_attempt'
-  ),
-  (
-    'current_forensics_01',
-    (
-      SELECT
-        id
-      FROM
-        users
-      WHERE
-        github_username = 'xander_pro'
-    ),
-    now() - interval '10 minutes',
-    false,
-    5,
-    'incomplete_recovery'
   );
 
 -- ============================================================================
--- 10. WARGAME SUBMISSIONS (permanent challenges, various times)
+-- 12. WARGAME SUBMISSIONS
 -- ============================================================================
 INSERT INTO
   wargame_submissions (challenge, user_id, time, success, submitted_data)
@@ -2433,7 +2214,7 @@ VALUES
   );
 
 -- ============================================================================
--- 11. USER SESSIONS (active and recent sessions)
+-- 13. USER SESSIONS
 -- ============================================================================
 INSERT INTO
   user_sessions (id, user_id, expires_at)

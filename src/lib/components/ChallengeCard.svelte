@@ -2,7 +2,9 @@
     import type { Challenges } from '$lib/generated/db';
 
     interface Props {
-        challengeData: Selectable<Challenges> & { num_solvers?: number } & {
+        challengeData: Omit<Selectable<Challenges>, 'flag' | 'migrate_to_wargames'> & {
+            num_solvers?: number;
+        } & {
             solved?: boolean;
         };
         solveDate?: Date;

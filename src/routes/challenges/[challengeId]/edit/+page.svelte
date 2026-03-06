@@ -11,6 +11,7 @@
     import Checkbox from '$lib/components/input/Checkbox.svelte';
     import Input from '$lib/components/input/Input.svelte';
     import Select from '$lib/components/input/Select.svelte';
+    import Switch from '$lib/components/input/Switch.svelte';
     import Textarea from '$lib/components/input/Textarea.svelte';
 
     import { categories, resourceTypes } from '$lib/db/constants';
@@ -195,6 +196,20 @@
                         selected={data.challenge.anonymous_author
                             ? ['author_anonymous']
                             : []}></Checkbox>
+                    {#if data.ctf && !data.ctfEnded}
+                        <div class="mt-2">
+                            <div class="flex items-center gap-3">
+                                <span>Migrate to Wargames after CTF</span>
+                                <Switch
+                                    checked={data.challenge.migrate_to_wargames ?? true}
+                                    name="migrate_to_wargames" />
+                            </div>
+                            <p class="text-text-300 mt-1 text-sm">
+                                When enabled, this challenge will be available as a
+                                permanent wargames challenge after the CTF ends.
+                            </p>
+                        </div>
+                    {/if}
                 </section>
 
                 <section class="flex flex-col gap-4">

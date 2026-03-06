@@ -65,25 +65,6 @@ const getTopClasses = async () => {
                 )
                 .where('wargame_submissions.success', '=', true)
                 .where('challenges.approved', '=', true)
-                .unionAll((eb2) =>
-                    eb2
-                        .selectFrom('ctf_submissions')
-                        .select(['challenge', 'user_id'])
-                        .innerJoin(
-                            'challenges',
-                            'ctf_submissions.challenge',
-                            'challenges.challenge_id'
-                        )
-                        .leftJoin('ctf_events', 'challenges.ctf', 'ctf_events.id')
-                        .where('ctf_submissions.success', '=', true)
-                        .where('challenges.approved', '=', true)
-                        .where((qb) =>
-                            qb.or([
-                                qb('challenges.ctf', 'is', null),
-                                qb('ctf_events.end_time', '<', new Date()),
-                            ])
-                        )
-                )
         )
 
         .with('per_ch', (eb) =>
