@@ -22,6 +22,7 @@ export const load: PageServerLoad = async (event) => {
     const authoredChallenges: Selectable<Challenges>[] = await db
         .selectFrom('challenges')
         .where('author', '=', wantedUser.id)
+        .where('approved', "=", true)
         .selectAll()
         .execute();
 
