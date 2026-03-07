@@ -124,10 +124,9 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 };
 
 export const actions = {
-    freezeScoreboard: async ({ request, locals}) => {
+    freezeScoreboard: async ({ request, locals, params}) => {
         const user = locals.user
-        const formData = await request.formData()
-        const ctfId = Number(formData.get("ctf-id") as string)
+        const ctfId = Number(params.ctfId)
         const isOrg = getIsOrg(user.userId, ctfId)
 
         if (!isOrg && !user.is_admin) {
@@ -136,8 +135,6 @@ export const actions = {
               message: "Only admins and organisers can freeze scoreboard"
           })
         }
-
-        console.log(ctfId)
 
         const ctf = await db
           .selectFrom("ctf_events")
@@ -169,10 +166,9 @@ export const actions = {
         return { success: true, message: "Scoreboard has been frozen" }
         
     },
-    unfreezeScoreboard: async ({ request, locals }) => {
+    unfreezeScoreboard: async ({ request, locals, params }) => {
         const user = locals.user
-        const formData = await request.formData()
-        const ctfId = Number(formData.get("ctf-id") as string)
+        const ctfId = Number(params.ctfId)
         const isOrg = getIsOrg(user.userId, ctfId)
 
         if (!isOrg && !user.is_admin) {

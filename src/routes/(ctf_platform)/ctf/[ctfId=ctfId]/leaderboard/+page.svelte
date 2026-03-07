@@ -97,7 +97,6 @@
                                 applyAction(result);
                             };
                         }}>
-            <input type="hidden" value={ctfData.id} name="ctf-id">
             <Button label={translations.freeze_scoreboard}></Button>
         </form>
     {:else if data.isOrg && ctfData.freeze_time < currentTime && ctfData.end_time > currentTime}
@@ -117,7 +116,6 @@
                                 applyAction(result);
                             };
                         }}>
-                <input type="hidden" value={ctfData.id} name="ctf-id">
                 <Button label={translations.unfreeze_scoreboard}></Button>      
         </form>
     {/if}

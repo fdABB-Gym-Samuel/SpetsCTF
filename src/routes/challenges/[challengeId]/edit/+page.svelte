@@ -25,6 +25,7 @@
 
     import { X, Check, UserCog } from '@lucide/svelte';
     import { linkPattern } from '$lib/utils/utils.js';
+    import { derived } from 'svelte/store';
 
     const uid = $props.id();
     const formId = `form-${uid}`;
@@ -47,16 +48,17 @@
     ];
 
     let showApproveForm = $derived(
-        data.user && data.user.is_admin && !data.challenge.approved
+        data.user && (data.user.is_admin || data.isOrg) && !data.challenge.approved
     );
     let showDisapproveForm = $derived(
-        data.user && data.user.is_admin && data.challenge.approved
+        data.user && (data.user.is_admin || data.isOrg) && data.challenge.approved
     );
 
     let mainCategory = $derived(data.challenge.challenge_category);
     let selectedSubCategories: string[] = $derived(
         bitsetToSelectedCategories(categories, data.challenge.challenge_sub_categories)
     );
+
 
     let possibleSubCategories = $derived.by(() =>
         categories
