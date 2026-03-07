@@ -1,7 +1,8 @@
 BEGIN;
 
 ALTER TABLE IF EXISTS ctf_events
-  ADD freeze_time TIMESTAMPTZ;
+  ADD COLUMN freeze_time TIMESTAMPTZ,
+  ADD COLUMN flag_format varchar(256) not null default 'SPETSCTF{...}';
 
 UPDATE ctf_events
   SET freeze_time = end_time

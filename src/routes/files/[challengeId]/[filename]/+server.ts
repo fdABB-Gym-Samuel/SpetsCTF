@@ -24,7 +24,7 @@ export async function GET({ params, locals }: RequestEvent) {
     }
 
     const isOrg = locals.user?.id
-        ? getIsOrg(locals.user?.id, challenge.ctf ?? undefined)
+        ? await getIsOrg(locals.user?.id, challenge.ctf ?? undefined)
         : false;
     if (
         !challenge.approved &&

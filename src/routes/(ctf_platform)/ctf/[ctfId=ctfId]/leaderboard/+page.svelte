@@ -7,6 +7,8 @@
     import { Tween } from 'svelte/motion';
     import { cubicOut } from 'svelte/easing';
 
+    import { invalidate } from '$app/navigation';
+
     import { applyAction, enhance } from '$app/forms';
     import { resolve } from '$app/paths';
     import { page } from '$app/state';
@@ -80,7 +82,7 @@
 </script>
 
 <main class="content m-auto w-full max-w-[1200px] pt-12">
-    {#if data.isOrg && ctfData.freeze_time > new Date()}
+    {#if data.isOrg && ctfData.freeze_time > currentTime}
         {#if form}
                     <p
                         class="mb-3"
@@ -89,14 +91,7 @@
                         {form.message}
                     </p>
         {/if}
-        <form method="POST" action="?/freezeScoreboard" use:enhance={() => {
-                            return async ({ result }) => {
-                                //invalidate(
-                                //    `data:challenge-${challengeData.challenge_id}`
-                                //);
-                                applyAction(result);
-                            };
-                        }}>
+        <form method="POST" action="?/freezeScoreboard" use:enhance>
             <Button label={translations.freeze_scoreboard}></Button>
         </form>
     {:else if data.isOrg && ctfData.freeze_time < currentTime && ctfData.end_time > currentTime}
@@ -108,14 +103,7 @@
                         {form.message}
                     </p>
         {/if}
-        <form method="POST" action="?/unfreezeScoreboard" use:enhance={() => {
-                            return async ({ result }) => {
-                                //invalidate(
-                                //    `data:challenge-${challengeData.challenge_id}`
-                                //);
-                                applyAction(result);
-                            };
-                        }}>
+        <form method="POST" action="?/unfreezeScoreboard" use:enhance>
                 <Button label={translations.unfreeze_scoreboard}></Button>      
         </form>
     {/if}

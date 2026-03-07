@@ -3,7 +3,6 @@ import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
 import { getIsOrg } from '$lib/db/functions';
-import { request } from 'http';
 
 export const load: PageServerLoad = async (event: ServerLoadEvent) => {
     const ctfId = Number(event.params.ctfId);
@@ -13,6 +12,8 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
         .selectAll()
         .where("ctf_events.id", "=", ctfId)
         .executeTakeFirst()
+
+    event.depends(`data:ctf-${ctfId}`);
 
     if (!ctf){
       error(404, "CTF not found")
@@ -127,7 +128,7 @@ export const actions = {
     freezeScoreboard: async ({ request, locals, params}) => {
         const user = locals.user
         const ctfId = Number(params.ctfId)
-        const isOrg = getIsOrg(user.userId, ctfId)
+        const isOrg = await getIsOrg(user.id, ctfId)
 
         if (!isOrg && !user.is_admin) {
           return fail(401, {
@@ -169,7 +170,7 @@ export const actions = {
     unfreezeScoreboard: async ({ request, locals, params }) => {
         const user = locals.user
         const ctfId = Number(params.ctfId)
-        const isOrg = getIsOrg(user.userId, ctfId)
+        const isOrg = await getIsOrg(user.id, ctfId)
 
         if (!isOrg && !user.is_admin) {
           return fail(401, {

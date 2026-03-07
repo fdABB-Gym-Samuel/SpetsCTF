@@ -5,6 +5,7 @@
 
     import { LogOut, Github } from '@lucide/svelte';
     import { resolve } from '$app/paths';
+    import Information from '$lib/components/Information.svelte';
 
     let displayName = $derived.by(() => {
         if (form && form.display_name) {
@@ -76,13 +77,18 @@
                 applyAction(result);
             };
         }}>
-        <label for="display_name" class="text-md font-bold">
-            {data.translations.displayname}
-        </label>
-        <span class="text-text-100">Leave empty to be anonymous.</span>
+
+        
+        <!-- <span class="text-text-100">Leave empty to be anonymous.</span> -->
         <div>
+            <div class="flex justify-between">
+                <label for="display_name" class="text-md font-bold">
+                {data.translations.displayname}
+                </label>
+                <Information text="Leave empty to be anonymous" size={16}></Information>
+            </div>
             <input
-                class="border-text-100 rounded border p-1"
+                class="border-text-100 rounded border p-1 w-full"
                 value={displayName}
                 name="display_name"
                 placeholder={data.translations.enterdisplayname}

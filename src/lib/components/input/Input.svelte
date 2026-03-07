@@ -1,11 +1,13 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import type { HTMLInputAttributes } from 'svelte/elements';
+    import Information from '../Information.svelte';
 
     interface Props extends HTMLInputAttributes {
         label: string;
         inputFocused?: boolean;
         widthClass?: string;
+        info?: string;
     }
 
     let {
@@ -17,6 +19,7 @@
         value = $bindable(),
         inputFocused = $bindable(false),
         widthClass = 'w-full',
+        info,
         ...restProps
     }: Props = $props();
 
@@ -28,7 +31,7 @@
 </script>
 
 <div class="relative flex flex-col">
-    <div class="mb-3">
+    <div class="mb-3 flex justify-between">
         <label for={name}>
             <span>{label}</span>
 
@@ -36,6 +39,9 @@
                 <span class="text-primary-light">*</span>
             {/if}
         </label>
+        {#if info}
+            <Information size={16} text={info}></Information>
+        {/if}
     </div>
     <input
         bind:this={inputElement}

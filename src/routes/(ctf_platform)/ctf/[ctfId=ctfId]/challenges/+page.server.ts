@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
     const ctfId = Number(params.ctfId);
     const userId = user ? user.id : undefined;
 
-    const isOrg = user ? getIsOrg(user?.id, ctfId) : false
+    const isOrg = user ? await getIsOrg(user?.id, ctfId) : false
 
     const parentData = await parent();
     const { ctfData } = parentData;
