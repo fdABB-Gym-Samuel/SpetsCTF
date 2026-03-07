@@ -1,18 +1,23 @@
 <script lang="ts">
     import BackToTop from '$lib/components/BackToTop.svelte';
 
-    import { onMount } from 'svelte';
+    import Button from '$lib/components/Button.svelte';
+
+    import { onMount, onDestroy } from 'svelte';
     import { Tween } from 'svelte/motion';
     import { cubicOut } from 'svelte/easing';
 
+    import { applyAction, enhance } from '$app/forms';
     import { resolve } from '$app/paths';
     import { page } from '$app/state';
 
-    let { data } = $props();
+    let { data, form } = $props();
     let ctfData = $derived(data.ctfData);
     let scores = $derived(data.scores);
     let team = $derived(data.team);
     let user = $derived(data.user);
+    let translations = $derived(data.translations);
+
 
     let podiumRefs: HTMLDivElement[] = $state([]);
     let textRefs: HTMLSpanElement[] = $state([]);
@@ -22,6 +27,15 @@
             return scores.findIndex((team_) => team_.team_id === team?.teamId) + 1;
         }
     });
+
+    let currentTime = $state(new Date())
+    
+    type Timeout = ReturnType<typeof setInterval>;
+    let interval: Timeout;
+
+    const updateTime = () => {
+        currentTime = new Date()
+    }
 
     // Heights for the podium bars (order: 2nd, 1st, 3rd)
     const targetHeights = [90, 70, 40];
@@ -57,11 +71,57 @@
             // Wait for podium to finish before starting next one
             await podiumPromise;
         }
+        interval = setInterval(updateTime, 1000);
+    });
+
+    onDestroy(() => {
+        clearInterval(interval);
     });
 </script>
 
 <main class="content m-auto w-full max-w-[1200px] pt-12">
-    {#if ctfData && ctfData.end_time < new Date()}
+    {#if data.isOrg && ctfData.freeze_time > new Date()}
+        {#if form}
+                    <p
+                        class="mb-3"
+                        class:text-green-500={form.success}
+                        class:text-red-500={!form.success}>
+                        {form.message}
+                    </p>
+        {/if}
+        <form method="POST" action="?/freezeScoreboard" use:enhance={() => {
+                            return async ({ result }) => {
+                                //invalidate(
+                                //    `data:challenge-${challengeData.challenge_id}`
+                                //);
+                                applyAction(result);
+                            };
+                        }}>
+            <input type="hidden" value={ctfData.id} name="ctf-id">
+            <Button label={translations.freeze_scoreboard}></Button>
+        </form>
+    {:else if data.isOrg && ctfData.freeze_time < currentTime && ctfData.end_time > currentTime}
+        {#if form}
+                    <p
+                        class="mb-3"
+                        class:text-green-500={form.success}
+                        class:text-red-500={!form.success}>
+                        {form.message}
+                    </p>
+        {/if}
+        <form method="POST" action="?/unfreezeScoreboard" use:enhance={() => {
+                            return async ({ result }) => {
+                                //invalidate(
+                                //    `data:challenge-${challengeData.challenge_id}`
+                                //);
+                                applyAction(result);
+                            };
+                        }}>
+                <input type="hidden" value={ctfData.id} name="ctf-id">
+                <Button label={translations.unfreeze_scoreboard}></Button>      
+        </form>
+    {/if}
+    {#if ctfData && ctfData.end_time < new Date() && ctfData.freeze_time == ctfData.end_time}
         <section class="mb-8 flex h-80 w-full items-end justify-center">
             {#each [2, 0, 1] as idx, i (idx)}
                 <div class="flex h-full w-1/3 flex-col items-center justify-end">
@@ -90,7 +150,7 @@
     {/if}
 
     <!-- TODO: add header with user info if logged in -->
-    {#if team && !user?.is_admin}
+    {#if team && !data.isOrg}
         <header class="mb-12">
             <h1 class="text-xl font-bold">
                 {team?.teamName} <span class="text-text-200">#{teamPosition}</span>

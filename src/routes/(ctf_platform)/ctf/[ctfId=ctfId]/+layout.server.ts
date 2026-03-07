@@ -15,6 +15,7 @@ export const load: LayoutServerLoad = async ({ locals, params }) => {
             'ctf_events.id',
             'ctf_events.max_team_size',
             'ctf_events.start_time',
+            'ctf_events.freeze_time'
         ])
         .where('id', '=', ctfId)
         .executeTakeFirst();

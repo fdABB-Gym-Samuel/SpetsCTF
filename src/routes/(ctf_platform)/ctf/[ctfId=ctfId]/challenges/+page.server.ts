@@ -6,11 +6,14 @@ import { rm } from 'node:fs/promises';
 import { getStateDirectory } from '$lib/server/directories';
 import { join } from 'node:path';
 import sanitize from 'sanitize-filename';
+import { getIsOrg } from '$lib/db/functions';
 
 export const load: PageServerLoad = async ({ locals, depends, params, parent }) => {
     const user = locals.user;
     const ctfId = Number(params.ctfId);
     const userId = user ? user.id : undefined;
+
+    const isOrg = user ? getIsOrg(user?.id, ctfId) : false
 
     const parentData = await parent();
     const { ctfData } = parentData;
@@ -18,7 +21,7 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
     depends(`data:ctf-${params.ctfId}-challenges`);
 
     const allChallenges =
-        ctfData && (new Date(ctfData.start_time) < new Date() || user?.is_admin)
+        ctfData && (new Date(ctfData.start_time) < new Date() || user?.is_admin || isOrg)
             ? await db
                   .with('unique_team_success', (qb) =>
                       qb
@@ -250,7 +253,7 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
 
     let myChallenges;
     if (user) {
-        if (!user?.is_admin) {
+        if (!user?.is_admin && !isOrg) {
             myChallenges = await myChallengesQuery
                 .where('ch.author', '=', user?.id ?? '')
                 .execute();
