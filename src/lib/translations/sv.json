@@ -51,6 +51,8 @@
   "freeze_scoreboard": "Frys poängtavla",
   "friday": "Fredag",
   "from": "Från",
+  "frozen_scoreboard_message": "Poängtavlan är fryst. Du kan fortfarande skicka in nya flaggor, men poängen kommer inte att uppdateras förrän poängtavlan är tinad.",
+  "frozen_scoreboard_ctf_over_message": "Poängtavlan är fryst of ctf:en är slut. Alla flaggor som lämnades in efter att poängtavlan frös kommer först att räknas med när den tinas.",
   "general": "Generellt",
   "github_redirect_message": "Du kommer att omdirigeras till github.com",
   "has_authored": "Har skapat",

@@ -82,6 +82,15 @@
 </script>
 
 <main class="content m-auto w-full max-w-[1200px] pt-12">
+    {#if ctfData.freeze_time < currentTime && ctfData.end_time > currentTime && ctfData.end_time.getTime() !== ctfData.freeze_time.getTime()}
+        <div class="w-full flex justify-center items-center py-4 px-8 bg-bg-700 text-fg-100 rounded-sm border-primary-extra-light border-2 mb-12">
+            <p>🥶 {translations.frozen_scoreboard_message} 🥶</p>
+        </div>
+    {:else if ctfData.freeze_time < currentTime && ctfData.end_time < currentTime && ctfData.end_time.getTime() !== ctfData.freeze_time.getTime()}
+        <div class="w-full flex justify-center items-center py-4 px-8 bg-bg-700 text-fg-100 rounded-sm border-primary-extra-light border-2 mb-12">
+            <p>🥶 {translations.frozen_scoreboard_ctf_over_message} 🥶</p>
+        </div>
+    {/if}
     {#if data.isOrg && ctfData.freeze_time > currentTime}
         {#if form}
                     <p
@@ -107,7 +116,7 @@
                 <Button label={translations.unfreeze_scoreboard}></Button>      
         </form>
     {/if}
-    {#if ctfData && ctfData.end_time < new Date() && ctfData.freeze_time == ctfData.end_time}
+    {#if ctfData && ctfData.end_time < new Date() && ctfData.freeze_time.getTime() == ctfData.end_time.getTime()}
         <section class="mb-8 flex h-80 w-full items-end justify-center">
             {#each [2, 0, 1] as idx, i (idx)}
                 <div class="flex h-full w-1/3 flex-col items-center justify-end">

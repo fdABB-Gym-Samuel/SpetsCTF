@@ -51,6 +51,8 @@
   "freeze_scoreboard": "Freeze Scoreboard",
   "friday": "Friday",
   "from": "From",
+  "frozen_scoreboard_message": "The scoreboard has been frozen. You can still submit new flags, but the points will not be updated until the scoreboard is unfrozen.",
+  "frozen_scoreboard_ctf_over_message": "The scoreboard has been frozen and the ctf is over. All flags submitted after the scoreboard was frozen will be accounted for when its unfrozen.",
   "general": "General",
   "github_redirect_message": "You will be redirected to github.com",
   "has_authored": "Has authored",
