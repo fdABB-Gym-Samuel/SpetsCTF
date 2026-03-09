@@ -125,15 +125,15 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 };
 
 export const actions = {
-    freezeScoreboard: async ({ request, locals, params }) => {
+    freezeScoreboard: async ({ locals, params }) => {
         const user = locals.user;
         if (!user){
             return redirect(303, "/login")
         }
         const ctfId = Number(params.ctfId);
-        const isOrg = await getIsOrg(user.id, ctfId);
+        const isOrg = await getIsOrg(user?.id ?? '', ctfId);
 
-        if (!isOrg && !user.is_admin) {
+        if (!isOrg && !user?.is_admin) {
             return fail(401, {
                 success: false,
                 message: 'Only admins and organisers can freeze scoreboard',
@@ -175,9 +175,9 @@ export const actions = {
             return redirect(303, "/login")
         }
         const ctfId = Number(params.ctfId);
-        const isOrg = await getIsOrg(user.id, ctfId);
+        const isOrg = await getIsOrg(user?.id ?? '', ctfId);
 
-        if (!isOrg && !user.is_admin) {
+        if (!isOrg && !user?.is_admin) {
             return fail(401, {
                 success: false,
                 message: 'Only admins and organisers can unfreeze scoreboard',
@@ -197,8 +197,7 @@ export const actions = {
             });
         }
 
-        const currentTime = new Date();
-        if (ctf?.end_time == ctf.freeze_time) {
+        if (ctf?.end_time.getTime() == ctf?.freeze_time.getTime()) {
             return fail(403, {
                 success: false,
                 message: 'Scoreboard is already unfrozen',
