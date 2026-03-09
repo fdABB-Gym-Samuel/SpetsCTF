@@ -25,8 +25,6 @@
 
     import { X, Check, UserCog } from '@lucide/svelte';
     import { linkPattern } from '$lib/utils/utils.js';
-    import { derived } from 'svelte/store';
-    import Information from '$lib/components/Information.svelte';
 
     const uid = $props.id();
     const formId = `form-${uid}`;

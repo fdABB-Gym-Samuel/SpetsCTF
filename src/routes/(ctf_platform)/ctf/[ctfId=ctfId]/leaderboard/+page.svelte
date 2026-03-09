@@ -7,9 +7,8 @@
     import { Tween } from 'svelte/motion';
     import { cubicOut } from 'svelte/easing';
 
-    import { invalidate } from '$app/navigation';
 
-    import { applyAction, enhance } from '$app/forms';
+    import { enhance } from '$app/forms';
     import { resolve } from '$app/paths';
     import { page } from '$app/state';
 
@@ -17,7 +16,6 @@
     let ctfData = $derived(data.ctfData);
     let scores = $derived(data.scores);
     let team = $derived(data.team);
-    let user = $derived(data.user);
     let translations = $derived(data.translations);
 
     let podiumRefs: HTMLDivElement[] = $state([]);

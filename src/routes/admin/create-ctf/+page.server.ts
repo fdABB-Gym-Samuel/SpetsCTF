@@ -68,6 +68,7 @@ export const actions = {
                 max_team_size: maxTeamSizeParsed,
                 display_name: displayName,
                 short_name: shortName,
+                freeze_time: endTime,
             };
             await db.insertInto('ctf_events').values(vals).execute();
         } else {

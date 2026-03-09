@@ -1,4 +1,4 @@
-import { error, fail, type Action, type ServerLoadEvent } from '@sveltejs/kit';
+import { error, fail, redirect, type Actions, type ServerLoadEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
@@ -127,6 +127,9 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 export const actions = {
     freezeScoreboard: async ({ request, locals, params }) => {
         const user = locals.user;
+        if (!user){
+            return redirect(303, "/login")
+        }
         const ctfId = Number(params.ctfId);
         const isOrg = await getIsOrg(user.id, ctfId);
 
@@ -166,8 +169,11 @@ export const actions = {
 
         return { success: true, message: 'Scoreboard has been frozen' };
     },
-    unfreezeScoreboard: async ({ request, locals, params }) => {
+    unfreezeScoreboard: async ({ locals, params }) => {
         const user = locals.user;
+        if (!user) {
+            return redirect(303, "/login")
+        }
         const ctfId = Number(params.ctfId);
         const isOrg = await getIsOrg(user.id, ctfId);
 
@@ -207,4 +213,4 @@ export const actions = {
 
         return { success: true, message: 'Scoreboard has been unfrozen' };
     },
-} satisfies Action;
+} satisfies Actions;
