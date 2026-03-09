@@ -129,6 +129,26 @@
     }
 }
 
+@position-try --below {
+    bottom: auto;
+    top: anchor(bottom);
+    left: anchor(center);
+    translate: -50% 4px;
+}
+@position-try --left {
+    bottom: auto;
+    top: anchor(center);
+    left: auto;
+    right: anchor(left);
+    translate: -4px -50%;
+}
+@position-try --right {
+    bottom: auto;
+    top: anchor(center);
+    left: anchor(right);
+    translate: 4px -50%;
+}
+
 body {
     @apply scrollbar-hidden bg-bg-900 text-text-100 selection:bg-text-100 selection:text-bg-900 m-0 box-border min-h-screen scroll-smooth px-3 py-1 font-sans leading-tight font-medium antialiased lg:px-8 xl:px-16;
 }

@@ -1,15 +1,35 @@
-import type { ServerLoadEvent } from '@sveltejs/kit';
+import {
+    error,
+    fail,
+    redirect,
+    type Actions,
+    type ServerLoadEvent,
+} from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
+import { getIsOrg } from '$lib/db/functions';
 
 export const load: PageServerLoad = async (event: ServerLoadEvent) => {
     const ctfId = Number(event.params.ctfId);
+
+    const ctf = await db
+        .selectFrom('ctf_events')
+        .selectAll()
+        .where('ctf_events.id', '=', ctfId)
+        .executeTakeFirst();
+
+    event.depends(`data:ctf-${ctfId}`);
+
+    if (!ctf) {
+        error(404, 'CTF not found');
+    }
 
     const scores = await db
         .with('team_challenges', (qb) =>
             qb
                 .selectFrom('ctf_submissions')
+                .where('ctf_submissions.time', '<=', ctf.freeze_time)
                 .leftJoin('users', 'ctf_submissions.user_id', 'users.id')
                 .where('users.is_admin', 'is not', true)
                 .innerJoin(
@@ -109,3 +129,93 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 
     return { scores };
 };
+
+export const actions = {
+    freezeScoreboard: async ({ locals, params }) => {
+        const user = locals.user;
+        if (!user) {
+            return redirect(303, '/login');
+        }
+        const ctfId = Number(params.ctfId);
+        const isOrg = await getIsOrg(user?.id ?? '', ctfId);
+
+        if (!isOrg && !user?.is_admin) {
+            return fail(401, {
+                success: false,
+                message: 'Only admins and organisers can freeze scoreboard',
+            });
+        }
+
+        const ctf = await db
+            .selectFrom('ctf_events')
+            .selectAll()
+            .where('ctf_events.id', '=', ctfId)
+            .executeTakeFirst();
+
+        if (!ctf) {
+            return fail(404, {
+                success: false,
+                message: 'Ctf not found',
+            });
+        }
+
+        const currentTime = new Date();
+        if (ctf?.end_time < currentTime) {
+            return fail(403, {
+                success: false,
+                message: 'Ctf has ended',
+            });
+        }
+
+        await db
+            .updateTable('ctf_events')
+            .set('freeze_time', currentTime)
+            .where('ctf_events.id', '=', ctf.id)
+            .execute();
+
+        return { success: true, message: 'Scoreboard has been frozen' };
+    },
+    unfreezeScoreboard: async ({ locals, params }) => {
+        const user = locals.user;
+        if (!user) {
+            return redirect(303, '/login');
+        }
+        const ctfId = Number(params.ctfId);
+        const isOrg = await getIsOrg(user?.id ?? '', ctfId);
+
+        if (!isOrg && !user?.is_admin) {
+            return fail(401, {
+                success: false,
+                message: 'Only admins and organisers can unfreeze scoreboard',
+            });
+        }
+
+        const ctf = await db
+            .selectFrom('ctf_events')
+            .selectAll()
+            .where('ctf_events.id', '=', ctfId)
+            .executeTakeFirst();
+
+        if (!ctf) {
+            return fail(404, {
+                success: false,
+                message: 'Ctf not found',
+            });
+        }
+
+        if (ctf?.end_time.getTime() == ctf?.freeze_time.getTime()) {
+            return fail(403, {
+                success: false,
+                message: 'Scoreboard is already unfrozen',
+            });
+        }
+
+        await db
+            .updateTable('ctf_events')
+            .set('freeze_time', ctf.end_time)
+            .where('ctf_events.id', '=', ctf.id)
+            .execute();
+
+        return { success: true, message: 'Scoreboard has been unfrozen' };
+    },
+} satisfies Actions;

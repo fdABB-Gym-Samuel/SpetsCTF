@@ -38,7 +38,8 @@ VALUES
   ('FLAG{shellcode_executed}', 'string');
 
 -- ============================================================================
--- 2. CTF EVENTS (8 events:  past, ongoing, and future)
+-- 2. CTF EVENTS (8 events: past, ongoing, and future)
+-- freeze_time defaults to end_time (no score freeze)
 -- ============================================================================
 INSERT INTO
   ctf_events (
@@ -46,6 +47,7 @@ INSERT INTO
     display_name,
     start_time,
     end_time,
+    freeze_time,
     max_team_size
   )
 VALUES
@@ -55,12 +57,14 @@ VALUES
     'Winter Warmup CTF 2025',
     now() - interval '10 months',
     now() - interval '10 months' + interval '24 hours',
+    now() - interval '10 months' + interval '24 hours',
     4
   ),
   (
     'spring2025',
     'Spring Security Challenge',
     now() - interval '7 months',
+    now() - interval '7 months' + interval '48 hours',
     now() - interval '7 months' + interval '48 hours',
     5
   ),
@@ -69,6 +73,7 @@ VALUES
     'Summer Hacking Festival',
     now() - interval '4 months',
     now() - interval '4 months' + interval '72 hours',
+    now() - interval '4 months' + interval '72 hours',
     6
   ),
   (
@@ -76,14 +81,16 @@ VALUES
     'Autumn Attack Challenge',
     now() - interval '2 months',
     now() - interval '2 months' + interval '36 hours',
+    now() - interval '2 months' + interval '36 hours',
     4
   ),
-  -- Ongoing event
+  -- Ongoing event (freeze 2 hours before end)
   (
     'current',
     'December Cyber Showdown',
     now() - interval '2 hours',
     now() + interval '22 hours',
+    now() + interval '20 hours',
     5
   ),
   -- Future events
@@ -92,6 +99,7 @@ VALUES
     'New Year CTF 2026',
     now() + interval '1 week',
     now() + interval '1 week' + interval '48 hours',
+    now() + interval '1 week' + interval '46 hours',
     4
   ),
   (
@@ -99,6 +107,7 @@ VALUES
     'Winter Championship 2026',
     now() + interval '2 months',
     now() + interval '2 months' + interval '72 hours',
+    now() + interval '2 months' + interval '70 hours',
     6
   ),
   -- Permanent wargame (no specific CTF, NULL)
@@ -106,6 +115,7 @@ VALUES
     'wargames',
     'Permanent Wargames',
     now() - interval '1 year',
+    now() + interval '10 years',
     now() + interval '10 years',
     1
   );
@@ -1192,7 +1202,7 @@ VALUES
   (
     'summer_pwn_01',
     'cmd',
-    'nc summer-ctf. example.com 8888'
+    'nc summer-ctf.example.com 8888'
   ),
   (
     'summer_misc_01',
@@ -1218,7 +1228,7 @@ VALUES
   (
     'fall_rev_01',
     'file',
-    'https://storage.example.com/fall/assembly_challenge. elf'
+    'https://storage.example.com/fall/assembly_challenge.elf'
   ),
   -- Current CTF resources
   (
@@ -1245,7 +1255,7 @@ VALUES
   (
     'newyear_web_01',
     'web',
-    'https://newyear-ctf.example. com/api'
+    'https://newyear-ctf.example.com/api'
   ),
   (
     'newyear_osint_01',
@@ -1261,7 +1271,7 @@ VALUES
   (
     'wargame_pwn_01',
     'cmd',
-    'nc wargames. example.com 5001'
+    'nc wargames.example.com 5001'
   ),
   (
     'wargame_pwn_01',
@@ -1300,25 +1310,20 @@ VALUES
 INSERT INTO
   ctf_teams (website, name, ctf)
 VALUES
-  -- Winter CTF teams
   ('https://team-alpha.example.com', 'Team Alpha', 1),
   ('https://team-beta.example.com', 'Team Beta', 1),
   ('https://team-gamma.example.com', 'Team Gamma', 1),
-  -- Spring CTF teams
   ('https://team-delta.example.com', 'Team Delta', 2),
   (
     'https://team-epsilon.example.com',
     'Team Epsilon',
     2
   ),
-  -- Summer CTF teams
   ('https://team-zeta.example.com', 'Team Zeta', 3),
   ('https://team-eta.example.com', 'Team Eta', 3),
   ('https://team-theta.example.com', 'Team Theta', 3),
-  -- Fall CTF teams
   ('https://team-iota.example.com', 'Team Iota', 4),
   (NULL, 'Team Kappa', 4),
-  -- Current CTF teams
   (
     'https://team-lambda.example.com',
     'Team Lambda',
@@ -1329,7 +1334,7 @@ VALUES
 -- ============================================================================
 -- 8. TEAM MEMBERSHIPS
 -- ============================================================================
--- Team Alpha (Winter CTF)
+-- Team Alpha (Winter CTF, id=1)
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1345,7 +1350,7 @@ WHERE
     'diana_pwn'
   );
 
--- Team Beta (Winter CTF)
+-- Team Beta (Winter CTF, id=2)
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1356,7 +1361,7 @@ FROM
 WHERE
   github_username IN ('erik_rev', 'fiona_forensics', 'george_osint');
 
--- Team Gamma (Winter CTF)
+-- Team Gamma (Winter CTF, id=3)
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1372,7 +1377,7 @@ WHERE
     'kevin_pwn'
   );
 
--- Team Delta (Spring CTF)
+-- Team Delta (Spring CTF, id=4)
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1389,7 +1394,7 @@ WHERE
     'paula_web'
   );
 
--- Team Epsilon (Spring CTF)
+-- Team Epsilon (Spring CTF, id=5)
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1400,7 +1405,7 @@ FROM
 WHERE
   github_username IN ('quinn_misc', 'rachel_pwn', 'steve_intro');
 
--- Team Zeta (Summer CTF)
+-- Team Zeta (Summer CTF, id=6)
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1418,7 +1423,7 @@ WHERE
     'alice_sec'
   );
 
--- Team Eta (Summer CTF)
+-- Team Eta (Summer CTF, id=7)
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1434,7 +1439,7 @@ WHERE
     'erik_rev'
   );
 
--- Team Theta (Summer CTF)
+-- Team Theta (Summer CTF, id=8)
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1452,7 +1457,7 @@ WHERE
     'kevin_pwn'
   );
 
--- Team Iota (Fall CTF)
+-- Team Iota (Fall CTF, id=9)
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1468,7 +1473,7 @@ WHERE
     'oliver_crypto'
   );
 
--- Team Kappa (Fall CTF)
+-- Team Kappa (Fall CTF, id=10)
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1484,7 +1489,7 @@ WHERE
     'steve_intro'
   );
 
--- Team Lambda (Current CTF)
+-- Team Lambda (Current CTF, id=11)
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1501,7 +1506,7 @@ WHERE
     'yuki_master'
   );
 
--- Team Mu (Current CTF)
+-- Team Mu (Current CTF, id=12)
 INSERT INTO
   ctf_teams_members (user_id, team)
 SELECT
@@ -1521,7 +1526,6 @@ WHERE
 -- ============================================================================
 -- 9. CTF SUBMISSIONS (80+ submissions with realistic timing)
 -- ============================================================================
--- Winter CTF submissions (past event)
 INSERT INTO
   ctf_submissions (
     challenge,
@@ -1532,7 +1536,7 @@ INSERT INTO
     submitted_data
   )
 VALUES
-  -- Team Alpha members
+  -- Winter CTF — Team Alpha
   (
     'winter_intro_01',
     (
@@ -1623,7 +1627,7 @@ VALUES
     1,
     'FLAG{buffer_overflow_pwned}'
   ),
-  -- Team Beta members
+  -- Winter CTF — Team Beta
   (
     'winter_intro_01',
     (
@@ -1684,7 +1688,7 @@ VALUES
     1,
     'FLAG{basic_crypto_rocks}'
   ),
-  -- Team Gamma members
+  -- Winter CTF — Team Gamma
   (
     'winter_intro_01',
     (
@@ -1730,7 +1734,7 @@ VALUES
     1,
     'attempted_exploit'
   ),
-  -- Spring CTF submissions
+  -- Spring CTF
   (
     'spring_intro_01',
     (
@@ -1836,7 +1840,7 @@ VALUES
     2,
     'incorrect_person'
   ),
-  -- Summer CTF submissions
+  -- Summer CTF
   (
     'summer_intro_01',
     (
@@ -1957,7 +1961,7 @@ VALUES
     3,
     'heap_attempt_failed'
   ),
-  -- Fall CTF submissions
+  -- Fall CTF
   (
     'fall_intro_01',
     (
@@ -2063,7 +2067,7 @@ VALUES
     4,
     'invalid_jwt'
   ),
-  -- Current CTF submissions (ongoing)
+  -- Current CTF (ongoing)
   (
     'current_intro_01',
     (
@@ -2171,12 +2175,12 @@ VALUES
   );
 
 -- ============================================================================
--- 10. WARGAME SUBMISSIONS (permanent challenges, various times)
+-- 10. WARGAME SUBMISSIONS
 -- ============================================================================
 INSERT INTO
   wargame_submissions (challenge, user_id, time, success, submitted_data)
 VALUES
-  -- Recent wargame activity
+  -- Successful solves
   (
     'wargame_intro_01',
     (
@@ -2433,12 +2437,12 @@ VALUES
   );
 
 -- ============================================================================
--- 11. USER SESSIONS (active and recent sessions)
+-- 11. USER SESSIONS
 -- ============================================================================
 INSERT INTO
   user_sessions (id, user_id, expires_at)
 VALUES
-  -- Active sessions (expire in future)
+  -- Active sessions
   (
     'session_alice_active',
     (
@@ -2559,7 +2563,7 @@ VALUES
     ),
     now() + interval '8 days'
   ),
-  -- Expired sessions (for testing cleanup)
+  -- Expired sessions
   (
     'session_erik_expired',
     (

@@ -47,10 +47,10 @@
     ];
 
     let showApproveForm = $derived(
-        data.user && data.user.is_admin && !data.challenge.approved
+        data.user && (data.user.is_admin || data.isOrg) && !data.challenge.approved
     );
     let showDisapproveForm = $derived(
-        data.user && data.user.is_admin && data.challenge.approved
+        data.user && (data.user.is_admin || data.isOrg) && data.challenge.approved
     );
 
     let mainCategory = $derived(data.challenge.challenge_category);
@@ -181,12 +181,17 @@
                         type="text"
                         placeholder="Enter a secret flag"
                         name="flag"
+                        info={`The flag is the password that a player must submit for the challenge to be solved. This should include the format and challenge specific string you've chosen. Eg. FLAG{my_5uper_s3Cr37_fl46}`}
                         required={true}></Input>
                     <Input
                         label="Flag Format"
                         value={data.flag.flag_format}
                         type="text"
-                        placeholder="SPETSCTF&#123...&#125"
+                        placeholder={data.ctf?.flag_format ?? 'SPETSCTF{...}'}
+                        info={`Flag format is the format that a player is supposed to look for when attempting your challenge. ` +
+                            (data.ctf
+                                ? `${data.ctf?.display_name} suggests you use ${data.ctf?.flag_format}`
+                                : `For wargames we suggest you use SPETSCTF{...}`)}
                         name="flag_format"></Input>
                     <Checkbox
                         title="Privacy"
@@ -205,6 +210,9 @@
                         type="number"
                         placeholder="Enter the points one will recieve for solving your challenge"
                         name="points"
+                        info={data.ctf
+                            ? `Ctfs use dynamic scoring and therefore this field will only be used once your challenge becomes available on the wargames platform. Possible values: 0-500`
+                            : ``}
                         required={true}></Input>
                     <Select
                         label="Main Category"
