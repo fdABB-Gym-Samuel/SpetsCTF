@@ -7,7 +7,6 @@
     import { Tween } from 'svelte/motion';
     import { cubicOut } from 'svelte/easing';
 
-
     import { enhance } from '$app/forms';
     import { resolve } from '$app/paths';
     import { page } from '$app/state';
