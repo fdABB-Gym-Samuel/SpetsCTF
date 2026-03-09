@@ -1,4 +1,4 @@
-import { error, fail, type Action, type ServerLoadEvent } from '@sveltejs/kit';
+import { error, fail, type Actions, type ServerLoadEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/db/database';
 import { sql } from 'kysely';
@@ -125,12 +125,12 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
 };
 
 export const actions = {
-    freezeScoreboard: async ({ request, locals, params }) => {
+    freezeScoreboard: async ({ locals, params }) => {
         const user = locals.user;
         const ctfId = Number(params.ctfId);
-        const isOrg = await getIsOrg(user.id, ctfId);
+        const isOrg = await getIsOrg(user?.id ?? '', ctfId);
 
-        if (!isOrg && !user.is_admin) {
+        if (!isOrg && !user?.is_admin) {
             return fail(401, {
                 success: false,
                 message: 'Only admins and organisers can freeze scoreboard',
@@ -166,12 +166,12 @@ export const actions = {
 
         return { success: true, message: 'Scoreboard has been frozen' };
     },
-    unfreezeScoreboard: async ({ request, locals, params }) => {
+    unfreezeScoreboard: async ({ locals, params }) => {
         const user = locals.user;
         const ctfId = Number(params.ctfId);
-        const isOrg = await getIsOrg(user.id, ctfId);
+        const isOrg = await getIsOrg(user?.id ?? '', ctfId);
 
-        if (!isOrg && !user.is_admin) {
+        if (!isOrg && !user?.is_admin) {
             return fail(401, {
                 success: false,
                 message: 'Only admins and organisers can unfreeze scoreboard',
@@ -191,8 +191,7 @@ export const actions = {
             });
         }
 
-        const currentTime = new Date();
-        if (ctf?.end_time == ctf.freeze_time) {
+        if (ctf?.end_time.getTime() == ctf?.freeze_time.getTime()) {
             return fail(403, {
                 success: false,
                 message: 'Scoreboard is already unfrozen',
@@ -207,4 +206,4 @@ export const actions = {
 
         return { success: true, message: 'Scoreboard has been unfrozen' };
     },
-} satisfies Action;
+} satisfies Actions;
