@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
     const ctfId = Number(params.ctfId);
     const userId = user ? user.id : undefined;
 
-    const isOrg = user ? await getIsOrg(user?.id, ctfId) : false
+    const isOrg = user ? await getIsOrg(user?.id, ctfId) : false;
 
     const parentData = await parent();
     const { ctfData } = parentData;
@@ -21,7 +21,8 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
     depends(`data:ctf-${params.ctfId}-challenges`);
 
     const allChallenges =
-        ctfData && (new Date(ctfData.start_time) < new Date() || user?.is_admin || isOrg)
+        ctfData &&
+        (new Date(ctfData.start_time) < new Date() || user?.is_admin || isOrg)
             ? await db
                   .with('unique_team_success', (qb) =>
                       qb

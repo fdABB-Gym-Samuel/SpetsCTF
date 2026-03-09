@@ -40,23 +40,21 @@ export const load: PageServerLoad = async ({ locals, params, depends }) => {
 
     if (!challenge) error(404);
 
-    let isOrg = false
-    if (challenge.ctf){
+    let isOrg = false;
+    if (challenge.ctf) {
         const ctfEndTime = await db
-            .selectFrom("ctf_events")
-            .select("ctf_events.end_time")
-            .where("id", "=", challenge.ctf)
-            .executeTakeFirst()
+            .selectFrom('ctf_events')
+            .select('ctf_events.end_time')
+            .where('id', '=', challenge.ctf)
+            .executeTakeFirst();
 
-        if (ctfEndTime){
-                const ctfHasEnded = ctfEndTime?.end_time < new Date()
-                isOrg = await getIsOrg(user.id, challenge.ctf) && !ctfHasEnded
+        if (ctfEndTime) {
+            const ctfHasEnded = ctfEndTime?.end_time < new Date();
+            isOrg = (await getIsOrg(user.id, challenge.ctf)) && !ctfHasEnded;
         }
-
     }
 
-
-    if (challenge.author !== user.id && (!user.is_admin && !isOrg)) {
+    if (challenge.author !== user.id && !user.is_admin && !isOrg) {
         error(401, { message: 'Challenge was not created by you.' });
     }
 
@@ -88,7 +86,7 @@ export const load: PageServerLoad = async ({ locals, params, depends }) => {
         flag,
         resources,
         ctf,
-        isOrg
+        isOrg,
     };
 };
 
@@ -110,22 +108,21 @@ export const actions = {
             .executeTakeFirst();
 
         if (!challenge) {
-            return fail(404, {success: false, message: "Challenge not found"})
+            return fail(404, { success: false, message: 'Challenge not found' });
         }
 
-        let isOrg = false
-        if (challenge.ctf){
+        let isOrg = false;
+        if (challenge.ctf) {
             const ctfEndTime = await db
-                .selectFrom("ctf_events")
-                .select("ctf_events.end_time")
-                .where("id", "=", challenge.ctf)
-                .executeTakeFirst()
+                .selectFrom('ctf_events')
+                .select('ctf_events.end_time')
+                .where('id', '=', challenge.ctf)
+                .executeTakeFirst();
 
-            if (ctfEndTime){
-                    const ctfHasEnded = ctfEndTime?.end_time < new Date()
-                    isOrg = await getIsOrg(user.id, challenge.ctf) && !ctfHasEnded
+            if (ctfEndTime) {
+                const ctfHasEnded = ctfEndTime?.end_time < new Date();
+                isOrg = (await getIsOrg(user.id, challenge.ctf)) && !ctfHasEnded;
             }
-
         }
 
         if (user.is_admin || isOrg) {
@@ -164,22 +161,21 @@ export const actions = {
             .executeTakeFirst();
 
         if (!challenge) {
-            return fail(404, {success: false, message: "Challenge not found"})
+            return fail(404, { success: false, message: 'Challenge not found' });
         }
 
-        let isOrg = false
-        if (challenge.ctf){
+        let isOrg = false;
+        if (challenge.ctf) {
             const ctfEndTime = await db
-                .selectFrom("ctf_events")
-                .select("ctf_events.end_time")
-                .where("id", "=", challenge.ctf)
-                .executeTakeFirst()
+                .selectFrom('ctf_events')
+                .select('ctf_events.end_time')
+                .where('id', '=', challenge.ctf)
+                .executeTakeFirst();
 
-            if (ctfEndTime){
-                    const ctfHasEnded = ctfEndTime?.end_time < new Date()
-                    isOrg = await getIsOrg(user.id, challenge.ctf) && !ctfHasEnded
+            if (ctfEndTime) {
+                const ctfHasEnded = ctfEndTime?.end_time < new Date();
+                isOrg = (await getIsOrg(user.id, challenge.ctf)) && !ctfHasEnded;
             }
-
         }
 
         if (user.is_admin || isOrg) {
@@ -216,19 +212,18 @@ export const actions = {
         if (!currentChallenge)
             return fail(404, { success: false, message: 'No such challenge found.' });
 
-        let isOrg = false
-        if (currentChallenge.ctf){
+        let isOrg = false;
+        if (currentChallenge.ctf) {
             const ctfEndTime = await db
-                .selectFrom("ctf_events")
-                .select("ctf_events.end_time")
-                .where("id", "=", currentChallenge.ctf)
-                .executeTakeFirst()
+                .selectFrom('ctf_events')
+                .select('ctf_events.end_time')
+                .where('id', '=', currentChallenge.ctf)
+                .executeTakeFirst();
 
-            if (ctfEndTime){
-                    const ctfHasEnded = ctfEndTime?.end_time < new Date()
-                    isOrg = await getIsOrg(user.id, currentChallenge.ctf) && !ctfHasEnded
+            if (ctfEndTime) {
+                const ctfHasEnded = ctfEndTime?.end_time < new Date();
+                isOrg = (await getIsOrg(user.id, currentChallenge.ctf)) && !ctfHasEnded;
             }
-
         }
 
         if (!user.is_admin && !isOrg && currentChallenge.author !== user.id) {
@@ -380,7 +375,7 @@ export const actions = {
         const user = locals.user;
         if (!user) redirect(303, '/login');
 
-        const challengeId = params.challengeId as string
+        const challengeId = params.challengeId as string;
 
         const challenge: Selectable<Challenges> | undefined = await db
             .selectFrom('challenges')
@@ -389,22 +384,21 @@ export const actions = {
             .executeTakeFirst();
 
         if (!challenge) {
-            return fail(404, {success: false, message: "Challenge not found"})
+            return fail(404, { success: false, message: 'Challenge not found' });
         }
 
-        let isOrg = false
-        if (challenge.ctf){
+        let isOrg = false;
+        if (challenge.ctf) {
             const ctfEndTime = await db
-                .selectFrom("ctf_events")
-                .select("ctf_events.end_time")
-                .where("id", "=", challenge.ctf)
-                .executeTakeFirst()
+                .selectFrom('ctf_events')
+                .select('ctf_events.end_time')
+                .where('id', '=', challenge.ctf)
+                .executeTakeFirst();
 
-            if (ctfEndTime){
-                    const ctfHasEnded = ctfEndTime?.end_time < new Date()
-                    isOrg = await getIsOrg(user.id, challenge.ctf) && !ctfHasEnded
+            if (ctfEndTime) {
+                const ctfHasEnded = ctfEndTime?.end_time < new Date();
+                isOrg = (await getIsOrg(user.id, challenge.ctf)) && !ctfHasEnded;
             }
-
         }
 
         const form = await request.formData();
@@ -488,19 +482,18 @@ export const actions = {
         if (!currentChallenge)
             return fail(404, { success: false, message: 'No such challenge found.' });
 
-        let isOrg = false
-        if (currentChallenge.ctf){
+        let isOrg = false;
+        if (currentChallenge.ctf) {
             const ctfEndTime = await db
-                .selectFrom("ctf_events")
-                .select("ctf_events.end_time")
-                .where("id", "=", currentChallenge.ctf)
-                .executeTakeFirst()
+                .selectFrom('ctf_events')
+                .select('ctf_events.end_time')
+                .where('id', '=', currentChallenge.ctf)
+                .executeTakeFirst();
 
-            if (ctfEndTime){
-                    const ctfHasEnded = ctfEndTime?.end_time < new Date()
-                    isOrg = await getIsOrg(user.id, currentChallenge.ctf) && !ctfHasEnded
+            if (ctfEndTime) {
+                const ctfHasEnded = ctfEndTime?.end_time < new Date();
+                isOrg = (await getIsOrg(user.id, currentChallenge.ctf)) && !ctfHasEnded;
             }
-
         }
 
         if (!user.is_admin && !isOrg && currentChallenge.author !== user.id) {

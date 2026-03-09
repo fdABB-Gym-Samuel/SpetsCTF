@@ -77,18 +77,16 @@
                 applyAction(result);
             };
         }}>
-
-        
         <!-- <span class="text-text-100">Leave empty to be anonymous.</span> -->
         <div>
             <div class="flex justify-between">
                 <label for="display_name" class="text-md font-bold">
-                {data.translations.displayname}
+                    {data.translations.displayname}
                 </label>
                 <Information text="Leave empty to be anonymous" size={16}></Information>
             </div>
             <input
-                class="border-text-100 rounded border p-1 w-full"
+                class="border-text-100 w-full rounded border p-1"
                 value={displayName}
                 name="display_name"
                 placeholder={data.translations.enterdisplayname}

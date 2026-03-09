@@ -20,7 +20,6 @@
     let user = $derived(data.user);
     let translations = $derived(data.translations);
 
-
     let podiumRefs: HTMLDivElement[] = $state([]);
     let textRefs: HTMLSpanElement[] = $state([]);
 
@@ -30,14 +29,14 @@
         }
     });
 
-    let currentTime = $state(new Date())
-    
+    let currentTime = $state(new Date());
+
     type Timeout = ReturnType<typeof setInterval>;
     let interval: Timeout;
 
     const updateTime = () => {
-        currentTime = new Date()
-    }
+        currentTime = new Date();
+    };
 
     // Heights for the podium bars (order: 2nd, 1st, 3rd)
     const targetHeights = [90, 70, 40];
@@ -83,37 +82,39 @@
 
 <main class="content m-auto w-full max-w-[1200px] pt-12">
     {#if ctfData.freeze_time < currentTime && ctfData.end_time > currentTime && ctfData.end_time.getTime() !== ctfData.freeze_time.getTime()}
-        <div class="w-full flex justify-center items-center py-4 px-8 bg-bg-700 text-fg-100 rounded-sm border-primary-extra-light border-2 mb-12">
+        <div
+            class="bg-bg-700 text-fg-100 border-primary-extra-light mb-12 flex w-full items-center justify-center rounded-sm border-2 px-8 py-4">
             <p>🥶 {translations.frozen_scoreboard_message} 🥶</p>
         </div>
     {:else if ctfData.freeze_time < currentTime && ctfData.end_time < currentTime && ctfData.end_time.getTime() !== ctfData.freeze_time.getTime()}
-        <div class="w-full flex justify-center items-center py-4 px-8 bg-bg-700 text-fg-100 rounded-sm border-primary-extra-light border-2 mb-12">
+        <div
+            class="bg-bg-700 text-fg-100 border-primary-extra-light mb-12 flex w-full items-center justify-center rounded-sm border-2 px-8 py-4">
             <p>🥶 {translations.frozen_scoreboard_ctf_over_message} 🥶</p>
         </div>
     {/if}
     {#if data.isOrg && ctfData.freeze_time > currentTime}
         {#if form}
-                    <p
-                        class="mb-3"
-                        class:text-green-500={form.success}
-                        class:text-red-500={!form.success}>
-                        {form.message}
-                    </p>
+            <p
+                class="mb-3"
+                class:text-green-500={form.success}
+                class:text-red-500={!form.success}>
+                {form.message}
+            </p>
         {/if}
         <form method="POST" action="?/freezeScoreboard" use:enhance>
             <Button label={translations.freeze_scoreboard}></Button>
         </form>
     {:else if data.isOrg && ctfData.freeze_time < currentTime && ctfData.end_time > currentTime}
         {#if form}
-                    <p
-                        class="mb-3"
-                        class:text-green-500={form.success}
-                        class:text-red-500={!form.success}>
-                        {form.message}
-                    </p>
+            <p
+                class="mb-3"
+                class:text-green-500={form.success}
+                class:text-red-500={!form.success}>
+                {form.message}
+            </p>
         {/if}
         <form method="POST" action="?/unfreezeScoreboard" use:enhance>
-                <Button label={translations.unfreeze_scoreboard}></Button>      
+            <Button label={translations.unfreeze_scoreboard}></Button>
         </form>
     {/if}
     {#if ctfData && ctfData.end_time < new Date() && ctfData.freeze_time.getTime() == ctfData.end_time.getTime()}

@@ -60,7 +60,6 @@
         bitsetToSelectedCategories(categories, data.challenge.challenge_sub_categories)
     );
 
-
     let possibleSubCategories = $derived.by(() =>
         categories
             .filter((category) => category !== mainCategory)
@@ -190,8 +189,11 @@
                         label="Flag Format"
                         value={data.flag.flag_format}
                         type="text"
-                        placeholder={data.ctf?.flag_format ?? "SPETSCTF{...}"}
-                        info={`Flag format is the format that a player is supposed to look for when attempting your challenge. ` + (data.ctf ? `${data.ctf?.display_name} suggests you use ${data.ctf?.flag_format}` : `For wargames we suggest you use SPETSCTF{...}`)}
+                        placeholder={data.ctf?.flag_format ?? 'SPETSCTF{...}'}
+                        info={`Flag format is the format that a player is supposed to look for when attempting your challenge. ` +
+                            (data.ctf
+                                ? `${data.ctf?.display_name} suggests you use ${data.ctf?.flag_format}`
+                                : `For wargames we suggest you use SPETSCTF{...}`)}
                         name="flag_format"></Input>
                     <Checkbox
                         title="Privacy"
@@ -210,7 +212,9 @@
                         type="number"
                         placeholder="Enter the points one will recieve for solving your challenge"
                         name="points"
-                        info={data.ctf ? `Ctfs use dynamic scoring and therefore this field will only be used once your challenge becomes available on the wargames platform. Possible values: 0-500` : ``}
+                        info={data.ctf
+                            ? `Ctfs use dynamic scoring and therefore this field will only be used once your challenge becomes available on the wargames platform. Possible values: 0-500`
+                            : ``}
                         required={true}></Input>
                     <Select
                         label="Main Category"
