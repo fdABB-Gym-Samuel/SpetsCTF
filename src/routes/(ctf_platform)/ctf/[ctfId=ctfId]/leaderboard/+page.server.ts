@@ -69,6 +69,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
                             INNER JOIN ctf_teams ct ON ctm.team = ct.id
                             INNER JOIN challenges ch ON cs.challenge = ch.challenge_id
                             WHERE cs.challenge = ctf_submissions.challenge
+                              AND cs.time <= ${ctf.end_time}
                               AND cs.success = true
                               AND ct.ctf = ${ctfId}
                               AND ctm.team != COALESCE((
@@ -91,6 +92,7 @@ export const load: PageServerLoad = async (event: ServerLoadEvent) => {
                                 INNER JOIN ctf_teams ct ON ctm.team = ct.id
                                 INNER JOIN challenges ch ON cs.challenge = ch.challenge_id
                                 WHERE cs.challenge = ctf_submissions.challenge
+                                  AND cs.time <= ${ctf.freeze_time}
                                   AND cs.success = true
                                   AND ct.ctf = ${ctfId}
                                   AND ctm.team != COALESCE((

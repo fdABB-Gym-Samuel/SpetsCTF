@@ -40,6 +40,7 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
                               'ch.challenge_id'
                           )
                           .where('ctf_submissions.success', '=', true)
+                          .where('ctf_submissions.time', '<=', ctfData.freeze_time)
                           .where('ct.ctf', '=', ctfId)
                           .where('u.is_admin', '!=', true)
                           // Exclude author's team
@@ -120,6 +121,7 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
                             INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
                             INNER JOIN ctf_teams ct ON ctm.team = ct.id
                             WHERE cs.challenge = ch.challenge_id
+                              AND cs.time <= ${ctfData.freeze_time}
                               AND cs.success = true
                               AND ct.ctf = ${ctfId}
                               AND ctm.team != COALESCE((
@@ -141,6 +143,7 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
                                 INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
                                 INNER JOIN ctf_teams ct ON ctm.team = ct.id
                                 WHERE cs.challenge = ch.challenge_id
+                                  AND cs.time <= ${ctfData.freeze_time}
                                   AND cs.success = true
                                   AND ct.ctf = ${ctfId}
                                   AND ctm.team != COALESCE((
@@ -190,6 +193,7 @@ export const load: PageServerLoad = async ({ locals, depends, params, parent }) 
                           INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
                           INNER JOIN ctf_teams ct ON ctm.team = ct.id
                           WHERE cs.challenge = ch.challenge_id
+                            AND cs.time <= ${ctfData.freeze_time}
                             AND cs.success = true
                             AND ct.ctf = ${ctfId}
                             AND ctm.team != COALESCE((
