@@ -41,6 +41,7 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
                     INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
                     INNER JOIN ctf_teams ct ON ctm.team = ct.id
                     WHERE cs.challenge = challenges.challenge_id
+                      AND cs.time <= ${ctfData.freeze_time}
                       AND cs.success = true
                       AND ct.ctf = ${ctfId}
                       AND ctm.team != COALESCE((
@@ -62,6 +63,7 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
                         INNER JOIN ctf_teams_members ctm ON cs.user_id = ctm.user_id
                         INNER JOIN ctf_teams ct ON ctm.team = ct.id
                         WHERE cs.challenge = challenges.challenge_id
+                          AND cs.time <= ${ctfData.freeze_time}
                           AND cs.success = true
                           AND ct.ctf = ${ctfId}
                           AND ctm.team != COALESCE((
@@ -157,6 +159,7 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
                 .innerJoin('ctf_teams as ct', 'ctm.team', 'ct.id')
                 .innerJoin('users', 'ctf_submissions.user_id', 'users.id')
                 .where('challenge', '=', challengeData.challenge_id)
+                .where('time', '<=', ctfData.freeze_time)
                 .where('success', '=', true)
                 .where('ct.ctf', '=', ctfId)
                 .where('users.is_admin', '!=', true)
@@ -180,6 +183,7 @@ export const load: PageServerLoad = async ({ params, parent, locals, depends }) 
         .selectFrom('ctf_submissions as cs')
         .innerJoin('ctf_teams_members as ctm', 'cs.user_id', 'ctm.user_id')
         .innerJoin('ctf_teams as ct', 'ctm.team', 'ct.id')
+        .where('cs.time', '<=', ctfData.freeze_time)
         .where('cs.success', '=', true)
         .where('cs.challenge', '=', challengeData.challenge_id)
         .where('ct.ctf', '=', ctfId)
