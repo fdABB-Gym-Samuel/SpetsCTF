@@ -101,7 +101,7 @@
         <form method="POST" action="?/freezeScoreboard" use:enhance>
             <Button label={translations.freeze_scoreboard}></Button>
         </form>
-    {:else if data.isOrg && ctfData.freeze_time < currentTime && ctfData.end_time > currentTime}
+    {:else if data.isOrg && ctfData.freeze_time < currentTime && ctfData.end_time.getTime() !== ctfData.freeze_time.getTime()}
         {#if form}
             <p
                 class="mb-3"
