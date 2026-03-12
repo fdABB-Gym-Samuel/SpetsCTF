@@ -168,8 +168,6 @@ export const actions = {
             if (!ctfHasEnded) {
                 redirect(307, `/ctf/${challengeCtf.ctf}/challenges?/submit`);
             }
-
-            submissionTable = 'ctf_submissions';
         }
 
         const successfulSubmission = await db
